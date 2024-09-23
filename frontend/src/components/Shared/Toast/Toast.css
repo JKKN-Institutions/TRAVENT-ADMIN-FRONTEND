@@ -1,0 +1,108 @@
+
+.toast {
+    position: absolute;
+    top: 8vh;
+    right: 4vw;
+    border-radius: 12px;
+    background: #fff;
+    padding: 20px 35px 20px 25px;
+    box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transform: translateX(calc(100% + 30px));
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+    z-index: 10000;
+  }
+  
+  .toast.toast-active {
+    transform: translateX(0%);
+  }
+  
+  .toast .toast-content {
+    display: flex;
+    align-items: center;
+  }
+  
+  .toast-content .toast-check,
+  .toast-content .toast-error-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+    min-width: 35px;
+    background-color: #4070f4;
+    color: #fff;
+    font-size: 20px;
+    border-radius: 50%;
+  }
+  
+  .toast-content .toast-error-check{
+    background-color: rgb(194, 0, 0);
+  }
+  
+  .toast-content .toast-message {
+    display: flex;
+    flex-direction: column;
+    margin: 0 20px;
+  }
+  
+  .toast-message .toast-text {
+    font-size: 16px;
+    font-weight: 400;
+    color: #666666;
+  }
+  
+  .toast-message .toast-text.toast-text-1 {
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .toast .toast-close {
+    max-height: 35px;
+    color: #000;
+    position: absolute;
+    top: 15px;
+    /* right: 15px;
+    padding: 5px; */
+    cursor: pointer;
+    opacity: 0.7;
+  }
+  
+  .toast .toast-close:hover {
+    opacity: 1;
+  }
+  
+  .toast .toast-progress,
+  .toast .toast-error-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+  
+  }
+  
+  .toast .toast-progress:before,
+  .toast .toast-error-progress:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #4070f4;
+  }
+  
+  .toast .toast-error-progress:before{
+    background-color: rgb(194, 0, 0);
+  }
+  
+  .toast-progress.toast-active:before,
+  .toast-error-progress.toast-active:before {
+    animation: toast-progress 5s linear forwards;
+  }
+  
+  @keyframes toast-progress {
+    100% {
+      right: 100%;
+    }
+  }

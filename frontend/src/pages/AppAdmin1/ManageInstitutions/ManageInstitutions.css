@@ -1,0 +1,137 @@
+/* ManageInstitutions.css */
+.manage-institutions-container {
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #d0d0d0;
+}
+
+.add-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-button:hover {
+    background-color: #0056b3;
+}
+
+.institutions-table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.institutions-table th,
+.institutions-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-size: 14px;
+}
+
+
+.institutions-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.action-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #007bff;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.action-button:hover {
+    color: #0056b3;
+}
+
+.action-button:last-child {
+    margin-right: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header h2 {
+        font-size: 20px;
+    }
+
+    .add-button {
+        font-size: 14px;
+        padding: 8px 16px;
+        margin-top: 10px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .institutions-table th,
+    .institutions-table td {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+
+    .action-button {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .institutions-table,
+    .institutions-table th,
+    .institutions-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .institutions-table th {
+        text-align: right;
+        padding-right: 30%;
+        position: relative;
+    }
+
+    .institutions-table th::after {
+        content: ":";
+        position: absolute;
+        right: 10px;
+    }
+
+    .institutions-table td {
+        text-align: left;
+        padding-left: 30%;
+        position: relative;
+    }
+
+    .institutions-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        font-weight: bold;
+    }
+
+    .action-button {
+        font-size: 14px;
+    }
+}   

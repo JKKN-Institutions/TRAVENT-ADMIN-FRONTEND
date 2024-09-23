@@ -1,0 +1,66 @@
+/* AdminDashboard.css */
+.dashboard-container {
+  display: flex;
+}
+
+.admin-home-container {
+  flex: 1;
+  /* padding: 20px; */
+  background-color: #1e1e1e;
+  color: white;
+  /* min-height: 100vh; */
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.sidebar-container {
+  width: 240px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-container.open {
+  transform: translateX(0);
+}
+
+.sidebar-container.closed {
+  transform: translateX(-100%);
+}
+
+/* .admin-home-container.sidebar-open {
+  margin-left: 240px;
+} */
+
+.admin-home-container.sidebar-closed {
+  margin-left: 0;
+}
+
+.content {
+  margin-top: 20px;
+}
+
+.sidebar-header h1 {
+  margin-bottom: 20px;
+  background-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .sidebar-container {
+    position: fixed;
+    z-index: 1000;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+  }
+
+  .sidebar-container.open {
+    transform: translateX(0);
+  }
+
+  .admin-home-container {
+    margin-left: 0;
+  }
+
+  .admin-home-container.sidebar-open {
+    margin-left: 240;
+  }
+}

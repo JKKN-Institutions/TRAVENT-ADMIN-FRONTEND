@@ -1,0 +1,552 @@
+.upload-regular-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.upload-regular-sub-container{
+  display: flex;
+  flex-direction: row;
+  gap: 0.7rem;
+}
+
+.upload-regular-container .wrap-body-table-container {
+  max-height: 76vh;
+  min-width: 45vw;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+
+  /* Scrollbar styles */
+  scrollbar-width: thin;
+  /* Adjust width as needed (optional) */
+  scrollbar-color: rgba(125, 125, 125, 0.642) rgba(0, 0, 0, 0.1);
+}
+
+.upload-regular-container .wrap-body-container {
+  max-height: 76vh;
+  max-width: 30vw;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+
+  /* Scrollbar styles */
+  scrollbar-width: thin;
+  /* Adjust width as needed (optional) */
+  scrollbar-color: rgba(125, 125, 125, 0.642) rgba(0, 0, 0, 0.1);
+}
+
+/* Additional styling with pseudo-elements */
+.upload-regular-container .wrap-body-container ::-webkit-scrollbar-thumb,
+.upload-regular-container .wrap-body-table-container ::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.3); /* Adjust thumb color */
+  /* Rounded corners for thumb */
+}
+
+.upload-regular-container .wrap-body-container ::-webkit-scrollbar-track,
+.upload-regular-container .wrap-body-table-container ::-webkit-scrollbar-track {
+  background-color: transparent; /* Make track transparent */
+}
+
+.regular-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.wrap-content-create-emp a {
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 20px;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.main-regular-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sub-regular-filter {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  gap: 0.5rem;
+}
+
+.sub-regular-filter select {
+  width: 200px;
+}
+
+.main-date-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  /* align-items: center; */
+}
+
+.date-container {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.date-filter-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 5px 0px;
+}
+
+.buttons-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+}
+
+.date-filter-container h3,
+.wrap-body-table-container h3,
+.bus-details-table-container h3,
+.active-plan-container h3,
+.regular-plan-container h3,
+.alter-plan-container h3,
+.wrap-body-container h3 {
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.genrated-plan-table-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.genrated-plan-table-container th,
+td {
+  padding: 5px;
+  text-align: center;
+  align-items: center;
+}
+
+.bus-details-table-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bus-nxt-btn {
+  position: relative;
+  width: 20%;
+  padding: 5px 13px;
+  background-color: var(--primary-color-border);
+  color: var(--btn-color);
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.student-nxt-btn {
+  position: relative;
+  width: 22%;
+  padding: 5px 13px;
+  background-color: var(--primary-color-border);
+  color: var(--btn-color);
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.student-previous-btn {
+  position: relative;
+  width: 18%;
+  padding: 5px 20px;
+  background-color: var(--primary-color-border);
+  color: var(--btn-color);
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bus-previous-btn {
+  position: relative;
+  width: 16%;
+  padding: 5px 20px;
+  background-color: var(--primary-color-border);
+  color: var(--btn-color);
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Hide the default file input */
+.file-input {
+  display: none;
+}
+
+/* Style the custom button */
+.custom-file-upload {
+  display: inline-block;
+  padding: 8px 12px;
+  cursor: pointer;
+  background-color: #aaaaaa33;
+  border: none;
+  border-radius: 4px;
+  font-size: 30px;
+  text-align: center;
+  margin-right: 10px;
+}
+
+.custom-file-upload:hover {
+  background-color: #aaaaaa33;
+}
+
+/* Style for displaying the filename */
+.file-name {
+  font-size: 15px;
+}
+
+.file-upload-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.active-plan-container,
+.regular-plan-container,
+.alter-plan-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.active-plan-details,
+.regular-plan-details,
+.alter-plan-details {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.active-plan-details p,
+.regular-plan-details p,
+.alter-plan-details p {
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.active-plan-table-container,
+.regular-plan-table-container,
+.alter-plan-table-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.active-plan-table-container th,
+.active-plan-table-container td,
+.regular-plan-table-container th,
+.regular-plan-table-container td,
+.alter-plan-table-container th,
+.alter-plan-table-container td  {
+  padding: 5px;
+  text-align: center;
+  align-items: center;
+}
+
+.logout-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.confirmation-container {
+  background-color: var(--main-container-clr);
+  color:#333;
+  padding: 20px 10px;
+  text-wrap: wrap;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.confirm-button,
+.cancel-button {
+  height: 30px;
+  width: 70px;
+  padding: 5px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.confirm-button {
+  background-color: var(--primary-color-border);
+  color: white;
+}
+
+.cancel-button {
+  background-color: var(--primary-color-border);
+  color: white;
+}
+
+.confirm-buttons-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.student-table-container{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.center-align {
+  text-align: center;
+  vertical-align: middle;
+  display: grid;
+  align-items: center;
+}
+
+.main-table tbody{
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 5px; /* Adjust the radius as needed */
+  overflow: hidden;
+ 
+}
+
+.wrap-content-create-emp a:hover{
+color: #005fce;
+}
+
+.filter-icon{
+background-color: #005fce;
+color: #333;
+}
+
+.selected-filter{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wrap-content-create-emp img{
+height: 28px;
+width: 28px;
+}
+
+.wrap-content-create-emp h2{
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.process-1 label,
+.process-2 label{
+font-size: 18px;
+}
+
+.confirmation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirmation-container {
+ 
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.confirm-buttons-container {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 20px;
+}
+
+.confirm-button, .cancel-button {
+
+  cursor: pointer;
+}
+
+.error-toast, .message-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: red;
+  color: #333;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.current-regular-container,.current-alter-container,.current-bus-container{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.iocn-link img{
+  height: 24px;
+  width: 24px;
+}
+
+.icon-link-main{
+display: flex;
+flex-direction: column;
+gap: 0.8rem;
+margin-bottom: 5px;
+}
+
+.regular-filter .bx-x{
+  color: #333;
+}
+
+.wrap-content-create-emp a{
+  pointer-events: none;
+}
+
+.wrap-content-create-emp h4{
+  font-size: 20px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.view-filter{
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+
+}
+
+.view-filter h3{
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.toggle-switch-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+}
+
+.toggle-switch-label {
+  margin: 0 10px;
+  color: #333; /* Default color */
+}
+
+.toggle-switch-label.active-plan {
+  color: #2196F3; /* Active plan color */
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+
+/* Additional styles for different toggle states */
+.switch.regular .slider {
+  background-color: #2196F3;
+}
+
+.switch.regular input:checked + .slider {
+  background-color: #4CAF50;
+}
+
+.switch.alternative .slider {
+  background-color: #FF5722;
+}
+
+.switch.alternative input:checked + .slider {
+  background-color: #fccf47;
+}

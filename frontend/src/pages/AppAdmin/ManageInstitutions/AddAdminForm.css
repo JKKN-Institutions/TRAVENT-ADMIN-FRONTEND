@@ -1,0 +1,101 @@
+.admin-details-form-container {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 400px;
+  margin: 20px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-details-form-container h2 {
+  text-align: center;
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.admin-details-form-container label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  display: block;
+  color: var(--text-color);
+}
+
+.admin-details-form-container input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: var(--body-bg);
+  color: var(--text-color);
+}
+
+.admin-details-form-container input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.admin-details-form-container input.input-error {
+  border-color: var(--error-color);
+}
+
+.admin-details-form-container .error {
+  color: var(--error-color);
+  font-size: 0.875rem;
+  margin-top: -0.75rem;
+  margin-bottom: 1rem;
+}
+
+.admin-details-form-container .form-button {
+  width: 48%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-details-form-container .form-button:hover {
+  background-color: darken(var(--primary-color), 10%);
+}
+
+.admin-details-form-container .button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .admin-details-form-container {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+
+  .admin-details-form-container input {
+    padding: 0.65rem;
+    font-size: 0.875rem;
+  }
+
+  .admin-details-form-container .form-button {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-details-form-container {
+    padding: 1rem;
+  }
+
+  .admin-details-form-container input {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .admin-details-form-container .form-button {
+    font-size: 0.75rem;
+  }
+}

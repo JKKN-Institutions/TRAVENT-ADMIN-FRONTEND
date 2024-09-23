@@ -1,0 +1,55 @@
+/* BusesLayout.css */
+.buses-layout-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-container {
+  width: 250px;
+  transition: transform 0.3s ease;
+}
+
+.content-container {
+  flex: 1;
+  padding: 20px;
+  color: #333;
+}
+
+/* Top Bar */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  color: #333;
+  border-radius: 10px;
+  box-shadow: 0px 0px 20px 6px rgba(0, 0, 0, 0.3);
+}
+
+.top-bar h2 {
+  margin: 0;
+  font-size: 1.3em;
+  color: #333;
+}
+
+/* Adjust layout when the top bar is hidden */
+.content-container.no-top-bar {
+  padding-top: 0;
+}
+
+/* Hide the sidebar when ViewRoutes is active */
+.buses-layout-container.hide-sidebar .sidebar-container {
+  display: none;
+}
+
+/* Expand content container to fill space when sidebar is hidden */
+.buses-layout-container.hide-sidebar .content-container {
+  width: 100%;
+  padding-left: 0;
+}
+
+/* Hide top bar when ViewRoutes is active */
+.buses-layout-container.no-top-bar .top-bar {
+  display: none;
+}

@@ -1,0 +1,94 @@
+.department-form-container {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 20px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.department-form-container h2 {
+  text-align: center;
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.department-form-container input,
+.department-form-container textarea {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: var(--body-bg);
+  color: var(--text-color);
+}
+
+.department-form-container input:focus,
+.department-form-container textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.department-form-container input.input-error,
+.department-form-container textarea.input-error {
+  border-color: var(--error-color);
+}
+
+.department-form-container .error {
+  color: var(--error-color);
+  font-size: 0.875rem;
+  margin-top: -0.75rem;
+  margin-bottom: 1rem;
+}
+
+.department-form-container .form-button {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.department-form-container .form-button:hover {
+  background-color: darken(var(--primary-color), 10%);
+}
+
+@media (max-width: 768px) {
+  .department-form-container {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+
+  .department-form-container input,
+  .department-form-container textarea {
+    padding: 0.65rem;
+    font-size: 0.875rem;
+  }
+
+  .department-form-container .form-button {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .department-form-container {
+    padding: 1rem;
+  }
+
+  .department-form-container input,
+  .department-form-container textarea {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .department-form-container .form-button {
+    font-size: 0.75rem;
+  }
+}

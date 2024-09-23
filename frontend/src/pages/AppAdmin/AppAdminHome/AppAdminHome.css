@@ -1,0 +1,101 @@
+.app-admin-home-container {
+  background-color: #1e1e1e;
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app-admin-top-bar {
+  background-color: #222222;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.app-admin-header h2 {
+  color: #ffffff;
+}
+
+.app-admin-search-container {
+  position: relative;
+  max-width: 450px;
+}
+
+.app-admin-search-container .menu-icon {
+  margin-right: 1rem;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+.app-admin-top-bar-right {
+  display: flex;
+  align-items: center;
+}
+
+.app-admin-top-bar-right .icon {
+  margin-left: 15px;
+  font-size: 1.5rem;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.app-admin-main-content {
+  flex: 1;
+  padding: 1rem;
+  background-color: #1e1e1e;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+}
+
+.app-admin-main-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.app-admin-main-content::-webkit-scrollbar-track {
+  background: #2c2c2c;
+  border-radius: 4px;
+}
+
+.app-admin-main-content::-webkit-scrollbar-thumb {
+  background-color: #4a4a4a;
+  border-radius: 4px;
+  border: 2px solid #2c2c2c;
+}
+
+.app-admin-main-content::-webkit-scrollbar-thumb:hover {
+  background-color: #5a5a5a;
+}
+
+.app-admin-analytics-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.app-admin-charts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .app-admin-analytics-cards,
+  .app-admin-charts {
+    flex-direction: column;
+  }
+
+  .app-admin-main-content {
+    padding: 1rem 0;
+  }
+}

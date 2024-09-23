@@ -1,0 +1,22 @@
+.chart {
+  flex: 1;
+  min-width: 300px;
+  background-color: #292929;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chart h3 {
+  margin: 0 0 20px;
+  font-size: 18px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .chart {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}

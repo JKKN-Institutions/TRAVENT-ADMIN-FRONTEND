@@ -1,0 +1,39 @@
+.manage-institutions-container {
+  /* padding: 20px; */
+}
+
+.form-container {
+  /* max-width: 1200px; */
+  margin: 0 auto;
+}
+
+.add-institute-container {
+  display: flex;
+  gap: 20px;
+}
+
+.institution-review {
+  flex: 1;
+  background-color: #1e262f;
+  padding: 20px;
+  border-radius: 10px;
+  color: #ffffff;
+}
+
+.institution-review h3 {
+  margin-bottom: 15px;
+}
+
+.institution-review p {
+  margin-bottom: 10px;
+}
+
+.add-institute-form-container {
+  flex: 1;
+}
+
+@media (max-width: 1024px) {
+  .add-institute-container {
+    flex-direction: column;
+  }
+}

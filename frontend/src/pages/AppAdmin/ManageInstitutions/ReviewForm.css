@@ -1,0 +1,96 @@
+.review-form-container {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 20px auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.review-form-container h2,
+.review-form-container h3,
+.review-form-container h4,
+.review-form-container h5 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.review-form-container p {
+  font-size: 1rem;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.review-form-container .table-container {
+  margin-top: 2rem;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.review-form-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.review-form-container th,
+.review-form-container td {
+  padding: 0.75rem;
+  text-align: left;
+  border: 1px solid var(--border-color);
+}
+
+.review-form-container th {
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-text);
+}
+
+.review-form-container td {
+  background-color: var(--body-bg);
+}
+
+.review-form-container .form-button {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.review-form-container .form-button:hover {
+  background-color: darken(var(--primary-color), 10%);
+}
+
+@media (max-width: 768px) {
+  .review-form-container {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+
+  .review-form-container p {
+    font-size: 0.875rem;
+  }
+
+  .review-form-container .form-button {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .review-form-container {
+    padding: 1rem;
+  }
+
+  .review-form-container p {
+    font-size: 0.75rem;
+  }
+
+  .review-form-container .form-button {
+    font-size: 0.75rem;
+  }
+}

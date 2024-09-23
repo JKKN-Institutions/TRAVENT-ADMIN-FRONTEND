@@ -1,0 +1,147 @@
+.add-institution-form-container {
+  background-color: #1e262f;
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 1850px;
+  margin: auto;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: #11a8fd;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+.add-institution-form-container h2 {
+  text-align: center;
+  color: #ffffff;
+  margin: 0;
+  flex-grow: 1;
+  font-weight: 600;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.add-institution-form-container .form-group input,
+.add-institution-form-container .form-group textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 0.5rem;
+  border-radius: 10px;
+  font-size: 1em;
+  background-color: #2e323b;
+  color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid #666;
+}
+
+.add-institution-form-container .form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.add-institution-form-container .form-group input:focus,
+.add-institution-form-container .form-group textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #11a8fd;
+}
+
+.add-institution-form-container .form-group input.input-error,
+.add-institution-form-container .form-group textarea.input-error {
+  border: 1px solid #ff4d4f;
+}
+
+.add-institution-form-container .error {
+  color: #ff4d4f;
+  font-size: 0.75rem;
+  margin-top: -0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.institution-buttons-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.institution-submit-button {
+  width: 100%;
+  max-width: 170px;
+  padding: 0.6rem;
+  font-size: 1rem;
+  background-color: #11a8fd;
+  color: #ffffff;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+.institution-submit-button:hover {
+  background-color: #0e86c9;
+}
+
+@media (max-width: 768px) {
+  .add-institution-form-container {
+    padding: 1.5rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .add-institution-form-container input,
+  .add-institution-form-container textarea {
+    font-size: 0.875rem;
+  }
+
+  .institution-submit-button {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-institution-form-container {
+    padding: 1rem;
+  }
+
+  .add-institution-form-container input,
+  .add-institution-form-container textarea {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .institution-submit-button {
+    font-size: 0.75rem;
+  }
+}

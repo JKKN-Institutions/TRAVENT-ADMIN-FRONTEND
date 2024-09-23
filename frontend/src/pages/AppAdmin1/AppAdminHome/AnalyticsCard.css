@@ -1,0 +1,23 @@
+/* AnalyticsCard.css */
+.analytics-card {
+    flex: 1 1;
+    border: 1px solid #ddd;
+    background-color: rgb(40, 40, 40);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+.analytics-card h3 {
+    margin: 0;
+    font-size: 18px;
+    background-color: rgb(40, 40, 40);
+    color: #c4c4c4;
+}
+.analytics-card p {
+    font-size: 24px;
+    font-weight: bold;
+    background-color: rgb(40, 40, 40);
+    margin: 10px 0 0;
+    color: #007bff;
+}
