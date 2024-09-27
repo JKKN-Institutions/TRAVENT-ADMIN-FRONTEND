@@ -21,8 +21,18 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (initialData) {
-      setInstitutionData(initialData);
+    if (!initialData) {
+      setInstitutionData({
+        institutionName: "",
+        state: "",
+        founderName: "",
+        founderEmail: "",
+        founderContactNumber: "",
+        address: "",
+        contact1: "",
+        contact2: "",
+        emailDomain: "",
+      });
     }
   }, [initialData]);
 
@@ -56,8 +66,24 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
     } else {
+      console.log("Institution data to save:", institutionData);
       onSave(institutionData); // Pass form data back to parent
     }
+  };
+
+  const handleBack = () => {
+    setInstitutionData({
+      institutionName: "",
+      state: "",
+      founderName: "",
+      founderEmail: "",
+      founderContactNumber: "",
+      address: "",
+      contact1: "",
+      contact2: "",
+      emailDomain: "",
+    });
+    onBack();
   };
 
   return (
@@ -65,7 +91,7 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
       <div className="form-header">
         <h2>Add New Institution</h2>
       </div>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div className="form-grid">
           <div className="form-group">
             <input
@@ -168,17 +194,19 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
           </div>
         </div>
         <div className="institution-buttons-container">
-          {onBack && (
-            <button
-              type="button"
-              className="institution-submit-button"
-              onClick={onBack}
-            >
-              Back
-            </button>
-          )}
-          <button type="submit" className="institution-submit-button">
-            Save Institution
+          <button
+            type="button"
+            className="institution-submit-button"
+            onClick={handleBack}
+          >
+            Back
+          </button>
+          <button
+            type="submit"
+            className="institution-submit-button"
+            onClick={handleSubmit}
+          >
+            Save Institution & Next
           </button>
         </div>
       </form>

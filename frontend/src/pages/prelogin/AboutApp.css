@@ -28,10 +28,12 @@ body {
 .splash-screen img {
   height: 70px;
 }
-.slide-up {
+
+/* .slide-up {
   transform: translateY(-100%);
   opacity: 0;
-}
+  background: linear-gradient(to bottom, #1e262f, #16171b);
+} */
 
 .splash-text p {
   font-size: 30px;

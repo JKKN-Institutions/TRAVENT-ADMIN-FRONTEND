@@ -61,7 +61,7 @@ const Sidebar = ({ isOpen, toggleSidebar, setActiveComponent }) => {
               <button
                 className="menu-link"
                 onClick={() => {
-                  setActiveComponent("manageInstitutions");
+                  setActiveComponent("viewInstitutions");
                   toggleSidebar(false); // Close the sidebar after selection
                 }}
               >
@@ -85,7 +85,7 @@ const Sidebar = ({ isOpen, toggleSidebar, setActiveComponent }) => {
               <button
                 className="menu-link"
                 onClick={() => {
-                  setActiveComponent("subscriptions");
+                  setActiveComponent("subscriptionPlans");
                   toggleSidebar(false); // Close the sidebar after selection
                 }}
               >

@@ -1,0 +1,174 @@
+.new-subscription-plan-form-container {
+  background-color: rgba(215, 215, 215, 0.01);
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 1850px;
+  margin: auto;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+}
+
+.new-subscription-plan-form-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.new-subscription-plan-back-button {
+  background: none;
+  border: none;
+  color: #11a8fd;
+  cursor: pointer;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+.new-subscription-plan-form-container h2 {
+  text-align: center;
+  color: #ffffff;
+  margin: 0;
+  flex-grow: 1;
+  font-weight: 600;
+}
+
+.new-subscription-plan-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.new-subscription-plan-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.new-subscription-plan-form-container .new-subscription-plan-form-group input,
+.new-subscription-plan-form-container .new-subscription-plan-form-group select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 0.5rem;
+  border-radius: 10px;
+  font-size: 1em;
+  background-color: #2e323b;
+  color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid #666;
+}
+
+.new-subscription-plan-form-container
+  .new-subscription-plan-form-group
+  input:focus,
+.new-subscription-plan-form-container
+  .new-subscription-plan-form-group
+  select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #11a8fd;
+}
+
+.new-subscription-plan-form-container
+  .new-subscription-plan-form-group
+  input.input-error {
+  border: 1px solid #ff4d4f;
+}
+
+.new-subscription-plan-form-container .error {
+  color: #ff4d4f;
+  font-size: 0.75rem;
+  margin-top: -0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.new-subscription-plan-select-wrapper {
+  position: relative;
+}
+
+.new-subscription-plan-select-wrapper select {
+  appearance: none;
+  padding-right: 2rem;
+}
+
+.new-subscription-plan-select-icon {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #666666;
+}
+
+.new-subscription-plan-buttons-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.new-subscription-plan-cancel-button,
+.new-subscription-plan-save-button {
+  padding: 0.5rem 2rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.new-subscription-plan-cancel-button {
+  background-color: transparent;
+  color: #11a8fd;
+  border: 1px solid #11a8fd;
+}
+
+.new-subscription-plan-save-button {
+  background-color: #11a8fd;
+  color: #ffffff;
+  border: none;
+}
+
+.new-subscription-plan-cancel-button:hover {
+  background-color: rgba(17, 168, 253, 0.1);
+}
+
+.new-subscription-plan-save-button:hover {
+  background-color: #0e86c9;
+}
+
+@media (max-width: 768px) {
+  .new-subscription-plan-form-container {
+    padding: 1.5rem;
+  }
+
+  .new-subscription-plan-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .new-subscription-plan-form-container input,
+  .new-subscription-plan-form-container select {
+    font-size: 0.875rem;
+  }
+
+  .new-subscription-plan-cancel-button,
+  .new-subscription-plan-save-button {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .new-subscription-plan-form-container {
+    padding: 1rem;
+  }
+
+  .new-subscription-plan-form-container input,
+  .new-subscription-plan-form-container select {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .new-subscription-plan-cancel-button,
+  .new-subscription-plan-save-button {
+    font-size: 0.75rem;
+  }
+}

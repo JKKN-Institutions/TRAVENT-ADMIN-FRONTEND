@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../../../components/Shared/Sidebar/AppAdminSidebar";
 import AppAdminHome from "../AppAdminHome/AppAdminHome";
 import ViewInstitutions from "../ManageInstitutions/ViewInstitutions";
+import SubscriptionPlans from "../SubscriptionPlans/SubscriptionPlans";
+import Notifications from "../Notifications/Notifications";
 import "./AppAdminDashboard.css";
-import ManageInstitutions from "../ManageInstitutions/ManageInstitutions";
 
 const AdminDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
@@ -30,8 +31,12 @@ const AdminDashboard = () => {
     switch (activeComponent) {
       case "home":
         return <AppAdminHome toggleSidebar={toggleSidebar} />;
-      case "manageInstitutions":
-        return <ManageInstitutions toggleSidebar={toggleSidebar} />;
+      case "viewInstitutions":
+        return <ViewInstitutions toggleSidebar={toggleSidebar} />;
+      case "subscriptionPlans":
+        return <SubscriptionPlans toggleSidebar={toggleSidebar} />;
+      case "notifications":
+        return <Notifications toggleSidebar={toggleSidebar} />;
       default:
         return <AppAdminHome toggleSidebar={toggleSidebar} />;
     }

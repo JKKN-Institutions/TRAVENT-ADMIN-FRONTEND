@@ -1,5 +1,5 @@
 .add-institute-form-container {
-  background-color: #1e262f;
+  background-color: rgba(215, 215, 215, 0.01);
   border-radius: 10px;
   padding: 2rem;
   max-width: 1850px;
@@ -9,7 +9,7 @@
   color: #ffffff;
 }
 
-.form-header {
+.institute-form-header {
   display: flex;
   align-items: center;
   margin-bottom: 2rem;
@@ -34,23 +34,24 @@
   font-weight: 600;
 }
 
-.form-grid {
+.institute-form-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr); /* 2 columns for desktop/tablet */
   gap: 1rem;
 }
 
-.form-group {
+.institute-form-group {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
-.form-group.full-width {
+.institute-form-group.full-width {
   grid-column: 1 / -1;
 }
 
-.add-institute-form-container .form-group input,
-.add-institute-form-container .form-group textarea {
+.add-institute-form-container .institute-form-group input,
+.add-institute-form-container .institute-form-group textarea {
   width: 100%;
   padding: 10px;
   margin-bottom: 0.5rem;
@@ -60,21 +61,22 @@
   color: white;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   border-bottom: 2px solid #666;
+  max-width: 800px; /* Input fields responsive size */
 }
 
-.add-institute-form-container .form-group textarea {
+.add-institute-form-container .institute-form-group textarea {
   resize: vertical;
   min-height: 100px;
 }
 
-.add-institute-form-container .form-group input:focus,
-.add-institute-form-container .form-group textarea:focus {
+.add-institute-form-container .institute-form-group input:focus,
+.add-institute-form-container .institute-form-group textarea:focus {
   outline: none;
   box-shadow: 0 0 0 2px #11a8fd;
 }
 
-.add-institute-form-container .form-group input.input-error,
-.add-institute-form-container .form-group textarea.input-error {
+.add-institute-form-container .institute-form-group input.input-error,
+.add-institute-form-container .institute-form-group textarea.input-error {
   border: 1px solid #ff4d4f;
 }
 
@@ -94,7 +96,7 @@
 
 .institute-submit-button {
   width: 100%;
-  max-width: 170px;
+  max-width: 220px;
   padding: 0.6rem;
   font-size: 1rem;
   background-color: #11a8fd;
@@ -105,43 +107,188 @@
   transition: background-color 0.3s ease;
   margin-top: 1rem;
   font-weight: 600;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .institute-submit-button:hover {
   background-color: #0e86c9;
 }
 
+.institute-left-side h3 {
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 2rem;
+  flex-grow: 1;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+/* Form Content with Flexbox layout */
+.institute-form-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: 1rem;
+}
+
+/* Vertical Line added as a flex child */
+.institute-vertical-line {
+  width: 2px;
+  background-color: #11a8fd;
+  flex-shrink: 0; /* Ensure it doesn't shrink */
+  height: auto; /* Let it automatically take the full height */
+  align-self: stretch; /* Stretch it to match the height of the container */
+}
+
+.institute-right-side {
+  flex: 1; /* Right side container grows */
+  width: 100%;
+}
+
+/* Styles for the left side container */
+.institute-left-side {
+  flex: 1;
+  color: #ffffff;
+  width: 100%;
+}
+
+.institute-left-side ul {
+  list-style-type: none;
+  padding: 0rem;
+  /* padding-left: 0rem;
+  padding-right: 0rem;
+  padding-top: 0rem; */
+}
+
+.institute-left-side li {
+  margin-bottom: 1.5rem; /* Increased margin for readability */
+  display: flex;
+  justify-content: space-between;
+}
+
+.institute-left-side li strong {
+  flex-basis: 40%;
+  color: #11a8fd; /* Emphasize labels */
+}
+
+.institute-left-side li span {
+  flex-basis: 60%;
+  text-align: right;
+}
+
+/* Responsive adjustments for Tablet - max-width: 768px */
 @media (max-width: 768px) {
   .add-institute-form-container {
     padding: 1.5rem;
+    max-width: 100%; /* Reduce width for tablets */
   }
 
-  .form-grid {
-    grid-template-columns: 1fr;
+  .institute-form-grid {
+    grid-template-columns: 1fr; /* 2 columns for tablets */
   }
 
   .add-institute-form-container input,
   .add-institute-form-container textarea {
     font-size: 0.875rem;
+    max-width: 100%;
   }
 
   .institute-submit-button {
     font-size: 0.875rem;
   }
+
+  .institute-form-content {
+    flex-direction: column; /* Stack left and right on top of each other */
+  }
+
+  .institute-vertical-line {
+    display: block;
+    width: 100%; /* Turn the line horizontal */
+    height: 2px; /* Horizontal line height */
+  }
+
+  .institute-left-side {
+    padding-right: 0;
+    width: 100%;
+    /* margin-bottom: 2rem; */
+  }
+
+  .institute-left-side ul {
+    padding: 1rem; /* Reduce padding for tablet */
+  }
+
+  .institute-left-side li {
+    flex-direction: row; /* Keep labels and values aligned horizontally */
+    text-align: left;
+  }
+
+  .institute-left-side li strong,
+  .institute-left-side li span {
+    flex-basis: 50%; /* Adjust label and value ratio for tablet */
+    text-align: left;
+  }
+
+  .institute-buttons-container {
+    justify-content: space-between;
+  }
 }
 
+/* Responsive adjustments for Mobile - max-width: 480px */
 @media (max-width: 480px) {
   .add-institute-form-container {
     padding: 1rem;
+    max-width: 100%; /* Full width for mobile */
+  }
+
+  .institute-form-grid {
+    grid-template-columns: 1fr; /* Single column for mobile */
   }
 
   .add-institute-form-container input,
   .add-institute-form-container textarea {
     padding: 0.5rem;
     font-size: 0.75rem;
+    max-width: 100%; /* Full width on mobile */
   }
 
   .institute-submit-button {
     font-size: 0.75rem;
+  }
+
+  .institute-form-content {
+    flex-direction: column; /* Stack left and right */
+    align-items: center; /* Center the content */
+  }
+
+  .institute-vertical-line {
+    display: block;
+    width: 100%; /* Turn the line horizontal */
+    height: 2px; /* Horizontal line height */
+    margin: 1rem 0; /* Add margin around the line */
+  }
+
+  .institute-left-side {
+    padding-right: 0;
+    /* margin-bottom: 2rem; */
+  }
+
+  .institute-left-side ul {
+    padding: 0.5rem; /* Less padding for mobile */
+  }
+
+  .institute-left-side li {
+    flex-direction: column; /* Stack label and value vertically */
+    text-align: left;
+  }
+
+  .institute-left-side li strong,
+  .institute-left-side li span {
+    flex-basis: 100%;
+    text-align: left;
+  }
+  .institute-buttons-container {
+    justify-content: center;
   }
 }

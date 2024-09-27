@@ -9,6 +9,12 @@ import {
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import AddInstitutionForm from "./AddInstitutionForm";
+import AddInstituteForm from "./AddInstituteForm";
+import AddDepartmentForm from "./AddDepartmentForm";
+import AddYearForm from "./AddYearForm";
+import AddSectionForm from "./AddSectionForm";
+import AddAdminForm from "./AddAdminForm";
+import ReviewForm from "./ReviewForm";
 
 const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
   const [institutions, setInstitutions] = useState([
@@ -134,23 +140,264 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
     },
   ]);
 
-  const [isAdding, setIsAdding] = useState(false);
+  // const [isAddingInstitution, setIsAddingInstitution] = useState(false);
+  // const [isAddingInstitute, setIsAddingInstitute] = useState(false);
+  // const [isAddingDepartment, setIsAddingDepartment] = useState(false);
+  // const [isAddingYear, setIsAddingYear] = useState(false);
 
-  const handleAddClick = () => {
-    setIsAdding(true);
+  const [currentStep, setCurrentStep] = useState("list");
+  const [currentYear, setCurrentYear] = useState(1);
+
+  const [institutionData, setInstitutionData] = useState(null);
+  const [institutes, setInstitutes] = useState([]);
+  const [currentInstitute, setCurrentInstitute] = useState(null);
+  const [departments, setDepartments] = useState([]); // Array to store multiple departments
+  const [currentDepartment, setCurrentDepartment] = useState(null);
+  const [yearData, setYearData] = useState([]);
+  const [sectionData, setSectionData] = useState([]);
+  // const [savedSections, setSavedSections] = useState([]);
+  const [adminData, setAdminData] = useState(null); // Store admin details
+
+  const handleAddClick = () => setCurrentStep("institution");
+
+  const handleFormSave = (data) => {
+    setInstitutionData(data);
+    setCurrentStep("institute");
   };
 
-  const handleFormSave = (newInstitution) => {
-    setInstitutions([
-      ...institutions,
-      { id: institutions.length + 1, ...newInstitution },
-    ]);
-    setIsAdding(false);
+  // Save institute data, reset form, and move to department step
+  const handleInstituteSave = (data) => {
+    setCurrentInstitute(data);
+    setInstitutes([...institutes, { ...data, departments: [] }]); // Add institute to list
+    setCurrentStep("department");
   };
 
-  // Add this function to handle the back action
-  const handleBack = () => {
-    setIsAdding(false); // Set to false to show the ViewInstitutions component
+  // Save department data, reset form, and move to year step
+  const handleDepartmentSave = (data) => {
+    setCurrentDepartment(data);
+    const updatedInstitutes = [...institutes];
+    const lastInstituteIndex = updatedInstitutes.length - 1;
+    updatedInstitutes[lastInstituteIndex].departments.push({
+      ...data,
+      years: [],
+    });
+    setInstitutes(updatedInstitutes);
+    setCurrentStep("year");
+  };
+
+  // Save year data and move to section step
+  const handleYearSave = (data) => {
+    setYearData(data);
+    setCurrentStep("section");
+    setCurrentYear(1);
+    setSectionData([]);
+  };
+
+  // Save section data
+  const handleSectionSave = (section) => {
+    const updatedSectionData = [
+      ...sectionData,
+      { year: currentYear, sections: section },
+    ];
+    setSectionData(updatedSectionData);
+
+    // If more years need to be added, update year index
+    if (currentYear < yearData) {
+      setCurrentYear(currentYear + 1);
+    } else {
+      // Update the last department with year and section data
+      const updatedInstitutes = [...institutes];
+      const lastInstituteIndex = updatedInstitutes.length - 1;
+      const lastDepartmentIndex =
+        updatedInstitutes[lastInstituteIndex].departments.length - 1;
+      updatedInstitutes[lastInstituteIndex].departments[
+        lastDepartmentIndex
+      ].years = updatedSectionData;
+      setInstitutes(updatedInstitutes);
+
+      setCurrentStep("departmentOrFinish");
+    }
+  };
+
+  const handleDepartmentOrFinish = (choice) => {
+    if (choice === "department") {
+      setCurrentStep("department");
+      setCurrentDepartment(null);
+      setYearData([]);
+      setSectionData([]);
+    } else if (choice === "institute") {
+      setCurrentStep("institute");
+      setCurrentInstitute(null);
+      setCurrentDepartment(null);
+      setYearData([]);
+      setSectionData([]);
+    } else if (choice === "finish") {
+      setCurrentStep("admin");
+    }
+  };
+
+  const handleSaveAdminDetails = (data) => {
+    setAdminData(data);
+    setCurrentStep("review");
+  };
+
+  const handleReviewSubmit = async () => {
+    const finalData = {
+      institutionData,
+      institutes,
+      adminDetails: adminData,
+    };
+
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/institutions/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(finalData),
+        }
+      );
+
+      if (response.ok) {
+        alert("Institution data saved successfully!");
+        resetForNewInstitute();
+        setCurrentStep("list");
+      } else {
+        const result = await response.json();
+        alert(`Error: ${result.error}`);
+      }
+    } catch (error) {
+      alert("An error occurred while saving the data.");
+      console.error(error);
+    }
+  };
+
+  const resetForNewInstitute = () => {
+    setInstitutionData(null);
+    setInstitutes([]);
+    setDepartments([]);
+    setCurrentInstitute(null);
+    setCurrentDepartment(null);
+    setYearData([]);
+    setSectionData([]);
+    setAdminData(null);
+    setCurrentStep("list");
+  };
+
+  const handleBackToList = () => {
+    resetForNewInstitute();
+    setCurrentStep("list");
+  };
+
+  const handleBackToDepartmentOrFinish = () => {
+    setCurrentStep("departmentOrFinish");
+  };
+
+  // Function to switch back to the list view
+  const goToViewInstitutions = () => {
+    resetForNewInstitute();
+    setCurrentStep("list"); // This sets the step to the main list view
+  };
+
+  const renderForm = () => {
+    switch (currentStep) {
+      case "institution":
+        return (
+          <AddInstitutionForm
+            onSave={handleFormSave}
+            onBack={resetForNewInstitute}
+            initialData={institutionData}
+          />
+        );
+      case "institute":
+        return (
+          <AddInstituteForm
+            onSave={handleInstituteSave}
+            onBack={() => setCurrentStep("institution")}
+            initialData={currentInstitute}
+          />
+        );
+      case "department":
+        return (
+          <AddDepartmentForm
+            onSave={handleDepartmentSave}
+            onBack={() => setCurrentStep("institute")}
+            initialData={currentDepartment}
+          />
+        );
+      case "year":
+        return (
+          <AddYearForm
+            onSave={handleYearSave}
+            onBack={() => setCurrentStep("department")}
+            initialData={yearData}
+          />
+        );
+      case "section":
+        return (
+          <AddSectionForm
+            year={currentYear}
+            onSave={handleSectionSave}
+            onBack={() =>
+              currentYear > 1
+                ? setCurrentYear(currentYear - 1)
+                : setCurrentStep("year")
+            }
+          />
+        );
+      case "departmentOrFinish":
+        return (
+          <div className="department-or-finish-container">
+            <h3>
+              Would you like to add another department or finish with this
+              institute?
+            </h3>
+            <div className="button-group">
+              <button
+                className="form-button secondary"
+                onClick={() => handleDepartmentOrFinish("department")}
+              >
+                Add Another Department
+              </button>
+              <button
+                className="form-button secondary"
+                onClick={() => handleDepartmentOrFinish("institute")}
+              >
+                Add Another Institute
+              </button>
+              <button
+                className="form-button primary"
+                onClick={() => handleDepartmentOrFinish("finish")}
+              >
+                Finish and Next
+              </button>
+            </div>
+          </div>
+        );
+      case "admin":
+        return (
+          <AddAdminForm
+            onSave={handleSaveAdminDetails}
+            onBack={handleBackToDepartmentOrFinish}
+          />
+        );
+      case "review":
+        return (
+          <ReviewForm
+            data={{
+              institutionData,
+              institutes,
+              adminDetails: adminData,
+            }}
+            onSubmit={handleReviewSubmit}
+            goToViewInstitutions={resetForNewInstitute}
+          />
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -169,7 +416,7 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
       </header>
 
       <main className="view-institutions-main-content">
-        {!isAdding ? (
+        {currentStep === "list" ? (
           <>
             <div className="view-institutions-search-bar-container">
               <div className="search-input-wrapper">
@@ -233,7 +480,7 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
             </div>
           </>
         ) : (
-          <AddInstitutionForm onSave={handleFormSave} onBack={handleBack} />
+          renderForm()
         )}
       </main>
     </div>
