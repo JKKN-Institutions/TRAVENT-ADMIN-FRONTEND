@@ -2,10 +2,10 @@
   flex: 1;
   min-width: 300px;
   background-color: #292929;
-  border: 1px solid #ddd;
+  border: 1px solid #333;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .chart h3 {

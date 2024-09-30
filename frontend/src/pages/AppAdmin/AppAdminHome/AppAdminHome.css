@@ -22,6 +22,7 @@
 
 .app-admin-header h2 {
   color: #ffffff;
+  font-size: 1.5rem;
 }
 
 .app-admin-search-container {
@@ -42,7 +43,7 @@
 
 .app-admin-top-bar-right .icon {
   margin-left: 15px;
-  font-size: 1.5rem;
+  font-size: 1rem;
   color: #ffffff;
   cursor: pointer;
 }
@@ -52,6 +53,7 @@
   padding: 1rem;
   background-color: #1e1e1e;
   overflow-y: auto;
+  padding-right: 0.5rem;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
 }
@@ -97,5 +99,9 @@
 
   .app-admin-main-content {
     padding: 1rem 0;
+  }
+
+  .app-admin-header h2 {
+    font-size: 1.2rem;
   }
 }

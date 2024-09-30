@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faBars } from "@fortawesome/free-solid-svg-icons";
 import NotificationItemChat from "./NotificationItemChat";
@@ -22,17 +22,71 @@ const Notifications = ({ toggleSidebar }) => {
       time: "1d ago",
       count: 1,
     },
+    {
+      id: 3,
+      sender: "Support Team",
+      message: "Your ticket has been resolved. Please review...",
+      unread: true,
+      time: "3h ago",
+      count: 1,
+    },
+    {
+      id: 4,
+      sender: "Marketing",
+      message: "Don't miss out on our latest promotion!",
+      unread: false,
+      time: "2d ago",
+      count: 1,
+    },
   ]);
 
   const [selectedNotification, setSelectedNotification] = useState(null);
+  const [activeFilter, setActiveFilter] = useState("all");
 
   const handleNotificationClick = (notification) => {
     setSelectedNotification(notification);
+    markAsRead(notification.id);
   };
 
   const handleCloseChat = () => {
     setSelectedNotification(null);
   };
+
+  const markAsRead = (id) => {
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notif) =>
+        notif.id === id ? { ...notif, unread: false, count: 0 } : notif
+      )
+    );
+  };
+
+  const handleFilterClick = (filter) => {
+    setActiveFilter(filter);
+  };
+
+  const filteredNotifications = notifications.filter((notification) => {
+    if (activeFilter === "unread") return notification.unread;
+    if (activeFilter === "read") return !notification.unread;
+    return true; // "all" filter
+  });
+
+  // Simulate receiving a new message
+  const simulateNewMessage = () => {
+    const randomId = Math.floor(Math.random() * notifications.length) + 1;
+    setNotifications((prevNotifications) =>
+      prevNotifications.map((notif) =>
+        notif.id === randomId
+          ? { ...notif, unread: true, count: notif.count + 1, time: "Just now" }
+          : notif
+      )
+    );
+  };
+
+  useEffect(() => {
+    // Simulate receiving a new message every 30 seconds
+    const interval = setInterval(simulateNewMessage, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   if (selectedNotification) {
     return (
@@ -71,18 +125,37 @@ const Notifications = ({ toggleSidebar }) => {
         </div>
 
         <div className="filter-container">
-          <span className="filter-button active">All</span>
-          <span className="filter-button unread">
+          <span
+            className={`filter-button ${
+              activeFilter === "all" ? "active" : ""
+            }`}
+            onClick={() => handleFilterClick("all")}
+          >
+            All
+          </span>
+          <span
+            className={`filter-button ${
+              activeFilter === "unread" ? "active" : ""
+            }`}
+            onClick={() => handleFilterClick("unread")}
+          >
             Unread
             <span className="unread-count">
               {notifications.filter((n) => n.unread).length}
             </span>
           </span>
-          <span className="filter-button read">Read</span>
+          <span
+            className={`filter-button ${
+              activeFilter === "read" ? "active" : ""
+            }`}
+            onClick={() => handleFilterClick("read")}
+          >
+            Read
+          </span>
         </div>
 
         <div className="notifications-list">
-          {notifications.map((notification) => (
+          {filteredNotifications.map((notification) => (
             <div
               key={notification.id}
               className={`notification-item ${
@@ -99,7 +172,7 @@ const Notifications = ({ toggleSidebar }) => {
               </div>
               <div className="notification-meta">
                 <span className="notification-time">{notification.time}</span>
-                {notification.count > 1 && (
+                {notification.count > 0 && (
                   <div className="notification-count">{notification.count}</div>
                 )}
               </div>

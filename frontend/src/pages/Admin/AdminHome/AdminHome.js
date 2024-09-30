@@ -1,111 +1,137 @@
-// AdminHome.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AdminHome.css";
-import { useLocation } from "react-router-dom";
-import NewUserRequest from "../AdminDashboard/NewUserRequest/NewUserRequest";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell, faBars, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
-const AdminHome = () => {
-  const [showNewUserRequests, setShowNewUserRequests] = useState(false);
-  const location = useLocation();
-  console.log(location.state);
-  const institutionDetails = location.state?.institutionDetails;
-  localStorage.setItem("institutionDetails", JSON.stringify(institutionDetails));
+const AdminHome = ({ toggleSidebar, resetState }) => {
+  const [showNotifications, setShowNotifications] = useState(false);
 
-  const handleBack = () => {
-    setShowNewUserRequests(false);
+  const handleBellClick = () => {
+    setShowNotifications(true);
   };
 
-  console.log("institution details1112  :", institutionDetails)
+  useEffect(() => {
+    if (resetState) {
+      setShowNotifications(false);
+    }
+  }, [resetState]);
+
+  const realTimeData = [
+    { title: "On Route", value: 36 },
+    { title: "Available", value: 4 },
+    { title: "Out of Service", value: 4 },
+  ];
+
+  const statusCards = [
+    { title: "Deviation In Route", value: 4 },
+    { title: "Being Late", value: 18 },
+    { title: "Traffic Jam", value: 14 },
+    { title: "Accidents", value: 0 },
+  ];
+
+  const warnings = [
+    {
+      name: "Kumar S",
+      route: "Route 19",
+      message:
+        "Over Speeding in the Salem Highways. Speed was 70 kmph, he went 80 kmph",
+    },
+    {
+      name: "Velan K",
+      route: "Route 03",
+      message:
+        "Staying in the Colony Hospital stop more than the allocated time.",
+    },
+  ];
 
   return (
     <div className="admin-home-container">
-      <div className="content">
-        {!showNewUserRequests ? (
-          <div>
-            <h3>Real Time Data</h3>
-            <div className="stats-grid">
-              <div className="stat-item">
-                <span>On Route</span>
-                <h3>36</h3>
-              </div>
-              <div className="stat-item">
-                <span>Available</span>
-                <h3>4</h3>
-              </div>
-              <div className="stat-item">
-                <span>Out of Service</span>
-                <h3>4</h3>
-              </div>
-              <div className="stat-item">
-                <span>Boarded</span>
-                <div className="circle-container">
-                  <div className="progress-circle">
-                    <div className="circle">
-                      <div className="mask full">
-                        <div className="fill"></div>
-                      </div>
-                      <div className="mask half">
-                        <div className="fill"></div>
-                      </div>
+      <header className="admin-top-bar">
+        <div className="admin-menu-icon" onClick={toggleSidebar}>
+          <FontAwesomeIcon icon={faBars} />
+        </div>
+        <h1>Home</h1>
+        <div className="admin-top-bar-icons">
+          <FontAwesomeIcon icon={faEnvelope} className="admin-icon" />
+          <FontAwesomeIcon
+            icon={faBell}
+            className="admin-home-icon"
+            onClick={handleBellClick}
+          />
+        </div>
+      </header>
+
+      <main className="admin-main-content">
+        <div className="admin-content-wrapper">
+          <h2>Real Time Data</h2>
+          <div className="admin-sub-content-wrapper">
+            <div className="admin-left-column">
+              <section className="admin-real-time-data">
+                <div className="admin-data-cards">
+                  {realTimeData.map((item, index) => (
+                    <div key={index} className="admin-data-card">
+                      <h3>{item.title}</h3>
+                      <p>{item.value}</p>
                     </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="admin-status-cards">
+                {statusCards.map((card, index) => (
+                  <div key={index} className="admin-status-card">
+                    <h3>{card.title}</h3>
+                    <p>{card.value}</p>
                   </div>
-                  <span className="percentage">65%</span>
-                </div>
-                <h3>1326 of 2024</h3>
-              </div>
-              <div className="stat-item">
-                <span>Deviation In Route</span>
-                <h3>4</h3>
-              </div>
-              <div className="stat-item">
-                <span>Being Late</span>
-                <h3>18</h3>
-              </div>
-              <div className="stat-item">
-                <span>Traffic Jam</span>
-                <h3>14</h3>
-              </div>
-              <div className="stat-item">
-                <span>Accidents</span>
-                <h3>0</h3>
-              </div>
+                ))}
+              </section>
             </div>
-            <div className="warnings">
-              <h3>Warnings</h3>
-              <div className="warning-item">
-                <img
-                  src="../uploads/splash-image.png"
-                  alt="User"
-                  className="warning-user-pic"
-                />
-                <div className="warning-item-content">
-                  <h4>Kumar S, Route 19</h4>
+
+            <div className="admin-right-column">
+              <section className="admin-boarding-data">
+                <h2>Boarding Data</h2>
+                <div className="admin-boarding-chart">
+                  <CircularProgressbar
+                    value={65}
+                    text={`${65}%`}
+                    styles={buildStyles({
+                      textColor: "#ffffff",
+                      pathColor: "#4caf50",
+                      trailColor: "#555555",
+                    })}
+                  />
+                </div>
+                <div className="admin-boarding-info">
                   <p>
-                    Over Speeding in the Salem Highways. Speed was 70 kmph, he
-                    went 80 kmph
+                    <span className="admin-boarding-number">1326</span> of
+                    <span className="admin-boarding-total"> 2024</span> Boarded
                   </p>
                 </div>
-              </div>
-              <div className="warning-item">
-                <img
-                  src="../uploads/splash-image.png"
-                  alt="User"
-                  className="warning-user-pic"
-                />
-                <div className="warning-item-content">
-                  <h4>Velan K, Route 03</h4>
-                  <p>
-                    Staying in the Colony Hospital stop more than the allocated
-                    time.
-                  </p>
-                </div>
-              </div>
+              </section>
             </div>
           </div>
-        ) : (
-          <NewUserRequest onBack={handleBack} />
-        )}
-      </div>
+        </div>
+        <section className="admin-warnings">
+          <h2>Warnings</h2>
+          {warnings.map((warning, index) => (
+            <div key={index} className="admin-warning-item">
+              <img
+                src={`https://i.pravatar.cc/40?img=${index + 1}`}
+                alt={warning.name}
+                className="admin-avatar"
+              />
+              <div className="admin-warning-content">
+                <h3>
+                  {warning.name}, {warning.route}
+                </h3>
+                <p>{warning.message}</p>
+              </div>
+            </div>
+          ))}
+        </section>
+      </main>
     </div>
   );
 };

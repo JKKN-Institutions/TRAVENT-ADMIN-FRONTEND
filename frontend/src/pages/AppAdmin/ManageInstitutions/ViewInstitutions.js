@@ -194,28 +194,31 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
   };
 
   // Save section data
-  const handleSectionSave = (section) => {
+  const handleSectionSave = (sectionList) => {
     const updatedSectionData = [
       ...sectionData,
-      { year: currentYear, sections: section },
+      { year: currentYear, sections: sectionList },
     ];
+
     setSectionData(updatedSectionData);
 
-    // If more years need to be added, update year index
-    if (currentYear < yearData) {
-      setCurrentYear(currentYear + 1);
+    // Move to the next year if current year < total years, else move to departmentOrFinish
+    if (currentYear < yearData.yearCount) {
+      setCurrentYear(currentYear + 1); // Move to the next year
     } else {
       // Update the last department with year and section data
       const updatedInstitutes = [...institutes];
       const lastInstituteIndex = updatedInstitutes.length - 1;
       const lastDepartmentIndex =
         updatedInstitutes[lastInstituteIndex].departments.length - 1;
+
       updatedInstitutes[lastInstituteIndex].departments[
         lastDepartmentIndex
       ].years = updatedSectionData;
+
       setInstitutes(updatedInstitutes);
 
-      setCurrentStep("departmentOrFinish");
+      setCurrentStep("departmentOrFinish"); // Proceed to the next step
     }
   };
 
@@ -291,6 +294,10 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
     setCurrentStep("list");
   };
 
+  const handleBackToInstitution = () => {
+    setCurrentStep("institution");
+  };
+
   const handleBackToDepartmentOrFinish = () => {
     setCurrentStep("departmentOrFinish");
   };
@@ -316,6 +323,7 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
           <AddInstituteForm
             onSave={handleInstituteSave}
             onBack={() => setCurrentStep("institution")}
+            institutionData={institutionData}
             initialData={currentInstitute}
           />
         );
@@ -324,6 +332,7 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
           <AddDepartmentForm
             onSave={handleDepartmentSave}
             onBack={() => setCurrentStep("institute")}
+            instituteData={currentInstitute}
             initialData={currentDepartment}
           />
         );
@@ -332,6 +341,7 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
           <AddYearForm
             onSave={handleYearSave}
             onBack={() => setCurrentStep("department")}
+            departmentData={currentDepartment}
             initialData={yearData}
           />
         );
@@ -345,6 +355,8 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
                 ? setCurrentYear(currentYear - 1)
                 : setCurrentStep("year")
             }
+            initialData={sectionData}
+            yearData={yearData}
           />
         );
       case "departmentOrFinish":
@@ -354,6 +366,25 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
               Would you like to add another department or finish with this
               institute?
             </h3>
+
+            {/* Display the section data for each year */}
+            <div className="year-section-details">
+              <h4>Sections Added by Year</h4>
+              {yearData.years && yearData.years.length > 0 ? (
+                <ul className="year-section-list">
+                  {yearData.years.map((year, index) => (
+                    <li key={index} className="year-section-item">
+                      <strong>Year {year}:</strong>{" "}
+                      {sectionData[index]?.sections.join(", ") ||
+                        "No sections added"}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No sections added yet.</p>
+              )}
+            </div>
+
             <div className="button-group">
               <button
                 className="form-button secondary"
@@ -376,6 +407,7 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
             </div>
           </div>
         );
+
       case "admin":
         return (
           <AddAdminForm
@@ -393,6 +425,7 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
             }}
             onSubmit={handleReviewSubmit}
             goToViewInstitutions={resetForNewInstitute}
+            onBackToSection={handleBackToInstitution}
           />
         );
       default:
@@ -401,89 +434,93 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
   };
 
   return (
-    <div className="view-institutions-container">
-      <header className="view-institutions-top-bar">
-        <div className="view-institutions-menu-icon">
-          <FontAwesomeIcon
-            icon={faBars}
-            className="menu-icon"
-            onClick={toggleSidebar}
-          />
-        </div>
-        <div className="view-institutions-header">
-          <h2>Manage Institutions</h2>
-        </div>
-      </header>
-
-      <main className="view-institutions-main-content">
-        {currentStep === "list" ? (
-          <>
-            <div className="view-institutions-search-bar-container">
-              <div className="search-input-wrapper">
-                <FontAwesomeIcon icon={faSearch} className="search-icon" />
-                <input
-                  type="text"
-                  className="view-institutions-search-bar"
-                  placeholder="Search institutions..."
-                />
-              </div>
+    <>
+      <div className="view-institutions-container">
+        {currentStep === "list" && (
+          <header className="view-institutions-top-bar">
+            <div className="view-institutions-menu-icon">
+              <FontAwesomeIcon
+                icon={faBars}
+                className="menu-icon"
+                onClick={toggleSidebar}
+              />
             </div>
-
-            <div className="action-buttons-container">
-              <button
-                className="view-institutions-action-button view-institutions-add-button"
-                onClick={handleAddClick}
-              >
-                <FontAwesomeIcon icon={faPlus} /> Add
-              </button>
-              <button className="view-institutions-action-button view-institutions-edit-button">
-                <FontAwesomeIcon icon={faEdit} /> Edit
-              </button>
-              <button className="view-institutions-action-button view-institutions-delete-button">
-                <FontAwesomeIcon icon={faTrash} /> Delete
-              </button>
+            <div className="view-institutions-header">
+              <h2>Manage Institutions</h2>
             </div>
-
-            <div className="appadmin-table-container">
-              <table className="view-institutions-table">
-                <thead>
-                  <tr>
-                    <th>S.No</th>
-                    <th>Institution Code</th>
-                    <th>Institute Name</th>
-                    <th>Institute State</th>
-                    <th>Departments Count</th>
-                    <th>Total Routes</th>
-                    <th>Total Buses</th>
-                    <th>Admin Name</th>
-                    <th>Admin Contact</th>
-                    <th>Created at</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {institutions.map((institution, index) => (
-                    <tr key={institution.id}>
-                      <td>{index + 1}</td>
-                      <td>{institution.code}</td>
-                      <td>{institution.name}</td>
-                      <td>{institution.state}</td>
-                      <td>{institution.departments}</td>
-                      <td>{institution.routes}</td>
-                      <td>{institution.buses}</td>
-                      <td>{institution.adminName}</td>
-                      <td>{institution.adminContact}</td>
-                      <td>{institution.createdAt}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
-        ) : (
-          renderForm()
+          </header>
         )}
-      </main>
-    </div>
+
+        <main className="view-institutions-main-content">
+          {currentStep === "list" ? (
+            <>
+              <div className="view-institutions-search-bar-container">
+                <div className="search-input-wrapper">
+                  <FontAwesomeIcon icon={faSearch} className="search-icon" />
+                  <input
+                    type="text"
+                    className="view-institutions-search-bar"
+                    placeholder="Search institutions..."
+                  />
+                </div>
+              </div>
+
+              <div className="action-buttons-container">
+                <button
+                  className="view-institutions-action-button view-institutions-add-button"
+                  onClick={handleAddClick}
+                >
+                  <FontAwesomeIcon icon={faPlus} /> Add
+                </button>
+                <button className="view-institutions-action-button view-institutions-edit-button">
+                  <FontAwesomeIcon icon={faEdit} /> Edit
+                </button>
+                <button className="view-institutions-action-button view-institutions-delete-button">
+                  <FontAwesomeIcon icon={faTrash} /> Delete
+                </button>
+              </div>
+
+              <div className="appadmin-table-container">
+                <table className="view-institutions-table">
+                  <thead>
+                    <tr>
+                      <th>S.No</th>
+                      <th>Institution Code</th>
+                      <th>Institute Name</th>
+                      <th>Institute State</th>
+                      <th>Departments Count</th>
+                      <th>Total Routes</th>
+                      <th>Total Buses</th>
+                      <th>Admin Name</th>
+                      <th>Admin Contact</th>
+                      <th>Created at</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {institutions.map((institution, index) => (
+                      <tr key={institution.id}>
+                        <td>{index + 1}</td>
+                        <td>{institution.code}</td>
+                        <td>{institution.name}</td>
+                        <td>{institution.state}</td>
+                        <td>{institution.departments}</td>
+                        <td>{institution.routes}</td>
+                        <td>{institution.buses}</td>
+                        <td>{institution.adminName}</td>
+                        <td>{institution.adminContact}</td>
+                        <td>{institution.createdAt}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          ) : (
+            renderForm()
+          )}
+        </main>
+      </div>
+    </>
   );
 };
 

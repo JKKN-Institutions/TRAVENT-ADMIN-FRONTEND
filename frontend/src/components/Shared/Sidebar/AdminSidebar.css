@@ -1,31 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
-
-:root {
-  --primary-color: #7367f0;
-  --sidebar-bg: #222222;
-  --sidebar-text: #cfcce4;
-  --sidebar-hover: #92929231;
-  --body-bg: #f8f8f8;
-  --card-bg: #ffffff;
-  --text-color: #5e5873;
-  --text-muted: #6e6b7b;
-  --border-color: #ebe9f1;
-  --error-color: #ff5454;
-}
-
-body {
-  font-family: "Inter", sans-serif;
-  background-color: var(--body-bg);
-  color: var(--text-color);
-}
-
-.sidebar {
+.admin-sidebar {
   z-index: 1001;
-  width: 200px;
+  width: 210px;
   background-color: var(--sidebar-bg);
   color: var(--sidebar-text);
   padding: 1rem;
-  overflow-y: auto;
+  overflow: hidden; /* Ensure the sidebar itself does not scroll */
   position: fixed;
   left: 0;
   top: 0;
@@ -36,49 +15,53 @@ body {
   flex-direction: column;
 }
 
-.sidebar.active {
+.admin-sidebar.active {
   transform: translateX(0);
 }
 
-.sidebar-content {
-  justify-self: space-between;
+.admin-sidebar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-.sidebar-header {
+.admin-sidebar-header {
   display: flex;
   align-items: center;
   padding-bottom: 1rem;
   margin-bottom: 1rem;
   border-bottom: 1px solid var(--sidebar-hover);
+  flex-shrink: 0; /* Ensure the header doesn't shrink */
 }
 
-.app-admin-logo {
+.admin-logo {
   width: 35px;
   height: 35px;
   margin-right: 0.5rem;
 }
 
-.logo-text {
+.admin-logo-text {
   font-size: 1.5rem;
   font-weight: 600;
   color: #fff;
 }
 
-.sidebar-nav {
-  flex-grow: 1;
+.admin-sidebar-nav {
+  flex-grow: 1; /* Take up available space */
 }
 
-.sidebar-nav ul {
+.admin-sidebar-nav ul {
   list-style-type: none;
   padding-left: 0;
+  margin: 0; /* Ensure there's no extra margin */
 }
 
-.sidebar-nav li {
+.admin-sidebar-nav li {
   margin-bottom: 0.5rem;
 }
 
-.sidebar-nav .menu-link,
-.logout-button {
+.admin-sidebar-nav .admin-menu-link,
+.admin-logout-button {
   color: var(--sidebar-text);
   text-decoration: none;
   display: flex;
@@ -93,51 +76,63 @@ body {
   width: 100%;
 }
 
-.sidebar-nav .menu-link:hover,
-.logout-button:hover {
+.admin-sidebar-nav .admin-menu-link:hover,
+.admin-logout-button:hover {
   background-color: var(--sidebar-hover);
   color: #fff;
 }
 
-.sidebar-nav .menu-link .icon,
-.logout-button .icon {
+.admin-sidebar-nav .admin-menu-link .admin-icon,
+.admin-logout-button .admin-icon {
   margin-right: 0.5rem;
-  width: 20px;
+  width: 14px;
   text-align: center;
 }
 
-.logout-container {
+.admin-logout-container {
   margin-top: auto;
   padding-top: 1rem;
   border-top: 1px solid var(--sidebar-hover);
 }
 
 @media (min-width: 769px) {
-  .sidebar {
+  .admin-sidebar {
     transform: translateX(-100%);
   }
 
-  .sidebar.active {
+  .admin-sidebar.active {
     transform: translateX(0);
   }
 
-  .main-content.sidebar-open {
+  .admin-main-content.sidebar-open {
     margin-left: 0;
+  }
+
+  .admin-sidebar-nav {
+    flex-grow: 1; /* Take up available space */
+    overflow-y: auto; /* Make the navigation scrollable */
+    padding-right: 0.5rem; /* Add a little padding for the scrollbar */
   }
 }
 
 @media (max-width: 768px) {
-  .sidebar {
+  .admin-sidebar {
     transform: translateX(-100%);
   }
 
-  .sidebar.active {
+  .admin-sidebar.active {
     transform: translateX(0);
     position: fixed;
     z-index: 1001;
   }
 
-  .main-content.sidebar-open {
-    margin-left: 200px;
+  .admin-main-content.sidebar-open {
+    margin-left: 250px;
+  }
+
+  .admin-sidebar-nav {
+    flex-grow: 1; /* Take up available space */
+    overflow-y: auto; /* Make the navigation scrollable */
+    padding-right: 0.5rem; /* Add a little padding for the scrollbar */
   }
 }

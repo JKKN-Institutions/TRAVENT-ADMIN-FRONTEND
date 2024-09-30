@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import Sidebar from "../../../components/Shared/Sidebar/Sidebar"; // Adjust the path as needed
+import Sidebar from "../../../components/Shared/Sidebar/AdminSidebar"; // Adjust the path as needed
 import NewUserRequest from "../AdminDashboard/NewUserRequest/NewUserRequest";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faEnvelope, faBell } from "@fortawesome/free-solid-svg-icons";
@@ -10,7 +10,7 @@ const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showNewUserRequests, setShowNewUserRequests] = useState(false);
   const location = useLocation();
-console.log("14789",location.state)
+  console.log("14789", location.state);
   const toggleSidebar = () => {
     if (showNewUserRequests) {
       setShowNewUserRequests(false); // Close NewUserRequest if it's open

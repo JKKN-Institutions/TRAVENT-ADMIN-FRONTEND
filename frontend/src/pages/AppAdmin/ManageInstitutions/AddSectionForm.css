@@ -133,6 +133,16 @@
   opacity: 0.9;
 }
 
+.input-error {
+  border: 1px solid #fff;
+}
+
+.error-message {
+  color: #fff;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
 @media (max-width: 768px) {
   .section-form-container {
     padding: 1.5rem;

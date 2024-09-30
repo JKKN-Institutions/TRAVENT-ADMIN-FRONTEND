@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import "./NotificationItemChat.css";
 
 const NotificationItemChat = ({ sender, onClose }) => {
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    // Simulate marking the message as read when the chat is opened
+    console.log(`Marking messages from ${sender} as read`);
+  }, [sender]);
 
   const handleSendMessage = () => {
     if (message.trim()) {

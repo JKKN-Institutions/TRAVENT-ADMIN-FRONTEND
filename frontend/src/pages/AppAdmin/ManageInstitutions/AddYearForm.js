@@ -2,29 +2,39 @@ import React, { useState, useEffect } from "react";
 import "./AddYearForm.css";
 
 const AddYearForm = ({ onBack, onSave, initialData, departmentData }) => {
-  const [yearCount, setYearCount] = useState(initialData || 1);
+  const [yearData, setYearData] = useState(
+    initialData || { yearCount: "", years: [] } // Default to empty
+  );
   const yearOptions = [1, 2, 3, 4];
 
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (!initialData) {
-      setYearCount(1);
+      setYearData({ yearCount: "", years: [] }); // Reset if no initial data
     }
   }, [initialData]);
 
   const validateForm = () => {
     let formErrors = {};
-    if (yearCount < 1 || yearCount > 4) {
-      formErrors.yearCount = "Year count must be between 1 and 4";
+    if (
+      !yearData.yearCount ||
+      yearData.yearCount < 1 ||
+      yearData.yearCount > 4
+    ) {
+      formErrors.yearCount = "Please select a valid number of years (1-4)";
     }
     return formErrors;
   };
 
   const handleYearCountChange = (e) => {
     const count = parseInt(e.target.value);
-    const years = Array.from({ length: count }, (_, index) => index + 1);
-    setYearCount({ yearCount: count, years });
+    if (!isNaN(count)) {
+      const years = Array.from({ length: count }, (_, index) => index + 1); // Generate array of years
+      setYearData({ yearCount: count, years }); // Update the yearData with the count and years array
+    } else {
+      setYearData({ yearCount: "", years: [] }); // Reset if no valid selection
+    }
   };
 
   const handleSubmit = (e) => {
@@ -33,12 +43,12 @@ const AddYearForm = ({ onBack, onSave, initialData, departmentData }) => {
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
     } else {
-      onSave(yearCount);
+      onSave(yearData); // Pass the yearData object to the parent component
     }
   };
 
   const handleBackClick = () => {
-    setYearCount(initialData);
+    setYearData(initialData);
     onBack();
   };
 
@@ -76,22 +86,26 @@ const AddYearForm = ({ onBack, onSave, initialData, departmentData }) => {
           <div className="year-form-header">
             <h2>Select Number of Years</h2>
           </div>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="year-form-grid">
               <div className="year-form-group full-width">
                 <label htmlFor="yearCount">Select Number of Years:</label>
                 <select
                   id="yearCount"
-                  value={yearCount}
-                  onChange={(e) => setYearCount(parseInt(e.target.value))}
+                  value={yearData.yearCount} // Bind to yearData.yearCount
+                  onChange={handleYearCountChange}
                   className="form-select"
                 >
+                  <option value="">Select Year</option> {/* Default option */}
                   {yearOptions.map((year) => (
                     <option key={year} value={year}>
                       {year} Year{year > 1 ? "s" : ""}
                     </option>
                   ))}
                 </select>
+                {errors.yearCount && (
+                  <p className="error">{errors.yearCount}</p>
+                )}
               </div>
             </div>
           </form>

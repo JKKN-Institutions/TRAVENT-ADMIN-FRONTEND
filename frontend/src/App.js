@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AboutApp from "./pages/prelogin/AboutApp";
 import NewUserForm from "./pages/prelogin/NewUserForm";
 import AppAdminDashboard from "./pages/AppAdmin/AppAdminDashboard/AppAdminDashboard";
-import Layout from "./pages/Admin/AdminLayout/AdminLayout";
+import AdminDashboard from "./pages/Admin/AdminDashboard/AdminDashboard";
 import AdminHome from "./pages/Admin/AdminHome/AdminHome";
 import BusesDashboard from "./pages/Admin/BusesModule/Buses/Buses";
 import StaffDashboard from "./pages/StaffDashboard/StaffDashboard";
@@ -22,9 +22,7 @@ function App() {
         <Route path="/app-admin" element={<AppAdminDashboard />} />
 
         {/* Wrap admin-related routes within the Layout */}
-        <Route path="/admin" element={<Layout />}>
-          <Route path="dashboard" element={<AdminHome />} />
-        </Route>
+        <Route path="/admin" element={<AdminDashboard />}></Route>
 
         {/* Route for BusesDashboard with BusesLayout */}
         <Route path="/admin/buses-dashboard" element={<BusesLayout />}>

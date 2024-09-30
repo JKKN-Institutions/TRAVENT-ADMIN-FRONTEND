@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Font Awesome import
 import "./AboutApp.css";
+import Loading from "../../components/Shared/Loading/Loading";
 
-function AboutApp() {
+// Prevent unnecessary re-renders of this component
+const AboutApp = React.memo(() => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
   const [showSplash, setShowSplash] = useState(true);
   const [newCurrentPage, setNewCurrentPage] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const navigate = useNavigate();
   const [institutionDetails, setInstitutionDetails] = useState(null);
 
@@ -29,38 +32,46 @@ function AboutApp() {
     setNewCurrentPage((prevPage) => (prevPage < 4 ? prevPage + 1 : 1));
   };
 
-  const handleLogin = async () => {
-    try {
-      const response = await axios.post(
-        "https://travent-admin-server.vercel.app/api/auth/login",
-        { email, password }
-      );
+  // Debounce the login API call to avoid too many requests
+  const handleLogin = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setIsAuthenticating(true);
+      try {
+        const response = await axios.post(
+          "https://travent-admin-server.vercel.app/api/auth/login",
+          { email, password }
+        );
 
-      if (response.data.token) {
-        const { token, institutionDetails } = response.data;
-        const decodedToken = jwtDecode(token);
+        if (response.data.token) {
+          const { token, institutionDetails } = response.data;
+          const decodedToken = jwtDecode(token);
 
-        localStorage.setItem("authToken", token);
-        setInstitutionDetails(institutionDetails);
+          localStorage.setItem("authToken", token);
+          setInstitutionDetails(institutionDetails);
 
-        if (decodedToken.role === "appadmin") {
-          navigate("/app-admin", { state: { institutionDetails } });
-        } else if (decodedToken.role === "admin") {
-          navigate("/admin/dashboard", { state: { institutionDetails } });
-        } else if (decodedToken.role === "student") {
-          navigate("/student/dashboard", { state: { institutionDetails } });
-        } else if (decodedToken.role === "staff") {
-          navigate("/staff/dashboard", { state: { institutionDetails } });
+          if (decodedToken.role === "appadmin") {
+            navigate("/app-admin", { state: { institutionDetails } });
+          } else if (decodedToken.role === "admin") {
+            navigate("/admin", { state: { institutionDetails } });
+          } else if (decodedToken.role === "student") {
+            navigate("/student/dashboard", { state: { institutionDetails } });
+          } else if (decodedToken.role === "staff") {
+            navigate("/staff/dashboard", { state: { institutionDetails } });
+          }
         }
+      } catch (error) {
+        console.error(
+          "Error logging in:",
+          error.response?.data?.message || error.message
+        );
+        alert(error.response?.data?.message || "An error occurred");
+      } finally {
+        setIsAuthenticating(false);
       }
-    } catch (error) {
-      console.error(
-        "Error logging in:",
-        error.response?.data?.message || error.message
-      );
-      alert(error.response?.data?.message || "An error occurred");
-    }
-  };
+    },
+    [email, password, navigate]
+  );
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -73,6 +84,7 @@ function AboutApp() {
           src="./uploads/splash-image.png"
           alt="Loading..."
           className="splash-image"
+          loading="lazy" // Lazy load images
         />
         <div className="splash-text">
           <p>Travent</p>
@@ -83,96 +95,86 @@ function AboutApp() {
 
   return (
     <div className="app-container">
-      {newCurrentPage === 1 && (
+      {isAuthenticating && <Loading />}
+      {newCurrentPage < 4 && (
         <div className="page-container">
           <div className="page-header">
             <img
               src="./uploads/splash-image.png"
               alt="Travent Logo"
               className="logo"
+              loading="lazy"
             />
             <div className="splash-text">
               <p>Travent</p>
             </div>
           </div>
           <div className="page-content">
-            <img src="./uploads/bus.png" alt="Bus Icon" className="bus-icon" />
-            <h1>
-              Your Commute
-              <br />
-              Your Way
-              <br />
-              Your Schedule
-            </h1>
-            <p>
-              Schedule your arrival and experience an instant attendance and
-              ticketing with a quick QR code scan.
-            </p>
-            <button className="about-next-button" onClick={nextPage}>
-              Next
-            </button>
-          </div>
-        </div>
-      )}
-      {newCurrentPage === 2 && (
-        <div className="page-container">
-          <div className="page-header">
             <img
-              src="./uploads/splash-image.png"
-              alt="Travent Logo"
-              className="logo"
+              src="./uploads/bus.png"
+              alt="Bus Icon"
+              className="bus-icon"
+              loading="lazy"
             />
-            <div className="splash-text">
-              <p>Travent</p>
-            </div>
-          </div>
-          <div className="page-content">
-            <img src="./uploads/bus.png" alt="Bus Icon" className="bus-icon" />
             <h1>
-              Navigate Your
-              <br />
-              Journey Every
-              <br />
-              Step of the Way
+              {newCurrentPage === 1 && (
+                <>
+                  Your Commute
+                  <br />
+                  Your Way
+                  <br />
+                  Your Schedule
+                </>
+              )}
+              {newCurrentPage === 2 && (
+                <>
+                  Navigate Your
+                  <br />
+                  Journey Every
+                  <br />
+                  Step of the Way
+                </>
+              )}
+              {newCurrentPage === 3 && (
+                <>
+                  Stay on Track
+                  <br />
+                  with Effortless
+                  <br />
+                  Payments
+                </>
+              )}
             </h1>
             <p>
-              Track your bus live, stay informed, and arrive on time, every
-              time.
+              {newCurrentPage === 1 &&
+                "Schedule your arrival and experience an instant attendance and ticketing with a quick QR code scan."}
+              {newCurrentPage === 2 &&
+                "Track your bus live, stay informed, and arrive on time, every time."}
+              {newCurrentPage === 3 &&
+                "Simplify payments and stay on top of due dates with personalized notifications."}
             </p>
-            <button className="about-next-button" onClick={nextPage}>
-              Next
-            </button>
-          </div>
-        </div>
-      )}
-      {newCurrentPage === 3 && (
-        <div className="page-container">
-          <div className="page-header">
-            <img
-              src="./uploads/splash-image.png"
-              alt="Travent Logo"
-              className="logo"
-            />
-            <div className="splash-text">
-              <p>Travent</p>
+            <div className="button-container">
+              <button className="about-next-button" onClick={nextPage}>
+                {newCurrentPage === 3 ? "Get Started" : "Next"}
+              </button>
+              <div className="page-progress">
+                <div
+                  className={`progress-dot ${
+                    newCurrentPage >= 1 ? "active" : ""
+                  }`}
+                ></div>
+                <div
+                  className={`progress-dot ${
+                    newCurrentPage >= 2 ? "active" : ""
+                  }`}
+                ></div>
+                <div
+                  className={`progress-dot ${
+                    newCurrentPage >= 3 ? "active" : ""
+                  }`}
+                ></div>
+              </div>
             </div>
-          </div>
-          <div className="page-content">
-            <img src="./uploads/bus.png" alt="Bus Icon" className="bus-icon" />
-            <h1>
-              Stay on Track
-              <br />
-              with Effortless
-              <br />
-              Payments
-            </h1>
-            <p>
-              Simplify payments and stay on top of due dates with personalized
-              notifications.
-            </p>
-            <button className="about-next-button" onClick={nextPage}>
-              Next
-            </button>
           </div>
         </div>
       )}
@@ -183,6 +185,7 @@ function AboutApp() {
               src="./uploads/splash-image.png"
               alt="Key Icon"
               className="key-icon"
+              loading="lazy"
             />
           </div>
           <div className="page-content">
@@ -235,14 +238,11 @@ function AboutApp() {
                 className="google-icon"
               />
             </button>
-            {/* <p className="new-user">
-              New user? <a href="/new-user-form">Click here</a>
-            </p> */}
           </div>
         </div>
       )}
     </div>
   );
-}
+});
 
 export default AboutApp;

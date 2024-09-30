@@ -9,6 +9,7 @@ import "./AppAdminDashboard.css";
 const AdminDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
   const [activeComponent, setActiveComponent] = useState("home");
+  const [resetHomeState, setResetHomeState] = useState(false);
 
   const handleResize = () => {
     if (window.innerWidth > 768) {
@@ -27,10 +28,21 @@ const AdminDashboard = () => {
     setIsSidebarOpen((prev) => !prev);
   };
 
+  // Function to reset AppAdminHome state
+  const resetAppAdminHomeState = () => {
+    setResetHomeState(true); // Trigger reset
+    setTimeout(() => setResetHomeState(false), 100); // Reset back after a brief delay
+  };
+
   const renderActiveComponent = () => {
     switch (activeComponent) {
       case "home":
-        return <AppAdminHome toggleSidebar={toggleSidebar} />;
+        return (
+          <AppAdminHome
+            toggleSidebar={toggleSidebar}
+            resetState={resetHomeState}
+          />
+        );
       case "viewInstitutions":
         return <ViewInstitutions toggleSidebar={toggleSidebar} />;
       case "subscriptionPlans":
@@ -47,7 +59,12 @@ const AdminDashboard = () => {
       <Sidebar
         isOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
-        setActiveComponent={setActiveComponent}
+        setActiveComponent={(component) => {
+          setActiveComponent(component);
+          if (component === "home") {
+            resetAppAdminHomeState(); // Reset when "Home" is clicked
+          }
+        }}
       />
       <div
         className={`main-content ${

@@ -1,17 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AppAdminHome.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faEnvelope, faBars } from "@fortawesome/free-solid-svg-icons";
-import NewUserRequest from "../../Admin/AdminDashboard/NewUserRequest/NewUserRequest";
+import { faBell, faBars } from "@fortawesome/free-solid-svg-icons";
 import AnalyticsCard from "./AnalyticsCard";
 import Chart from "./Chart";
+import Notifications from "../Notifications/Notifications";
 
-const AdminHome = ({ toggleSidebar }) => {
-  const [showNewUserRequests, setShowNewUserRequests] = useState(false);
+const AppAdminHome = ({ toggleSidebar, resetState }) => {
+  const [showNotifications, setShowNotifications] = useState(false);
 
-  const handleEnvelopeClick = () => {
-    setShowNewUserRequests(true);
+  const handleBellClick = () => {
+    setShowNotifications(true); // Show the Notifications component
   };
+
+  useEffect(() => {
+    if (resetState) {
+      setShowNotifications(false); // Reset notifications when `resetState` is true
+    }
+  }, [resetState]);
 
   const institutionGrowthData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
@@ -60,11 +66,10 @@ const AdminHome = ({ toggleSidebar }) => {
     ],
   };
 
-  const recentActivitiesData = [
-    { description: "User John Doe logged in", date: "2024-08-07" },
-    { description: "New institution added: ABC Institute", date: "2024-08-06" },
-    { description: "Bus 42 departed on time", date: "2024-08-05" },
-  ];
+  // If notifications are shown, render only the Notifications component
+  if (showNotifications) {
+    return <Notifications toggleSidebar={toggleSidebar} />;
+  }
 
   return (
     <div className="app-admin-home-container">
@@ -81,45 +86,32 @@ const AdminHome = ({ toggleSidebar }) => {
         </div>
         <div className="app-admin-top-bar-right">
           <FontAwesomeIcon
-            icon={faEnvelope}
+            icon={faBell}
             className="icon"
-            onClick={handleEnvelopeClick}
+            onClick={handleBellClick}
           />
-          <FontAwesomeIcon icon={faBell} className="icon" />
         </div>
       </header>
+
       <main className="app-admin-main-content">
-        {!showNewUserRequests ? (
-          <>
-            <div className="app-admin-analytics-cards">
-              <AnalyticsCard title="Total Institutions" value="25" />
-              <AnalyticsCard
-                title="Avg Schedules / Institution"
-                value="56000"
-              />
-              <AnalyticsCard title="Avg Buses / Institution" value="40" />
-              <AnalyticsCard title="Active Users" value="1200000" />
-            </div>
-            <div className="app-admin-charts">
-              <Chart
-                title="Institution Growth"
-                type="line"
-                data={institutionGrowthData}
-              />
-              <Chart
-                title="Bus Utilization"
-                type="bar"
-                data={busUtilizationData}
-              />
-              <Chart title="User Activity" type="pie" data={userActivityData} />
-            </div>
-          </>
-        ) : (
-          <NewUserRequest />
-        )}
+        <div className="app-admin-analytics-cards">
+          <AnalyticsCard title="Total Institutions" value="25" />
+          <AnalyticsCard title="Avg Schedules / Institution" value="56000" />
+          <AnalyticsCard title="Avg Buses / Institution" value="40" />
+          <AnalyticsCard title="Active Users" value="1200000" />
+        </div>
+        <div className="app-admin-charts">
+          <Chart
+            title="Institution Growth"
+            type="line"
+            data={institutionGrowthData}
+          />
+          <Chart title="Bus Utilization" type="bar" data={busUtilizationData} />
+          <Chart title="User Activity" type="pie" data={userActivityData} />
+        </div>
       </main>
     </div>
   );
 };
 
-export default AdminHome;
+export default AppAdminHome;

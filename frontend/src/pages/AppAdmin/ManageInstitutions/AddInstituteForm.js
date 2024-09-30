@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./AddInstituteForm.css";
 
-const AddInstituteForm = ({
-  onBack,
-  onSave,
-  initialData,
-  institutionData = {},
-}) => {
+const AddInstituteForm = ({ onBack, onSave, initialData, institutionData }) => {
   const [instituteData, setInstituteData] = useState(
     initialData || {
       instituteCode: "",

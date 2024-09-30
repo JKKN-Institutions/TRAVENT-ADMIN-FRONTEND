@@ -66,7 +66,8 @@
   border: none;
   border-radius: 20px;
   background-color: #2c2c2c;
-  border: 1px solid #d9d9d9;
+  border: 1px solid #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #fff;
   font-size: 1rem;
 }
@@ -99,22 +100,22 @@
 
 .view-institutions-add-button {
   background-color: rgba(215, 215, 215, 0.05);
-  border: 1px solid #d9d9d9;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #fff;
 }
 
 .view-institutions-edit-button {
   background-color: rgba(215, 215, 215, 0.05);
-  border: 1px solid #d9d9d9;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #fff;
 }
 
 .view-institutions-delete-button {
   background-color: rgba(215, 215, 215, 0.05);
-  border: 1px solid #d9d9d9;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #fff;
 }
 
@@ -124,8 +125,9 @@
 
 .appadmin-table-container {
   overflow-x: auto;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  margin-bottom: 20px;
   /* max-height: 100%;
   overflow-y: auto; */
 }
@@ -133,8 +135,7 @@
 .view-institutions-table {
   width: 100%;
   border-collapse: collapse;
-  border: 1px solid #d9d9d9;
-  margin-bottom: 20px;
+  /* border: 1px solid #333; */
 }
 
 .view-institutions-table th,
@@ -183,6 +184,9 @@
   }
 }
 .department-or-finish-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   padding: 1rem;
   background-color: rgba(215, 215, 215, 0.01);
   color: white;
@@ -212,6 +216,7 @@
   font-weight: 600;
   margin-top: 20px;
   transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .form-button.secondary {
@@ -235,4 +240,43 @@
   border-radius: 10px;
   margin-top: 20px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.year-section-details {
+  align-self: center;
+  max-width: 600px;
+  width: 100%;
+  margin-top: 20px;
+  background-color: rgba(215, 215, 215, 0.05);
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.year-section-details h4 {
+  margin-bottom: 1rem;
+  color: #11a8fd;
+  font-weight: bold;
+  font-size: 19px;
+  text-align: center;
+}
+
+.year-section-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.year-section-item {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.year-section-item strong {
+  color: #ffffff;
+  margin-right: 10px;
+}
+
+.year-section-item span {
+  color: #cccccc;
 }

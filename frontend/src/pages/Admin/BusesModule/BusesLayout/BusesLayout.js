@@ -1,7 +1,7 @@
 // BusesLayout.js
 import React, { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import Sidebar from "../../../../components/Shared/Sidebar/Sidebar"; // Adjust the path as needed
+import Sidebar from "../../../../components/Shared/Sidebar/AdminSidebar"; // Adjust the path as needed
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faBell } from "@fortawesome/free-solid-svg-icons";
 import "./BusesLayout.css";

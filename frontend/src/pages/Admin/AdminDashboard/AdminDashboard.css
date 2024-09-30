@@ -1,35 +1,24 @@
-/* AdminDashboard.css */
-.dashboard-container {
+.admin-dashboard-container {
   display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.admin-home-container {
-  padding: 20px;
+.admin-dashboard-main-content {
+  flex: 1;
+  padding: 1rem;
   background-color: #1e1e1e;
-  color: white;
-  min-height: 100vh;
+  overflow-y: hidden;
   transition: margin-left 0.3s ease-in-out;
 }
 
-.admin-home-container.sidebar-open {
-  margin-left: 240px;
-}
-
-.content {
-  margin-top: 20px;
-}
-
-.admin-sidebar-header h1 {
-  /* margin-bottom: 20px; */
-  background-color: transparent;
+.admin-dashboard-main-content.sidebar-open {
+  margin-left: 210px;
 }
 
 @media (max-width: 768px) {
-  .admin-home-container {
+  .admin-dashboard-main-content.sidebar-open {
     margin-left: 0;
-  }
-
-  .sidebar-container.open + .admin-home-container {
-    margin-left: 240px;
   }
 }
