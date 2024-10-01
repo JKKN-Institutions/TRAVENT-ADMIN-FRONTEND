@@ -96,6 +96,12 @@ const AddInstituteForm = ({ onBack, onSave, initialData, institutionData }) => {
                 <strong>Address:</strong> {institutionData.address}
               </li>
               <li>
+                <strong>Contact 1:</strong> {institutionData.contact1}
+              </li>
+              <li>
+                <strong>Contact 2:</strong> {institutionData.contact2}
+              </li>
+              <li>
                 <strong>Email Domain:</strong> {institutionData.emailDomain}
               </li>
             </ul>

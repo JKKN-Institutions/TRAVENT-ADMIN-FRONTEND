@@ -147,6 +147,9 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
 
   const [currentStep, setCurrentStep] = useState("list");
   const [currentYear, setCurrentYear] = useState(1);
+  const [selectedInstitution, setSelectedInstitution] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   const [institutionData, setInstitutionData] = useState(null);
   const [institutes, setInstitutes] = useState([]);
@@ -158,7 +161,42 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
   // const [savedSections, setSavedSections] = useState([]);
   const [adminData, setAdminData] = useState(null); // Store admin details
 
-  const handleAddClick = () => setCurrentStep("institution");
+  const handleAddClick = () => {
+    setIsEditing(false);
+    setCurrentStep("institution");
+  };
+
+  const handleEditClick = () => {
+    if (selectedInstitution) {
+      setIsEditing(true);
+      setInstitutionData(selectedInstitution);
+      setCurrentStep("institution");
+    }
+  };
+
+  const handleDeleteClick = () => {
+    if (selectedInstitution) {
+      setShowDeleteConfirmation(true);
+    }
+  };
+
+  const handleConfirmDelete = () => {
+    setInstitutions(
+      institutions.filter((inst) => inst.id !== selectedInstitution.id)
+    );
+    setSelectedInstitution(null);
+    setShowDeleteConfirmation(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteConfirmation(false);
+  };
+
+  const handleRowClick = (institution) => {
+    setSelectedInstitution(
+      selectedInstitution?.id === institution.id ? null : institution
+    );
+  };
 
   const handleFormSave = (data) => {
     setInstitutionData(data);
@@ -195,10 +233,23 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
 
   // Save section data
   const handleSectionSave = (sectionList) => {
-    const updatedSectionData = [
-      ...sectionData,
-      { year: currentYear, sections: sectionList },
-    ];
+    const updatedSectionData = [...sectionData];
+
+    // Find the index for the current year, if it exists
+    const existingYearIndex = updatedSectionData.findIndex(
+      (section) => section.year === currentYear
+    );
+
+    // If the year exists, update it with the new sections
+    if (existingYearIndex > -1) {
+      updatedSectionData[existingYearIndex].sections = sectionList;
+    } else {
+      // If the year doesn't exist, add a new entry
+      updatedSectionData.push({
+        year: currentYear,
+        sections: sectionList,
+      });
+    }
 
     setSectionData(updatedSectionData);
 
@@ -217,7 +268,6 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
       ].years = updatedSectionData;
 
       setInstitutes(updatedInstitutes);
-
       setCurrentStep("departmentOrFinish"); // Proceed to the next step
     }
   };
@@ -253,7 +303,7 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/api/institutions/add",
+        "https://travent-admin-server.vercel.app/api/institutions/add",
         {
           method: "POST",
           headers: {
@@ -302,6 +352,10 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
     setCurrentStep("departmentOrFinish");
   };
 
+  const handleBackToSection = () => {
+    setCurrentStep("section");
+  };
+
   // Function to switch back to the list view
   const goToViewInstitutions = () => {
     resetForNewInstitute();
@@ -316,6 +370,7 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
             onSave={handleFormSave}
             onBack={resetForNewInstitute}
             initialData={institutionData}
+            isEditing={isEditing}
           />
         );
       case "institute":
@@ -350,11 +405,7 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
           <AddSectionForm
             year={currentYear}
             onSave={handleSectionSave}
-            onBack={() =>
-              currentYear > 1
-                ? setCurrentYear(currentYear - 1)
-                : setCurrentStep("year")
-            }
+            onBack={() => setCurrentStep("year")}
             initialData={sectionData}
             yearData={yearData}
           />
@@ -370,13 +421,12 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
             {/* Display the section data for each year */}
             <div className="year-section-details">
               <h4>Sections Added by Year</h4>
-              {yearData.years && yearData.years.length > 0 ? (
+              {yearData && sectionData.length > 0 ? (
                 <ul className="year-section-list">
-                  {yearData.years.map((year, index) => (
+                  {sectionData.map((yearSection, index) => (
                     <li key={index} className="year-section-item">
-                      <strong>Year {year}:</strong>{" "}
-                      {sectionData[index]?.sections.join(", ") ||
-                        "No sections added"}
+                      <strong>Year {yearSection.year}:</strong>{" "}
+                      {yearSection.sections.join(", ")}
                     </li>
                   ))}
                 </ul>
@@ -388,26 +438,37 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
             <div className="button-group">
               <button
                 className="form-button secondary"
+                onClick={handleBackToSection}
+              >
+                Back
+              </button>
+              <button
+                className="form-button secondary"
                 onClick={() => handleDepartmentOrFinish("department")}
               >
                 Add Another Department
               </button>
               <button
-                className="form-button secondary"
-                onClick={() => handleDepartmentOrFinish("institute")}
+                className={`view-institutions-action-button view-institutions-edit-button ${
+                  !selectedInstitution ? "disabled" : ""
+                }`}
+                onClick={handleEditClick}
+                disabled={!selectedInstitution}
               >
-                Add Another Institute
+                <FontAwesomeIcon icon={faEdit} /> Edit
               </button>
               <button
-                className="form-button primary"
-                onClick={() => handleDepartmentOrFinish("finish")}
+                className={`view-institutions-action-button view-institutions-delete-button ${
+                  !selectedInstitution ? "disabled" : ""
+                }`}
+                onClick={handleDeleteClick}
+                disabled={!selectedInstitution}
               >
-                Finish and Next
+                <FontAwesomeIcon icon={faTrash} /> Delete
               </button>
             </div>
           </div>
         );
-
       case "admin":
         return (
           <AddAdminForm
@@ -434,93 +495,128 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
   };
 
   return (
-    <>
-      <div className="view-institutions-container">
-        {currentStep === "list" && (
-          <header className="view-institutions-top-bar">
-            <div className="view-institutions-menu-icon">
-              <FontAwesomeIcon
-                icon={faBars}
-                className="menu-icon"
-                onClick={toggleSidebar}
-              />
-            </div>
-            <div className="view-institutions-header">
-              <h2>Manage Institutions</h2>
-            </div>
-          </header>
-        )}
+    <div className="view-institutions-container">
+      {currentStep === "list" && (
+        <header className="view-institutions-top-bar">
+          <div className="view-institutions-menu-icon">
+            <FontAwesomeIcon
+              icon={faBars}
+              className="menu-icon"
+              onClick={toggleSidebar}
+            />
+          </div>
+          <div className="view-institutions-header">
+            <h2>Manage Institutions</h2>
+          </div>
+        </header>
+      )}
 
-        <main className="view-institutions-main-content">
-          {currentStep === "list" ? (
-            <>
-              <div className="view-institutions-search-bar-container">
-                <div className="search-input-wrapper">
-                  <FontAwesomeIcon icon={faSearch} className="search-icon" />
-                  <input
-                    type="text"
-                    className="view-institutions-search-bar"
-                    placeholder="Search institutions..."
-                  />
-                </div>
+      <main className="view-institutions-main-content">
+        {currentStep === "list" ? (
+          <>
+            <div className="view-institutions-search-bar-container">
+              <div className="search-input-wrapper">
+                <FontAwesomeIcon icon={faSearch} className="search-icon" />
+                <input
+                  type="text"
+                  className="view-institutions-search-bar"
+                  placeholder="Search institutions..."
+                />
               </div>
+            </div>
 
-              <div className="action-buttons-container">
-                <button
-                  className="view-institutions-action-button view-institutions-add-button"
-                  onClick={handleAddClick}
-                >
-                  <FontAwesomeIcon icon={faPlus} /> Add
-                </button>
-                <button className="view-institutions-action-button view-institutions-edit-button">
-                  <FontAwesomeIcon icon={faEdit} /> Edit
-                </button>
-                <button className="view-institutions-action-button view-institutions-delete-button">
-                  <FontAwesomeIcon icon={faTrash} /> Delete
-                </button>
-              </div>
+            <div className="action-buttons-container">
+              <button
+                className="view-institutions-action-button view-institutions-add-button"
+                onClick={handleAddClick}
+              >
+                <FontAwesomeIcon icon={faPlus} /> Add
+              </button>
+              <button
+                className={`view-institutions-action-button view-institutions-edit-button ${
+                  !selectedInstitution ? "disabled" : ""
+                }`}
+                onClick={handleEditClick}
+                disabled={!selectedInstitution}
+              >
+                <FontAwesomeIcon icon={faEdit} /> Edit
+              </button>
+              <button
+                className={`view-institutions-action-button view-institutions-delete-button ${
+                  !selectedInstitution ? "disabled" : ""
+                }`}
+                onClick={handleDeleteClick}
+                disabled={!selectedInstitution}
+              >
+                <FontAwesomeIcon icon={faTrash} /> Delete
+              </button>
+            </div>
 
-              <div className="appadmin-table-container">
-                <table className="view-institutions-table">
-                  <thead>
-                    <tr>
-                      <th>S.No</th>
-                      <th>Institution Code</th>
-                      <th>Institute Name</th>
-                      <th>Institute State</th>
-                      <th>Departments Count</th>
-                      <th>Total Routes</th>
-                      <th>Total Buses</th>
-                      <th>Admin Name</th>
-                      <th>Admin Contact</th>
-                      <th>Created at</th>
+            <div className="appadmin-table-container">
+              <table className="view-institutions-table">
+                <thead>
+                  <tr>
+                    <th>S.No</th>
+                    <th>Institution Code</th>
+                    <th>Institute Name</th>
+                    <th>Institute State</th>
+                    <th>Departments Count</th>
+                    <th>Total Routes</th>
+                    <th>Total Buses</th>
+                    <th>Admin Name</th>
+                    <th>Admin Contact</th>
+                    <th>Created at</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {institutions.map((institution, index) => (
+                    <tr
+                      key={institution.id}
+                      onClick={() => handleRowClick(institution)}
+                      className={
+                        selectedInstitution?.id === institution.id
+                          ? "selected"
+                          : ""
+                      }
+                    >
+                      <td>{index + 1}</td>
+                      <td>{institution.code}</td>
+                      <td>{institution.name}</td>
+                      <td>{institution.state}</td>
+                      <td>{institution.departments}</td>
+                      <td>{institution.routes}</td>
+                      <td>{institution.buses}</td>
+                      <td>{institution.adminName}</td>
+                      <td>{institution.adminContact}</td>
+                      <td>{institution.createdAt}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {institutions.map((institution, index) => (
-                      <tr key={institution.id}>
-                        <td>{index + 1}</td>
-                        <td>{institution.code}</td>
-                        <td>{institution.name}</td>
-                        <td>{institution.state}</td>
-                        <td>{institution.departments}</td>
-                        <td>{institution.routes}</td>
-                        <td>{institution.buses}</td>
-                        <td>{institution.adminName}</td>
-                        <td>{institution.adminContact}</td>
-                        <td>{institution.createdAt}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </>
-          ) : (
-            renderForm()
-          )}
-        </main>
-      </div>
-    </>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : (
+          renderForm()
+        )}
+      </main>
+
+      {showDeleteConfirmation && (
+        <div className="view-institutions-delete-confirmation-modal">
+          <div className="delete-confirmation-content">
+            <h3>Confirm Deletion</h3>
+            <p>Are you sure you want to delete this institution?</p>
+            <div className="delete-confirmation-buttons">
+              <button onClick={handleCancelDelete} className="cancel-delete">
+                Cancel
+              </button>
+              <button onClick={handleConfirmDelete} className="confirm-delete">
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

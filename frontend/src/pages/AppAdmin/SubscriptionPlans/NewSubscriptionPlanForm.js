@@ -1,30 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import "./NewSubscriptionPlanForm.css";
 
-const NewSubscriptionPlanForm = ({ onSave, onBack }) => {
+const NewSubscriptionPlanForm = ({ onSave, onBack, editingPlan }) => {
   const [planData, setPlanData] = useState({
-    subscriptionName: "",
-    validity: "12 Months",
+    name: "",
+    validity: "",
     userRange: "",
-    amount: "",
+    price: "",
   });
 
   const [errors, setErrors] = useState({});
 
+  useEffect(() => {
+    if (editingPlan) {
+      setPlanData({
+        name: editingPlan.name,
+        validity: editingPlan.validity,
+        userRange: editingPlan.userRange,
+        price: editingPlan.price,
+      });
+    }
+  }, [editingPlan]);
+
   const validateForm = () => {
     let formErrors = {};
-    if (!planData.subscriptionName)
-      formErrors.subscriptionName = "Subscription Name is required";
+    if (!planData.name) formErrors.name = "Subscription Name is required";
+    if (!planData.validity) formErrors.validity = "Validity is required";
     if (!planData.userRange) formErrors.userRange = "User Range is required";
-    if (!planData.amount) formErrors.amount = "Amount is required";
+    if (!planData.price) formErrors.price = "Amount is required";
     return formErrors;
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPlanData({ ...planData, [name]: value });
+    // Clear the error for this field when the user starts typing
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: null });
+    }
   };
 
   const handleSubmit = (e) => {
@@ -44,22 +59,22 @@ const NewSubscriptionPlanForm = ({ onSave, onBack }) => {
         <button className="new-subscription-plan-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
-        <h2>New Subscription Plan</h2>
+        <h2>
+          {editingPlan ? "Edit Subscription Plan" : "New Subscription Plan"}
+        </h2>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="new-subscription-plan-form-grid">
           <div className="new-subscription-plan-form-group">
             <input
-              id="subscriptionName"
-              name="subscriptionName"
-              value={planData.subscriptionName}
+              id="name"
+              name="name"
+              value={planData.name}
               onChange={handleInputChange}
               placeholder="Subscription Name"
-              className={errors.subscriptionName ? "input-error" : ""}
+              className={errors.name ? "input-error" : ""}
             />
-            {errors.subscriptionName && (
-              <p className="error">{errors.subscriptionName}</p>
-            )}
+            {errors.name && <p className="error">{errors.name}</p>}
           </div>
           <div className="new-subscription-plan-form-group">
             <div className="new-subscription-plan-select-wrapper">
@@ -68,7 +83,9 @@ const NewSubscriptionPlanForm = ({ onSave, onBack }) => {
                 name="validity"
                 value={planData.validity}
                 onChange={handleInputChange}
+                className={errors.validity ? "input-error" : ""}
               >
+                <option value="">Select months</option>
                 <option value="6 Months">6 Months</option>
                 <option value="12 Months">12 Months</option>
               </select>
@@ -77,6 +94,7 @@ const NewSubscriptionPlanForm = ({ onSave, onBack }) => {
                 className="new-subscription-plan-select-icon"
               />
             </div>
+            {errors.validity && <p className="error">{errors.validity}</p>}
           </div>
           <div className="new-subscription-plan-form-group">
             <input
@@ -91,14 +109,14 @@ const NewSubscriptionPlanForm = ({ onSave, onBack }) => {
           </div>
           <div className="new-subscription-plan-form-group">
             <input
-              id="amount"
-              name="amount"
-              value={planData.amount}
+              id="price"
+              name="price"
+              value={planData.price}
               onChange={handleInputChange}
               placeholder="Amount"
-              className={errors.amount ? "input-error" : ""}
+              className={errors.price ? "input-error" : ""}
             />
-            {errors.amount && <p className="error">{errors.amount}</p>}
+            {errors.price && <p className="error">{errors.price}</p>}
           </div>
         </div>
         <div className="new-subscription-plan-buttons-container">
@@ -110,7 +128,7 @@ const NewSubscriptionPlanForm = ({ onSave, onBack }) => {
             Cancel
           </button>
           <button type="submit" className="new-subscription-plan-save-button">
-            Save
+            {editingPlan ? "Update" : "Save"}
           </button>
         </div>
       </form>

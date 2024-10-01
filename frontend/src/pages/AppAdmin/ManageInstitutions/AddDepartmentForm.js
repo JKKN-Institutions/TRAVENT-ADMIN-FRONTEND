@@ -67,6 +67,9 @@ const AddDepartmentForm = ({ onBack, onSave, initialData, instituteData }) => {
           {instituteData && Object.keys(instituteData).length > 0 ? (
             <ul className="institution-details">
               <li>
+                <strong>Institution Code:</strong> {instituteData.instituteCode}
+              </li>
+              <li>
                 <strong>Institution Name:</strong> {instituteData.instituteName}
               </li>
               <li>

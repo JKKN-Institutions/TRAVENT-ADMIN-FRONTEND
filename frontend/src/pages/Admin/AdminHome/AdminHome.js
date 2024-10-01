@@ -52,7 +52,7 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
         <div className="admin-menu-icon" onClick={toggleSidebar}>
           <FontAwesomeIcon icon={faBars} />
         </div>
-        <h1>Home</h1>
+        <h1>Admin Home</h1>
         <div className="admin-top-bar-icons">
           <FontAwesomeIcon icon={faEnvelope} className="admin-icon" />
           <FontAwesomeIcon

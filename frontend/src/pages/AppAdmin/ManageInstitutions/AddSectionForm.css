@@ -74,6 +74,7 @@
   font-weight: 500;
   margin-bottom: 0.5rem;
   display: block;
+  color: #ffffff;
 }
 
 .section-form-container .form-group {
@@ -81,12 +82,12 @@
 }
 
 .section-form-container .form-select {
-  width: 30%;
+  width: 100%;
   padding: 10px;
   margin-bottom: 0.5rem;
   border-radius: 10px;
   font-size: 1em;
-  background-color: #2e323b;
+  background-color: #2c2c2c;
   color: white;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   border: none;

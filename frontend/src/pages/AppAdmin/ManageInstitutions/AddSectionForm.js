@@ -7,9 +7,16 @@ const AddSectionForm = ({ year, onSave, onBack, initialData, yearData }) => {
   const [errors, setErrors] = useState({}); // Track validation errors
 
   useEffect(() => {
-    // Reset the selected section when the year changes
+    // Reset the selected section when the year changes or on initial render
     if (initialData) {
-      setSelectedSection(initialData[year - 1]?.sections || ""); // Load initial data if provided
+      const savedSection = initialData.find(
+        (data) => data.year === year
+      )?.sections;
+      if (savedSection) {
+        setSelectedSection(savedSection[savedSection.length - 1]); // Set the last section from the saved list
+      } else {
+        setSelectedSection(""); // No saved section for this year
+      }
     } else {
       setSelectedSection(""); // Reset to default when switching years
     }
@@ -29,13 +36,24 @@ const AddSectionForm = ({ year, onSave, onBack, initialData, yearData }) => {
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors); // Display errors if validation fails
     } else {
-      onSave([selectedSection]); // Save the selected section as an array
+      // Generate sections up to the selected one
+      const selectedSections = sectionOptions.slice(
+        0,
+        sectionOptions.indexOf(selectedSection) + 1
+      );
+      onSave(selectedSections); // Save the selected sections as an array
     }
   };
 
   const handleSectionChange = (e) => {
     setSelectedSection(e.target.value);
     setErrors({}); // Clear any previous errors when user changes selection
+  };
+
+  const handleBackToPreviousYear = () => {
+    if (year > 1) {
+      onBack(year - 1); // Call onBack with the previous year
+    }
   };
 
   return (
@@ -83,9 +101,23 @@ const AddSectionForm = ({ year, onSave, onBack, initialData, yearData }) => {
         </div>
       </div>
       <div className="section-button-group">
+        {/* Existing "Previous" button */}
         <button type="button" onClick={onBack} className="form-button">
           Previous
         </button>
+
+        {/* "Select Section for Previous Year" button with dynamic label */}
+        {year > 1 && (
+          <button
+            type="button"
+            onClick={handleBackToPreviousYear}
+            className="form-button"
+          >
+            Select Section for Year {year - 1}
+          </button>
+        )}
+
+        {/* Submit button */}
         <button
           type="submit"
           className="form-button primary"

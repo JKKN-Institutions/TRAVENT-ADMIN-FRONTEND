@@ -12,14 +12,12 @@ const ReviewForm = ({
 
   const totalSteps = 2 + institutes.length; // Institution, Institutes, Admin
 
-  // Function to handle the next step
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
       setCurrentStep((prevStep) => prevStep + 1);
     }
   };
 
-  // Function to handle the previous step
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep((prevStep) => prevStep - 1);
@@ -28,50 +26,50 @@ const ReviewForm = ({
 
   const progressBarWidth = `${((currentStep + 1) / totalSteps) * 100}%`;
 
+  const renderReviewItem = (label, value) => (
+    <div className="review-item">
+      <span className="review-label">{label}:</span>
+      <span className="review-value">{value}</span>
+    </div>
+  );
+
   return (
     <div className="review-form-container">
       <div className="form-header">
         <h2>Review Institution Data</h2>
+        <div className="progress-indicator">
+          <div className="progress-text">
+            Step {currentStep + 1} of {totalSteps}
+          </div>
+          <div className="progress-bar">
+            <div
+              className="progress-bar-filled"
+              style={{ width: progressBarWidth }}
+            ></div>
+          </div>
+        </div>
       </div>
-      <div className="progress-bar">
-        <div
-          className="progress-bar-filled"
-          style={{ width: progressBarWidth }}
-        ></div>
-      </div>
+
       <div className="review-content">
         {currentStep === 0 && (
           <div className="review-section">
             <h3>Institution Details</h3>
-            <div className="review-inline-grid">
-              <div className="review-item">
-                <span className="review-label">Institution Name:</span>{" "}
-                {institutionData.institutionName}
-              </div>
-              <div className="review-item">
-                <span className="review-label">State:</span>{" "}
-                {institutionData.state}
-              </div>
-              <div className="review-item">
-                <span className="review-label">Founder Name:</span>{" "}
-                {institutionData.founderName}
-              </div>
-              <div className="review-item">
-                <span className="review-label">Founder Email:</span>{" "}
-                {institutionData.founderEmail}
-              </div>
-              <div className="review-item">
-                <span className="review-label">Founder Contact:</span>{" "}
-                {institutionData.founderContactNumber}
-              </div>
-              <div className="review-item">
-                <span className="review-label">Address:</span>{" "}
-                {institutionData.address}
-              </div>
-              <div className="review-item">
-                <span className="review-label">Email Domain:</span>{" "}
-                {institutionData.emailDomain}
-              </div>
+            <div className="review-grid">
+              {renderReviewItem(
+                "Institution Name",
+                institutionData.institutionName
+              )}
+              {renderReviewItem("State", institutionData.state)}
+              {renderReviewItem("Founder Name", institutionData.founderName)}
+              {renderReviewItem("Founder Email", institutionData.founderEmail)}
+              {renderReviewItem(
+                "Founder Contact",
+                institutionData.founderContactNumber
+              )}
+              {renderReviewItem("Address", institutionData.address)}
+              {renderReviewItem("Contact 1", institutionData.contact1)}
+              {renderReviewItem("Contact 2", institutionData.contact2)}
+              {renderReviewItem("Email Domain", institutionData.emailDomain)}
             </div>
           </div>
         )}
@@ -80,50 +78,52 @@ const ReviewForm = ({
           (institute, i) =>
             currentStep === i + 1 && (
               <div className="review-section" key={i}>
-                <h4>
-                  Institute {i + 1}: {institute.instituteName}
-                </h4>
-                <div className="review-inline-grid">
-                  <div className="review-item">
-                    <span className="review-label">State:</span>{" "}
-                    {institute.state}
-                  </div>
-                  <div className="review-item">
-                    <span className="review-label">Address:</span>{" "}
-                    {institute.address}
-                  </div>
-                  <div className="review-item">
-                    <span className="review-label">Principal Name:</span>{" "}
-                    {institute.principalName}
-                  </div>
-                  <div className="review-item">
-                    <span className="review-label">Principal Email:</span>{" "}
-                    {institute.principalEmail}
-                  </div>
-                  <div className="review-item">
-                    <span className="review-label">Principal Contact:</span>{" "}
-                    {institute.principalContactNumber}
-                  </div>
+                <h3>Institute {i + 1}</h3>
+                <div className="review-grid">
+                  {renderReviewItem("Institute Code", institute.instituteCode)}
+                  {renderReviewItem("Institute Name", institute.instituteName)}
+                  {renderReviewItem("State", institute.state)}
+                  {renderReviewItem("Address", institute.address)}
+                  {renderReviewItem("Principal Name", institute.principalName)}
+                  {renderReviewItem(
+                    "Principal Email",
+                    institute.principalEmail
+                  )}
+                  {renderReviewItem(
+                    "Principal Contact",
+                    institute.principalContactNumber
+                  )}
                 </div>
 
                 {institute.departments.map((department, depIndex) => (
                   <div key={depIndex} className="department-container">
-                    <h5>
-                      Department {depIndex + 1}: {department.departmentName}
-                    </h5>
-                    <div className="review-inline-grid">
-                      <div className="review-item">
-                        <span className="review-label">Department Code:</span>{" "}
-                        {department.departmentCode}
-                      </div>
-                      <div className="years-container">
-                        {department.years.map((year, yearIndex) => (
-                          <div key={yearIndex} className="year-item">
-                            <h6>Year {year.year}:</h6>
+                    <h4>Department {depIndex + 1}</h4>
+                    <div className="review-grid">
+                      {renderReviewItem(
+                        "Department Code",
+                        department.departmentCode
+                      )}
+                      {renderReviewItem(
+                        "Department Name",
+                        department.departmentName
+                      )}
+                      {renderReviewItem("HOD Name", department.hodName)}
+                      {renderReviewItem("HOD Email", department.hodEmail)}
+                      {renderReviewItem(
+                        "HOD Contact",
+                        department.hodContactNumber
+                      )}
+                    </div>
+                    <div className="years-container">
+                      <h5>Years and Sections</h5>
+                      {department.years.map((year, yearIndex) => (
+                        <div key={yearIndex} className="year-item">
+                          <span className="year-label">Year {year.year}:</span>
+                          <span className="year-sections">
                             Sections: {year.sections.join(", ")}
-                          </div>
-                        ))}
-                      </div>
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 ))}
@@ -134,19 +134,11 @@ const ReviewForm = ({
         {currentStep === totalSteps - 1 && (
           <div className="review-section">
             <h3>Admin Details</h3>
-            <div className="review-inline-grid">
-              <div className="review-item">
-                <span className="review-label">Admin Name:</span>{" "}
-                {adminDetails.adminName}
-              </div>
-              <div className="review-item">
-                <span className="review-label">Admin Email:</span>{" "}
-                {adminDetails.email}
-              </div>
-              <div className="review-item">
-                <span className="review-label">Admin Contact:</span>{" "}
-                {adminDetails.contactNumber}
-              </div>
+            <div className="review-grid">
+              {renderReviewItem("Admin Name", adminDetails.adminName)}
+              {renderReviewItem("Admin Email", adminDetails.email)}
+              {renderReviewItem("Admin Contact", adminDetails.contactNumber)}
+              {renderReviewItem("Admin Password", adminDetails.password)}
             </div>
           </div>
         )}
@@ -155,7 +147,7 @@ const ReviewForm = ({
           {currentStep > 0 && (
             <button
               type="button"
-              className="review-button"
+              className="review-button secondary"
               onClick={handlePrevious}
             >
               Previous
@@ -164,7 +156,7 @@ const ReviewForm = ({
           {currentStep < totalSteps - 1 ? (
             <button
               type="button"
-              className="review-button"
+              className="review-button primary"
               onClick={handleNext}
             >
               Next
@@ -173,15 +165,15 @@ const ReviewForm = ({
             <>
               <button
                 type="button"
-                className="review-button"
+                className="review-button primary"
                 onClick={onSubmit}
               >
                 Submit Data
               </button>
               <button
                 type="button"
-                className="review-button back-button"
-                onClick={() => onBackToSection()}
+                className="review-button secondary"
+                onClick={onBackToSection}
               >
                 Back to Forms
               </button>
