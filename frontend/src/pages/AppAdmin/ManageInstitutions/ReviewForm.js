@@ -175,7 +175,7 @@ const ReviewForm = ({
                 className="review-button secondary"
                 onClick={onBackToSection}
               >
-                Back to Forms
+                Cancel
               </button>
             </>
           )}

@@ -19,9 +19,9 @@
 .add-new-route-back-button {
   background: none;
   border: none;
-  color: #11a8fd;
+  color: #ffffff;
   cursor: pointer;
-  font-size: 1.4rem;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   margin-right: 1rem;
@@ -33,6 +33,7 @@
   margin: 0;
   flex-grow: 1;
   font-weight: 600;
+  font-size: 1.3rem;
 }
 
 .add-new-route-form-grid {

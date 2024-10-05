@@ -30,14 +30,16 @@
 }
 
 .admin-notifications-menu-icon {
-  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
   cursor: pointer;
   margin-right: 1rem;
 }
 
 .admin-notifications-top-bar h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 .admin-notifications-search-bar-container {

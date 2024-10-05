@@ -438,33 +438,21 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
             <div className="button-group">
               <button
                 className="form-button secondary"
-                onClick={handleBackToSection}
-              >
-                Back
-              </button>
-              <button
-                className="form-button secondary"
                 onClick={() => handleDepartmentOrFinish("department")}
               >
                 Add Another Department
               </button>
               <button
-                className={`view-institutions-action-button view-institutions-edit-button ${
-                  !selectedInstitution ? "disabled" : ""
-                }`}
-                onClick={handleEditClick}
-                disabled={!selectedInstitution}
+                className="form-button secondary"
+                onClick={() => handleDepartmentOrFinish("institute")}
               >
-                <FontAwesomeIcon icon={faEdit} /> Edit
+                Add Another Institute
               </button>
               <button
-                className={`view-institutions-action-button view-institutions-delete-button ${
-                  !selectedInstitution ? "disabled" : ""
-                }`}
-                onClick={handleDeleteClick}
-                disabled={!selectedInstitution}
+                className="form-button primary"
+                onClick={() => handleDepartmentOrFinish("finish")}
               >
-                <FontAwesomeIcon icon={faTrash} /> Delete
+                Finish and Next
               </button>
             </div>
           </div>
@@ -486,7 +474,7 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
             }}
             onSubmit={handleReviewSubmit}
             goToViewInstitutions={resetForNewInstitute}
-            onBackToSection={handleBackToInstitution}
+            onBackToSection={handleBackToList}
           />
         );
       default:
@@ -602,14 +590,20 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
 
       {showDeleteConfirmation && (
         <div className="view-institutions-delete-confirmation-modal">
-          <div className="delete-confirmation-content">
+          <div className="view-institutions-delete-confirmation-content">
             <h3>Confirm Deletion</h3>
             <p>Are you sure you want to delete this institution?</p>
-            <div className="delete-confirmation-buttons">
-              <button onClick={handleCancelDelete} className="cancel-delete">
+            <div className="view-institutions-delete-confirmation-buttons">
+              <button
+                onClick={handleCancelDelete}
+                className="view-institutions-cancel-delete"
+              >
                 Cancel
               </button>
-              <button onClick={handleConfirmDelete} className="confirm-delete">
+              <button
+                onClick={handleConfirmDelete}
+                className="view-institutions-confirm-delete"
+              >
                 Yes, Delete
               </button>
             </div>

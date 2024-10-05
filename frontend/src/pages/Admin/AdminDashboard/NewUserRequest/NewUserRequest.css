@@ -21,7 +21,7 @@
 }
 
 .new-user-requests-back-button {
-  font-size: 1.3rem;
+  font-size: 1rem;
   cursor: pointer;
   color: #ffffff;
   background: none;
@@ -34,6 +34,7 @@
   margin: 0;
   flex-grow: 1;
   font-weight: 600;
+  font-size: 1.3rem;
 }
 
 .new-user-requests-main-content {

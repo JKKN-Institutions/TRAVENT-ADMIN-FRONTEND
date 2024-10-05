@@ -199,18 +199,23 @@ const ViewRoutes = ({ onBack }) => {
           </main>
 
           {showDeleteConfirmation && (
-            <div className="delete-confirmation-overlay">
-              <div className="delete-confirmation-dialog">
-                <h2>Are you absolutely sure?</h2>
-                <p>
-                  This action cannot be undone. This will permanently delete the
-                  selected routes.
-                </p>
-                <div className="delete-confirmation-buttons">
-                  <button onClick={() => setShowDeleteConfirmation(false)}>
+            <div className="view-routes-delete-confirmation-modal">
+              <div className="view-routes-delete-confirmation-content">
+                <h3>Confirm Deletion</h3>
+                <p>Are you sure you want to delete this route?</p>
+                <div className="view-routes-delete-confirmation-buttons">
+                  <button
+                    onClick={() => setShowDeleteConfirmation(false)}
+                    className="view-routes-cancel-delete"
+                  >
                     Cancel
                   </button>
-                  <button onClick={handleDeleteRoutes}>Continue</button>
+                  <button
+                    onClick={handleDeleteRoutes}
+                    className="view-routes-confirm-delete"
+                  >
+                    Yes, Delete
+                  </button>
                 </div>
               </div>
             </div>

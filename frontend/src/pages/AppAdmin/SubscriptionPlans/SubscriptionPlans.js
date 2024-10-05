@@ -239,15 +239,21 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
       </main>
 
       {showDeleteConfirmation && (
-        <div className="delete-confirmation-overlay">
-          <div className="delete-confirmation-modal">
+        <div className="subscription-delete-confirmation-overlay">
+          <div className="subscription-delete-confirmation-modal">
             <h3>Confirm Deletion</h3>
             <p>Are you sure you want to delete this plan?</p>
-            <div className="delete-confirmation-buttons">
-              <button onClick={cancelDelete} className="cancel-delete-button">
+            <div className="subscription-delete-confirmation-buttons">
+              <button
+                onClick={cancelDelete}
+                className="subscription-cancel-delete-button"
+              >
                 Cancel
               </button>
-              <button onClick={confirmDelete} className="confirm-delete-button">
+              <button
+                onClick={confirmDelete}
+                className="subscription-confirm-delete-button"
+              >
                 Delete
               </button>
             </div>
