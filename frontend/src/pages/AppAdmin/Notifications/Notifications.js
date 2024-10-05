@@ -21,21 +21,6 @@ const Notifications = ({ toggleSidebar }) => {
       time: "1d ago",
       count: 1,
     },
-    {
-      id: 3,
-      sender: "Support Team",
-      message: "Your ticket has been resolved. Please review...",
-      unread: true,
-      time: "3h ago",
-    },
-    {
-      id: 4,
-      sender: "Marketing",
-      message: "Don't miss out on our latest promotion!",
-      unread: false,
-      time: "2d ago",
-      count: 1,
-    },
   ]);
 
   const [selectedNotification, setSelectedNotification] = useState(null);
