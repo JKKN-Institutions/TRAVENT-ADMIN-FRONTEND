@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faBars } from "@fortawesome/free-solid-svg-icons";
 import NotificationItemChat from "./NotificationItemChat";
@@ -12,7 +12,6 @@ const Notifications = ({ toggleSidebar }) => {
       message: "Your subscription ends next month. Kindly...",
       unread: true,
       time: "2h ago",
-      count: 3,
     },
     {
       id: 2,
@@ -28,7 +27,6 @@ const Notifications = ({ toggleSidebar }) => {
       message: "Your ticket has been resolved. Please review...",
       unread: true,
       time: "3h ago",
-      count: 1,
     },
     {
       id: 4,
@@ -41,7 +39,7 @@ const Notifications = ({ toggleSidebar }) => {
   ]);
 
   const [selectedNotification, setSelectedNotification] = useState(null);
-  const [activeFilter, setActiveFilter] = useState("all");
+  const [showUnreadOnly, setShowUnreadOnly] = useState(false);
 
   const handleNotificationClick = (notification) => {
     setSelectedNotification(notification);
@@ -60,33 +58,17 @@ const Notifications = ({ toggleSidebar }) => {
     );
   };
 
-  const handleFilterClick = (filter) => {
-    setActiveFilter(filter);
+  const handleUnreadFilterClick = () => {
+    setShowUnreadOnly(!showUnreadOnly);
   };
 
-  const filteredNotifications = notifications.filter((notification) => {
-    if (activeFilter === "unread") return notification.unread;
-    if (activeFilter === "read") return !notification.unread;
-    return true; // "all" filter
-  });
+  const filteredNotifications = showUnreadOnly
+    ? notifications.filter((notification) => notification.unread)
+    : notifications;
 
-  // Simulate receiving a new message
-  const simulateNewMessage = () => {
-    const randomId = Math.floor(Math.random() * notifications.length) + 1;
-    setNotifications((prevNotifications) =>
-      prevNotifications.map((notif) =>
-        notif.id === randomId
-          ? { ...notif, unread: true, count: notif.count + 1, time: "Just now" }
-          : notif
-      )
-    );
+  const getUnreadCount = () => {
+    return notifications.filter((n) => n.unread).length;
   };
-
-  useEffect(() => {
-    // Simulate receiving a new message every 30 seconds
-    const interval = setInterval(simulateNewMessage, 30000);
-    return () => clearInterval(interval);
-  }, []);
 
   if (selectedNotification) {
     return (
@@ -98,82 +80,73 @@ const Notifications = ({ toggleSidebar }) => {
   }
 
   return (
-    <div className="notifications-container">
-      <header className="notifications-top-bar">
-        <div className="notifications-menu-icon">
+    <div className="app-admin-notifications-container">
+      <header className="app-admin-notifications-top-bar">
+        <div className="app-admin-notifications-menu-icon">
           <FontAwesomeIcon
             icon={faBars}
-            className="menu-icon"
+            className="app-admin-menu-icon"
             onClick={toggleSidebar}
           />
         </div>
-        <div className="notifications-header">
+        <div className="app-admin-notifications-header">
           <h2>Notifications</h2>
         </div>
       </header>
 
-      <main className="notifications-main-content">
-        <div className="notifications-search-bar-container">
-          <div className="notifications-search-input-wrapper">
-            <FontAwesomeIcon icon={faSearch} className="search-icon" />
+      <main className="app-admin-notifications-main-content">
+        <div className="app-admin-notifications-search-bar-container">
+          <div className="app-admin-notifications-search-input-wrapper">
+            <FontAwesomeIcon
+              icon={faSearch}
+              className="app-admin-search-icon"
+            />
             <input
               type="text"
-              className="notifications-search-bar"
+              className="app-admin-notifications-search-bar"
               placeholder="Search notifications..."
             />
           </div>
         </div>
 
-        <div className="filter-container">
+        <div className="app-admin-filter-container">
           <span
-            className={`filter-button ${
-              activeFilter === "all" ? "active" : ""
+            className={`app-admin-filter-button ${
+              showUnreadOnly ? "active" : ""
             }`}
-            onClick={() => handleFilterClick("all")}
-          >
-            All
-          </span>
-          <span
-            className={`filter-button ${
-              activeFilter === "unread" ? "active" : ""
-            }`}
-            onClick={() => handleFilterClick("unread")}
+            onClick={handleUnreadFilterClick}
           >
             Unread
-            <span className="unread-count">
-              {notifications.filter((n) => n.unread).length}
-            </span>
-          </span>
-          <span
-            className={`filter-button ${
-              activeFilter === "read" ? "active" : ""
-            }`}
-            onClick={() => handleFilterClick("read")}
-          >
-            Read
+            {getUnreadCount() > 0 && (
+              <span className="app-admin-unread-count">{getUnreadCount()}</span>
+            )}
           </span>
         </div>
 
-        <div className="notifications-list">
+        <div className="app-admin-notifications-list">
           {filteredNotifications.map((notification) => (
             <div
               key={notification.id}
-              className={`notification-item ${
+              className={`app-admin-notification-item ${
                 notification.unread ? "unread" : ""
               }`}
               onClick={() => handleNotificationClick(notification)}
             >
-              <div className="notification-avatar">
+              <div className="app-admin-notification-avatar">
                 {notification.sender.charAt(0)}
               </div>
-              <div className="notification-content">
+              <div className="app-admin-notification-content">
                 <h3>{notification.sender}</h3>
                 <p>{notification.message}</p>
               </div>
-              <div className="notification-meta">
-                <span className="notification-time">{notification.time}</span>
+              <div className="app-admin-notification-meta">
+                <span className="app-admin-notification-time">
+                  {notification.time}
+                </span>
                 {notification.count > 0 && (
-                  <div className="notification-count">{notification.count}</div>
+                  <div className="app-admin-notification-count">
+                    {notification.count}
+                  </div>
                 )}
               </div>
             </div>

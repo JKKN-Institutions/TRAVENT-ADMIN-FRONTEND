@@ -1,22 +1,72 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./AdminHome.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faBars, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBell,
+  faBars,
+  faEnvelope,
+  faExclamationTriangle,
+} from "@fortawesome/free-solid-svg-icons";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import NewUserRequest from "../AdminDashboard/NewUserRequest/NewUserRequest";
+import AdminNotifications from "../AdminNotifications/AdminNotifications";
 
 const AdminHome = ({ toggleSidebar, resetState }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showNewUserRequests, setShowNewUserRequests] = useState(false);
+  const [showAdminNotifications, setShowAdminNotifications] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const envelopeRef = useRef(null);
 
-  const handleBellClick = () => {
-    setShowNotifications(true);
+  const handleEnvelopeClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setShowNewUserRequests(true);
+    }, 3000);
+  };
+
+  const handleBellClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setShowAdminNotifications(true);
   };
 
   useEffect(() => {
     if (resetState) {
       setShowNotifications(false);
+      setShowNewUserRequests(false);
+      setShowAdminNotifications(false);
     }
   }, [resetState]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        !isLoading &&
+        envelopeRef.current &&
+        !envelopeRef.current.contains(event.target)
+      ) {
+        setShowNewUserRequests(false);
+        setShowAdminNotifications(false);
+      }
+    };
+
+    if (!isLoading) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isLoading]);
+
+  const handleBackFromForm = () => {
+    setShowNewUserRequests(false);
+  };
 
   const realTimeData = [
     { title: "On Route", value: 36 },
@@ -25,10 +75,10 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
   ];
 
   const statusCards = [
-    { title: "Deviation In Route", value: 4 },
-    { title: "Being Late", value: 18 },
-    { title: "Traffic Jam", value: 14 },
-    { title: "Accidents", value: 0 },
+    { title: "Deviation In Route", value: 4, color: "#FF0000" }, // Red
+    { title: "Being Late", value: 18, color: "#FFA500" }, // Orange
+    { title: "Traffic Jam", value: 14, color: "#FFFF00" }, // Yellow
+    { title: "Accidents", value: 0, color: "#00FF00" }, // Green
   ];
 
   const warnings = [
@@ -46,6 +96,25 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
     },
   ];
 
+  // Render loading state
+  if (isLoading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  // Render new user request form if active
+  if (showNewUserRequests) {
+    return <NewUserRequest onBack={handleBackFromForm} />;
+  }
+
+  if (showAdminNotifications) {
+    return <AdminNotifications toggleSidebar={toggleSidebar} />;
+  }
+
   return (
     <div className="admin-home-container">
       <header className="admin-top-bar">
@@ -54,7 +123,12 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
         </div>
         <h1>Admin Home</h1>
         <div className="admin-top-bar-icons">
-          <FontAwesomeIcon icon={faEnvelope} className="admin-icon" />
+          <FontAwesomeIcon
+            icon={faEnvelope}
+            className="admin-icon"
+            onClick={handleEnvelopeClick}
+            ref={envelopeRef}
+          />
           <FontAwesomeIcon
             icon={faBell}
             className="admin-home-icon"
@@ -82,7 +156,13 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
               <section className="admin-status-cards">
                 {statusCards.map((card, index) => (
                   <div key={index} className="admin-status-card">
-                    <h3>{card.title}</h3>
+                    <h3>
+                      {card.title}{" "}
+                      <FontAwesomeIcon
+                        icon={faExclamationTriangle}
+                        style={{ color: card.color }}
+                      />
+                    </h3>
                     <p>{card.value}</p>
                   </div>
                 ))}
@@ -114,11 +194,14 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
           </div>
         </div>
         <section className="admin-warnings">
-          <h2>Warnings</h2>
+          <h2>
+            Warnings{"  "}
+            <FontAwesomeIcon icon={faExclamationTriangle} />
+          </h2>
           {warnings.map((warning, index) => (
             <div key={index} className="admin-warning-item">
               <img
-                src={`https://i.pravatar.cc/40?img=${index + 1}`}
+                src="./uploads/splash-image.png"
                 alt={warning.name}
                 className="admin-avatar"
               />

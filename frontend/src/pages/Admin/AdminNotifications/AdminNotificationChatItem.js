@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import "./NotificationItemChat.css";
+import "./AdminNotificationChatItem.css";
 
-const NotificationItemChat = ({ sender, onClose }) => {
+const AdminNotificationChatItem = ({ notification, onClose }) => {
   const [message, setMessage] = useState("");
+  const chatBodyRef = useRef(null);
 
   useEffect(() => {
-    console.log(`Marking messages from ${sender} as read`);
-  }, [sender]);
+    if (notification?.title) {
+      console.log(`Marking notification from ${notification.title} as read`);
+    }
+  }, [notification]);
 
   const handleSendMessage = () => {
     if (message.trim()) {
@@ -17,32 +20,43 @@ const NotificationItemChat = ({ sender, onClose }) => {
     }
   };
 
+  // Simplified event listener logic to ensure chatBodyRef exists during click handling
+  useEffect(() => {
+    const handleGlobalClick = (event) => {
+      if (chatBodyRef.current && !chatBodyRef.current.contains(event.target)) {
+        console.log("Clicked outside chat body");
+      }
+    };
+
+    // Attach event listener after component mounts
+    document.addEventListener("click", handleGlobalClick);
+
+    return () => {
+      // Clean up event listener
+      document.removeEventListener("click", handleGlobalClick);
+    };
+  }, []); // No dependency on chatBodyRef to avoid premature attachment
+
   return (
-    <div className="admin-notification-item-chat">
+    <div className="admin-notification-item-chat" ref={chatBodyRef}>
       <header className="admin-chat-header">
         <FontAwesomeIcon
           icon={faArrowLeft}
           className="admin-notification-item-back-icon"
           onClick={onClose}
         />
-        <div className="admin-chat-avatar">{sender.charAt(0)}</div>
-        <h2>{sender}</h2>
+        <div className="admin-chat-avatar">
+          {notification.title?.charAt(0) || ""}
+        </div>
+        <h2>{notification.title || "Untitled"}</h2>
       </header>
       <main className="admin-chat-body">
         <div className="admin-chat-messages">
           <div className="admin-message-timestamp">
-            Thursday, 20 June 2024, 05:00 PM
+            {new Date().toLocaleString()}
           </div>
           <div className="admin-message received">
-            Your subscription ends next month. Kindly subscribe to any of the
-            plan to continue using Travent
-          </div>
-          <div className="admin-message sent">
-            Thank you for the reminder. I'll renew my subscription soon.
-          </div>
-          <div className="admin-message received">
-            Great! Let me know if you need any assistance with the renewal
-            process.
+            {notification.message || "No message"}
           </div>
         </div>
       </main>
@@ -63,4 +77,4 @@ const NotificationItemChat = ({ sender, onClose }) => {
   );
 };
 
-export default NotificationItemChat;
+export default AdminNotificationChatItem;

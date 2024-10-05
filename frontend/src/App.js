@@ -10,7 +10,7 @@ import BusesDashboard from "./pages/Admin/BusesModule/Buses/Buses";
 import StaffDashboard from "./pages/StaffDashboard/StaffDashboard";
 import StudentDashboard from "./pages/StudentDashboard/StudentDashboard";
 import BusesLayout from "./pages/Admin/BusesModule/BusesLayout/BusesLayout"; // Import BusesLayout
-import ViewRoutes from "./pages/Admin/BusesModule/ViewRoutes/ViewRoutes"; // Import ViewRoutes
+// import ViewRoutes from "./pages/Admin/BusesModule/ViewRoutes/ViewRoutes"; // Import ViewRoutes
 import AddNewRoute from "./pages/Admin/BusesModule/AddNewRoute/AddNewRoute"; // Import AddNewRoute
 
 function App() {
@@ -24,18 +24,9 @@ function App() {
         {/* Wrap admin-related routes within the Layout */}
         <Route path="/admin" element={<AdminDashboard />}></Route>
 
-        {/* Route for BusesDashboard with BusesLayout */}
-        <Route path="/admin/buses-dashboard" element={<BusesLayout />}>
-          <Route path="" element={<BusesDashboard />} />
-        </Route>
-
         {/* Independent route for ViewRoutes */}
-        <Route path="/admin/view-routes" element={<ViewRoutes />} />
-        <Route path="/admin/add-route" element={<AddNewRoute />} />
-
-        {/* Other Routes */}
-        <Route path="/admin/staff-dashboard" element={<StaffDashboard />} />
-        <Route path="/admin/student-dashboard" element={<StudentDashboard />} />
+        {/* <Route path="/view-routes" element={<ViewRoutes />} /> */}
+        <Route path="/add-route" element={<AddNewRoute />} />
       </Routes>
     </Router>
   );

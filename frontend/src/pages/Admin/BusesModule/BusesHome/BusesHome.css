@@ -1,0 +1,421 @@
+.buses-home-container {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.buses-top-bar {
+  background-color: #222222;
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-radius: 10px;
+}
+
+.buses-menu-icon {
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+.buses-top-bar h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.buses-main-content {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+}
+
+.buses-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.buses-top-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.buses-boarding-data,
+.buses-status-container,
+.buses-condition-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  background-color: #292929;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #333;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.buses-boarding-info {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  font-size: 1.2rem;
+  gap: 0.5rem;
+}
+
+.buses-boarding-number {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.buses-boarding-total {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.buses-status-container h2,
+.buses-condition-container h2,
+.buses-boarding-data h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+.buses-status-grid,
+.buses-condition-grid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.buses-status-chart {
+  flex: 1;
+  align-items: center;
+  display: flex;
+}
+
+.buses-status-legend {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.buses-status-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.buses-status-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 0.25rem;
+  border-radius: 4px;
+  flex: 1;
+}
+
+.buses-status-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.buses-status-label {
+  font-size: 0.9rem;
+  color: #ccc;
+  flex-grow: 1;
+}
+
+.buses-status-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.buses-arrival-status-value {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.buses-condition-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.buses-condition-chart {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 0.5rem;
+}
+
+.buses-condition-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #ccc;
+}
+
+.buses-condition-percentage {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #ccc;
+}
+
+.buses-status-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.buses-running-container {
+  flex: 1;
+  text-align: center;
+  gap: 0.3rem;
+}
+
+.buses-arrival-status {
+  background-color: #292929;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #333;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.buses-arrival-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.buses-arrival-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+.buses-view-routes {
+  background-color: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.buses-view-routes svg {
+  margin-left: 0.5rem;
+}
+
+.buses-table-container {
+  overflow-x: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border-radius: inherit;
+}
+
+.buses-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.buses-table th,
+.buses-table td {
+  padding: 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid #444;
+}
+
+.buses-table th {
+  background-color: #333;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.buses-table td {
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+.buses-table tbody tr:hover {
+  background-color: #333;
+}
+
+.buses-view-details {
+  background-color: transparent;
+  border: none;
+  color: #11a8fd;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.circular-chart {
+  display: block;
+  margin: 10px auto;
+  max-width: 80%;
+  max-height: 250px;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #3e3e3e;
+  stroke-width: 3.8;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  animation: progress 1s ease-out forwards;
+}
+
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+
+.circular-chart .percentage {
+  fill: #fff;
+  font-family: sans-serif;
+  font-size: 0.5em;
+  text-anchor: middle;
+}
+
+@media (max-width: 1200px) {
+  .buses-top-row {
+    flex-direction: column;
+  }
+
+  /* .buses-status-row {
+    flex-wrap: wrap;
+  } */
+
+  .buses-running-container {
+    flex-basis: calc(50% - 0.5rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .buses-status-grid,
+  .buses-condition-grid {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .buses-status-chart,
+  .buses-status-legend {
+    width: 100%;
+  }
+
+  .buses-status-item,
+  .buses-condition-item {
+    flex-basis: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .buses-running-container {
+    flex-basis: 100%;
+  }
+
+  .buses-arrival-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .buses-view-routes {
+    align-self: flex-end;
+  }
+
+  .buses-table-container {
+    overflow-x: scroll;
+  }
+
+  .buses-table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  .buses-top-bar h1 {
+    font-size: 1.2rem;
+  }
+
+  .buses-status-container,
+  .buses-condition-container {
+    padding: 0.75rem;
+  }
+
+  .buses-status-item,
+  .buses-condition-item {
+    padding: 0.25rem;
+  }
+
+  .buses-condition-chart {
+    width: 80px;
+    height: 80px;
+  }
+
+  .buses-status-row {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .buses-condition-percentage {
+    font-size: 1rem;
+  }
+
+  .buses-condition-label {
+    font-size: 0.7rem;
+  }
+
+  .buses-arrival-status {
+    padding: 0.75rem;
+  }
+
+  .buses-arrival-header h2 {
+    font-size: 1rem;
+  }
+
+  .buses-view-routes {
+    font-size: 0.8rem;
+  }
+
+  .buses-table th,
+  .buses-table td {
+    padding: 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .buses-view-details {
+    font-size: 0.8rem;
+  }
+}
