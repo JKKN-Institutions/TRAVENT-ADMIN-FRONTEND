@@ -1,0 +1,155 @@
+.add-stop-container {
+  background-color: rgba(215, 215, 215, 0.01);
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 1850px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+}
+
+.add-stop-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.add-stop-back-button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+.add-stop-container h2 {
+  text-align: center;
+  color: #ffffff;
+  margin: 0;
+  flex-grow: 1;
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+
+.add-stop-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.add-stop-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-stop-form-group input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 0.5rem;
+  border-radius: 10px;
+  font-size: 1em;
+  background-color: #2e323b;
+  color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid #666;
+  border-right: none;
+}
+
+.add-stop-form-group input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #11a8fd;
+}
+
+.add-stop-form-group input.input-error {
+  border: 1px solid #ff4d4f;
+}
+
+.add-stop-form-group .error {
+  color: #ff4d4f;
+  font-size: 0.75rem;
+  margin-top: -0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.add-stop-buttons-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.add-stop-cancel-button,
+.add-stop-save-button {
+  padding: 0.5rem 2rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.add-stop-cancel-button {
+  background-color: transparent;
+  color: #11a8fd;
+  border: 1px solid #11a8fd;
+}
+
+.add-stop-save-button {
+  background-color: #11a8fd;
+  color: #ffffff;
+  border: none;
+}
+
+.add-stop-cancel-button:hover {
+  background-color: rgba(17, 168, 253, 0.1);
+}
+
+.add-stop-save-button:hover {
+  background-color: #0e86c9;
+}
+
+@media (max-width: 1024px) {
+  .add-stop-container {
+    padding: 1.5rem;
+  }
+
+  .add-stop-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .add-stop-container {
+    padding: 1rem;
+  }
+
+  .add-stop-form-group input {
+    font-size: 0.875rem;
+  }
+
+  .add-stop-cancel-button,
+  .add-stop-save-button {
+    font-size: 0.875rem;
+    padding: 0.5rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-stop-container h2 {
+    font-size: 1.2rem;
+  }
+
+  .add-stop-form-group input {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .add-stop-cancel-button,
+  .add-stop-save-button {
+    font-size: 0.75rem;
+    padding: 0.5rem 1rem;
+  }
+}

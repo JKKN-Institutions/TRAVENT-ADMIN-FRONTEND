@@ -1,7 +1,7 @@
 .route-details-container {
   background-color: #1e1e1e;
   color: #ffffff;
-  min-height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -27,11 +27,17 @@
   display: flex;
   align-items: center;
   margin-right: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.route-details-back-button:hover {
+  transform: translateX(-3px);
 }
 
 .route-details-top-bar h2 {
   margin: 0;
   font-size: 1.3rem;
+  font-weight: 600;
 }
 
 .route-details-main-content {
@@ -39,130 +45,136 @@
   padding: 1rem 0;
   display: flex;
   flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
 }
 
 .route-details-info {
   background-color: #292929;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.route-details-info p {
-  margin: 0.5rem 0;
-}
-
-.route-details-actions {
+  border-radius: 12px;
+  padding: 1.5rem;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.route-details-actions button {
-  background-color: #11a8fd;
-  color: white;
-  border: none;
-  padding: 0.75rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
+.route-details-info-item {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.3s ease;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.route-details-actions button:hover {
-  background-color: #0e86c9;
+.route-details-info-label {
+  font-size: 0.9rem;
+  color: #a0a0a0;
+  font-weight: 500;
 }
 
-.route-details-actions button svg {
-  margin-right: 0.5rem;
+.route-details-info-value {
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .route-details-action-buttons {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
-  margin-bottom: 20px;
-  gap: 10px;
+  gap: 1rem;
 }
 
-.route-details-stoppings-button,
-.route-details-passengers-button,
-.route-details-track-button,
-.route-details-edit-button {
+.route-details-action-button {
   padding: 0.5rem 1rem;
-  border-radius: 20px;
+  border-radius: 25px;
   border: none;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 5px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  background-color: rgba(215, 215, 215, 0.05);
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  background-color: rgba(215, 215, 215, 0.1);
   border: 1px solid #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #fff;
+  /* flex: 1; */
+  justify-content: center;
+  min-width: 150px;
 }
 
-.route-details-stoppings-button:hover,
-.route-details-passengers-button:hover,
-.route-details-track-button:hover,
-.route-details-edit-button:hover {
-  opacity: 0.9;
+.route-details-action-button:hover {
+  background-color: rgba(215, 215, 215, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.route-details-action-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Tablet Responsiveness */
 @media (max-width: 1024px) {
-  .route-details-actions {
-    grid-template-columns: 1fr;
-  }
-
-  .route-details-action-buttons {
-    justify-content: flex-end;
+  .route-details-info {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-  .route-details-header h2 {
-    font-size: 1.2rem;
+  .route-details-top-bar h2 {
+    font-size: 1.3rem;
+  }
+
+  .route-details-main-content {
+    padding: 1rem;
   }
 
   .route-details-info {
-    font-size: 0.9rem;
+    grid-template-columns: 1fr;
   }
 
   .route-details-action-buttons {
     flex-direction: row;
-    gap: 0.5rem;
-    align-items: flex-end;
+    flex-wrap: wrap;
   }
 
-  .route-details-actions button {
-    font-size: 0.9rem;
+  .route-details-action-button {
+    /* width: 100%; */
   }
 }
 
 /* Small Mobile Responsiveness */
 @media (max-width: 480px) {
-  .route-details-header {
-    flex-direction: column;
-    align-items: flex-start;
+  .route-details-top-bar {
+    padding: 0.75rem;
   }
 
-  .route-details-back-button {
-    margin-bottom: 0.5rem;
+  .route-details-top-bar h2 {
+    font-size: 1.2rem;
   }
 
-  .route-details-action-buttons {
-    flex-wrap: wrap;
-    gap: 0.5rem;
+  .route-details-main-content {
+    padding: 0.75rem;
   }
 
-  .route-details-actions button {
+  .route-details-info {
+    padding: 1rem;
+  }
+
+  .route-details-info-label {
     font-size: 0.8rem;
+  }
+
+  .route-details-info-value {
+    font-size: 1rem;
+  }
+
+  .route-details-action-button {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
   }
 }

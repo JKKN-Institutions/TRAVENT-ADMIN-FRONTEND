@@ -1,16 +1,10 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import "./AddNewRoute.css";
 
-const AddNewRoute = ({ onBack }) => {
-  const navigate = useNavigate();
-  const institutionDetails = JSON.parse(
-    localStorage.getItem("institutionDetails")
-  );
-
+const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
   const [routeData, setRouteData] = useState({
     routeNumber: "",
     routeName: "",
@@ -27,12 +21,17 @@ const AddNewRoute = ({ onBack }) => {
 
   const [errors, setErrors] = useState({});
 
+  useEffect(() => {
+    if (route) {
+      const { stops, boardingCount, stoppingCount, _id, ...editableFields } =
+        route;
+      setRouteData(editableFields);
+    }
+  }, [route]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setRouteData({
-      ...routeData,
-      [name]: value,
-    });
+    setRouteData({ ...routeData, [name]: value });
     if (errors[name]) {
       setErrors({ ...errors, [name]: null });
     }
@@ -61,24 +60,24 @@ const AddNewRoute = ({ onBack }) => {
       setErrors(formErrors);
     } else {
       try {
-        const routePayload = {
+        const url = route
+          ? "https://travent-admin-server.vercel.app/api/bus/update-route"
+          : "https://travent-admin-server.vercel.app/api/bus/add-route";
+        const response = await axios.post(url, {
           ...routeData,
-          stops: null,
-          institutionId: institutionDetails.institutionId,
-        };
-        const response = await axios.post(
-          "https://travent-admin-server.vercel.app/api/bus/add-route",
-          routePayload
-        );
+          institutionId: institutionId,
+        });
         if (response.data.success) {
-          alert("Route added successfully!");
-          navigate(-1);
+          alert(
+            route ? "Route updated successfully!" : "Route added successfully!"
+          );
+          onSave(response.data.route);
         } else {
           alert(response.data.message);
         }
       } catch (error) {
-        console.error("Error adding route:", error);
-        alert("Failed to add route.");
+        console.error("Error saving route:", error);
+        alert("Failed to save route.");
       }
     }
   };
@@ -89,7 +88,7 @@ const AddNewRoute = ({ onBack }) => {
         <button className="add-new-route-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
-        <h2>Add New Route</h2>
+        <h2>{route ? "Edit Route" : "Add New Route"}</h2>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="add-new-route-form-grid">
@@ -123,7 +122,7 @@ const AddNewRoute = ({ onBack }) => {
             Cancel
           </button>
           <button type="submit" className="add-new-route-save-button">
-            Add Route
+            {route ? "Update Route" : "Add Route"}
           </button>
         </div>
       </form>

@@ -30,11 +30,14 @@ const AddStop = ({ route, onBack, institutionId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/api/bus/add-stop", {
-        ...stopData,
-        routeNumber: route.routeNumber,
-        institutionId: institutionId,
-      });
+      const response = await axios.post(
+        "https://travent-admin-server.vercel.app/api/bus/add-stop",
+        {
+          ...stopData,
+          routeNumber: route.routeNumber,
+          institutionId: institutionId,
+        }
+      );
       if (response.data.success) {
         alert("Stop added/updated successfully!");
         navigate("/admin/buses-dashboard"); // Navigate back after adding/editing
@@ -132,7 +135,9 @@ const AddStop = ({ route, onBack, institutionId }) => {
           required
         />
         <button type="submit">{"Add Stop"}</button>
-        <button type="button" onClick={onBack}>Cancel</button>
+        <button type="button" onClick={onBack}>
+          Cancel
+        </button>
       </form>
     </div>
   );

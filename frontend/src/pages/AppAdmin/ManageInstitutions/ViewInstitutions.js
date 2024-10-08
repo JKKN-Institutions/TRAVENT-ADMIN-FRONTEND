@@ -7,6 +7,8 @@ import {
   faEdit,
   faTrash,
   faSearch,
+  faChevronLeft,
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import AddInstitutionForm from "./AddInstitutionForm";
 import AddInstituteForm from "./AddInstituteForm";
@@ -160,6 +162,9 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
   const [sectionData, setSectionData] = useState([]);
   // const [savedSections, setSavedSections] = useState([]);
   const [adminData, setAdminData] = useState(null); // Store admin details
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   const handleAddClick = () => {
     setIsEditing(false);
@@ -482,6 +487,21 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
     }
   };
 
+  // Pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentInstitutions = institutions.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(institutions.length / itemsPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
   return (
     <div className="view-institutions-container">
       {currentStep === "list" && (
@@ -540,47 +560,77 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
               </button>
             </div>
 
-            <div className="appadmin-table-container">
-              <table className="view-institutions-table">
-                <thead>
-                  <tr>
-                    <th>S.No</th>
-                    <th>Institution Code</th>
-                    <th>Institute Name</th>
-                    <th>Institute State</th>
-                    <th>Departments Count</th>
-                    <th>Total Routes</th>
-                    <th>Total Buses</th>
-                    <th>Admin Name</th>
-                    <th>Admin Contact</th>
-                    <th>Created at</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {institutions.map((institution, index) => (
-                    <tr
-                      key={institution.id}
-                      onClick={() => handleRowClick(institution)}
-                      className={
-                        selectedInstitution?.id === institution.id
-                          ? "selected"
-                          : ""
-                      }
-                    >
-                      <td>{index + 1}</td>
-                      <td>{institution.code}</td>
-                      <td>{institution.name}</td>
-                      <td>{institution.state}</td>
-                      <td>{institution.departments}</td>
-                      <td>{institution.routes}</td>
-                      <td>{institution.buses}</td>
-                      <td>{institution.adminName}</td>
-                      <td>{institution.adminContact}</td>
-                      <td>{institution.createdAt}</td>
+            <div className="view-institutions-table-container">
+              <div className="view-institutions-table-wrapper">
+                <table className="view-institutions-table">
+                  <thead>
+                    <tr>
+                      <th>S.No</th>
+                      <th>Institution Code</th>
+                      <th>Institute Name</th>
+                      <th>Institute State</th>
+                      <th>Departments Count</th>
+                      <th>Total Routes</th>
+                      <th>Total Buses</th>
+                      <th>Admin Name</th>
+                      <th>Admin Contact</th>
+                      <th>Created at</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {currentInstitutions.map((institution, index) => (
+                      <tr
+                        key={institution.id}
+                        onClick={() => handleRowClick(institution)}
+                        className={
+                          selectedInstitution?.id === institution.id
+                            ? "selected"
+                            : ""
+                        }
+                      >
+                        <td>{indexOfFirstItem + index + 1}</td>
+                        <td>{institution.code}</td>
+                        <td>{institution.name}</td>
+                        <td>{institution.state}</td>
+                        <td>{institution.departments}</td>
+                        <td>{institution.routes}</td>
+                        <td>{institution.buses}</td>
+                        <td>{institution.adminName}</td>
+                        <td>{institution.adminContact}</td>
+                        <td>{institution.createdAt}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="view-institutions-pagination">
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="view-institutions-pagination-button"
+              >
+                <FontAwesomeIcon icon={faChevronLeft} />
+              </button>
+              {pageNumbers.map((number) => (
+                <button
+                  key={number}
+                  onClick={() => paginate(number)}
+                  className={`view-institutions-pagination-button ${
+                    currentPage === number ? "active" : ""
+                  }`}
+                >
+                  {number}
+                </button>
+              ))}
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === pageNumbers.length}
+                className="view-institutions-pagination-button"
+              >
+                <FontAwesomeIcon icon={faChevronRight} />
+              </button>
             </div>
           </>
         ) : (

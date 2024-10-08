@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSearch,
+  faArrowLeft,
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 import "./NewUserRequest.css";
 
 // Dummy data
@@ -146,6 +151,9 @@ function NewUserRequest({ onBack }) {
   const [selectAllStudents, setSelectAllStudents] = useState(false);
   const [selectAllStaff, setSelectAllStaff] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPageStudent, setCurrentPageStudent] = useState(1);
+  const [currentPageStaff, setCurrentPageStaff] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   useEffect(() => {
     // Simulate loading for 3 seconds
@@ -204,10 +212,62 @@ function NewUserRequest({ onBack }) {
     );
   };
 
-  // ... keep existing code (handleSelectAll, handleSelectUser functions)
-
   const studentUsers = pendingUsers.filter((user) => user.type === "student");
   const staffUsers = pendingUsers.filter((user) => user.type === "staff");
+
+  const indexOfLastItemStudent = currentPageStudent * itemsPerPage;
+  const indexOfFirstItemStudent = indexOfLastItemStudent - itemsPerPage;
+  const currentStudents = studentUsers.slice(
+    indexOfFirstItemStudent,
+    indexOfLastItemStudent
+  );
+
+  const indexOfLastItemStaff = currentPageStaff * itemsPerPage;
+  const indexOfFirstItemStaff = indexOfLastItemStaff - itemsPerPage;
+  const currentStaff = staffUsers.slice(
+    indexOfFirstItemStaff,
+    indexOfLastItemStaff
+  );
+
+  const paginateStudent = (pageNumber) => setCurrentPageStudent(pageNumber);
+  const paginateStaff = (pageNumber) => setCurrentPageStaff(pageNumber);
+
+  const renderPagination = (currentPage, totalItems, paginate) => {
+    const pageNumbers = [];
+    for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
+      pageNumbers.push(i);
+    }
+
+    return (
+      <div className="new-user-requests-pagination">
+        <button
+          onClick={() => paginate(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="new-user-requests-pagination-button"
+        >
+          <FontAwesomeIcon icon={faChevronLeft} />
+        </button>
+        {pageNumbers.map((number) => (
+          <button
+            key={number}
+            onClick={() => paginate(number)}
+            className={`new-user-requests-pagination-button ${
+              currentPage === number ? "active" : ""
+            }`}
+          >
+            {number}
+          </button>
+        ))}
+        <button
+          onClick={() => paginate(currentPage + 1)}
+          disabled={currentPage === pageNumbers.length}
+          className="new-user-requests-pagination-button"
+        >
+          <FontAwesomeIcon icon={faChevronRight} />
+        </button>
+      </div>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -244,7 +304,7 @@ function NewUserRequest({ onBack }) {
           </div>
         </div>
 
-        <div className="action-buttons-container">
+        <div className="new-user-action-buttons-container">
           <button
             className="new-user-requests-action-button new-user-requests-approve-button"
             onClick={() => handleAction("approve")}
@@ -259,7 +319,7 @@ function NewUserRequest({ onBack }) {
           </button>
         </div>
 
-        {studentUsers.length > 0 && (
+        {currentStudents.length > 0 && (
           <div className="new-user-requests-table-container">
             <h3>Student Table</h3>
             <table className="new-user-requests-table">
@@ -285,7 +345,7 @@ function NewUserRequest({ onBack }) {
                 </tr>
               </thead>
               <tbody>
-                {studentUsers.map((user, index) => (
+                {currentStudents.map((user, index) => (
                   <tr key={user._id}>
                     <td>
                       <input
@@ -294,7 +354,7 @@ function NewUserRequest({ onBack }) {
                         onChange={() => handleSelectUser(user._id, "student")}
                       />
                     </td>
-                    <td>{index + 1}</td>
+                    <td>{indexOfFirstItemStudent + index + 1}</td>
                     <td>{user.basicDetails.name}</td>
                     <td>{user.studentDetails.regNo || "N/A"}</td>
                     <td>{user.studentDetails.rollNo || "N/A"}</td>
@@ -308,10 +368,15 @@ function NewUserRequest({ onBack }) {
                 ))}
               </tbody>
             </table>
+            {renderPagination(
+              currentPageStudent,
+              studentUsers.length,
+              paginateStudent
+            )}
           </div>
         )}
 
-        {staffUsers.length > 0 && (
+        {currentStaff.length > 0 && (
           <div className="new-user-requests-table-container">
             <h3>Staff Table</h3>
             <table className="new-user-requests-table">
@@ -335,7 +400,7 @@ function NewUserRequest({ onBack }) {
                 </tr>
               </thead>
               <tbody>
-                {staffUsers.map((user, index) => (
+                {currentStaff.map((user, index) => (
                   <tr key={user._id}>
                     <td>
                       <input
@@ -344,7 +409,7 @@ function NewUserRequest({ onBack }) {
                         onChange={() => handleSelectUser(user._id, "staff")}
                       />
                     </td>
-                    <td>{index + 1}</td>
+                    <td>{indexOfFirstItemStaff + index + 1}</td>
                     <td>{user.basicDetails.name}</td>
                     <td>{user.staffDetails.staffId || "N/A"}</td>
                     <td>{user.staffDetails.instituteName || "N/A"}</td>
@@ -356,6 +421,11 @@ function NewUserRequest({ onBack }) {
                 ))}
               </tbody>
             </table>
+            {renderPagination(
+              currentPageStaff,
+              staffUsers.length,
+              paginateStaff
+            )}
           </div>
         )}
 

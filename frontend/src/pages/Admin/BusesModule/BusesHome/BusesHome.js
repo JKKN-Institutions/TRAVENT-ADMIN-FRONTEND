@@ -4,10 +4,14 @@ import { faBars, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { PieChart, Pie, Cell } from "recharts";
 import "./BusesHome.css";
 import ViewRoutes from "../ViewRoutes/ViewRoutes";
+import PassengerArrivalStatus from "../PassengerArrivalStatus/PassengerArrivalStatus";
 
 const BusesHome = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [showRoutes, setShowRoutes] = useState(false);
+  const [showPassengerArrivalStatus, setShowPassengerArrivalStatus] =
+    useState(false);
+  const [selectedRoute, setSelectedRoute] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1500);
@@ -50,6 +54,15 @@ const BusesHome = ({ toggleSidebar }) => {
     setShowRoutes(false); // Reset the state to hide ViewRoutes
   };
 
+  const handleBackFromPassengerArrivalStatus = () => {
+    setShowPassengerArrivalStatus(false);
+  };
+
+  const handleViewDetails = (route) => {
+    setSelectedRoute(route);
+    setShowPassengerArrivalStatus(true);
+  };
+
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -62,6 +75,15 @@ const BusesHome = ({ toggleSidebar }) => {
   // If showRoutes is true, display ViewRoutes component
   if (showRoutes) {
     return <ViewRoutes onBack={handleBackFromRoutes} />;
+  }
+
+  if (showPassengerArrivalStatus) {
+    return (
+      <PassengerArrivalStatus
+        onBack={handleBackFromPassengerArrivalStatus}
+        route={selectedRoute}
+      />
+    );
   }
 
   return (
@@ -90,6 +112,7 @@ const BusesHome = ({ toggleSidebar }) => {
           <ArrivalStatusTable
             arrivalStatusData={arrivalStatusData}
             onViewRoutes={() => setShowRoutes(true)}
+            onViewDetails={handleViewDetails}
           />
         </div>
       </main>
@@ -195,7 +218,11 @@ const BusStatusItem = ({ status }) => (
   </div>
 );
 
-const ArrivalStatusTable = ({ arrivalStatusData, onViewRoutes }) => (
+const ArrivalStatusTable = ({
+  arrivalStatusData,
+  onViewRoutes,
+  onViewDetails,
+}) => (
   <div className="buses-arrival-status">
     <div className="buses-arrival-header">
       <h2>Arrival Status</h2>
@@ -222,7 +249,12 @@ const ArrivalStatusTable = ({ arrivalStatusData, onViewRoutes }) => (
               <td>{data.scheduled}</td>
               <td>{data.scanned}</td>
               <td>
-                <button className="buses-view-details">View details</button>
+                <button
+                  className="buses-view-details"
+                  onClick={() => onViewDetails(data)}
+                >
+                  View details
+                </button>
               </td>
             </tr>
           ))}
