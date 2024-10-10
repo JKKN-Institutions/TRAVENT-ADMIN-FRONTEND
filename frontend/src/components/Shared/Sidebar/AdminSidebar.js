@@ -11,6 +11,7 @@ import {
   faMoneyBill,
   faComment,
   faSignOutAlt,
+  faList,
 } from "@fortawesome/free-solid-svg-icons";
 
 const AdminSidebar = React.memo(
@@ -182,6 +183,18 @@ const AdminSidebar = React.memo(
                 >
                   <FontAwesomeIcon icon={faMoneyBill} className="admin-icon" />
                   <span>Payment</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  className="admin-menu-link"
+                  onClick={() => {
+                    setActiveComponent("subscriptionPlans");
+                    toggleSidebar(false);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faList} className="admin-icon" />
+                  <span>Subscription Plans</span>
                 </button>
               </li>
               <li>

@@ -3,6 +3,8 @@ import AdminSidebar from "../../../components/Shared/Sidebar/AdminSidebar";
 import AdminHome from "../AdminHome/AdminHome";
 import AdminNotifications from "../AdminNotifications/AdminNotifications";
 import BusesHome from "../BusesModule/BusesHome/BusesHome";
+import PassengersHome from "../PassengersModule/PassengersHome/PassengersHome";
+import Schedules from "../SchedulesModule/ScheduleHome/ScheduleHome";
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
@@ -66,6 +68,10 @@ const AdminDashboard = () => {
         return <AdminNotifications toggleSidebar={toggleSidebar} />;
       case "buses":
         return <BusesHome toggleSidebar={toggleSidebar} />;
+      case "passengers":
+        return <PassengersHome toggleSidebar={toggleSidebar} />;
+      case "schedules":
+        return <Schedules toggleSidebar={toggleSidebar} />;
       default:
         return <AdminHome toggleSidebar={toggleSidebar} />;
     }

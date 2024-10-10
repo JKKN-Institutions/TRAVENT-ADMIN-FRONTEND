@@ -11,6 +11,7 @@ const ViewRoutes = () => {
   const institutionDetails = JSON.parse(
     localStorage.getItem("institutionDetails")
   );
+
   const [showRouteDetails, setShowRouteDetails] = useState(false);
   const [routeDetails, setRoutesDetails] = useState();
   const [selectedRoute, setSelectedRoute] = useState(null);
