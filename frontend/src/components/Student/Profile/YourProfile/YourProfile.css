@@ -77,7 +77,7 @@ body {
   margin-bottom: 15px;
 }
 
-label {
+.profile-form label {
   display: block;
   margin-bottom: 5px;
   font-size: 14px;

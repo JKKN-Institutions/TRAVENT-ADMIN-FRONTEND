@@ -1,0 +1,193 @@
+.subscription-receipt-container {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.subscription-receipt-top-bar {
+  background-color: #222222;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.subscription-receipt-back-icon {
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #ffffff;
+  margin-right: 1rem;
+}
+
+.subscription-receipt-top-bar h2 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.subscription-receipt-main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+  background-color: #1e1e1e;
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+}
+
+.subscription-receipt-content {
+  background-color: #2c2c2c;
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.subscription-receipt-barcode {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.subscription-receipt-barcode svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.subscription-receipt-details {
+  margin-bottom: 1rem;
+}
+
+.subscription-receipt-details h3 {
+  color: #11a8fd;
+  margin-bottom: 0.8rem;
+  font-size: 1.2rem;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
+}
+
+.receipt-row span:first-child {
+  color: #aaa;
+}
+
+.receipt-row span:last-child {
+  font-weight: 500;
+}
+
+.payment-status {
+  color: #4caf50;
+}
+
+.subscription-receipt-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #333;
+}
+
+.subscription-receipt-button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.subscription-receipt-download {
+  background-color: #11a8fd;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+
+  font-weight: 600;
+  cursor: pointer;
+  /* width: 100%; */
+  margin-top: 1rem;
+
+  transition: background-color 0.3s ease;
+}
+
+.subscription-receipt-download:hover {
+  background-color: #0e86c9;
+}
+
+/* Toast styles */
+.Toastify__toast {
+  background-color: #2c2c2c;
+  color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.Toastify__toast-body {
+  font-family: inherit;
+}
+
+.Toastify__progress-bar {
+  background-color: #4a4a4a;
+}
+
+.Toastify__close-button {
+  color: #ffffff;
+  opacity: 0.7;
+}
+
+.Toastify__close-button:hover {
+  opacity: 1;
+}
+
+.Toastify__progress-bar--success {
+  background-color: #4caf50;
+}
+
+.Toastify__progress-bar--error {
+  background-color: #ff5252;
+}
+
+.Toastify__progress-bar--warn {
+  background-color: #ffd740;
+}
+
+.Toastify__progress-bar--info {
+  background-color: #29b6f6;
+}
+
+@media (max-width: 480px) {
+  .subscription-receipt-content {
+    padding: 1rem;
+  }
+
+  .subscription-receipt-top-bar h2 {
+    font-size: 1.1rem;
+  }
+
+  .receipt-row {
+    font-size: 0.8rem;
+  }
+
+  .subscription-receipt-total {
+    font-size: 1rem;
+  }
+
+  .subscription-receipt-download {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+}

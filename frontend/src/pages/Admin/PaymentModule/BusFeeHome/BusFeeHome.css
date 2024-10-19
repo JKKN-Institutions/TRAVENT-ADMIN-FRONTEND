@@ -1,0 +1,206 @@
+.bus-fee-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.bus-fee-row {
+  display: flex;
+  gap: 20px;
+}
+
+.bus-fee-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.bus-fee-chart-card {
+  width: 100%;
+  background-color: #292929;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #333;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.chart-header h2 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.chart-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.month-picker {
+  background-color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  color: #fff;
+  border: none;
+  padding: 0.3rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.month-picker::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.info-icon {
+  cursor: pointer;
+  color: #11a8fd;
+}
+
+.bus-fee-action-card {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #292929;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #333;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.bus-fee-action-card:hover {
+  background-color: #333333;
+}
+
+.action-icon {
+  font-size: 2rem;
+  color: #11a8fd;
+  margin-bottom: 10px;
+}
+
+.bus-fee-action-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+.bus-fee-action-card p {
+  font-size: 0.9rem;
+  color: #cccccc;
+}
+
+.bus-fee-settings {
+  background-color: #292929;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #333;
+  width: 100%;
+}
+
+.bus-fee-settings h2 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #11a8fd;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.setting-description {
+  font-size: 0.9rem;
+  color: #cccccc;
+}
+
+@media (max-width: 768px) {
+  .bus-fee-row {
+    flex-direction: column;
+  }
+
+  .chart-header {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .bus-fee-column {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 480px) {
+  .bus-fee-chart-card,
+  .bus-fee-action-card,
+  .bus-fee-settings {
+    padding: 15px;
+  }
+
+  .chart-header h2,
+  .bus-fee-action-card h3,
+  .bus-fee-settings h2 {
+    font-size: 1rem;
+  }
+
+  .bus-fee-action-card p,
+  .setting-description {
+    font-size: 0.8rem;
+  }
+}

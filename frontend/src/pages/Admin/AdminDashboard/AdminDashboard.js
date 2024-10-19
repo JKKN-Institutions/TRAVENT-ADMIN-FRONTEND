@@ -5,6 +5,10 @@ import AdminNotifications from "../AdminNotifications/AdminNotifications";
 import BusesHome from "../BusesModule/BusesHome/BusesHome";
 import PassengersHome from "../PassengersModule/PassengersHome/PassengersHome";
 import Schedules from "../SchedulesModule/ScheduleHome/ScheduleHome";
+import SubscriptionPlans from "../SubscriptionModule/SubscriptionPlans/AdminSubscriptionPlans";
+import DriversHome from "../DriversModule/DriversHome/DriversHome";
+import PaymentsDashboardHome from "../PaymentModule/PaymentDashboardHome/PaymentDashboardHome";
+
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
@@ -72,6 +76,12 @@ const AdminDashboard = () => {
         return <PassengersHome toggleSidebar={toggleSidebar} />;
       case "schedules":
         return <Schedules toggleSidebar={toggleSidebar} />;
+      case "subscriptionPlans":
+        return <SubscriptionPlans toggleSidebar={toggleSidebar} />;
+      case "drivers":
+        return <DriversHome toggleSidebar={toggleSidebar} />;
+      case "payment":
+        return <PaymentsDashboardHome toggleSidebar={toggleSidebar} />;
       default:
         return <AdminHome toggleSidebar={toggleSidebar} />;
     }

@@ -1,0 +1,239 @@
+.payment-methods-container {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.payment-methods-top-bar {
+  background-color: #222222;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  margin-bottom: 15px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.payment-methods-back-icon {
+  font-size: 1.4rem;
+  cursor: pointer;
+  margin-right: 1.25rem;
+  color: #11a8fd;
+  transition: color 0.3s ease;
+}
+
+.payment-methods-back-icon:hover {
+  color: #0e86c9;
+}
+
+.payment-methods-top-bar h2 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.payment-methods-main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+}
+
+.payment-methods-content {
+  background-color: #2c2c2c;
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 550px;
+  margin: 0 auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.payment-methods-content h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: #11a8fd;
+}
+
+.razorpay-button {
+  background-color: #11a8fd;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(17, 168, 253, 0.3);
+  width: 100%;
+}
+
+.razorpay-button:hover {
+  background-color: #0e86c9;
+  transform: translateY(-2px);
+}
+
+.payment-success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.payment-success-content {
+  background-color: #222222;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+  overflow: hidden;
+}
+
+.confetti-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("");
+  background-size: cover;
+  opacity: 0.5;
+  animation: confetti-fall 10s linear infinite;
+}
+
+@keyframes confetti-fall {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 1000px;
+  }
+}
+
+.payment-success-content h2 {
+  font-size: 1.8rem;
+  color: #11a8fd;
+  margin-bottom: 1rem;
+}
+
+.payment-success-content p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.payment-success-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.go-to-history-button,
+.view-receipt-button {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.go-to-history-button {
+  background-color: #444;
+  color: #fff;
+}
+
+.go-to-history-button:hover {
+  background-color: #555;
+}
+
+.view-receipt-button {
+  background-color: #11a8fd;
+  color: #fff;
+}
+
+.view-receipt-button:hover {
+  background-color: #0e86c9;
+}
+
+@media (max-width: 768px) {
+  .payment-methods-top-bar {
+    padding: 1rem;
+  }
+
+  .payment-methods-top-bar h2 {
+    font-size: 1.3rem;
+  }
+
+  .payment-methods-main-content {
+    padding: 1rem;
+  }
+
+  .payment-methods-content h3 {
+    font-size: 1.2rem;
+  }
+
+  .razorpay-button {
+    font-size: 1rem;
+    padding: 0.6rem 1.2rem;
+  }
+
+  .payment-success-content {
+    padding: 1.5rem;
+  }
+
+  .payment-success-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .payment-success-content p {
+    font-size: 1rem;
+  }
+
+  .go-to-history-button,
+  .view-receipt-button {
+    font-size: 0.8rem;
+    padding: 0.6rem 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-methods-progress {
+    max-width: 280px;
+  }
+
+  .progress-number {
+    width: 25px;
+    height: 25px;
+    font-size: 0.9rem;
+  }
+
+  .payment-success-actions {
+    flex-direction: column;
+  }
+
+  .go-to-history-button,
+  .view-receipt-button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}

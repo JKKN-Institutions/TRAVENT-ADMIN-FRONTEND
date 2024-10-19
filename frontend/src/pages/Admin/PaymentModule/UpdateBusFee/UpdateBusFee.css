@@ -1,0 +1,315 @@
+.update-bus-fee-container {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.update-bus-fee-top-bar {
+  background-color: #222222;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.update-bus-fee-back-icon {
+  font-size: 1rem;
+  cursor: pointer;
+  color: #ffffff;
+  margin-right: 0.5rem;
+}
+
+.update-bus-fee-top-bar h2 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.update-bus-fee-main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 0.5rem;
+  background-color: #1e1e1e;
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+}
+
+.update-bus-fee-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.update-bus-fee-edit-button {
+  background-color: #11a8fd;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.update-bus-fee-edit-button:hover {
+  background-color: #0e86c9;
+}
+
+.update-bus-fee-edit-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.update-bus-fee-institute-selector {
+  display: flex;
+  align-items: center;
+}
+
+.update-bus-fee-institute-selector label {
+  margin-right: 1rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.select-wrapper {
+  position: relative;
+  width: 300px;
+}
+
+.select-wrapper select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: rgba(215, 215, 215, 0.05);
+  border: 1px solid #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  color: #fff;
+  font-size: 0.9rem;
+  appearance: none;
+}
+
+.select-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 1rem;
+}
+
+.update-bus-fee-table-container {
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+.update-bus-fee-table-wrapper {
+  overflow-x: auto;
+  max-height: calc(100vh - 300px);
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+}
+
+.update-bus-fee-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.update-bus-fee-table th,
+.update-bus-fee-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #333;
+}
+
+.update-bus-fee-table th {
+  background-color: #1e1e1e;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.update-bus-fee-table td {
+  background-color: #2c2c2c;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.update-bus-fee-table tbody tr:hover {
+  background-color: #444;
+}
+.update-bus-fee-table tbody tr.selected {
+  background-color: #11a8fd33;
+}
+.term-selection {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.term-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  background-color: #333;
+}
+
+.term-badge.selected {
+  background-color: #11a8fd;
+  color: #fff;
+}
+
+.duration-info,
+.payment-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.duration-item,
+.payment-item {
+  display: flex;
+  flex-direction: row;
+  font-size: 0.85rem;
+}
+
+.duration-term,
+.payment-term {
+  font-weight: 600;
+  color: #11a8fd;
+  margin-right: 0.4rem;
+}
+
+.duration-dates,
+.payment-amount,
+.payment-due-date {
+  color: #ccc;
+}
+
+.payment-due-date {
+  margin-left: 1rem;
+}
+
+.update-bus-fee-view-button {
+  background-color: transparent;
+  border: 1px solid #11a8fd;
+  color: #11a8fd;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.update-bus-fee-view-button:hover {
+  background-color: #11a8fd;
+  color: #fff;
+}
+
+.update-bus-fee-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 0.5rem;
+}
+
+.update-bus-fee-pagination-button {
+  background-color: #2c2c2c;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.update-bus-fee-pagination-button:hover {
+  background-color: #444;
+}
+
+.update-bus-fee-pagination-button.active {
+  background-color: #11a8fd;
+  border-color: #11a8fd;
+}
+
+.update-bus-fee-pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .update-bus-fee-table th,
+  .update-bus-fee-table td {
+    padding: 1rem 0.75rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .update-bus-fee-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .update-bus-fee-institute-selector {
+    margin-bottom: 1rem;
+  }
+
+  .select-wrapper {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .update-bus-fee-top-bar h2 {
+    font-size: 1.3rem;
+  }
+
+  .update-bus-fee-table th,
+  .update-bus-fee-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .term-badge {
+    font-size: 0.7rem;
+  }
+
+  .duration-item,
+  .payment-item {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .update-bus-fee-main-content {
+    padding: 1rem;
+  }
+
+  .update-bus-fee-table th,
+  .update-bus-fee-table td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .update-bus-fee-view-button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+  }
+}

@@ -1,0 +1,219 @@
+.view-transactions-container {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.view-transactions-top-bar {
+  background-color: #222222;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.view-transactions-back-icon {
+  font-size: 1rem;
+  cursor: pointer;
+  color: #ffffff;
+  margin-right: 0.5rem;
+}
+
+.view-transactions-top-bar h2 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.view-transactions-date input {
+  background-color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 5px;
+}
+
+.view-transactions-main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 0.8rem;
+  background-color: #1e1e1e;
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+}
+
+.view-transactions-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0 0.2rem;
+  gap: 0.5rem;
+}
+
+.view-transactions-search-bar-container {
+  width: 100%;
+  max-width: 600px;
+}
+
+.view-transactions-search-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.view-transactions-search-input-wrapper .view-transactions-search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 1rem;
+}
+
+.view-transactions-search-bar {
+  width: 100%;
+
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+  border: none;
+  border-radius: 20px;
+  background-color: #2c2c2c;
+  border: 1px solid #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 1rem;
+}
+
+.view-transactions-search-bar:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.view-transactions-table-container {
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.view-transactions-table-wrapper {
+  overflow-x: auto;
+  max-height: calc(100vh - 300px);
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+}
+
+.view-transactions-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.view-transactions-table th,
+.view-transactions-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #666;
+}
+
+.view-transactions-table th {
+  background-color: #1e1e1e;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.view-transactions-table td {
+  background-color: #2c2c2c;
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+.view-transactions-table tbody tr {
+  transition: background-color 0.3s ease;
+}
+
+.view-transactions-table tbody tr:hover {
+  background-color: #444;
+}
+
+.view-transactions-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.view-transactions-pagination-button {
+  background-color: #2c2c2c;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.view-transactions-pagination-button:hover {
+  background-color: #444;
+}
+
+.view-transactions-pagination-button.active {
+  background-color: #11a8fd;
+  border-color: #11a8fd;
+}
+
+.view-transactions-pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .view-transactions-table {
+    font-size: 0.9rem;
+  }
+
+  .view-transactions-pagination {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .view-transactions-top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .view-transactions-top-bar h2 {
+    margin-bottom: 0.5rem;
+  }
+
+  .view-transactions-date {
+    width: 100%;
+  }
+
+  .view-transactions-date input {
+    width: 100%;
+  }
+
+  .view-transactions-table th,
+  .view-transactions-table td {
+    padding: 0.5rem;
+    font-size: 0.7rem;
+  }
+}
