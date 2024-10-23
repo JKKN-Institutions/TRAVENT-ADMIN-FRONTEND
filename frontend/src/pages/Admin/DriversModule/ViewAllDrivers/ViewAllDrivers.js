@@ -12,6 +12,7 @@ import {
 import "./ViewAllDrivers.css";
 import AddNewDriver from "../AddNewDriver/AddNewDriver";
 import DriverDetails from "../DriverDetails/DriverDetails";
+import Button from "../../../../components/Shared/Button/Button";
 
 const ViewAllDrivers = ({ category, drivers, onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -156,28 +157,36 @@ const ViewAllDrivers = ({ category, drivers, onBack }) => {
           </div>
 
           <div className="view-all-drivers-action-buttons">
-            <button
-              className="view-all-drivers-view-button"
-              disabled={selectedDrivers.length !== 1}
+            <Button
+              label={
+                <>
+                  <FontAwesomeIcon icon={faEye} className="view-icon" /> View
+                  Driver Details
+                </>
+              }
               onClick={handleViewDriverDetails}
-            >
-              <FontAwesomeIcon icon={faEye} className="view-icon" /> View Driver
-              Details
-            </button>
-            <button
-              className="view-all-drivers-edit-button"
               disabled={selectedDrivers.length !== 1}
+            />
+
+            <Button
+              label={
+                <>
+                  <FontAwesomeIcon icon={faEdit} /> Edit Driver
+                </>
+              }
               onClick={handleEditDriver}
-            >
-              <FontAwesomeIcon icon={faEdit} /> Edit Driver
-            </button>
-            <button
-              className="view-all-drivers-delete-button"
               disabled={selectedDrivers.length !== 1}
+            />
+
+            <Button
+              label={
+                <>
+                  <FontAwesomeIcon icon={faTrash} /> Delete Driver
+                </>
+              }
               onClick={handleDeleteDriver}
-            >
-              <FontAwesomeIcon icon={faTrash} /> Delete Driver
-            </button>
+              disabled={selectedDrivers.length !== 1}
+            />
           </div>
         </div>
 

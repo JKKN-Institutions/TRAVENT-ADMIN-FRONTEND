@@ -1,0 +1,182 @@
+.add-amulet-fee-container {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.add-amulet-fee-header {
+  background-color: #222222;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.add-amulet-fee-back-icon {
+  font-size: 1rem;
+  cursor: pointer;
+  color: #ffffff;
+  margin-right: 1rem;
+}
+
+.add-amulet-fee-header h2 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.add-amulet-fee-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 0.3rem;
+  background-color: #1e1e1e;
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+}
+
+.add-amulet-fee-card {
+  background-color: #292929;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #333;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.add-amulet-fee-card-title {
+  color: #11a8fd;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.add-amulet-fee-student-info {
+  margin-bottom: 1.5rem;
+}
+
+.add-amulet-fee-student-info p {
+  margin-bottom: 0.5rem;
+  color: #cccccc;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.add-amulet-fee-student-info p span {
+  color: #fff;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.add-amulet-fee-form-group {
+  margin-bottom: 1rem;
+}
+
+.add-amulet-fee-form-group input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 1em;
+  background-color: #2e323b;
+  color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border: none;
+  border-bottom: 2px solid #666;
+}
+
+.add-amulet-fee-form-group input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #11a8fd;
+}
+
+.add-amulet-fee-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+
+.add-amulet-fee-cancel-button,
+.add-amulet-fee-add-button {
+  padding: 0.5rem 2rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.add-amulet-fee-cancel-button {
+  background-color: transparent;
+  color: #11a8fd;
+  border: 1px solid #11a8fd;
+}
+
+.add-amulet-fee-add-button {
+  background-color: #11a8fd;
+  color: #ffffff;
+  border: none;
+}
+
+.add-amulet-fee-cancel-button:hover {
+  background-color: rgba(17, 168, 253, 0.1);
+}
+
+.add-amulet-fee-add-button:hover {
+  background-color: #0e86c9;
+}
+
+/* Tablet Responsiveness */
+@media (max-width: 1024px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .add-amulet-fee-student-info p,
+  .add-amulet-fee-form-group input {
+    font-size: 0.8rem;
+  }
+
+  .add-amulet-fee-cancel-button,
+  .add-amulet-fee-add-button {
+    font-size: 0.875rem;
+    padding: 0.5rem 1.5rem;
+  }
+}
+
+/* Small Mobile Responsiveness */
+@media (max-width: 480px) {
+  .add-amulet-fee-container h2 {
+    font-size: 1.2rem;
+  }
+
+  .add-amulet-fee-student-info p,
+  .add-amulet-fee-form-group input {
+    font-size: 0.75rem;
+  }
+
+  .add-amulet-fee-cancel-button,
+  .add-amulet-fee-add-button {
+    font-size: 0.75rem;
+    padding: 0.5rem 1rem;
+  }
+}

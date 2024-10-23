@@ -12,6 +12,7 @@ import {
   faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import "./Passengers.css";
+import Button from "../../../../components/Shared/Button/Button";
 
 const Passengers = ({ route, onBack }) => {
   const [searchTermStudent, setSearchTermStudent] = useState("");
@@ -957,30 +958,27 @@ const Passengers = ({ route, onBack }) => {
             </div>
           </div>
           <div className="action-buttons-container">
-            {/* <button
-              className="passengers-action-button passengers-add-button"
-              onClick={handleAddNewPassenger}
-            >
-              <FontAwesomeIcon icon={faPlus} /> Add New
-            </button> */}
-            <button
-              className={`passengers-action-button passengers-delete-button ${
-                !selectedPassenger ? "disabled" : ""
-              }`}
+            {/* Delete Button */}
+            <Button
+              label={
+                <>
+                  <FontAwesomeIcon icon={faTrash} /> Delete
+                </>
+              }
               onClick={() => setShowDeleteConfirmation(true)}
-              disabled={!selectedPassenger}
-            >
-              <FontAwesomeIcon icon={faTrash} /> Delete
-            </button>
-            <button
-              className={`passengers-action-button passengers-edit-button ${
-                !selectedPassenger ? "disabled" : ""
-              }`}
+              disabled={!selectedPassenger} // Disable button if no passenger is selected
+            />
+
+            {/* Edit Button */}
+            <Button
+              label={
+                <>
+                  <FontAwesomeIcon icon={faEdit} /> Edit
+                </>
+              }
               onClick={handleEditPassenger}
-              disabled={!selectedPassenger}
-            >
-              <FontAwesomeIcon icon={faEdit} /> Edit
-            </button>
+              disabled={!selectedPassenger} // Disable button if no passenger is selected
+            />
           </div>
         </div>
 

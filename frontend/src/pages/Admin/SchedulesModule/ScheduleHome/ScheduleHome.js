@@ -113,205 +113,222 @@ const ScheduleHome = ({ toggleSidebar }) => {
     return <GeneratedPlan onBack={handleBackFromGeneratedPlan} />;
   }
 
-  if (isLoading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Loading...</p>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="loading-container">
+  //       <div className="loading-spinner"></div>
+  //       <p>Loading...</p>
+  //     </div>
+  //   );
+  // }
 
   return (
-    <div className="schedules-container">
-      <header className="schedules-top-bar">
-        <div className="schedules-menu-icon" onClick={toggleSidebar}>
-          <FontAwesomeIcon icon={faBars} />
+    <>
+      {isLoading ? (
+        <div className="schedules-loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading schedules...</p>
         </div>
-        <h1>Schedules</h1>
-      </header>
-      <main className="schedules-main-content">
-        <div className="schedules-stats-row">
-          <div className="schedules-column">
-            <div className="schedules-stat-card total-passengers">
-              <h2>Total Schedules</h2>
-              <div className="total-schedules-info">
-                <p className="total-schedules">{totalPassengers}</p>
-                <p className="total-schedules-text">
-                  Passengers Scheduled Totally
-                </p>
-              </div>
+      ) : (
+        <div className="schedules-container">
+          <header className="schedules-top-bar">
+            <div className="schedules-menu-icon" onClick={toggleSidebar}>
+              <FontAwesomeIcon icon={faBars} />
             </div>
-            <div className="schedule-home-action-card">
-              <h3>Scheduled Passengers</h3>
-              <p>Shows the list of passengers scheduled for their travel</p>
-              <div className="schedule-home-action-footer">
-                <div
-                  className="schedule-home-action-icon-container"
-                  onClick={handleShowScheduledPassengers}
-                >
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    className="schedule-home-action-icon"
-                  />
+            <h1>Schedules</h1>
+          </header>
+          <main className="schedules-main-content">
+            <div className="schedules-stats-row">
+              <div className="schedules-column">
+                <div className="schedules-stat-card total-passengers">
+                  <h2>Total Schedules</h2>
+                  <div className="total-schedules-info">
+                    <p className="total-schedules">{totalPassengers}</p>
+                    <p className="total-schedules-text">
+                      Passengers Scheduled Totally
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div className="schedules-column">
-            <div className="schedules-stat-card categories-usage">
-              <h3 className="usage-categories-title">Categories of Usage</h3>
-              <div className="usage-categories-chart">
-                <ResponsiveContainer width="100%" height={200}>
-                  <PieChart>
-                    <Pie
-                      data={usageCategories}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={80}
-                      dataKey="value"
-                      startAngle={90}
-                      endAngle={-270}
+                <div className="schedule-home-action-card">
+                  <h3>Scheduled Passengers</h3>
+                  <p>Shows the list of passengers scheduled for their travel</p>
+                  <div className="schedule-home-action-footer">
+                    <div
+                      className="schedule-home-action-icon-container"
+                      onClick={handleShowScheduledPassengers}
                     >
-                      {usageCategories.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="usage-categories-legend">
-                {usageCategories.map((category) => (
-                  <div key={category.name} className="legend-item">
-                    <span
-                      className="legend-color"
-                      style={{ backgroundColor: category.color }}
-                    ></span>
-                    <span className="legend-label">{category.name}</span>
-                    <span className="legend-value">{category.value}</span>
+                      <FontAwesomeIcon
+                        icon={faArrowRight}
+                        className="schedule-home-action-icon"
+                      />
+                    </div>
                   </div>
-                ))}
+                </div>
               </div>
-            </div>
-            <div className="schedule-home-action-card">
-              <h3>Generated Plan</h3>
-              <p>Displays the plan generated for the scheduled students</p>
-              <div className="schedule-home-action-footer">
-                <div
-                  className="schedule-home-action-icon-container"
-                  onClick={handleShowGeneratedPlan}
-                >
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    className="schedule-home-action-icon"
-                  />
+              <div className="schedules-column">
+                <div className="schedules-stat-card categories-usage">
+                  <h3 className="usage-categories-title">
+                    Categories of Usage
+                  </h3>
+                  <div className="usage-categories-chart">
+                    <ResponsiveContainer width="100%" height={200}>
+                      <PieChart>
+                        <Pie
+                          data={usageCategories}
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={80}
+                          dataKey="value"
+                          startAngle={90}
+                          endAngle={-270}
+                        >
+                          {usageCategories.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="usage-categories-legend">
+                    {usageCategories.map((category) => (
+                      <div key={category.name} className="legend-item">
+                        <span
+                          className="legend-color"
+                          style={{ backgroundColor: category.color }}
+                        ></span>
+                        <span className="legend-label">{category.name}</span>
+                        <span className="legend-value">{category.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="schedule-home-action-card">
+                  <h3>Generated Plan</h3>
+                  <p>Displays the plan generated for the scheduled students</p>
+                  <div className="schedule-home-action-footer">
+                    <div
+                      className="schedule-home-action-icon-container"
+                      onClick={handleShowGeneratedPlan}
+                    >
+                      <FontAwesomeIcon
+                        icon={faArrowRight}
+                        className="schedule-home-action-icon"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="schedules-column">
+                <div className="schedules-stat-card institution-wise">
+                  <h2>Institution Wise Schedulings</h2>
+                  <div className="institution-chart">
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart
+                        data={institutionWiseSchedulings}
+                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <XAxis dataKey="name" tick={false} />
+                        <YAxis width={40} />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Bar dataKey="count" fill="#8884d8" barSize={40}>
+                          {institutionWiseSchedulings.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="institution-legend">
+                    {institutionWiseSchedulings.map((institution) => (
+                      <div key={institution.name} className="legend-item">
+                        <span
+                          className="legend-color"
+                          style={{ backgroundColor: institution.color }}
+                        ></span>
+                        <span className="legend-label">{institution.name}</span>
+                        <span className="legend-value">
+                          {institution.count}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="schedules-column">
-            <div className="schedules-stat-card institution-wise">
-              <h2>Institution Wise Schedulings</h2>
-              <div className="institution-chart">
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart
-                    data={institutionWiseSchedulings}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <XAxis dataKey="name" tick={false} />
-                    <YAxis width={40} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Bar dataKey="count" fill="#8884d8" barSize={40}>
-                      {institutionWiseSchedulings.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="institution-legend">
-                {institutionWiseSchedulings.map((institution) => (
-                  <div key={institution.name} className="legend-item">
-                    <span
-                      className="legend-color"
-                      style={{ backgroundColor: institution.color }}
-                    ></span>
-                    <span className="legend-label">{institution.name}</span>
-                    <span className="legend-value">{institution.count}</span>
+            <div className="schedules-settings">
+              <h2>Settings</h2>
+              <div className="settings-grid">
+                <div className="settings-column">
+                  <ToggleSwitch
+                    id="auto-planning"
+                    checked={autoPlanning}
+                    onChange={handleToggle(setAutoPlanning)}
+                    label="Enable Auto Planning and Scheduling"
+                  />
+                  <p className="setting-description">
+                    Generates the plan automatically on the specified time and
+                    updates everyone with their schedule
+                  </p>
+                  <div className="setting-item">
+                    <label htmlFor="closing-time">
+                      Scheduling Closing Time
+                    </label>
+                    <input
+                      type="time"
+                      id="closing-time"
+                      value={schedulingClosingTime}
+                      onChange={(e) => setSchedulingClosingTime(e.target.value)}
+                    />
                   </div>
-                ))}
+                  <div className="change-time-btn-container">
+                    <button className="change-time-btn">
+                      Change Schedule Closing Time
+                    </button>
+                  </div>
+                </div>
+                <div className="settings-divider"></div>
+                <div className="settings-column">
+                  <ToggleSwitch
+                    id="reminder-notification"
+                    checked={reminderNotification}
+                    onChange={handleToggle(setReminderNotification)}
+                    label="Reminder Notification"
+                  />
+                  <div className="setting-item">
+                    <label htmlFor="notification-time">
+                      Notification Sending Time
+                    </label>
+                    <input
+                      type="time"
+                      id="notification-time"
+                      value={notificationSendingTime}
+                      onChange={(e) =>
+                        setNotificationSendingTime(e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="change-time-btn-container">
+                    <button className="change-time-btn">
+                      Change Notification Sending Time
+                    </button>
+                  </div>
+                  <ToggleSwitch
+                    id="dont-allow-tomorrow"
+                    checked={dontAllowTomorrow}
+                    onChange={handleToggle(setDontAllowTomorrow)}
+                    label="Don't Allow Scheduling On Tomorrow"
+                  />
+                  <p className="setting-description">
+                    Not Allowing the users to schedule for tomorrow due to any
+                    reason like holiday etc.,
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          </main>
         </div>
-        <div className="schedules-settings">
-          <h2>Settings</h2>
-          <div className="settings-grid">
-            <div className="settings-column">
-              <ToggleSwitch
-                id="auto-planning"
-                checked={autoPlanning}
-                onChange={handleToggle(setAutoPlanning)}
-                label="Enable Auto Planning and Scheduling"
-              />
-              <p className="setting-description">
-                Generates the plan automatically on the specified time and
-                updates everyone with their schedule
-              </p>
-              <div className="setting-item">
-                <label htmlFor="closing-time">Scheduling Closing Time</label>
-                <input
-                  type="time"
-                  id="closing-time"
-                  value={schedulingClosingTime}
-                  onChange={(e) => setSchedulingClosingTime(e.target.value)}
-                />
-              </div>
-              <div className="change-time-btn-container">
-                <button className="change-time-btn">
-                  Change Schedule Closing Time
-                </button>
-              </div>
-            </div>
-            <div className="settings-divider"></div>
-            <div className="settings-column">
-              <ToggleSwitch
-                id="reminder-notification"
-                checked={reminderNotification}
-                onChange={handleToggle(setReminderNotification)}
-                label="Reminder Notification"
-              />
-              <div className="setting-item">
-                <label htmlFor="notification-time">
-                  Notification Sending Time
-                </label>
-                <input
-                  type="time"
-                  id="notification-time"
-                  value={notificationSendingTime}
-                  onChange={(e) => setNotificationSendingTime(e.target.value)}
-                />
-              </div>
-              <div className="change-time-btn-container">
-                <button className="change-time-btn">
-                  Change Notification Sending Time
-                </button>
-              </div>
-              <ToggleSwitch
-                id="dont-allow-tomorrow"
-                checked={dontAllowTomorrow}
-                onChange={handleToggle(setDontAllowTomorrow)}
-                label="Don't Allow Scheduling On Tomorrow"
-              />
-              <p className="setting-description">
-                Not Allowing the users to schedule for tomorrow due to any
-                reason like holiday etc.,
-              </p>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
+      )}
+    </>
   );
 };
 

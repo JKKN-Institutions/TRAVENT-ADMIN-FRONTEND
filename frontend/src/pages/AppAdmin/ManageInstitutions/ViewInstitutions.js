@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ViewInstitutions.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -17,8 +17,16 @@ import AddYearForm from "./AddYearForm";
 import AddSectionForm from "./AddSectionForm";
 import AddAdminForm from "./AddAdminForm";
 import ReviewForm from "./ReviewForm";
+import Button from "../../../components/Shared/Button/Button";
 
 const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
   const [institutions, setInstitutions] = useState([
     {
       id: 1,
@@ -503,164 +511,182 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
   }
 
   return (
-    <div className="view-institutions-container">
-      {currentStep === "list" && (
-        <header className="view-institutions-top-bar">
-          <div className="view-institutions-menu-icon">
-            <FontAwesomeIcon
-              icon={faBars}
-              className="menu-icon"
-              onClick={toggleSidebar}
-            />
-          </div>
-          <div className="view-institutions-header">
-            <h2>Manage Institutions</h2>
-          </div>
-        </header>
-      )}
-
-      <main className="view-institutions-main-content">
-        {currentStep === "list" ? (
-          <>
-            <div className="view-institutions-search-bar-container">
-              <div className="search-input-wrapper">
-                <FontAwesomeIcon icon={faSearch} className="search-icon" />
-                <input
-                  type="text"
-                  className="view-institutions-search-bar"
-                  placeholder="Search institutions..."
+    <>
+      {isLoading ? (
+        <div className="schedules-loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading Manage Institutions...</p>
+        </div>
+      ) : (
+        <div className="view-institutions-container">
+          {currentStep === "list" && (
+            <header className="view-institutions-top-bar">
+              <div className="view-institutions-menu-icon">
+                <FontAwesomeIcon
+                  icon={faBars}
+                  className="menu-icon"
+                  onClick={toggleSidebar}
                 />
               </div>
-            </div>
+              <div className="view-institutions-header">
+                <h2>Manage Institutions</h2>
+              </div>
+            </header>
+          )}
 
-            <div className="action-buttons-container">
-              <button
-                className="view-institutions-action-button view-institutions-add-button"
-                onClick={handleAddClick}
-              >
-                <FontAwesomeIcon icon={faPlus} /> Add
-              </button>
-              <button
-                className={`view-institutions-action-button view-institutions-edit-button ${
-                  !selectedInstitution ? "disabled" : ""
-                }`}
-                onClick={handleEditClick}
-                disabled={!selectedInstitution}
-              >
-                <FontAwesomeIcon icon={faEdit} /> Edit
-              </button>
-              <button
-                className={`view-institutions-action-button view-institutions-delete-button ${
-                  !selectedInstitution ? "disabled" : ""
-                }`}
-                onClick={handleDeleteClick}
-                disabled={!selectedInstitution}
-              >
-                <FontAwesomeIcon icon={faTrash} /> Delete
-              </button>
-            </div>
+          <main className="view-institutions-main-content">
+            {currentStep === "list" ? (
+              <>
+                <div className="view-institutions-search-bar-container">
+                  <div className="search-input-wrapper">
+                    <FontAwesomeIcon icon={faSearch} className="search-icon" />
+                    <input
+                      type="text"
+                      className="view-institutions-search-bar"
+                      placeholder="Search institutions..."
+                    />
+                  </div>
+                </div>
 
-            <div className="view-institutions-table-container">
-              <div className="view-institutions-table-wrapper">
-                <table className="view-institutions-table">
-                  <thead>
-                    <tr>
-                      <th>S.No</th>
-                      <th>Institution Code</th>
-                      <th>Institute Name</th>
-                      <th>Institute State</th>
-                      <th>Departments Count</th>
-                      <th>Total Routes</th>
-                      <th>Total Buses</th>
-                      <th>Admin Name</th>
-                      <th>Admin Contact</th>
-                      <th>Created at</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentInstitutions.map((institution, index) => (
-                      <tr
-                        key={institution.id}
-                        onClick={() => handleRowClick(institution)}
-                        className={
-                          selectedInstitution?.id === institution.id
-                            ? "selected"
-                            : ""
-                        }
-                      >
-                        <td>{indexOfFirstItem + index + 1}</td>
-                        <td>{institution.code}</td>
-                        <td>{institution.name}</td>
-                        <td>{institution.state}</td>
-                        <td>{institution.departments}</td>
-                        <td>{institution.routes}</td>
-                        <td>{institution.buses}</td>
-                        <td>{institution.adminName}</td>
-                        <td>{institution.adminContact}</td>
-                        <td>{institution.createdAt}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="action-buttons-container">
+                  <Button
+                    label={
+                      <>
+                        <FontAwesomeIcon icon={faPlus} /> Add
+                      </>
+                    }
+                    onClick={handleAddClick}
+                    className="view-institutions-action-button view-institutions-add-button"
+                  />
+                  <Button
+                    label={
+                      <>
+                        <FontAwesomeIcon icon={faEdit} /> Edit
+                      </>
+                    }
+                    onClick={handleEditClick}
+                    className={`view-institutions-action-button view-institutions-edit-button ${
+                      !selectedInstitution ? "disabled" : ""
+                    }`}
+                    disabled={!selectedInstitution}
+                  />
+                  <Button
+                    label={
+                      <>
+                        <FontAwesomeIcon icon={faTrash} /> Delete
+                      </>
+                    }
+                    onClick={handleDeleteClick}
+                    className={`view-institutions-action-button view-institutions-delete-button ${
+                      !selectedInstitution ? "disabled" : ""
+                    }`}
+                    disabled={!selectedInstitution}
+                  />
+                </div>
+
+                <div className="view-institutions-table-container">
+                  <div className="view-institutions-table-wrapper">
+                    <table className="view-institutions-table">
+                      <thead>
+                        <tr>
+                          <th>S.No</th>
+                          <th>Institution Code</th>
+                          <th>Institute Name</th>
+                          <th>Institute State</th>
+                          <th>Departments Count</th>
+                          <th>Total Routes</th>
+                          <th>Total Buses</th>
+                          <th>Admin Name</th>
+                          <th>Admin Contact</th>
+                          <th>Created at</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {currentInstitutions.map((institution, index) => (
+                          <tr
+                            key={institution.id}
+                            onClick={() => handleRowClick(institution)}
+                            className={
+                              selectedInstitution?.id === institution.id
+                                ? "selected"
+                                : ""
+                            }
+                          >
+                            <td>{indexOfFirstItem + index + 1}</td>
+                            <td>{institution.code}</td>
+                            <td>{institution.name}</td>
+                            <td>{institution.state}</td>
+                            <td>{institution.departments}</td>
+                            <td>{institution.routes}</td>
+                            <td>{institution.buses}</td>
+                            <td>{institution.adminName}</td>
+                            <td>{institution.adminContact}</td>
+                            <td>{institution.createdAt}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div className="view-institutions-pagination">
+                  <button
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="view-institutions-pagination-button"
+                  >
+                    <FontAwesomeIcon icon={faChevronLeft} />
+                  </button>
+                  {pageNumbers.map((number) => (
+                    <button
+                      key={number}
+                      onClick={() => paginate(number)}
+                      className={`view-institutions-pagination-button ${
+                        currentPage === number ? "active" : ""
+                      }`}
+                    >
+                      {number}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={currentPage === pageNumbers.length}
+                    className="view-institutions-pagination-button"
+                  >
+                    <FontAwesomeIcon icon={faChevronRight} />
+                  </button>
+                </div>
+              </>
+            ) : (
+              renderForm()
+            )}
+          </main>
+
+          {showDeleteConfirmation && (
+            <div className="view-institutions-delete-confirmation-modal">
+              <div className="view-institutions-delete-confirmation-content">
+                <h3>Confirm Deletion</h3>
+                <p>Are you sure you want to delete this institution?</p>
+                <div className="view-institutions-delete-confirmation-buttons">
+                  <button
+                    onClick={handleCancelDelete}
+                    className="view-institutions-cancel-delete"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleConfirmDelete}
+                    className="view-institutions-confirm-delete"
+                  >
+                    Yes, Delete
+                  </button>
+                </div>
               </div>
             </div>
-
-            <div className="view-institutions-pagination">
-              <button
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="view-institutions-pagination-button"
-              >
-                <FontAwesomeIcon icon={faChevronLeft} />
-              </button>
-              {pageNumbers.map((number) => (
-                <button
-                  key={number}
-                  onClick={() => paginate(number)}
-                  className={`view-institutions-pagination-button ${
-                    currentPage === number ? "active" : ""
-                  }`}
-                >
-                  {number}
-                </button>
-              ))}
-              <button
-                onClick={() => paginate(currentPage + 1)}
-                disabled={currentPage === pageNumbers.length}
-                className="view-institutions-pagination-button"
-              >
-                <FontAwesomeIcon icon={faChevronRight} />
-              </button>
-            </div>
-          </>
-        ) : (
-          renderForm()
-        )}
-      </main>
-
-      {showDeleteConfirmation && (
-        <div className="view-institutions-delete-confirmation-modal">
-          <div className="view-institutions-delete-confirmation-content">
-            <h3>Confirm Deletion</h3>
-            <p>Are you sure you want to delete this institution?</p>
-            <div className="view-institutions-delete-confirmation-buttons">
-              <button
-                onClick={handleCancelDelete}
-                className="view-institutions-cancel-delete"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleConfirmDelete}
-                className="view-institutions-confirm-delete"
-              >
-                Yes, Delete
-              </button>
-            </div>
-          </div>
+          )}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

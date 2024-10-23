@@ -11,6 +11,7 @@ import Stoppings from "../Stoppings/Stoppings";
 import Passengers from "../Passengers/Passengers";
 import AddNewRoute from "../AddNewRoute/AddNewRoute";
 import "./RouteDetails.css";
+import Button from "../../../../components/Shared/Button/Button";
 
 const RouteDetails = ({ route, onBack, institutionId, onRouteUpdate }) => {
   const [showStoppings, setShowStoppings] = useState(false);
@@ -74,27 +75,41 @@ const RouteDetails = ({ route, onBack, institutionId, onRouteUpdate }) => {
       </header>
       <main className="route-details-main-content">
         <div className="route-details-action-buttons">
-          <button
+          <Button
+            label={
+              <>
+                <FontAwesomeIcon icon={faRoad} /> Stoppings
+              </>
+            }
             onClick={handleStoppingsClick}
-            className="route-details-action-button route-details-stoppings-button"
-          >
-            <FontAwesomeIcon icon={faRoad} /> Stoppings
-          </button>
-          <button
+          />
+
+          <Button
+            label={
+              <>
+                <FontAwesomeIcon icon={faUsers} /> Passengers
+              </>
+            }
             onClick={handlePassengersClick}
-            className="route-details-action-button route-details-passengers-button"
-          >
-            <FontAwesomeIcon icon={faUsers} /> Passengers
-          </button>
-          <button className="route-details-action-button route-details-track-button">
-            <FontAwesomeIcon icon={faGasPump} /> Track
-          </button>
-          <button
+          />
+
+          <Button
+            label={
+              <>
+                <FontAwesomeIcon icon={faGasPump} /> Track
+              </>
+            }
+          />
+
+          <Button
+            label={
+              <>
+                <FontAwesomeIcon icon={faPencilAlt} /> Edit
+              </>
+            }
             onClick={handleEditClick}
-            className="route-details-action-button route-details-edit-button"
-          >
-            <FontAwesomeIcon icon={faPencilAlt} /> Edit
-          </button>
+            disabled={false} // If you want to control when to disable the button
+          />
         </div>
         <div className="route-details-info">
           <div className="route-details-info-item">

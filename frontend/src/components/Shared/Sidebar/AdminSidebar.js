@@ -67,7 +67,7 @@ const AdminSidebar = React.memo(
                   className="admin-menu-link"
                   onClick={() => {
                     setActiveComponent("home");
-                    toggleSidebar(false);
+                    // toggleSidebar(false);
                   }}
                 >
                   <FontAwesomeIcon icon={faHome} className="admin-icon" />
@@ -79,7 +79,6 @@ const AdminSidebar = React.memo(
                   className="admin-menu-link"
                   onClick={() => {
                     setActiveComponent("liveTracking");
-                    toggleSidebar(false);
                   }}
                 >
                   <FontAwesomeIcon icon={faBus} className="admin-icon" />
@@ -91,7 +90,6 @@ const AdminSidebar = React.memo(
                   className="admin-menu-link"
                   onClick={() => {
                     setActiveComponent("schedules");
-                    toggleSidebar(false);
                   }}
                 >
                   <FontAwesomeIcon
@@ -106,7 +104,6 @@ const AdminSidebar = React.memo(
                   className="admin-menu-link"
                   onClick={() => {
                     setActiveComponent("buses");
-                    toggleSidebar(false);
                   }}
                 >
                   <FontAwesomeIcon icon={faBus} className="admin-icon" />
@@ -118,7 +115,6 @@ const AdminSidebar = React.memo(
                   className="admin-menu-link"
                   onClick={() => {
                     setActiveComponent("passengers");
-                    toggleSidebar(false);
                   }}
                 >
                   <FontAwesomeIcon icon={faUsers} className="admin-icon" />
@@ -130,7 +126,6 @@ const AdminSidebar = React.memo(
                   className="admin-menu-link"
                   onClick={() => {
                     setActiveComponent("drivers");
-                    toggleSidebar(false);
                   }}
                 >
                   <FontAwesomeIcon icon={faUsers} className="admin-icon" />
@@ -142,7 +137,6 @@ const AdminSidebar = React.memo(
                   className="admin-menu-link"
                   onClick={() => {
                     setActiveComponent("maintenance");
-                    toggleSidebar(false);
                   }}
                 >
                   <FontAwesomeIcon icon={faTools} className="admin-icon" />
@@ -154,7 +148,6 @@ const AdminSidebar = React.memo(
                   className="admin-menu-link"
                   onClick={() => {
                     setActiveComponent("notifications");
-                    toggleSidebar(false);
                   }}
                 >
                   <FontAwesomeIcon icon={faBell} className="admin-icon" />
@@ -166,7 +159,6 @@ const AdminSidebar = React.memo(
                   className="admin-menu-link"
                   onClick={() => {
                     setActiveComponent("feedback");
-                    toggleSidebar(false);
                   }}
                 >
                   <FontAwesomeIcon icon={faComment} className="admin-icon" />
@@ -178,7 +170,6 @@ const AdminSidebar = React.memo(
                   className="admin-menu-link"
                   onClick={() => {
                     setActiveComponent("payment");
-                    toggleSidebar(false);
                   }}
                 >
                   <FontAwesomeIcon icon={faMoneyBill} className="admin-icon" />
@@ -190,7 +181,6 @@ const AdminSidebar = React.memo(
                   className="admin-menu-link"
                   onClick={() => {
                     setActiveComponent("subscriptionPlans");
-                    toggleSidebar(false);
                   }}
                 >
                   <FontAwesomeIcon icon={faList} className="admin-icon" />

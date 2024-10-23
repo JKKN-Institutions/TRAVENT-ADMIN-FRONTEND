@@ -89,29 +89,6 @@
   gap: 10px;
 }
 
-.new-user-requests-action-button {
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.new-user-requests-approve-button,
-.new-user-requests-decline-button {
-  background-color: rgba(215, 215, 215, 0.05);
-  border: 1px solid #333;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: #fff;
-}
-
-.new-user-requests-approve-button:hover,
-.new-user-requests-decline-button:hover {
-  opacity: 0.9;
-}
-
 .new-user-requests-table-container {
   margin-bottom: 20px;
 }

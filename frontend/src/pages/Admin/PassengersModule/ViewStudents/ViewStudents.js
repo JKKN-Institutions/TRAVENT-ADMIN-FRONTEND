@@ -8,6 +8,7 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import "./ViewStudents.css";
+import Button from "../../../../components/Shared/Button/Button";
 
 const studentsData = [
   {
@@ -326,12 +327,14 @@ const ViewStudents = ({ onBack }) => {
             />
           </div>
           <div className="view-students-action-button-container">
-            <button
-              className="view-students-filter-button"
+            <Button
+              label={
+                <>
+                  <FontAwesomeIcon icon={faFilter} /> Filter by
+                </>
+              }
               onClick={() => setShowFilters(!showFilters)}
-            >
-              <FontAwesomeIcon icon={faFilter} /> Filter by
-            </button>
+            />
           </div>
         </div>
 

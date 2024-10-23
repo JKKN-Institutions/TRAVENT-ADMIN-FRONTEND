@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSearch,
@@ -10,8 +10,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import NewSubscriptionPlanForm from "./NewSubscriptionPlanForm";
 import "./SubscriptionPlans.css";
+import Button from "../../../components/Shared/Button/Button";
 
 const SubscriptionPlans = ({ toggleSidebar }) => {
+  const [isLoading, setIsLoading] = useState(true);
   const [showNewPlanForm, setShowNewPlanForm] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [editingPlan, setEditingPlan] = useState(null);
@@ -67,6 +69,11 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
       price: "4,00,000",
     },
   ]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleAddPlan = () => {
     setEditingPlan(null);
@@ -131,136 +138,154 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
   }
 
   return (
-    <div className="subscription-plans-container">
-      <header className="subscription-plans-top-bar">
-        <div className="subscription-plans-menu-icon">
-          <FontAwesomeIcon
-            icon={faBars}
-            className="menu-icon"
-            onClick={toggleSidebar}
-          />
+    <>
+      {isLoading ? (
+        <div className="schedules-loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading Subscriptions...</p>
         </div>
-        <div className="subscription-plans-header">
-          <h2>Subscription Plans</h2>
-        </div>
-      </header>
-      <main className="subscription-plans-main-content">
-        <div className="subscription-plans-search-bar-container">
-          <div className="subscription-plans-search-input-wrapper">
-            <FontAwesomeIcon icon={faSearch} className="search-icon" />
-            <input
-              type="text"
-              className="subscription-plans-search-bar"
-              placeholder="Search institutions..."
-            />
-          </div>
-        </div>
-
-        <div className="action-buttons-container">
-          <button
-            className="subscription-plans-action-button subscription-plans-add-button"
-            onClick={handleAddPlan}
-          >
-            <FontAwesomeIcon icon={faPlus} /> Add
-          </button>
-          <button
-            className="subscription-plans-action-button subscription-plans-edit-button"
-            onClick={handleEditPlan}
-            disabled={!selectedPlan}
-          >
-            <FontAwesomeIcon icon={faEdit} /> Edit
-          </button>
-          <button
-            className="subscription-plans-action-button subscription-plans-delete-button"
-            onClick={handleDeletePlan}
-            disabled={!selectedPlan}
-          >
-            <FontAwesomeIcon icon={faTrash} /> Delete
-          </button>
-        </div>
-
-        <div className="plans-section">
-          <h2>6 Months Plans - Premium</h2>
-          <div className="plans-grid">
-            {plans
-              .filter((plan) => plan.validity === "6 Months")
-              .map((plan) => (
-                <div
-                  key={plan.id}
-                  className={`plan-card ${
-                    selectedPlan && selectedPlan.id === plan.id
-                      ? "selected"
-                      : ""
-                  }`}
-                  onClick={() => handleSelectPlan(plan)}
-                >
-                  {selectedPlan && selectedPlan.id === plan.id && (
-                    <div className="plan-card-check">
-                      <FontAwesomeIcon icon={faCheck} />
-                    </div>
-                  )}
-                  <h3>{plan.name}</h3>
-                  <p>Validity: {plan.validity}</p>
-                  <p>User Range: {plan.userRange}</p>
-                  <h4>₹{plan.price}</h4>
-                </div>
-              ))}
-          </div>
-        </div>
-
-        <div className="plans-section">
-          <h2>12 Months Plans - Ultra Premium</h2>
-          <div className="plans-grid">
-            {plans
-              .filter((plan) => plan.validity === "12 Months")
-              .map((plan) => (
-                <div
-                  key={plan.id}
-                  className={`plan-card ${
-                    selectedPlan && selectedPlan.id === plan.id
-                      ? "selected"
-                      : ""
-                  }`}
-                  onClick={() => handleSelectPlan(plan)}
-                >
-                  {selectedPlan && selectedPlan.id === plan.id && (
-                    <div className="plan-card-check">
-                      <FontAwesomeIcon icon={faCheck} />
-                    </div>
-                  )}
-                  <h3>{plan.name}</h3>
-                  <p>Validity: {plan.validity}</p>
-                  <p>User Range: {plan.userRange}</p>
-                  <h4>₹{plan.price}</h4>
-                </div>
-              ))}
-          </div>
-        </div>
-      </main>
-
-      {showDeleteConfirmation && (
-        <div className="subscription-delete-confirmation-overlay">
-          <div className="subscription-delete-confirmation-modal">
-            <h3>Confirm Deletion</h3>
-            <p>Are you sure you want to delete this plan?</p>
-            <div className="subscription-delete-confirmation-buttons">
-              <button
-                onClick={cancelDelete}
-                className="subscription-cancel-delete-button"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDelete}
-                className="subscription-confirm-delete-button"
-              >
-                Delete
-              </button>
+      ) : (
+        <div className="subscription-plans-container">
+          <header className="subscription-plans-top-bar">
+            <div className="subscription-plans-menu-icon">
+              <FontAwesomeIcon
+                icon={faBars}
+                className="menu-icon"
+                onClick={toggleSidebar}
+              />
             </div>
-          </div>
+            <div className="subscription-plans-header">
+              <h2>Subscription Plans</h2>
+            </div>
+          </header>
+          <main className="subscription-plans-main-content">
+            <div className="subscription-plans-search-bar-container">
+              <div className="subscription-plans-search-input-wrapper">
+                <FontAwesomeIcon icon={faSearch} className="search-icon" />
+                <input
+                  type="text"
+                  className="subscription-plans-search-bar"
+                  placeholder="Search institutions..."
+                />
+              </div>
+            </div>
+
+            <div className="action-buttons-container">
+              <Button
+                label={
+                  <>
+                    <FontAwesomeIcon icon={faPlus} /> Add
+                  </>
+                }
+                onClick={handleAddPlan}
+                className="subscription-plans-action-button subscription-plans-add-button"
+              />
+              <Button
+                label={
+                  <>
+                    <FontAwesomeIcon icon={faEdit} /> Edit
+                  </>
+                }
+                onClick={handleEditPlan}
+                className="subscription-plans-action-button subscription-plans-edit-button"
+                disabled={!selectedPlan}
+              />
+              <Button
+                label={
+                  <>
+                    <FontAwesomeIcon icon={faTrash} /> Delete
+                  </>
+                }
+                onClick={handleDeletePlan}
+                className="subscription-plans-action-button subscription-plans-delete-button"
+                disabled={!selectedPlan}
+              />
+            </div>
+
+            <div className="plans-section">
+              <h2>6 Months Plans - Premium</h2>
+              <div className="plans-grid">
+                {plans
+                  .filter((plan) => plan.validity === "6 Months")
+                  .map((plan) => (
+                    <div
+                      key={plan.id}
+                      className={`plan-card ${
+                        selectedPlan && selectedPlan.id === plan.id
+                          ? "selected"
+                          : ""
+                      }`}
+                      onClick={() => handleSelectPlan(plan)}
+                    >
+                      {selectedPlan && selectedPlan.id === plan.id && (
+                        <div className="plan-card-check">
+                          <FontAwesomeIcon icon={faCheck} />
+                        </div>
+                      )}
+                      <h3>{plan.name}</h3>
+                      <p>Validity: {plan.validity}</p>
+                      <p>User Range: {plan.userRange}</p>
+                      <h4>₹{plan.price}</h4>
+                    </div>
+                  ))}
+              </div>
+            </div>
+
+            <div className="plans-section">
+              <h2>12 Months Plans - Ultra Premium</h2>
+              <div className="plans-grid">
+                {plans
+                  .filter((plan) => plan.validity === "12 Months")
+                  .map((plan) => (
+                    <div
+                      key={plan.id}
+                      className={`plan-card ${
+                        selectedPlan && selectedPlan.id === plan.id
+                          ? "selected"
+                          : ""
+                      }`}
+                      onClick={() => handleSelectPlan(plan)}
+                    >
+                      {selectedPlan && selectedPlan.id === plan.id && (
+                        <div className="plan-card-check">
+                          <FontAwesomeIcon icon={faCheck} />
+                        </div>
+                      )}
+                      <h3>{plan.name}</h3>
+                      <p>Validity: {plan.validity}</p>
+                      <p>User Range: {plan.userRange}</p>
+                      <h4>₹{plan.price}</h4>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </main>
+
+          {showDeleteConfirmation && (
+            <div className="subscription-delete-confirmation-overlay">
+              <div className="subscription-delete-confirmation-modal">
+                <h3>Confirm Deletion</h3>
+                <p>Are you sure you want to delete this plan?</p>
+                <div className="subscription-delete-confirmation-buttons">
+                  <button
+                    onClick={cancelDelete}
+                    className="subscription-cancel-delete-button"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    className="subscription-confirm-delete-button"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

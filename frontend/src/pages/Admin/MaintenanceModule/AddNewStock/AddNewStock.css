@@ -1,0 +1,180 @@
+.add-new-stock-container {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.add-new-stock-top-bar {
+  background-color: #222222;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.add-new-stock-back-button {
+  font-size: 1rem;
+  cursor: pointer;
+  color: #ffffff;
+  background: none;
+  margin-right: 1rem;
+  border: none;
+}
+
+.add-new-stock-header h2 {
+  color: #ffffff;
+  margin: 0;
+  flex-grow: 1;
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+
+.add-new-stock-main-content {
+  /* flex: 1; */
+  overflow-y: auto;
+  padding: 1rem;
+  background-color: rgba(215, 215, 215, 0.01);
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+  border-radius: 10px;
+  padding: 2rem;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.add-new-stock-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.add-new-stock-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-new-stock-form-group input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 0.5rem;
+  border-radius: 10px;
+  font-size: 1em;
+  background-color: #2e323b;
+  color: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid #666;
+  border-right: none;
+  border-left: none;
+  border-top: none;
+}
+
+.add-new-stock-form-group input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #11a8fd;
+}
+
+.add-new-stock-form-group input.input-error {
+  border-color: #ff4d4f;
+}
+
+.add-new-stock-form-group .error {
+  color: #ff4d4f;
+  font-size: 0.75rem;
+  margin-top: -0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.add-new-stock-buttons-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.add-new-stock-cancel-button,
+.add-new-stock-save-button {
+  padding: 0.5rem 2rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.add-new-stock-cancel-button {
+  background-color: transparent;
+  color: #11a8fd;
+  border: 1px solid #11a8fd;
+}
+
+.add-new-stock-save-button {
+  background-color: #11a8fd;
+  color: #ffffff;
+  border: none;
+}
+
+.add-new-stock-cancel-button:hover {
+  background-color: rgba(17, 168, 253, 0.1);
+}
+
+.add-new-stock-save-button:hover {
+  background-color: #0e86c9;
+}
+
+/* Tablet Responsiveness */
+@media (max-width: 1024px) {
+  .add-new-stock-container {
+    padding: 1.5rem;
+  }
+
+  .add-new-stock-form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .add-new-stock-container {
+    padding: 1rem;
+  }
+
+  .add-new-stock-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .add-new-stock-form-group input {
+    font-size: 0.875rem;
+  }
+
+  .add-new-stock-cancel-button,
+  .add-new-stock-save-button {
+    font-size: 0.875rem;
+    padding: 0.5rem 1.5rem;
+  }
+}
+
+/* Small Mobile Responsiveness */
+@media (max-width: 480px) {
+  .add-new-stock-container h2 {
+    font-size: 1.2rem;
+  }
+
+  .add-new-stock-form-group input {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .add-new-stock-cancel-button,
+  .add-new-stock-save-button {
+    font-size: 0.75rem;
+    padding: 0.5rem 1rem;
+  }
+}

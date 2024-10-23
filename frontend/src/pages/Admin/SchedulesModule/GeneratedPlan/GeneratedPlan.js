@@ -8,6 +8,7 @@ import {
   faChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import "./GeneratedPlan.css";
+import Button from "../../../../components/Shared/Button/Button";
 
 const GeneratedPlan = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -86,12 +87,14 @@ const GeneratedPlan = ({ onBack }) => {
             />
           </div>
           <div className="generated-plan-action-button-container">
-            <button
-              className="generated-plan-filter-button"
+            <Button
+              label={
+                <>
+                  <FontAwesomeIcon icon={faFilter} /> Filter by
+                </>
+              }
               onClick={() => setShowFilters(!showFilters)}
-            >
-              <FontAwesomeIcon icon={faFilter} /> Filter by
-            </button>
+            />
           </div>
         </div>
 

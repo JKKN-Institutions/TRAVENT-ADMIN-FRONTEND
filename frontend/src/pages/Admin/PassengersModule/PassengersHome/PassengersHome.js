@@ -109,225 +109,231 @@ const PassengersHome = ({ toggleSidebar }) => {
     return <ViewStaffs onBack={handleBackFromViewStaffs} />;
   }
 
-  if (isLoading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="passengers-home-container">
-      <header className="passengers-home-top-bar">
-        <div className="passengers-home-menu-icon" onClick={toggleSidebar}>
-          <FontAwesomeIcon icon={faBars} />
+    <>
+      {isLoading ? (
+        <div className="schedules-loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading Passengers...</p>
         </div>
-        <h1>Passengers</h1>
-      </header>
-      <main className="passengers-home-main-content">
-        <div className="passengers-stats-row">
-          <div className="passengers-stat-card boarding-status">
-            <h2>Total Users</h2>
-            <div className="total-passengers-info">
-              <p className="total-passengers">{accountStatus.total}</p>
-              <p className="total-passengers-text">
-                Passengers using Travent totally
-              </p>
+      ) : (
+        <div className="passengers-home-container">
+          <header className="passengers-home-top-bar">
+            <div className="passengers-home-menu-icon" onClick={toggleSidebar}>
+              <FontAwesomeIcon icon={faBars} />
             </div>
-          </div>
-          <div className="passengers-stat-card account-status">
-            <h2>Account Status</h2>
-            <div className="doughnut-chart-container">
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie
-                    data={[
-                      { name: "Active", value: accountStatus.active },
-                      { name: "Blocked", value: accountStatus.blocked },
-                    ]}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    startAngle={90}
-                    endAngle={-270}
-                  >
-                    <Cell fill="#3498db" />
-                    <Cell fill="#e74c3c" />
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="doughnut-chart-percentage">
-                {activePercentage}%
+            <h1>Passengers</h1>
+          </header>
+          <main className="passengers-home-main-content">
+            <div className="passengers-stats-row">
+              <div className="passengers-stat-card boarding-status">
+                <h2>Total Users</h2>
+                <div className="total-passengers-info">
+                  <p className="total-passengers">{accountStatus.total}</p>
+                  <p className="total-passengers-text">
+                    Passengers using Travent totally
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="doughnut-stat-details">
-              <div className="doughnut-stat-item">
-                <span className="doughnut-active-dot"></span>
-                <span className="doughnut-stat-label">Active</span>
-                <span className="doughnut-stat-value">
-                  {accountStatus.active}
-                </span>
-              </div>
-              <div className="doughnut-stat-item">
-                <span className="doughnut-blocked-dot"></span>
-                <span className="doughnut-stat-label">Blocked</span>
-                <span className="doughnut-stat-value">
-                  {accountStatus.blocked}
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="passengers-stat-card paid-fees">
-            <h2>Paid Fees Passengers Count</h2>
-            <div className="passengers-pie-chart-stat-container">
-              <div className="passengers-pie-chart-container">
-                <ResponsiveContainer width="100%" height={250}>
-                  <PieChart>
-                    <Pie
-                      data={paidFeesCount}
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={65}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {paidFeesCount.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="passengers-pie-stat-details">
-                {paidFeesCount.map((item, index) => (
-                  <div className="passengers-pie-stat-item" key={item.name}>
-                    <span
-                      className="passengers-pie-dot"
-                      style={{ backgroundColor: COLORS[index % COLORS.length] }}
-                    ></span>
-                    <span className="passengers-pie-stat-label">
-                      {item.name}
-                    </span>
-                    <span className="passengers-pie-stat-value">
-                      {item.value}
+              <div className="passengers-stat-card account-status">
+                <h2>Account Status</h2>
+                <div className="doughnut-chart-container">
+                  <ResponsiveContainer width="100%" height={200}>
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: "Active", value: accountStatus.active },
+                          { name: "Blocked", value: accountStatus.blocked },
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        startAngle={90}
+                        endAngle={-270}
+                      >
+                        <Cell fill="#3498db" />
+                        <Cell fill="#e74c3c" />
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="doughnut-chart-percentage">
+                    {activePercentage}%
+                  </div>
+                </div>
+                <div className="doughnut-stat-details">
+                  <div className="doughnut-stat-item">
+                    <span className="doughnut-active-dot"></span>
+                    <span className="doughnut-stat-label">Active</span>
+                    <span className="doughnut-stat-value">
+                      {accountStatus.active}
                     </span>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="passengers-actions-column">
-            <div className="action-card">
-              <h3>View Students</h3>
-              <p>Shows the list of students using Travent for their travel</p>
-              <div className="action-footer">
-                <span className="action-count">4651</span>
-                <div
-                  className="action-icon-container"
-                  onClick={handleViewStudents}
-                >
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    className="action-icon"
-                  />
+                  <div className="doughnut-stat-item">
+                    <span className="doughnut-blocked-dot"></span>
+                    <span className="doughnut-stat-label">Blocked</span>
+                    <span className="doughnut-stat-value">
+                      {accountStatus.blocked}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="action-card">
-              <h3>View Staffs</h3>
-              <p>Shows the list of staffs using Travent for their travel</p>
-              <div className="action-footer">
-                <span className="action-count">407</span>
-                <div
-                  className="action-icon-container"
-                  onClick={handleViewStaffs}
-                >
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    className="action-icon"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="passengers-charts-row">
-          <div className="passengers-amulet-status">
-            <h2>Passengers Amulets Status</h2>
-            <div className="amulet-chart-container">
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={amuletStatus} barSize={50}>
-                  <XAxis dataKey="none" />
-                  <YAxis fontSize={14} color="#fff" />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar
-                    dataKey="count"
-                    style={{ backgroundColor: "transparent" }}
-                  >
-                    {amuletStatus.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={AMULET_COLORS[index % AMULET_COLORS.length]}
-                      />
+              <div className="passengers-stat-card paid-fees">
+                <h2>Paid Fees Passengers Count</h2>
+                <div className="passengers-pie-chart-stat-container">
+                  <div className="passengers-pie-chart-container">
+                    <ResponsiveContainer width="100%" height={250}>
+                      <PieChart>
+                        <Pie
+                          data={paidFeesCount}
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={65}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {paidFeesCount.map((entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={COLORS[index % COLORS.length]}
+                            />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="passengers-pie-stat-details">
+                    {paidFeesCount.map((item, index) => (
+                      <div className="passengers-pie-stat-item" key={item.name}>
+                        <span
+                          className="passengers-pie-dot"
+                          style={{
+                            backgroundColor: COLORS[index % COLORS.length],
+                          }}
+                        ></span>
+                        <span className="passengers-pie-stat-label">
+                          {item.name}
+                        </span>
+                        <span className="passengers-pie-stat-value">
+                          {item.value}
+                        </span>
+                      </div>
                     ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="amulet-legend">
-              {amuletStatus.map((item, index) => (
-                <div className="amulet-legend-item" key={item.range}>
-                  <span
-                    className="amulet-legend-color"
-                    style={{ backgroundColor: AMULET_COLORS[index] }}
-                  ></span>
-                  <span className="amulet-legend-range">{item.range}</span>
-                  <span className="amulet-legend-count">{item.count}</span>
+                  </div>
                 </div>
-              ))}
+              </div>
+
+              <div className="passengers-actions-column">
+                <div className="passengers-action-card">
+                  <h3>View Students</h3>
+                  <p>
+                    Shows the list of students using Travent for their travel
+                  </p>
+                  <div className="passengers-action-footer">
+                    <span className="passengers-action-count">4651</span>
+                    <div
+                      className="passengers-action-icon-container"
+                      onClick={handleViewStudents}
+                    >
+                      <FontAwesomeIcon
+                        icon={faArrowRight}
+                        className="passengers-action-icon"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="passengers-action-card">
+                  <h3>View Staffs</h3>
+                  <p>Shows the list of staffs using Travent for their travel</p>
+                  <div className="passengers-action-footer">
+                    <span className="passengers-action-count">407</span>
+                    <div
+                      className="passengers-action-icon-container"
+                      onClick={handleViewStaffs}
+                    >
+                      <FontAwesomeIcon
+                        icon={faArrowRight}
+                        className="passengers-action-icon"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="institution-wise-passengers">
-            <h2>Institution Wise Passengers</h2>
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart
-                layout="vertical"
-                data={institutions}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
-                <XAxis type="number" fontSize={14} color="#fff" />
-                <YAxis
-                  dataKey="name"
-                  type="category"
-                  fontSize={14}
-                  color="#fff"
-                  width={200}
-                />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="count" barSize={30}>
-                  {institutions.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={
-                        INSTITUTION_COLORS[index % INSTITUTION_COLORS.length]
-                      }
-                    />
+            <div className="passengers-charts-row">
+              <div className="passengers-amulet-status">
+                <h2>Passengers Amulets Status</h2>
+                <div className="amulet-chart-container">
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={amuletStatus} barSize={50}>
+                      <XAxis dataKey="none" />
+                      <YAxis fontSize={14} color="#fff" />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Bar
+                        dataKey="count"
+                        style={{ backgroundColor: "transparent" }}
+                      >
+                        {amuletStatus.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={AMULET_COLORS[index % AMULET_COLORS.length]}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="amulet-legend">
+                  {amuletStatus.map((item, index) => (
+                    <div className="amulet-legend-item" key={item.range}>
+                      <span
+                        className="amulet-legend-color"
+                        style={{ backgroundColor: AMULET_COLORS[index] }}
+                      ></span>
+                      <span className="amulet-legend-range">{item.range}</span>
+                      <span className="amulet-legend-count">{item.count}</span>
+                    </div>
                   ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+                </div>
+              </div>
+              <div className="institution-wise-passengers">
+                <h2>Institution Wise Passengers</h2>
+                <ResponsiveContainer width="100%" height={400}>
+                  <BarChart
+                    layout="vertical"
+                    data={institutions}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <XAxis type="number" fontSize={14} color="#fff" />
+                    <YAxis
+                      dataKey="name"
+                      type="category"
+                      fontSize={14}
+                      color="#fff"
+                      width={200}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Bar dataKey="count" barSize={30}>
+                      {institutions.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={
+                            INSTITUTION_COLORS[
+                              index % INSTITUTION_COLORS.length
+                            ]
+                          }
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </main>
         </div>
-      </main>
-    </div>
+      )}
+    </>
   );
 };
 

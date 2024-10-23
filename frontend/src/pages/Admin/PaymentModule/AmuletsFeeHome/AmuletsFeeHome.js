@@ -10,9 +10,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { format } from "date-fns";
+
 import "./AmuletsFeeHome.css";
 
-const AmuletsFeeHome = () => {
+const AmuletsFeeHome = ({
+  setShowAddAmuletsFee,
+  setShowAmuletsRefilledList,
+}) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const transactionData = [
@@ -37,7 +41,6 @@ const AmuletsFeeHome = () => {
     const [year, month] = event.target.value.split("-");
     setSelectedDate(new Date(year, month - 1));
   };
-
   return (
     <div className="amulets-fee-container">
       <div className="amulets-fee-row">
@@ -70,12 +73,18 @@ const AmuletsFeeHome = () => {
           </div>
         </div>
         <div className="amulets-fee-column">
-          <div className="amulets-fee-action-card">
+          <div
+            className="amulets-fee-action-card"
+            onClick={() => setShowAddAmuletsFee(true)}
+          >
             <FontAwesomeIcon icon={faPlus} className="action-icon" />
             <h3>Add Amulets Fee</h3>
             <p>Add Amulets fee and refill amulets</p>
           </div>
-          <div className="amulets-fee-action-card">
+          <div
+            className="amulets-fee-action-card"
+            onClick={() => setShowAmuletsRefilledList(true)}
+          >
             <FontAwesomeIcon icon={faEye} className="action-icon" />
             <h3>Amulets Refilled List</h3>
             <p>View the list of students who has refilled</p>

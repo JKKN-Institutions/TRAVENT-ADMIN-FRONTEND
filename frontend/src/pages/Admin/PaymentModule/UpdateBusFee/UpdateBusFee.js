@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./UpdateBusFee.css";
 import AddBusFee from "../AddBusFee/AddBusFee";
+import Button from "../../../../components/Shared/Button/Button";
 
 const UpdateBusFee = ({ onBack }) => {
   const [selectedInstitute, setSelectedInstitute] = useState(
@@ -167,13 +168,15 @@ const UpdateBusFee = ({ onBack }) => {
               <FontAwesomeIcon icon={faChevronDown} className="select-icon" />
             </div>
           </div>
-          <button
-            className="update-bus-fee-edit-button"
+          <Button
+            label={
+              <>
+                <FontAwesomeIcon icon={faEdit} /> Edit
+              </>
+            }
             onClick={handleEditClick}
             disabled={selectedRow === null}
-          >
-            <FontAwesomeIcon icon={faEdit} /> Edit
-          </button>
+          />
         </div>
 
         <div className="update-bus-fee-table-container">
@@ -192,7 +195,13 @@ const UpdateBusFee = ({ onBack }) => {
               </thead>
               <tbody>
                 {currentItems.map((item, index) => (
-                  <tr key={index}>
+                  <tr
+                    key={index}
+                    onClick={() => handleRowSelect(indexOfFirstItem + index)}
+                    className={
+                      selectedRow === indexOfFirstItem + index ? "selected" : ""
+                    }
+                  >
                     <td>{indexOfFirstItem + index + 1}</td>
                     <td>{item.academicYear}</td>
                     <td>{item.institute}</td>

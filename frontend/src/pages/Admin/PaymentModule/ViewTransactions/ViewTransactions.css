@@ -46,7 +46,7 @@
 .view-transactions-main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem 0.8rem;
+  padding: 0.5rem 0.3rem;
   background-color: #1e1e1e;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
@@ -195,12 +195,8 @@
 
 @media (max-width: 480px) {
   .view-transactions-top-bar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .view-transactions-top-bar h2 {
-    margin-bottom: 0.5rem;
+    flex-direction: row;
+    align-items: center;
   }
 
   .view-transactions-date {

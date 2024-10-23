@@ -1,0 +1,137 @@
+.maintenance-fuel-container {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+}
+
+.maintenance-fuel-top-bar {
+  background-color: #222222;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.maintenance-fuel-menu-icon {
+  font-size: 1rem;
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+.maintenance-fuel-top-bar h1 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.maintenance-fuel-tabs {
+  display: flex;
+  justify-content: center;
+  background-color: #292929;
+  border-radius: 10px;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.tab-button {
+  background-color: transparent;
+  border: none;
+  color: #ffffff;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  flex-grow: 1;
+  text-align: center;
+}
+
+.tab-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tab-button.active {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.tab-button.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #ffffff;
+}
+
+.maintenance-fuel-main-content {
+  flex: 1;
+  padding: 1rem 0.8rem 0 0;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+  max-height: calc(100vh - 100px);
+}
+
+.month-picker {
+  background-color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  color: #fff;
+  border: none;
+  padding: 0.3rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.month-picker::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.action-icon {
+  font-size: 2rem;
+  color: #11a8fd;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+  .maintenance-fuel-top-bar h1 {
+    font-size: 1.2rem;
+  }
+
+  .maintenance-fuel-tabs {
+    flex-wrap: wrap;
+  }
+
+  .tab-button {
+    flex-basis: 33.33%;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .maintenance-fuel-top-bar h1 {
+    font-size: 1.1rem;
+  }
+
+  .tab-button {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .maintenance-fuel-tabs {
+    flex-direction: column;
+  }
+
+  .tab-button {
+    width: 100%;
+  }
+}

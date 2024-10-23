@@ -9,6 +9,7 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import "./NewUserRequest.css";
+import ActionButton from "../../../../components/Shared/Button/Button";
 
 // Dummy data
 const dummyData = [
@@ -305,18 +306,16 @@ function NewUserRequest({ onBack }) {
         </div>
 
         <div className="new-user-action-buttons-container">
-          <button
-            className="new-user-requests-action-button new-user-requests-approve-button"
+          <ActionButton
+            label="Approve"
             onClick={() => handleAction("approve")}
-          >
-            Approve
-          </button>
-          <button
-            className="new-user-requests-action-button new-user-requests-decline-button"
+            type="approve"
+          />
+          <ActionButton
+            label="Decline"
             onClick={() => handleAction("reject")}
-          >
-            Decline
-          </button>
+            type="decline"
+          />
         </div>
 
         {currentStudents.length > 0 && (

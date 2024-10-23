@@ -10,6 +10,7 @@ import {
   faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import "./ScheduledPassengers.css";
+import Button from "../../../../components/Shared/Button/Button";
 
 // Add this to the top of your ScheduledPassengers.jsx file
 
@@ -982,12 +983,14 @@ const ScheduledPassengers = ({ onBack }) => {
             </div>
           </div>
           <div className="scheduled-passengers-action-button-container">
-            <button
-              className="scheduled-passengers-filter-button"
+            <Button
+              label={
+                <>
+                  <FontAwesomeIcon icon={faFilter} /> Filter by
+                </>
+              }
               onClick={() => setShowFilters(!showFilters)}
-            >
-              <FontAwesomeIcon icon={faFilter} /> Filter by
-            </button>
+            />
           </div>
         </div>
 

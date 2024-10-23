@@ -208,7 +208,7 @@
   min-width: 250px;
 }
 
-.action-card {
+.passengers-action-card {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -220,29 +220,29 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.action-card h3 {
+.passengers-action-card h3 {
   font-size: 1.1rem;
   margin-bottom: 25px;
 }
 
-.action-card p {
+.passengers-action-card p {
   font-size: 0.9rem;
   color: #cccccc;
   margin-bottom: 15px;
 }
 
-.action-footer {
+.passengers-action-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.action-count {
+.passengers-action-count {
   font-size: 1.2rem;
   font-weight: bold;
 }
 
-.action-icon-container {
+.passengers-action-icon-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -253,7 +253,7 @@
   cursor: pointer;
 }
 
-.action-icon {
+.passengers-action-icon {
   font-size: 1rem;
   color: #fff;
 }

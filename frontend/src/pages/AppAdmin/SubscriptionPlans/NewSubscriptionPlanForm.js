@@ -55,83 +55,87 @@ const NewSubscriptionPlanForm = ({ onSave, onBack, editingPlan }) => {
 
   return (
     <div className="new-subscription-plan-form-container">
-      <div className="new-subscription-plan-form-header">
+      <header className="new-subscription-plan-top-bar">
         <button className="new-subscription-plan-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
-        <h2>
-          {editingPlan ? "Edit Subscription Plan" : "New Subscription Plan"}
-        </h2>
-      </div>
-      <form onSubmit={handleSubmit}>
-        <div className="new-subscription-plan-form-grid">
-          <div className="new-subscription-plan-form-group">
-            <input
-              id="name"
-              name="name"
-              value={planData.name}
-              onChange={handleInputChange}
-              placeholder="Subscription Name"
-              className={errors.name ? "input-error" : ""}
-            />
-            {errors.name && <p className="error">{errors.name}</p>}
-          </div>
-          <div className="new-subscription-plan-form-group">
-            <div className="new-subscription-plan-select-wrapper">
-              <select
-                id="validity"
-                name="validity"
-                value={planData.validity}
+        <div className="new-subscription-plan-header">
+          <h2>
+            {editingPlan ? "Edit Subscription Plan" : "New Subscription Plan"}
+          </h2>
+        </div>
+      </header>
+      <main className="new-subscription-plan-main-content">
+        <form onSubmit={handleSubmit}>
+          <div className="new-subscription-plan-form-grid">
+            <div className="new-subscription-plan-form-group">
+              <input
+                id="name"
+                name="name"
+                value={planData.name}
                 onChange={handleInputChange}
-                className={errors.validity ? "input-error" : ""}
-              >
-                <option value="">Select months</option>
-                <option value="6 Months">6 Months</option>
-                <option value="12 Months">12 Months</option>
-              </select>
-              <FontAwesomeIcon
-                icon={faChevronDown}
-                className="new-subscription-plan-select-icon"
+                placeholder="Subscription Name"
+                className={errors.name ? "input-error" : ""}
               />
+              {errors.name && <p className="error">{errors.name}</p>}
             </div>
-            {errors.validity && <p className="error">{errors.validity}</p>}
+            <div className="new-subscription-plan-form-group">
+              <div className="new-subscription-plan-select-wrapper">
+                <select
+                  id="validity"
+                  name="validity"
+                  value={planData.validity}
+                  onChange={handleInputChange}
+                  className={errors.validity ? "input-error" : ""}
+                >
+                  <option value="">Select months</option>
+                  <option value="6 Months">6 Months</option>
+                  <option value="12 Months">12 Months</option>
+                </select>
+                <FontAwesomeIcon
+                  icon={faChevronDown}
+                  className="new-subscription-plan-select-icon"
+                />
+              </div>
+              {errors.validity && <p className="error">{errors.validity}</p>}
+            </div>
+            <div className="new-subscription-plan-form-group">
+              <input
+                id="userRange"
+                name="userRange"
+                value={planData.userRange}
+                onChange={handleInputChange}
+                placeholder="User Range"
+                className={errors.userRange ? "input-error" : ""}
+              />
+              {errors.userRange && <p className="error">{errors.userRange}</p>}
+            </div>
+            <div className="new-subscription-plan-form-group">
+              <input
+                id="price"
+                name="price"
+                value={planData.price}
+                onChange={handleInputChange}
+                placeholder="Amount"
+                className={errors.price ? "input-error" : ""}
+              />
+              {errors.price && <p className="error">{errors.price}</p>}
+            </div>
           </div>
-          <div className="new-subscription-plan-form-group">
-            <input
-              id="userRange"
-              name="userRange"
-              value={planData.userRange}
-              onChange={handleInputChange}
-              placeholder="User Range"
-              className={errors.userRange ? "input-error" : ""}
-            />
-            {errors.userRange && <p className="error">{errors.userRange}</p>}
+          <div className="new-subscription-plan-buttons-container">
+            <button
+              type="button"
+              className="new-subscription-plan-cancel-button"
+              onClick={onBack}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="new-subscription-plan-save-button">
+              {editingPlan ? "Update" : "Save"}
+            </button>
           </div>
-          <div className="new-subscription-plan-form-group">
-            <input
-              id="price"
-              name="price"
-              value={planData.price}
-              onChange={handleInputChange}
-              placeholder="Amount"
-              className={errors.price ? "input-error" : ""}
-            />
-            {errors.price && <p className="error">{errors.price}</p>}
-          </div>
-        </div>
-        <div className="new-subscription-plan-buttons-container">
-          <button
-            type="button"
-            className="new-subscription-plan-cancel-button"
-            onClick={onBack}
-          >
-            Cancel
-          </button>
-          <button type="submit" className="new-subscription-plan-save-button">
-            {editingPlan ? "Update" : "Save"}
-          </button>
-        </div>
-      </form>
+        </form>
+      </main>
     </div>
   );
 };

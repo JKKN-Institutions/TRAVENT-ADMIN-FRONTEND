@@ -90,37 +90,41 @@ const AddNewDriver = ({ driver, onBack, onSave }) => {
 
   return (
     <div className="add-new-driver-container">
-      <div className="add-new-driver-header">
+      <header className="add-new-driver-top-bar">
         <button className="add-new-driver-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
-        <h2>{driver ? "Edit Driver" : "Add New Driver"}</h2>
-      </div>
-      <form onSubmit={handleSubmit}>
-        <div className="add-new-driver-avatar">
-          <FontAwesomeIcon icon={faUser} />
+        <div className="add-new-driver-header">
+          <h2>{driver ? "Edit Driver" : "Add New Driver"}</h2>
         </div>
-        <div className="add-new-driver-form-grid">
-          {Object.keys(driverData).map((key) => (
-            <div key={key} className="add-new-driver-form-group">
-              {renderInput(key)}
-              {errors[key] && <p className="error">{errors[key]}</p>}
-            </div>
-          ))}
-        </div>
-        <div className="add-new-driver-buttons-container">
-          <button
-            type="button"
-            className="add-new-driver-cancel-button"
-            onClick={onBack}
-          >
-            Cancel
-          </button>
-          <button type="submit" className="add-new-driver-save-button">
-            {driver ? "Update Driver" : "Add Driver"}
-          </button>
-        </div>
-      </form>
+      </header>
+      <main className="add-new-driver-main-content">
+        <form onSubmit={handleSubmit}>
+          <div className="add-new-driver-avatar">
+            <FontAwesomeIcon icon={faUser} />
+          </div>
+          <div className="add-new-driver-form-grid">
+            {Object.keys(driverData).map((key) => (
+              <div key={key} className="add-new-driver-form-group">
+                {renderInput(key)}
+                {errors[key] && <p className="error">{errors[key]}</p>}
+              </div>
+            ))}
+          </div>
+          <div className="add-new-driver-buttons-container">
+            <button
+              type="button"
+              className="add-new-driver-cancel-button"
+              onClick={onBack}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="add-new-driver-save-button">
+              {driver ? "Update Driver" : "Add Driver"}
+            </button>
+          </div>
+        </form>
+      </main>
     </div>
   );
 };

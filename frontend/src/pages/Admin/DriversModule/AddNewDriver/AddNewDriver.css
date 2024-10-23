@@ -1,38 +1,55 @@
 .add-new-driver-container {
-  background-color: rgba(215, 215, 215, 0.01);
-  border-radius: 10px;
-  padding: 2rem;
-  max-width: 1850px;
-  margin: auto;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #1e1e1e;
   color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.add-new-driver-header {
+.add-new-driver-top-bar {
+  background-color: #222222;
+  padding: 1rem;
   display: flex;
   align-items: center;
-  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .add-new-driver-back-button {
-  background: none;
-  border: none;
-  color: #ffffff;
-  cursor: pointer;
   font-size: 1rem;
-  display: flex;
-  align-items: center;
+  cursor: pointer;
+  color: #ffffff;
+  background: none;
   margin-right: 1rem;
+  border: none;
 }
 
-.add-new-driver-container h2 {
-  text-align: center;
+.add-new-driver-header h2 {
   color: #ffffff;
   margin: 0;
   flex-grow: 1;
   font-weight: 600;
   font-size: 1.3rem;
+}
+
+.add-new-driver-main-content {
+  /* flex: 1; */
+  overflow-y: auto;
+  padding: 1rem;
+  background-color: rgba(215, 215, 215, 0.01);
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+
+  border-radius: 10px;
+  padding: 2rem;
+
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .add-new-driver-avatar {

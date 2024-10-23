@@ -1,0 +1,23 @@
+.custom-button {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  display: inline-block;
+  background-color: rgba(215, 215, 215, 0.05); /* Default background */
+  border: 1px solid #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: #fff;
+}
+
+.custom-button:hover {
+  opacity: 0.9;
+}
+
+.custom-button.disabled-button {
+  opacity: 0.5; /* Reduced opacity */
+  cursor: not-allowed; /* Change cursor when disabled */
+}

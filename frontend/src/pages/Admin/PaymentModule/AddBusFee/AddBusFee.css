@@ -70,11 +70,14 @@
 .add-bus-fee-form-group select {
   width: 100%;
   padding: 10px;
-  border-radius: 5px;
+  margin-bottom: 0.5rem;
+  border-radius: 10px;
   font-size: 1em;
   background-color: #2e323b;
   color: white;
-  border: 1px solid #444;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid #666;
+  border-right: none;
 }
 
 .add-bus-fee-form-group input:focus,
@@ -109,6 +112,8 @@
   border: none;
   border-radius: 5px;
   background-color: #2e323b;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid #666;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s ease;

@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./PaymentRecords.css";
 import PaymentHistory from "../PaymentHistory/PaymentHistory";
+import Button from "../../../../components/Shared/Button/Button";
 
 const paymentRecordsData = [
   {
@@ -433,12 +434,15 @@ const PaymentRecords = ({ onBack }) => {
               />
             </div>
           </div>
-          <button
-            className="payment-records-filter-button"
+          <Button
+            label={
+              <>
+                <FontAwesomeIcon icon={faFilter} /> Filter by
+              </>
+            }
             onClick={() => setShowFilters(!showFilters)}
-          >
-            <FontAwesomeIcon icon={faFilter} /> Filter by
-          </button>
+            className="payment-records-filter-button"
+          />
         </div>
 
         {showFilters && (

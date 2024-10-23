@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
@@ -9,10 +9,17 @@ import {
 import "./DriversHome.css";
 import AddNewDriver from "../AddNewDriver/AddNewDriver";
 import ViewAllDrivers from "../ViewAllDrivers/ViewAllDrivers";
+import Button from "../../../../components/Shared/Button/Button";
 
 const DriversHome = ({ toggleSidebar }) => {
   const [showAddNewDriver, setShowAddNewDriver] = useState(false);
   const [viewAllCategory, setViewAllCategory] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const mainDrivers = [
     { name: "Velan K", routeAssigned: "1", category: "main" },
@@ -77,60 +84,71 @@ const DriversHome = ({ toggleSidebar }) => {
   );
 
   return (
-    <div className="drivers-home-container">
-      <header className="drivers-home-top-bar">
-        <div className="drivers-home-menu-icon" onClick={toggleSidebar}>
-          <FontAwesomeIcon icon={faBars} />
+    <>
+      {isLoading ? (
+        <div className="schedules-loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading Drivers...</p>
         </div>
-        <h1>Drivers</h1>
-      </header>
+      ) : (
+        <div className="drivers-home-container">
+          <header className="drivers-home-top-bar">
+            <div className="drivers-home-menu-icon" onClick={toggleSidebar}>
+              <FontAwesomeIcon icon={faBars} />
+            </div>
+            <h1>Drivers</h1>
+          </header>
 
-      <main className="drivers-home-main-content">
-        <div className="drivers-home-controls">
-          <div className="drivers-home-action-buttons">
-            <button
-              className="drivers-home-add-button"
-              onClick={handleAddNewDriver}
-            >
-              <FontAwesomeIcon icon={faPlus} /> Add New Driver
-            </button>
-          </div>
-        </div>
-        <div className="drivers-home-section">
-          <div className="drivers-home-section-header">
-            <h2>Main Drivers</h2>
-            <button
-              className="drivers-home-view-all"
-              onClick={() => handleViewAll("main")}
-            >
-              View All Drivers <FontAwesomeIcon icon={faChevronRight} />
-            </button>
-          </div>
-          <div className="drivers-home-grid">
-            {mainDrivers
-              .slice(0, 5)
-              .map((driver, index) => renderDriverCard(driver, index))}
-          </div>
-        </div>
+          <main className="drivers-home-main-content">
+            <div className="drivers-home-controls">
+              <div className="drivers-home-action-buttons">
+                <Button
+                  label={
+                    <>
+                      <FontAwesomeIcon icon={faPlus} /> Add New Driver
+                    </>
+                  }
+                  onClick={handleAddNewDriver}
+                />
+              </div>
+            </div>
+            <div className="drivers-home-section">
+              <div className="drivers-home-section-header">
+                <h2>Main Drivers</h2>
+                <button
+                  className="drivers-home-view-all"
+                  onClick={() => handleViewAll("main")}
+                >
+                  View All Drivers <FontAwesomeIcon icon={faChevronRight} />
+                </button>
+              </div>
+              <div className="drivers-home-grid">
+                {mainDrivers
+                  .slice(0, 5)
+                  .map((driver, index) => renderDriverCard(driver, index))}
+              </div>
+            </div>
 
-        <div className="drivers-home-section">
-          <div className="drivers-home-section-header">
-            <h2>Spare Drivers</h2>
-            <button
-              className="drivers-home-view-all"
-              onClick={() => handleViewAll("spare")}
-            >
-              View All Drivers <FontAwesomeIcon icon={faChevronRight} />
-            </button>
-          </div>
-          <div className="drivers-home-grid">
-            {spareDrivers
-              .slice(0, 5)
-              .map((driver, index) => renderDriverCard(driver, index))}
-          </div>
+            <div className="drivers-home-section">
+              <div className="drivers-home-section-header">
+                <h2>Spare Drivers</h2>
+                <button
+                  className="drivers-home-view-all"
+                  onClick={() => handleViewAll("spare")}
+                >
+                  View All Drivers <FontAwesomeIcon icon={faChevronRight} />
+                </button>
+              </div>
+              <div className="drivers-home-grid">
+                {spareDrivers
+                  .slice(0, 5)
+                  .map((driver, index) => renderDriverCard(driver, index))}
+              </div>
+            </div>
+          </main>
         </div>
-      </main>
-    </div>
+      )}
+    </>
   );
 };
 

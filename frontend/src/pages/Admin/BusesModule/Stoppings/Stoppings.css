@@ -172,7 +172,7 @@
 
 .stoppings-table tbody tr.selected {
   background-color: rgba(33, 150, 243, 0.3);
-  box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+  box-shadow: 0 0 10px rgba(33, 150, 243, 0.2);
   z-index: 5;
   position: relative;
 }

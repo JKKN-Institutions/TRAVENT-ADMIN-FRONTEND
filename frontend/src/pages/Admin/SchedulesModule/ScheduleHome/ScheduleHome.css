@@ -308,6 +308,41 @@ input[type="time"] {
   background-color: #0e86c9;
 }
 
+/* Ensure the loading container is confined to the content area */
+
+.schedules-loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #1e1e1e;
+  height: 100vh;
+  color: #ffffff;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 4px solid #ffffff;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+  animation: spin 1s linear infinite;
+}
+
+.loading-container p {
+  font-weight: 600;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* Responsive styles */
 @media (max-width: 1200px) {
   .schedules-stats-row {

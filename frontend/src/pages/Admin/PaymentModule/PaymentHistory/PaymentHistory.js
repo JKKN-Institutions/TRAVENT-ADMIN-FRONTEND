@@ -11,6 +11,7 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import "./PaymentHistory.css";
+import Button from "../../../../components/Shared/Button/Button";
 
 const PaymentHistory = ({ student, onBack }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -101,13 +102,26 @@ const PaymentHistory = ({ student, onBack }) => {
 
       <main className="view-history-main-content">
         <div className="view-history-actions">
-          <button className="view-history-action-button">
-            <FontAwesomeIcon icon={faDownload} /> Download
-          </button>
-          <button className="view-history-action-button">
-            <FontAwesomeIcon icon={faPrint} /> Print
-          </button>
+          <Button
+            label={
+              <>
+                <FontAwesomeIcon icon={faDownload} /> Download
+              </>
+            }
+            onClick={() => console.log("Download")}
+            className="view-history-action-button"
+          />
+          <Button
+            label={
+              <>
+                <FontAwesomeIcon icon={faPrint} /> Print
+              </>
+            }
+            onClick={() => console.log("Print")}
+            className="view-history-action-button"
+          />
         </div>
+
         <section className="view-history-student-info">
           <h2>{student.studentName}</h2>
           <p>

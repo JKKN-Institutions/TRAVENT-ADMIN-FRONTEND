@@ -1,0 +1,249 @@
+.payments-dashboard-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.payments-dashboard-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.payments-dashboard-chart-card {
+  height: 100%;
+  background-color: #292929;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #333;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.chart-header h2 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.chart-controls {
+  display: flex;
+  align-items: center;
+}
+
+.month-picker {
+  background-color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  border: 2px solid #666;
+  color: #fff;
+  border: none;
+  padding: 0.3rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.month-picker::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.fee-paid-chart {
+  height: 200px;
+}
+
+.fee-paid-legend {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.legend-label {
+  margin-right: 8px;
+  color: #cccccc;
+}
+
+.legend-value {
+  font-weight: bold;
+}
+
+.view-all-records {
+  background-color: #292929;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #333;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  transition: background-color 0.3s ease;
+  position: relative;
+}
+
+.view-all-records span {
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.arrow-icon-container {
+  background-color: #11a8fd;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 16px;
+  cursor: pointer;
+}
+
+.payments-dashboard-arrow-icon {
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.total-transactions,
+.amount-received {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  background-color: #292929;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #333;
+  text-align: center;
+}
+
+.transactions-count {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.transactions-count-label {
+  color: #cccccc;
+}
+
+.view-transactions-link {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.view-transactions-link span {
+  margin-right: 0.5rem;
+}
+
+.transaction-arrow-icon-container {
+  background-color: #11a8fd;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.transaction-arrow-icon {
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.amount {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.amount-label {
+  color: #cccccc;
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .payments-dashboard-row {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .fee-paid-legend {
+    grid-template-columns: 1fr;
+  }
+
+  .view-all-records {
+    padding: 12px 16px;
+  }
+
+  .view-all-records span {
+    font-size: 0.9rem;
+  }
+
+  .arrow-icon-container {
+    width: 26px;
+    height: 26px;
+  }
+
+  .payments-dashboard-arrow-icon {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .chart-header h2 {
+    font-size: 1rem;
+  }
+
+  .transactions-count {
+    font-size: 2.5rem;
+  }
+
+  .amount {
+    font-size: 1.5rem;
+  }
+
+  .view-all-records {
+    padding: 10px 14px;
+  }
+
+  .view-all-records span {
+    font-size: 0.85rem;
+  }
+
+  .arrow-icon-container {
+    width: 24px;
+    height: 24px;
+  }
+
+  .payments-dashboard-arrow-icon {
+    font-size: 0.75rem;
+  }
+}

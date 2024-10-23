@@ -88,50 +88,54 @@ const AddNewStop = ({ route, onBack, institutionId, editingStop }) => {
 
   return (
     <div className="add-stop-container">
-      <div className="add-stop-header">
+      <header className="add-stop-top-bar">
         <button className="add-stop-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
-        <h2>{editingStop ? "Edit Stop" : "Add New Stop"}</h2>
-      </div>
-      <form onSubmit={handleSubmit}>
-        <div className="add-stop-form-grid">
-          {Object.keys(stopData).map((key) => (
-            <div key={key} className="add-stop-form-group">
-              <input
-                type={
-                  key.includes("Count") ||
-                  key.includes("latitude") ||
-                  key.includes("longitude")
-                    ? "number"
-                    : key.includes("Time")
-                    ? "time"
-                    : "text"
-                }
-                id={key}
-                name={key}
-                value={stopData[key]}
-                onChange={handleChange}
-                placeholder={key.replace(/([A-Z])/g, " $1").trim()}
-                className={errors[key] ? "input-error" : ""}
-              />
-              {errors[key] && <p className="error">{errors[key]}</p>}
-            </div>
-          ))}
+        <div className="add-stop-header">
+          <h2>{editingStop ? "Edit Stop" : "Add New Stop"}</h2>
         </div>
-        <div className="add-stop-buttons-container">
-          <button
-            type="button"
-            className="add-stop-cancel-button"
-            onClick={onBack}
-          >
-            Cancel
-          </button>
-          <button type="submit" className="add-stop-save-button">
-            {editingStop ? "Update Stop" : "Add Stop"}
-          </button>
-        </div>
-      </form>
+      </header>
+      <main className="add-stop-main-content">
+        <form onSubmit={handleSubmit}>
+          <div className="add-stop-form-grid">
+            {Object.keys(stopData).map((key) => (
+              <div key={key} className="add-stop-form-group">
+                <input
+                  type={
+                    key.includes("Count") ||
+                    key.includes("latitude") ||
+                    key.includes("longitude")
+                      ? "number"
+                      : key.includes("Time")
+                      ? "time"
+                      : "text"
+                  }
+                  id={key}
+                  name={key}
+                  value={stopData[key]}
+                  onChange={handleChange}
+                  placeholder={key.replace(/([A-Z])/g, " $1").trim()}
+                  className={errors[key] ? "input-error" : ""}
+                />
+                {errors[key] && <p className="error">{errors[key]}</p>}
+              </div>
+            ))}
+          </div>
+          <div className="add-stop-buttons-container">
+            <button
+              type="button"
+              className="add-stop-cancel-button"
+              onClick={onBack}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="add-stop-save-button">
+              {editingStop ? "Update Stop" : "Add Stop"}
+            </button>
+          </div>
+        </form>
+      </main>
     </div>
   );
 };

@@ -1,0 +1,256 @@
+.inventory-home {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  padding: 0 0.8rem 0 0;
+  height: 100%; /* Set this to fill available space */
+  max-height: calc(100vh - 180px); /* Adjust this value based on header/tabs */
+  overflow-y: auto; /* Enable scrolling here */
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+}
+
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto auto;
+  gap: 10px;
+}
+
+.inventory-chart-responsive-container {
+  padding-top: 2rem;
+}
+
+.inventory-chart-container,
+.table-container {
+  background-color: #292929;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.inventory-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.inventory-chart-header h2 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.inventory-chart-container {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+.stock-details {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+
+.order-details {
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+}
+
+.usage-details {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+}
+
+.inventory-chart-controls {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.month-picker {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.view-all {
+  color: #11a8fd;
+  text-decoration: none;
+}
+
+.inventory-search-controls {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.inventory-search-bar-container {
+  width: 100%;
+  max-width: 400px; /* Limit the width to 500px */
+}
+
+.inventory-search-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.inventory-search-input-wrapper .inventory-search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.inventory-search-bar {
+  width: 100%;
+  padding: 0.5rem 0.75rem 0.5rem 2rem;
+  border: none;
+  border-radius: 20px;
+  background-color: #2c2c2c;
+  border: 1px solid #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.inventory-search-bar:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.inventory-action-buttons-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.table-wrapper {
+  overflow-x: auto; /* Horizontal scroll for the table */
+  overflow-y: auto; /* Allow vertical scrolling for long content */
+  max-height: 400px; /* Adjust to avoid cutting off content */
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+}
+
+.table-header h2 {
+  font-size: 1.2rem;
+}
+
+.inventory-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.inventory-table th,
+.inventory-table td {
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 1px solid #444;
+}
+
+.inventory-table th {
+  background-color: #1e1e1e;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.inventory-table td {
+  background-color: #2c2c2c;
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+.inventory-table tbody tr {
+  transition: background-color 0.3s ease;
+}
+
+.inventory-table tbody tr:hover {
+  background-color: #444;
+  cursor: pointer;
+}
+
+.view-icon {
+  color: #11a8fd;
+  cursor: pointer;
+}
+
+@media (max-width: 1200px) {
+  .inventory-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .inventory-chart-container,
+  .stock-details,
+  .order-details,
+  .usage-details {
+    grid-column: 1 / 2;
+  }
+
+  .inventory-chart-container {
+    grid-row: 1 / 2;
+  }
+
+  .stock-details {
+    grid-row: 2 / 3;
+  }
+
+  .order-details {
+    grid-row: 3 / 4;
+  }
+
+  .usage-details {
+    grid-row: 4 / 5;
+  }
+}
+
+@media (max-width: 768px) {
+  .action-buttons-container {
+    flex-direction: column;
+  }
+
+  .inventory-table {
+    font-size: 0.9rem;
+  }
+
+  .inventory-search-bar {
+    width: 100%; /* Make search bars take up the full width */
+    max-width: 500px; /* Limit the max width */
+  }
+}
+
+@media (max-width: 480px) {
+  .inventory-home {
+    padding: 10px;
+  }
+
+  .inventory-chart-container,
+  .table-container {
+    padding: 1rem;
+  }
+
+  .inventory-table th,
+  .inventory-table td {
+    padding: 5px;
+    font-size: 12px;
+  }
+}

@@ -70,7 +70,6 @@ const AppAdminSidebar = React.memo(
                     className="menu-link"
                     onClick={() => {
                       setActiveComponent("home");
-                      toggleSidebar(false);
                     }}
                   >
                     <FontAwesomeIcon icon={faHome} className="icon" />
@@ -82,7 +81,6 @@ const AppAdminSidebar = React.memo(
                     className="menu-link"
                     onClick={() => {
                       setActiveComponent("viewInstitutions");
-                      toggleSidebar(false);
                     }}
                   >
                     <FontAwesomeIcon icon={faSchool} className="icon" />
@@ -94,7 +92,6 @@ const AppAdminSidebar = React.memo(
                     className="menu-link"
                     onClick={() => {
                       setActiveComponent("notifications");
-                      toggleSidebar(false);
                     }}
                   >
                     <FontAwesomeIcon icon={faBell} className="icon" />
@@ -106,7 +103,6 @@ const AppAdminSidebar = React.memo(
                     className="menu-link"
                     onClick={() => {
                       setActiveComponent("subscriptionPlans");
-                      toggleSidebar(false);
                     }}
                   >
                     <FontAwesomeIcon icon={faList} className="icon" />

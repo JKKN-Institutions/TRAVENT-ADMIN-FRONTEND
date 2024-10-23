@@ -150,12 +150,35 @@
   font-size: 0.95rem;
 }
 
+.update-bus-fee-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
 .update-bus-fee-table tbody tr:hover {
   background-color: #444;
 }
+
 .update-bus-fee-table tbody tr.selected {
-  background-color: #11a8fd33;
+  background-color: rgba(33, 150, 243, 0.3);
+  box-shadow: 0 0 10px rgba(33, 150, 243, 0.2);
+  z-index: 5;
+  position: relative;
 }
+
+.update-bus-fee-table tbody tr.selected td {
+  border-top: 2px solid #2196f3;
+  border-bottom: 2px solid #2196f3;
+}
+
+.update-bus-fee-table tbody tr.selected td:first-child {
+  border-left: 2px solid #2196f3;
+}
+
+.update-bus-fee-table tbody tr.selected td:last-child {
+  border-right: 2px solid #2196f3;
+}
+
 .term-selection {
   display: flex;
   gap: 0.5rem;
@@ -202,22 +225,6 @@
 
 .payment-due-date {
   margin-left: 1rem;
-}
-
-.update-bus-fee-view-button {
-  background-color: transparent;
-  border: 1px solid #11a8fd;
-  color: #11a8fd;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-}
-
-.update-bus-fee-view-button:hover {
-  background-color: #11a8fd;
-  color: #fff;
 }
 
 .update-bus-fee-pagination {
@@ -306,10 +313,5 @@
   .update-bus-fee-table td {
     padding: 0.5rem 0.25rem;
     font-size: 0.75rem;
-  }
-
-  .update-bus-fee-view-button {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.8rem;
   }
 }

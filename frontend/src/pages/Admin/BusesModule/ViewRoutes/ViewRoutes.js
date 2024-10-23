@@ -13,6 +13,7 @@ import {
 import axios from "axios";
 import RouteDetails from "../RouteDetails/RouteDetails";
 import AddNewRoute from "../AddNewRoute/AddNewRoute";
+import Button from "../../../../components/Shared/Button/Button";
 
 const ViewRoutes = ({ onBack }) => {
   const navigate = useNavigate();
@@ -131,27 +132,34 @@ const ViewRoutes = ({ onBack }) => {
               </div>
 
               <div className="show-routes-action-buttons">
-                <button
-                  className="show-routes-add-button"
+                <Button
+                  label={
+                    <>
+                      <FontAwesomeIcon icon={faPlus} /> Add New Route
+                    </>
+                  }
                   onClick={handleAddNewRoute}
-                >
-                  <FontAwesomeIcon icon={faPlus} /> Add New Route
-                </button>
-                <button
-                  className="show-routes-view-button"
-                  disabled={selectedRoutes.length !== 1}
+                />
+
+                <Button
+                  label={
+                    <>
+                      <FontAwesomeIcon icon={faEye} /> View Route Details
+                    </>
+                  }
                   onClick={handleViewRouteDetails}
-                >
-                  <FontAwesomeIcon icon={faEye} className="view-icon" /> View
-                  Route Details
-                </button>
-                <button
-                  className="show-routes-delete-button"
-                  disabled={selectedRoutes.length === 0}
+                  disabled={selectedRoutes.length !== 1} // Disable if not exactly one route selected
+                />
+
+                <Button
+                  label={
+                    <>
+                      <FontAwesomeIcon icon={faTrash} /> Delete Selected Routes
+                    </>
+                  }
                   onClick={() => setShowDeleteConfirmation(true)}
-                >
-                  <FontAwesomeIcon icon={faTrash} /> Delete Selected Routes
-                </button>
+                  disabled={selectedRoutes.length === 0} // Disable if no routes selected
+                />
               </div>
             </div>
 

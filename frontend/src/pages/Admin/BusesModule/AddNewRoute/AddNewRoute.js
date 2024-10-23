@@ -84,48 +84,52 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
 
   return (
     <div className="add-new-route-container">
-      <div className="add-new-route-header">
+      <header className="add-new-route-top-bar">
         <button className="add-new-route-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
-        <h2>{route ? "Edit Route" : "Add New Route"}</h2>
-      </div>
-      <form onSubmit={handleSubmit}>
-        <div className="add-new-route-form-grid">
-          {Object.keys(routeData).map((key) => (
-            <div key={key} className="add-new-route-form-group">
-              <input
-                type={key.includes("Capacity") ? "number" : "text"}
-                id={key}
-                name={key}
-                value={routeData[key]}
-                onChange={handleChange}
-                placeholder={
-                  key.charAt(0).toUpperCase() +
-                  key
-                    .slice(1)
-                    .replace(/([A-Z])/g, " $1")
-                    .trim()
-                }
-                className={errors[key] ? "input-error" : ""}
-              />
-              {errors[key] && <p className="error">{errors[key]}</p>}
-            </div>
-          ))}
+        <div className="add-new-route-header">
+          <h2>{route ? "Edit Route" : "Add New Route"}</h2>
         </div>
-        <div className="add-new-route-buttons-container">
-          <button
-            type="button"
-            className="add-new-route-cancel-button"
-            onClick={onBack}
-          >
-            Cancel
-          </button>
-          <button type="submit" className="add-new-route-save-button">
-            {route ? "Update Route" : "Add Route"}
-          </button>
-        </div>
-      </form>
+      </header>
+      <main className="add-new-route-main-content">
+        <form onSubmit={handleSubmit}>
+          <div className="add-new-route-form-grid">
+            {Object.keys(routeData).map((key) => (
+              <div key={key} className="add-new-route-form-group">
+                <input
+                  type={key.includes("Capacity") ? "number" : "text"}
+                  id={key}
+                  name={key}
+                  value={routeData[key]}
+                  onChange={handleChange}
+                  placeholder={
+                    key.charAt(0).toUpperCase() +
+                    key
+                      .slice(1)
+                      .replace(/([A-Z])/g, " $1")
+                      .trim()
+                  }
+                  className={errors[key] ? "input-error" : ""}
+                />
+                {errors[key] && <p className="error">{errors[key]}</p>}
+              </div>
+            ))}
+          </div>
+          <div className="add-new-route-buttons-container">
+            <button
+              type="button"
+              className="add-new-route-cancel-button"
+              onClick={onBack}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="add-new-route-save-button">
+              {route ? "Update Route" : "Add Route"}
+            </button>
+          </div>
+        </form>
+      </main>
     </div>
   );
 };

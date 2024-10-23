@@ -8,6 +8,7 @@ import Schedules from "../SchedulesModule/ScheduleHome/ScheduleHome";
 import SubscriptionPlans from "../SubscriptionModule/SubscriptionPlans/AdminSubscriptionPlans";
 import DriversHome from "../DriversModule/DriversHome/DriversHome";
 import PaymentsDashboardHome from "../PaymentModule/PaymentDashboardHome/PaymentDashboardHome";
+import MaintenanceFuelHome from "../MaintenanceModule/MaintenanceFuelHome/MaintenanceFuelHome";
 
 import "./AdminDashboard.css";
 
@@ -64,6 +65,7 @@ const AdminDashboard = () => {
       case "home":
         return (
           <AdminHome
+            key="home"
             toggleSidebar={toggleSidebar}
             resetState={resetHomeState}
           />
@@ -82,6 +84,8 @@ const AdminDashboard = () => {
         return <DriversHome toggleSidebar={toggleSidebar} />;
       case "payment":
         return <PaymentsDashboardHome toggleSidebar={toggleSidebar} />;
+      case "maintenance":
+        return <MaintenanceFuelHome toggleSidebar={toggleSidebar} />;
       default:
         return <AdminHome toggleSidebar={toggleSidebar} />;
     }

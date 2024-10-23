@@ -35,6 +35,7 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
     setShowAdminNotifications(true);
   };
 
+  // Reset the component state when `resetState` changes
   useEffect(() => {
     if (resetState) {
       setShowNotifications(false);
@@ -43,6 +44,7 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
     }
   }, [resetState]);
 
+  // Dismiss modal or overlay when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -96,17 +98,6 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
     },
   ];
 
-  // Render loading state
-  if (isLoading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  // Render new user request form if active
   if (showNewUserRequests) {
     return <NewUserRequest onBack={handleBackFromForm} />;
   }
@@ -116,106 +107,116 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
   }
 
   return (
-    <div className="admin-home-container">
-      <header className="admin-top-bar">
-        <div className="admin-menu-icon" onClick={toggleSidebar}>
-          <FontAwesomeIcon icon={faBars} />
+    <>
+      {isLoading ? (
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading...</p>
         </div>
-        <h1>Admin Home</h1>
-        <div className="admin-top-bar-icons">
-          <FontAwesomeIcon
-            icon={faEnvelope}
-            className="admin-icon"
-            onClick={handleEnvelopeClick}
-            ref={envelopeRef}
-          />
-          <FontAwesomeIcon
-            icon={faBell}
-            className="admin-home-icon"
-            onClick={handleBellClick}
-          />
-        </div>
-      </header>
-
-      <main className="admin-main-content">
-        <div className="admin-content-wrapper">
-          <h2>Real Time Data</h2>
-          <div className="admin-sub-content-wrapper">
-            <div className="admin-left-column">
-              <section className="admin-real-time-data">
-                <div className="admin-data-cards">
-                  {realTimeData.map((item, index) => (
-                    <div key={index} className="admin-data-card">
-                      <h3>{item.title}</h3>
-                      <p>{item.value}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-
-              <section className="admin-status-cards">
-                {statusCards.map((card, index) => (
-                  <div key={index} className="admin-status-card">
-                    <h3>
-                      {card.title}{" "}
-                      <FontAwesomeIcon
-                        icon={faExclamationTriangle}
-                        style={{ color: card.color }}
-                      />
-                    </h3>
-                    <p>{card.value}</p>
-                  </div>
-                ))}
-              </section>
+      ) : (
+        <div className="admin-home-container">
+          <header className="admin-top-bar">
+            <div className="admin-menu-icon" onClick={toggleSidebar}>
+              <FontAwesomeIcon icon={faBars} />
             </div>
-
-            <div className="admin-right-column">
-              <section className="admin-boarding-data">
-                <h2>Boarding Data</h2>
-                <div className="admin-boarding-chart">
-                  <CircularProgressbar
-                    value={65}
-                    text={`${65}%`}
-                    styles={buildStyles({
-                      textColor: "#ffffff",
-                      pathColor: "#4caf50",
-                      trailColor: "#555555",
-                    })}
-                  />
-                </div>
-                <div className="admin-boarding-info">
-                  <p>
-                    <span className="admin-boarding-number">1326</span> of
-                    <span className="admin-boarding-total"> 2024</span> Boarded
-                  </p>
-                </div>
-              </section>
-            </div>
-          </div>
-        </div>
-        <section className="admin-warnings">
-          <h2>
-            Warnings{"  "}
-            <FontAwesomeIcon icon={faExclamationTriangle} />
-          </h2>
-          {warnings.map((warning, index) => (
-            <div key={index} className="admin-warning-item">
-              <img
-                src="./uploads/splash-image.png"
-                alt={warning.name}
-                className="admin-avatar"
+            <h1>Admin Home</h1>
+            <div className="admin-top-bar-icons">
+              <FontAwesomeIcon
+                icon={faEnvelope}
+                className="admin-icon"
+                onClick={handleEnvelopeClick}
+                ref={envelopeRef}
               />
-              <div className="admin-warning-content">
-                <h3>
-                  {warning.name}, {warning.route}
-                </h3>
-                <p>{warning.message}</p>
+              <FontAwesomeIcon
+                icon={faBell}
+                className="admin-home-icon"
+                onClick={handleBellClick}
+              />
+            </div>
+          </header>
+
+          <main className="admin-main-content">
+            <div className="admin-content-wrapper">
+              <h2>Real Time Data</h2>
+              <div className="admin-sub-content-wrapper">
+                <div className="admin-left-column">
+                  <section className="admin-real-time-data">
+                    <div className="admin-data-cards">
+                      {realTimeData.map((item, index) => (
+                        <div key={index} className="admin-data-card">
+                          <h3>{item.title}</h3>
+                          <p>{item.value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+
+                  <section className="admin-status-cards">
+                    {statusCards.map((card, index) => (
+                      <div key={index} className="admin-status-card">
+                        <h3>
+                          {card.title}{" "}
+                          <FontAwesomeIcon
+                            icon={faExclamationTriangle}
+                            style={{ color: card.color }}
+                          />
+                        </h3>
+                        <p>{card.value}</p>
+                      </div>
+                    ))}
+                  </section>
+                </div>
+
+                <div className="admin-right-column">
+                  <section className="admin-boarding-data">
+                    <h2>Boarding Data</h2>
+                    <div className="admin-boarding-chart">
+                      <CircularProgressbar
+                        value={65}
+                        text={`${65}%`}
+                        styles={buildStyles({
+                          textColor: "#ffffff",
+                          pathColor: "#4caf50",
+                          trailColor: "#555555",
+                        })}
+                      />
+                    </div>
+                    <div className="admin-boarding-info">
+                      <p>
+                        <span className="admin-boarding-number">1326</span> of
+                        <span className="admin-boarding-total"> 2024</span>{" "}
+                        Boarded
+                      </p>
+                    </div>
+                  </section>
+                </div>
               </div>
             </div>
-          ))}
-        </section>
-      </main>
-    </div>
+            <section className="admin-warnings">
+              <h2>
+                Warnings{"  "}
+                <FontAwesomeIcon icon={faExclamationTriangle} />
+              </h2>
+              {warnings.map((warning, index) => (
+                <div key={index} className="admin-warning-item">
+                  <img
+                    src="./uploads/splash-image.png"
+                    alt={warning.name}
+                    className="admin-avatar"
+                  />
+                  <div className="admin-warning-content">
+                    <h3>
+                      {warning.name}, {warning.route}
+                    </h3>
+                    <p>{warning.message}</p>
+                  </div>
+                </div>
+              ))}
+            </section>
+          </main>
+        </div>
+      )}
+    </>
   );
 };
 

@@ -63,15 +63,6 @@ const BusesHome = ({ toggleSidebar }) => {
     setShowPassengerArrivalStatus(true);
   };
 
-  if (isLoading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
   // If showRoutes is true, display ViewRoutes component
   if (showRoutes) {
     return <ViewRoutes onBack={handleBackFromRoutes} />;
@@ -87,36 +78,45 @@ const BusesHome = ({ toggleSidebar }) => {
   }
 
   return (
-    <div className="buses-home-container">
-      <header className="buses-top-bar">
-        <div className="buses-menu-icon" onClick={toggleSidebar}>
-          <FontAwesomeIcon icon={faBars} />
+    <>
+      {isLoading ? (
+        <div className="schedules-loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading Buses...</p>
         </div>
-        <h1>Buses</h1>
-      </header>
+      ) : (
+        <div className="buses-home-container">
+          <header className="buses-top-bar">
+            <div className="buses-menu-icon" onClick={toggleSidebar}>
+              <FontAwesomeIcon icon={faBars} />
+            </div>
+            <h1>Buses</h1>
+          </header>
 
-      <main className="buses-main-content">
-        <div className="buses-content-wrapper">
-          <div className="buses-top-row">
-            <BoardingData />
-            <ArrivalStatus arrivalStatus={arrivalStatus} />
-            <BusesCondition busesCondition={busesCondition} />
-          </div>
+          <main className="buses-main-content">
+            <div className="buses-content-wrapper">
+              <div className="buses-top-row">
+                <BoardingData />
+                <ArrivalStatus arrivalStatus={arrivalStatus} />
+                <BusesCondition busesCondition={busesCondition} />
+              </div>
 
-          <div className="buses-status-row">
-            {busesStatus.map((status, index) => (
-              <BusStatusItem key={index} status={status} />
-            ))}
-          </div>
+              <div className="buses-status-row">
+                {busesStatus.map((status, index) => (
+                  <BusStatusItem key={index} status={status} />
+                ))}
+              </div>
 
-          <ArrivalStatusTable
-            arrivalStatusData={arrivalStatusData}
-            onViewRoutes={() => setShowRoutes(true)}
-            onViewDetails={handleViewDetails}
-          />
+              <ArrivalStatusTable
+                arrivalStatusData={arrivalStatusData}
+                onViewRoutes={() => setShowRoutes(true)}
+                onViewDetails={handleViewDetails}
+              />
+            </div>
+          </main>
         </div>
-      </main>
-    </div>
+      )}
+    </>
   );
 };
 

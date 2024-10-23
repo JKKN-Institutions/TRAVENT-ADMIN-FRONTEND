@@ -1,0 +1,141 @@
+.fuel-home-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.fuel-home-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fuel-home-chart-card {
+  width: 100%;
+  background-color: #292929;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #333;
+}
+
+.fuel-home-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.fuel-home-chart-header h2 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.fuel-home-chart-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fuel-home-action-card {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #292929;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #333;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.fuel-home-action-card:hover {
+  background-color: #333333;
+}
+
+.fuel-home-action-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+.fuel-home-action-card p {
+  font-size: 0.9rem;
+  color: #cccccc;
+}
+
+.fuel-home-info-card {
+  background-color: #292929;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 2px solid #333;
+  width: 100%;
+  text-align: center;
+}
+
+.fuel-home-info-card h2 {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+.fuel-home-info-card p {
+  font-size: 1rem;
+  color: #cccccc;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 1200px) {
+  .fuel-home-row {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .fuel-home-column {
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 576px) {
+  .fuel-home-chart-header h2 {
+    font-size: 0.9rem;
+  }
+
+  .fuel-home-info-card h2 {
+    font-size: 1.5rem;
+  }
+
+  .fuel-home-info-card p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .fuel-home-chart-card,
+  .fuel-home-action-card,
+  .fuel-home-info-card {
+    padding: 15px;
+  }
+
+  .fuel-home-chart-header h2,
+  .fuel-home-action-card h3 {
+    font-size: 1rem;
+  }
+
+  .fuel-home-action-card p {
+    font-size: 0.8rem;
+  }
+
+  .fuel-home-info-card h2 {
+    font-size: 1.3rem;
+  }
+
+  .fuel-home-info-card p {
+    font-size: 0.8rem;
+  }
+}

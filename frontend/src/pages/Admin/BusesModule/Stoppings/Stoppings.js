@@ -13,6 +13,7 @@ import {
 import AddNewStop from "../AddNewStop/AddNewStop";
 import StoppingPassengers from "../StoppingPassengers/StoppingPassengers";
 import "./Stoppings.css";
+import Button from "../../../../components/Shared/Button/Button";
 
 const Stoppings = ({ route, onBack, institutionId }) => {
   const [showAddStop, setShowAddStop] = useState(false);
@@ -133,30 +134,34 @@ const Stoppings = ({ route, onBack, institutionId }) => {
             </div>
 
             <div className="action-buttons-container">
-              <button
-                className="stoppings-action-button stoppings-add-button"
+              <Button
+                label={
+                  <>
+                    <FontAwesomeIcon icon={faPlus} /> Add
+                  </>
+                }
                 onClick={() => setShowAddStop(true)}
-              >
-                <FontAwesomeIcon icon={faPlus} /> Add
-              </button>
-              <button
-                className={`stoppings-action-button stoppings-edit-button ${
-                  !selectedStop ? "disabled" : ""
-                }`}
+              />
+
+              <Button
+                label={
+                  <>
+                    <FontAwesomeIcon icon={faEdit} /> Edit
+                  </>
+                }
                 onClick={handleEditStop}
                 disabled={!selectedStop}
-              >
-                <FontAwesomeIcon icon={faEdit} /> Edit
-              </button>
-              <button
-                className={`stoppings-action-button stoppings-delete-button ${
-                  !selectedStop ? "disabled" : ""
-                }`}
+              />
+
+              <Button
+                label={
+                  <>
+                    <FontAwesomeIcon icon={faTrash} /> Delete
+                  </>
+                }
                 onClick={() => setShowDeleteConfirmation(true)}
                 disabled={!selectedStop}
-              >
-                <FontAwesomeIcon icon={faTrash} /> Delete
-              </button>
+              />
             </div>
 
             <div className="stoppings-table-container">
