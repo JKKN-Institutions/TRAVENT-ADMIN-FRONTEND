@@ -130,8 +130,18 @@
   margin-bottom: 1rem;
 }
 
-.view-all {
-  color: #11a8fd;
+.good-view-all {
+  color: #4caf50;
+  text-decoration: none;
+}
+
+.satisfactory-view-all {
+  color: #ff9800;
+  text-decoration: none;
+}
+
+.critical-view-all {
+  color: #f44336;
   text-decoration: none;
 }
 
@@ -234,8 +244,18 @@
   /* cursor: pointer; */
 }
 
-.view-icon {
-  color: #11a8fd;
+.good-view-icon {
+  color: #4caf50;
+  cursor: pointer;
+}
+
+.satisfactory-view-icon {
+  color: #ff9800;
+  cursor: pointer;
+}
+
+.critical-view-icon {
+  color: #f44336;
   cursor: pointer;
 }
 

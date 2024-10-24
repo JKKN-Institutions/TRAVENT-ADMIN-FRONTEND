@@ -1,0 +1,330 @@
+.bus-conditions-container {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.bus-conditions-top-bar {
+  background-color: #222222;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.bus-conditions-back-icon {
+  font-size: 1rem;
+  cursor: pointer;
+  color: #ffffff;
+  margin-right: 1rem;
+}
+
+.bus-conditions-top-bar h2 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.bus-conditions-main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 0.3rem;
+  background-color: #1e1e1e;
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+}
+
+.bus-conditions-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0 0.2rem;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.bus-conditions-search-bar-container {
+  width: 100%;
+  max-width: 600px;
+}
+
+.bus-conditions-search-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.bus-conditions-search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 1rem;
+}
+
+.bus-conditions-search-bar {
+  width: 100%;
+  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+  border: none;
+  border-radius: 20px;
+  background-color: #2c2c2c;
+  border: 1px solid #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 1rem;
+}
+
+.bus-conditions-search-bar:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.bus-conditions-action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.bus-conditions-table-container {
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.bus-conditions-table-wrapper {
+  overflow-x: auto;
+  max-height: calc(100vh - 250px);
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+}
+
+.bus-conditions-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.bus-conditions-table th,
+.bus-conditions-table td {
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 1px solid #666;
+}
+
+.bus-conditions-table th {
+  background-color: #1e1e1e;
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.bus-conditions-table td {
+  background-color: #2c2c2c;
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+.bus-conditions-table tbody tr {
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.bus-conditions-table tbody tr:hover {
+  background-color: #444;
+}
+
+.bus-conditions-table tbody tr.selected {
+  /* background-color: rgba(33, 150, 243, 0.3);
+  box-shadow: 0 0 10px rgba(33, 150, 243, 0.2); */
+  z-index: 5;
+  position: relative;
+}
+
+.bus-conditions-table tbody tr.selected td {
+  border-top: 2px solid #2196f3;
+  border-bottom: 2px solid #2196f3;
+}
+
+.bus-conditions-table tbody tr.selected td:first-child {
+  border-left: 2px solid #2196f3;
+}
+
+.bus-conditions-table tbody tr.selected td:last-child {
+  border-right: 2px solid #2196f3;
+}
+
+.view-icon {
+  color: #11a8fd;
+  cursor: pointer;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.view-arrow {
+  color: #11a8fd;
+  font-weight: bold;
+}
+
+.bus-conditions-delete-confirmation-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.bus-conditions-delete-confirmation-content {
+  background-color: #2c2c2c;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 90%;
+  width: 400px;
+}
+
+.bus-conditions-delete-confirmation-content h3 {
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.bus-conditions-delete-confirmation-content p {
+  margin-bottom: 1.5rem;
+  color: #cccccc;
+}
+
+.bus-conditions-delete-confirmation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.bus-conditions-confirm-delete,
+.bus-conditions-cancel-delete {
+  padding: 0.5rem 2rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.bus-conditions-confirm-delete {
+  background-color: #11a8fd;
+  color: #ffffff;
+  border: none;
+}
+
+.bus-conditions-cancel-delete {
+  background-color: transparent;
+  color: #11a8fd;
+  border: 1px solid #11a8fd;
+}
+
+.bus-conditions-confirm-delete:hover,
+.bus-conditions-cancel-delete:hover {
+  opacity: 0.9;
+}
+
+.bus-conditions-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.bus-conditions-pagination-button {
+  background-color: #2c2c2c;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.bus-conditions-pagination-button:hover:not(:disabled) {
+  background-color: #444;
+}
+
+.bus-conditions-pagination-button.active {
+  background-color: #11a8fd;
+  border-color: #11a8fd;
+}
+
+.bus-conditions-pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1024px) {
+  .bus-conditions-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bus-conditions-search-bar-container {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .bus-conditions-action-buttons {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .bus-conditions-table {
+    font-size: 0.9rem;
+  }
+
+  .bus-conditions-pagination {
+    flex-wrap: wrap;
+  }
+
+  .bus-conditions-action-buttons {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .bus-conditions-top-bar {
+    padding: 0.75rem;
+  }
+
+  .bus-conditions-table th,
+  .bus-conditions-table td {
+    padding: 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .bus-conditions-search-bar {
+    font-size: 0.9rem;
+  }
+}

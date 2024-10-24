@@ -88,6 +88,10 @@ const usageData = [
     itemName: "Engine Oil",
     quantity: 3,
     usedOn: 3,
+    vehicleNo: "TN01AB1234",
+    driverName: "John Doe",
+    usageDate: "2024-03-01",
+    usageTime: "09:30 AM",
   },
   {
     orderId: "ORD-002",
@@ -95,6 +99,10 @@ const usageData = [
     itemName: "Battery",
     quantity: 100,
     usedOn: 5,
+    vehicleNo: "TN02CD5678",
+    driverName: "Jane Smith",
+    usageDate: "2024-03-02",
+    usageTime: "10:15 AM",
   },
   {
     orderId: "ORD-003",
@@ -102,6 +110,10 @@ const usageData = [
     itemName: "Radiator Hose",
     quantity: 25,
     usedOn: 1,
+    vehicleNo: "TN03EF9012",
+    driverName: "Mike Johnson",
+    usageDate: "2024-03-03",
+    usageTime: "11:45 AM",
   },
   {
     orderId: "ORD-004",
@@ -109,6 +121,10 @@ const usageData = [
     itemName: "Fan Belt",
     quantity: 200,
     usedOn: 18,
+    vehicleNo: "TN04GH3456",
+    driverName: "Sarah Wilson",
+    usageDate: "2024-03-04",
+    usageTime: "02:20 PM",
   },
   {
     orderId: "ORD-005",
@@ -116,6 +132,10 @@ const usageData = [
     itemName: "Oil Filter",
     quantity: 75,
     usedOn: 5,
+    vehicleNo: "TN05IJ7890",
+    driverName: "David Brown",
+    usageDate: "2024-03-05",
+    usageTime: "03:10 PM",
   },
 ];
 
@@ -126,6 +146,8 @@ const InventoryHome = ({
   setShowViewAllOrderDetails,
   setShowAddNewOrder,
   handleViewOrder,
+  setShowViewAllUsedSpares,
+  handleViewSpares,
 }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [inventorySearch, setInventorySearch] = useState("");
@@ -339,7 +361,11 @@ const InventoryHome = ({
         <div className="table-container usage-details">
           <div className="table-header">
             <h2>Used Spares</h2>
-            <a href="#" className="view-all">
+            <a
+              href="#"
+              className="view-all"
+              onClick={() => setShowViewAllUsedSpares(true)}
+            >
               view all -&gt;
             </a>
           </div>
@@ -381,7 +407,11 @@ const InventoryHome = ({
                     <td>{usage.quantity}</td>
                     <td>{usage.usedOn}</td>
                     <td>
-                      <FontAwesomeIcon icon={faEye} className="view-icon" />
+                      <FontAwesomeIcon
+                        icon={faEye}
+                        className="view-icon"
+                        onClick={() => handleViewSpares(usage)}
+                      />
                     </td>
                   </tr>
                 ))}

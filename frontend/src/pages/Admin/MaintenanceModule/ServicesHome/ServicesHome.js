@@ -108,7 +108,12 @@ const goodBusesData = [
   },
 ];
 
-const ServicesHome = () => {
+const ServicesHome = ({
+  setShowViewAllBusConditions,
+  setShowViewGoodConditionBuses,
+  setShowViewSatisfactoryConditionBuses,
+  setShowViewCriticalConditionBuses,
+}) => {
   const [criticalSearch, setCriticalSearch] = useState("");
   const [satisfactorySearch, setSatisfactorySearch] = useState("");
   const [goodSearch, setGoodSearch] = useState("");
@@ -137,7 +142,11 @@ const ServicesHome = () => {
         <div className="services-buses-condition-container">
           <div className="services-table-header">
             <h2>Buses Condition</h2>
-            <a href="#" className="view-all">
+            <a
+              href="#"
+              className="view-all"
+              onClick={() => setShowViewAllBusConditions(true)}
+            >
               view all -&gt;
             </a>
           </div>
@@ -175,7 +184,11 @@ const ServicesHome = () => {
         <div className="services-table-container good-buses">
           <div className="services-table-header">
             <h2>Buses in Good Condition</h2>
-            <a href="#" className="view-all">
+            <a
+              href="#"
+              className="good-view-all"
+              onClick={() => setShowViewGoodConditionBuses(true)}
+            >
               view all -&gt;
             </a>
           </div>
@@ -215,7 +228,10 @@ const ServicesHome = () => {
                     <td>{bus.status}</td>
                     <td>{bus.lastService}</td>
                     <td>
-                      <FontAwesomeIcon icon={faEye} className="view-icon" />
+                      <FontAwesomeIcon
+                        icon={faEye}
+                        className="good-view-icon"
+                      />
                     </td>
                   </tr>
                 ))}
@@ -226,7 +242,11 @@ const ServicesHome = () => {
         <div className="services-table-container satisfactory-buses">
           <div className="services-table-header">
             <h2>Buses in Satisfactory Condition</h2>
-            <a href="#" className="view-all">
+            <a
+              href="#"
+              className="satisfactory-view-all"
+              onClick={() => setShowViewSatisfactoryConditionBuses(true)}
+            >
               view all -&gt;
             </a>
           </div>
@@ -266,7 +286,10 @@ const ServicesHome = () => {
                     <td>{bus.status}</td>
                     <td>{bus.problem}</td>
                     <td>
-                      <FontAwesomeIcon icon={faEye} className="view-icon" />
+                      <FontAwesomeIcon
+                        icon={faEye}
+                        className="satisfactory-view-icon"
+                      />
                     </td>
                   </tr>
                 ))}
@@ -277,7 +300,11 @@ const ServicesHome = () => {
         <div className="services-table-container critical-buses">
           <div className="services-table-header">
             <h2>Buses in Critical Condition</h2>
-            <a href="#" className="view-all">
+            <a
+              href="#"
+              className="critical-view-all"
+              onClick={() => setShowViewCriticalConditionBuses(true)}
+            >
               view all -&gt;
             </a>
           </div>
@@ -317,7 +344,10 @@ const ServicesHome = () => {
                     <td>{bus.status}</td>
                     <td>{bus.problem}</td>
                     <td>
-                      <FontAwesomeIcon icon={faEye} className="view-icon" />
+                      <FontAwesomeIcon
+                        icon={faEye}
+                        className="critical-view-icon"
+                      />
                     </td>
                   </tr>
                 ))}

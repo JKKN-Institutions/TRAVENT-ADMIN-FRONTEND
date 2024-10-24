@@ -14,6 +14,12 @@ import AddNewStock from "../AddNewStock/AddNewStock";
 import ViewAllOrderDetails from "../ViewAllOrderDetails/ViewAllOrderDetails";
 import AddNewOrder from "../AddNewOrder/AddNewOrder";
 import SpecificOrderDetails from "../SpecificOrderDetails/SpecificOrderDetails";
+import ViewAllUsedSpares from "../ViewAllUsedSpares/ViewAllUsedSpares";
+import SpecificUsedSpareDetails from "../SpecificUsedSpareDetails/SpecificUsedSpareDetails";
+import ViewAllBusConditions from "../ViewAllBusConditions/ViewAllBusConditions";
+import ViewGoodConditionBuses from "../ViewGoodConditionBuses/ViewGoodConditionBuses";
+import ViewSatisfactoryConditionBuses from "../ViewSatisfactoryConditionBuses/ViewSatisfactoryConditionBuses";
+import ViewCriticalConditionBuses from "../ViewCriticalConditionBuses/ViewCriticalConditionBuses";
 
 const MaintenanceFuelHome = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +27,7 @@ const MaintenanceFuelHome = ({ toggleSidebar }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [viewingStock, setViewingStock] = useState(null);
   const [viewingOrder, setViewingOrder] = useState(null);
+  const [viewingSpares, setViewingSpares] = useState(null);
 
   const [showAddFuelRecord, setShowAddFuelRecord] = useState(false);
   const [showViewFuelRecords, setShowViewFuelRecords] = useState(false);
@@ -28,6 +35,18 @@ const MaintenanceFuelHome = ({ toggleSidebar }) => {
   const [showAddNewStock, setShowAddNewStock] = useState(false);
   const [showViewAllOrderDetails, setShowViewAllOrderDetails] = useState(false);
   const [showAddNewOrder, setShowAddNewOrder] = useState(false);
+  const [showViewAllUsedSpares, setShowViewAllUsedSpares] = useState(false);
+
+  const [showViewAllBusConditions, setShowViewAllBusConditions] =
+    useState(false);
+  const [showViewGoodConditionBuses, setShowViewGoodConditionBuses] =
+    useState(false);
+  const [
+    showViewSatisfactoryConditionBuses,
+    setShowViewSatisfactoryConditionBuses,
+  ] = useState(false);
+  const [showViewCriticalConditionBuses, setShowViewCriticalConditionBuses] =
+    useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1500);
@@ -50,6 +69,10 @@ const MaintenanceFuelHome = ({ toggleSidebar }) => {
 
   const handleViewOrder = (order) => {
     setViewingOrder(order);
+  };
+
+  const handleViewSpares = (spare) => {
+    setViewingSpares(spare);
   };
 
   const handleAddNewStock = (stockData) => {
@@ -101,6 +124,40 @@ const MaintenanceFuelHome = ({ toggleSidebar }) => {
       <AddNewOrder
         onBack={() => setShowAddNewOrder(false)}
         onSave={handleAddNewOrder}
+      />
+    );
+  }
+
+  if (showViewAllUsedSpares) {
+    return <ViewAllUsedSpares onBack={() => setShowViewAllUsedSpares(false)} />;
+  }
+
+  if (showViewAllBusConditions) {
+    return (
+      <ViewAllBusConditions onBack={() => setShowViewAllBusConditions(false)} />
+    );
+  }
+
+  if (showViewGoodConditionBuses) {
+    return (
+      <ViewGoodConditionBuses
+        onBack={() => setShowViewGoodConditionBuses(false)}
+      />
+    );
+  }
+
+  if (showViewSatisfactoryConditionBuses) {
+    return (
+      <ViewSatisfactoryConditionBuses
+        onBack={() => setShowViewSatisfactoryConditionBuses(false)}
+      />
+    );
+  }
+
+  if (showViewCriticalConditionBuses) {
+    return (
+      <ViewCriticalConditionBuses
+        onBack={() => setShowViewCriticalConditionBuses(false)}
       />
     );
   }
@@ -165,6 +222,8 @@ const MaintenanceFuelHome = ({ toggleSidebar }) => {
                   setShowViewAllOrderDetails={setShowViewAllOrderDetails}
                   setShowAddNewOrder={setShowAddNewOrder}
                   handleViewOrder={handleViewOrder}
+                  setShowViewAllUsedSpares={setShowViewAllUsedSpares}
+                  handleViewSpares={handleViewSpares}
                 />
                 {viewingStock && (
                   <SpecificStockDetails
@@ -178,10 +237,27 @@ const MaintenanceFuelHome = ({ toggleSidebar }) => {
                     onClose={() => setViewingOrder(null)}
                   />
                 )}
+                {viewingSpares && (
+                  <SpecificUsedSpareDetails
+                    spare={viewingSpares}
+                    onClose={() => setViewingSpares(null)}
+                  />
+                )}
               </>
             )}
 
-            {activeTab === "Services" && <ServicesHome />}
+            {activeTab === "Services" && (
+              <ServicesHome
+                setShowViewAllBusConditions={setShowViewAllBusConditions}
+                setShowViewGoodConditionBuses={setShowViewGoodConditionBuses}
+                setShowViewSatisfactoryConditionBuses={
+                  setShowViewSatisfactoryConditionBuses
+                }
+                setShowViewCriticalConditionBuses={
+                  setShowViewCriticalConditionBuses
+                }
+              />
+            )}
           </main>
         </div>
       )}
