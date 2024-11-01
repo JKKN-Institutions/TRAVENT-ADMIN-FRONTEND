@@ -11,6 +11,7 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import NewUserRequest from "../AdminDashboard/NewUserRequest/NewUserRequest";
 import AdminNotifications from "../AdminNotifications/AdminNotifications";
+import Loading from "../../../components/Shared/Loading/Loading";
 
 const AdminHome = ({ toggleSidebar, resetState }) => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -22,11 +23,7 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
   const handleEnvelopeClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      setShowNewUserRequests(true);
-    }, 3000);
+    setShowNewUserRequests(true);
   };
 
   const handleBellClick = (event) => {
@@ -41,6 +38,8 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
       setShowNotifications(false);
       setShowNewUserRequests(false);
       setShowAdminNotifications(false);
+      setIsLoading(true); // Set loading to true when reset
+      setTimeout(() => setIsLoading(false), 1500); // Simulate loading
     }
   }, [resetState]);
 
@@ -109,10 +108,7 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
   return (
     <>
       {isLoading ? (
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading...</p>
-        </div>
+        <Loading message="Loading Admin Home..." />
       ) : (
         <div className="admin-home-container">
           <header className="admin-top-bar">

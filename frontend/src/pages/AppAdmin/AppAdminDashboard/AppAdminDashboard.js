@@ -4,6 +4,7 @@ import AppAdminHome from "../AppAdminHome/AppAdminHome";
 import ViewInstitutions from "../ManageInstitutions/ViewInstitutions";
 import SubscriptionPlans from "../SubscriptionPlans/SubscriptionPlans";
 import Notifications from "../Notifications/Notifications";
+import UnifiedSidebar from "../../../components/Shared/Sidebar/UnifiedSidebar";
 import "./AppAdminDashboard.css";
 
 const AdminDashboard = () => {
@@ -56,7 +57,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <Sidebar
+      <UnifiedSidebar
         isOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
         setActiveComponent={(component) => {
@@ -65,6 +66,7 @@ const AdminDashboard = () => {
             resetAppAdminHomeState(); // Reset when "Home" is clicked
           }
         }}
+        userRole="appadmin"
       />
       <div
         className={`main-content ${

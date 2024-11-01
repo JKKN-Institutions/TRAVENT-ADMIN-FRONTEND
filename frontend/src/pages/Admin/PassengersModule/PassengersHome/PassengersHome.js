@@ -16,6 +16,7 @@ import {
 import "./PassengersHome.css";
 import ViewStudents from "../ViewStudents/ViewStudents";
 import ViewStaffs from "../ViewStaffs/ViewStaffs";
+import Loading from "../../../../components/Shared/Loading/Loading";
 
 const PassengersHome = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -112,10 +113,7 @@ const PassengersHome = ({ toggleSidebar }) => {
   return (
     <>
       {isLoading ? (
-        <div className="schedules-loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading Passengers...</p>
-        </div>
+        <Loading message="Loading Passengers..." />
       ) : (
         <div className="passengers-home-container">
           <header className="passengers-home-top-bar">

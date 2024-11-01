@@ -1,0 +1,286 @@
+.specific-route-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  position: relative;
+}
+
+.specific-route-live-tracking-top-bar {
+  background-color: #222222;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.specific-route-live-tracking-top-bar h2 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.specific-route-live-tracking-back-icon {
+  font-size: 1rem;
+  cursor: pointer;
+  color: #ffffff;
+  margin-right: 1rem;
+}
+
+.map-container {
+  height: 80%;
+  border-radius: 10px;
+}
+
+.bus-marker {
+  position: relative;
+  cursor: pointer;
+  width: 50px;
+  height: 60px;
+  transition: transform 0.3s ease;
+}
+
+.marker-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.route-number {
+  background: #333333;
+  color: #ffffff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.specific-route-live-tracking-bus-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  margin-top: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.specific-route-live-tracking-bus-icon i {
+  font-size: 28px;
+  color: #333333;
+  position: relative;
+  z-index: 2;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot.delay {
+  background-color: #ff4500;
+}
+.status-dot.early {
+  background-color: #32cd32;
+}
+.status-dot.on-time {
+  background-color: #00bfff;
+}
+
+.stop-marker {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  transition: all 0.3s ease;
+}
+
+.stop-marker.completed {
+  background-color: #32cd32;
+}
+.stop-marker.next {
+  background-color: #00bfff;
+}
+.stop-marker.pending {
+  background-color: #666;
+}
+
+.destination-marker {
+  position: relative;
+  cursor: pointer;
+  width: 50px;
+  height: 60px;
+}
+
+.destination-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.destination-label {
+  background: #ff4500;
+  color: #eeeeee;
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
+.destination-content i {
+  color: #ff4500;
+  font-size: 30px;
+  margin-top: 20px;
+}
+
+.stops-panel-container {
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  right: 0;
+  background: #222222;
+  border-radius: 20px 20px 0 0;
+  transition: transform 0.3s ease-in-out;
+}
+
+.view-stops-button {
+  width: 100%;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.stops-list {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+
+.stops-list.visible {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.stop-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem;
+  position: relative;
+}
+
+.stop-marker-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 1rem;
+  margin-top: 6px;
+  border: 2px solid #fff;
+  flex-shrink: 0;
+}
+
+.stop-item.completed .stop-marker-indicator {
+  background-color: #32cd32;
+}
+.stop-item.next .stop-marker-indicator {
+  background-color: #00bfff;
+}
+.stop-item.pending .stop-marker-indicator {
+  background-color: #666;
+}
+.stop-item.destination .stop-marker-indicator {
+  background-color: #ff4500;
+}
+
+.stop-details {
+  flex: 1;
+}
+
+.stop-details h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.next-stop-info {
+  color: #00bfff;
+  font-size: 0.9rem;
+  margin: 0.2rem 0;
+}
+
+.passengers-info {
+  color: #999;
+  font-size: 0.9rem;
+  margin: 0.2rem 0;
+}
+
+.stop-time {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  color: #999;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .map-container {
+    min-height: 50vh;
+  }
+  .stops-list.visible {
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .specific-route-live-tracking-top-bar {
+    padding: 0.8rem;
+  }
+  .stop-details h4 {
+    font-size: 0.9rem;
+  }
+  .next-stop-info,
+  .passengers-info,
+  .stop-time {
+    font-size: 0.8rem;
+  }
+  .stops-list.visible {
+    max-height: 250px;
+  }
+}

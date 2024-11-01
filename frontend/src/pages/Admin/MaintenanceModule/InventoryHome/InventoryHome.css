@@ -186,7 +186,6 @@
 
 .inventory-table tbody tr:hover {
   background-color: #444;
-  cursor: pointer;
 }
 
 .view-icon {

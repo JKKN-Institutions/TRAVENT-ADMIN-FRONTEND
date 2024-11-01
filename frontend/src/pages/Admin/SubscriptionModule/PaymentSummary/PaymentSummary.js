@@ -1,20 +1,42 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faCircle } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import "./PaymentSummary.css";
 import PaymentMethods from "../PaymentMethods/PaymentMethods";
+import SubscriptionReceipt from "../SubscriptionReceipt/SubscriptionReceipt";
 
-const PaymentSummary = ({ onBack, planDetails }) => {
+const PaymentSummary = ({ onBack, planDetails, setShowPaymentHistory }) => {
   const [activeTab, setActiveTab] = useState("summary");
   const [isChecked, setIsChecked] = useState(false);
-
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-  };
+  const [showReceipt, setShowReceipt] = useState(false);
+  const [paymentResponse, setPaymentResponse] = useState(null);
 
   const handleProceedToPayment = () => {
     setActiveTab("payment");
   };
+
+  if (showReceipt) {
+    return (
+      <SubscriptionReceipt
+        onClose={onBack}
+        receiptData={{
+          transactionId: paymentResponse?.razorpay_payment_id || "TXN123456789",
+          paymentTo: "Travent Solutions",
+          paymentDate: new Date().toLocaleDateString(),
+          paymentMethod: "Razorpay",
+          institutionName: planDetails.institutionName,
+          subscriptionPlan: planDetails.name,
+          validity: planDetails.validity,
+          userRange: planDetails.userRange,
+          amount: planDetails.price,
+          tax: Math.round(planDetails.price * 0.18),
+          feeBalance: 0,
+          paymentStatus: "Paid",
+          totalAmount: Math.round(planDetails.price * 1.18),
+        }}
+      />
+    );
+  }
 
   return (
     <div className="payment-summary-container">
@@ -120,6 +142,9 @@ const PaymentSummary = ({ onBack, planDetails }) => {
           <PaymentMethods
             onBack={() => setActiveTab("summary")}
             planDetails={planDetails}
+            setPaymentResponse={setPaymentResponse}
+            setShowReceipt={setShowReceipt}
+            setShowPaymentHistory={setShowPaymentHistory}
           />
         )}
       </main>

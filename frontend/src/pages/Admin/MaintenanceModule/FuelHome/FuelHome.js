@@ -54,8 +54,8 @@ const FuelHome = ({
             </div>
             <ResponsiveContainer width="100%" height={275}>
               <LineChart data={fuelPurchaseData}>
-                <XAxis dataKey="week" />
-                <YAxis domain={[0, 2.5]} />
+                <XAxis dataKey="week" fontSize={14} />
+                <YAxis domain={[0, 2.5]} fontSize={14} />
                 <Tooltip content={<CustomTooltip />} />
                 <Line
                   type="monotone"

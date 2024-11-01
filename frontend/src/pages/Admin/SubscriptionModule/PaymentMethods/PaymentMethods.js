@@ -1,8 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./PaymentMethods.css";
+import { CheckCircle2 } from "lucide-react";
 
-const PaymentMethods = ({ planDetails, onBack }) => {
+const PaymentMethods = ({
+  planDetails,
+  onBack,
+  setPaymentResponse,
+  setShowReceipt,
+  setShowPaymentHistory,
+}) => {
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
+
+  useEffect(() => {
+    handlePayment();
+  }, []);
 
   const handlePayment = () => {
     if (!window.Razorpay) {
@@ -10,24 +21,26 @@ const PaymentMethods = ({ planDetails, onBack }) => {
       return;
     }
 
+    console.log("yyyyy", planDetails);
+
     const options = {
-      key: "rzp_test_eB7p3df8eXoOVY", // Replace with your Razorpay test/live key
-      amount: planDetails.price * 100, // Amount in paise
+      key: "rzp_test_Z9Ag0AoPT2joJY",
+      amount: planDetails.price * 100,
       currency: "INR",
       name: "Travent",
       description: `Payment for ${planDetails.name}`,
       handler: function (response) {
         if (response.razorpay_payment_id) {
+          setPaymentResponse(response);
           setShowSuccessOverlay(true);
         } else {
-          console.log("Payment failed:", response);
           alert("Payment failed. Please try again.");
         }
       },
       modal: {
         ondismiss: function () {
-          console.log("Payment modal closed by user.");
           alert("Payment cancelled. You can try again.");
+          onBack();
         },
       },
       prefill: {
@@ -41,7 +54,6 @@ const PaymentMethods = ({ planDetails, onBack }) => {
 
     const rzp = new window.Razorpay(options);
     rzp.on("payment.failed", function (response) {
-      console.log("Payment failed:", response.error);
       alert("Payment failed. Reason: " + response.error.description);
     });
 
@@ -49,23 +61,35 @@ const PaymentMethods = ({ planDetails, onBack }) => {
   };
 
   return (
-    <>
+    <div className="payment-methods-container">
       {showSuccessOverlay && (
         <div className="payment-success-overlay">
           <div className="payment-success-content">
-            <div className="confetti-animation"></div>
+            <CheckCircle2
+              className="success-icon"
+              size={50}
+              strokeWidth={1.5}
+            />
             <h2>Congratulations!</h2>
             <p>You have successfully made your payment.</p>
             <div className="payment-success-actions">
-              <button className="go-to-history-button">
+              <button
+                className="go-to-history-button"
+                onClick={() => setShowPaymentHistory(true)}
+              >
                 Go to Payment History
               </button>
-              <button className="view-receipt-button">View E-Receipt</button>
+              <button
+                className="view-receipt-button"
+                onClick={() => setShowReceipt(true)}
+              >
+                View E-Receipt
+              </button>
             </div>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

@@ -1,24 +1,25 @@
-/* Loading.css */
-.loading-container {
+.menu-loading-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
+  background-color: #1e1e1e;
   height: 100vh;
-  background: rgba(30, 30, 30, 0.9); /* Dark transparent background */
-  z-index: 9999; /* To ensure it's on top of other elements */
+  color: #ffffff;
 }
 
-.loading-spinner {
-  border: 6px solid rgba(255, 255, 255, 0.2);
-  border-top: 6px solid #11a8fd; /* The same yellow from your buttons */
+.menu-loading-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 0.8s linear infinite;
+  border-top: 4px solid #ffffff;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+  animation: spin 1s linear infinite;
+}
+
+.menu-loading-container p {
+  font-weight: 600;
 }
 
 @keyframes spin {
@@ -27,24 +28,5 @@
   }
   100% {
     transform: rotate(360deg);
-  }
-}
-
-/* Responsive styling for mobile and tablet */
-@media (max-width: 768px) {
-  .loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(255, 255, 255, 0.2);
-    border-top: 4px solid #11a8fd;
-  }
-}
-
-@media (max-width: 480px) {
-  .loading-spinner {
-    width: 30px;
-    height: 30px;
-    border: 3px solid rgba(255, 255, 255, 0.2);
-    border-top: 3px solid #11a8fd;
   }
 }

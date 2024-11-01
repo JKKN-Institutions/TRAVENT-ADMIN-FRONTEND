@@ -12,6 +12,7 @@ import UpdateBusFee from "../UpdateBusFee/UpdateBusFee";
 import AddAmuletsFee from "../AddAmuletsFee/AddAmuletsFee";
 import AmuletsRefilledList from "../AmuletsRefilledList/AmuletsRefilledList";
 import PaymentDashboard from "../PaymentDashboard/PaymentDashboard";
+import Loading from "../../../../components/Shared/Loading/Loading";
 
 const PaymentsDashboardHome = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -81,10 +82,7 @@ const PaymentsDashboardHome = ({ toggleSidebar }) => {
   return (
     <>
       {isLoading ? (
-        <div className="schedules-loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading Payments...</p>
-        </div>
+        <Loading message="Loading Payments..." />
       ) : (
         <div className="payments-dashboard-container">
           <header className="payments-dashboard-top-bar">

@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./NewUserRequest.css";
 import ActionButton from "../../../../components/Shared/Button/Button";
+import Loading from "../../../../components/Shared/Loading/Loading";
 
 // Dummy data
 const dummyData = [
@@ -161,7 +162,7 @@ function NewUserRequest({ onBack }) {
     const timer = setTimeout(() => {
       setPendingUsers(dummyData);
       setIsLoading(false);
-    }, 3000);
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, []);
@@ -185,32 +186,58 @@ function NewUserRequest({ onBack }) {
   };
 
   const handleSelectAll = (type) => {
-    const usersOfType = pendingUsers.filter((user) => user.type === type);
-    const allSelected = usersOfType.every((user) =>
-      selectedUsers.includes(user._id)
-    );
-
-    if (allSelected) {
-      setSelectedUsers(
-        selectedUsers.filter(
-          (id) => !usersOfType.some((user) => user._id === id)
-        )
+    const filteredUsers = pendingUsers.filter((user) => user.type === type);
+    if (type === "student") {
+      const allSelected = filteredUsers.every((user) =>
+        selectedUsers.includes(user._id)
       );
+      setSelectAllStudents(!allSelected);
+      if (allSelected) {
+        setSelectedUsers((prev) =>
+          prev.filter((id) => !filteredUsers.some((user) => user._id === id))
+        );
+      } else {
+        setSelectedUsers((prev) => [
+          ...new Set([...prev, ...filteredUsers.map((user) => user._id)]),
+        ]);
+      }
     } else {
-      const newSelectedUsers = [
-        ...selectedUsers,
-        ...usersOfType.map((user) => user._id),
-      ];
-      setSelectedUsers([...new Set(newSelectedUsers)]);
+      const allSelected = filteredUsers.every((user) =>
+        selectedUsers.includes(user._id)
+      );
+      setSelectAllStaff(!allSelected);
+      if (allSelected) {
+        setSelectedUsers((prev) =>
+          prev.filter((id) => !filteredUsers.some((user) => user._id === id))
+        );
+      } else {
+        setSelectedUsers((prev) => [
+          ...new Set([...prev, ...filteredUsers.map((user) => user._id)]),
+        ]);
+      }
     }
   };
 
-  const handleSelectUser = (userId) => {
-    setSelectedUsers((prevSelected) =>
-      prevSelected.includes(userId)
-        ? prevSelected.filter((id) => id !== userId)
-        : [...prevSelected, userId]
-    );
+  const handleSelectUser = (userId, type) => {
+    setSelectedUsers((prev) => {
+      const newSelection = prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId];
+
+      // Update select all checkbox state
+      const usersOfType = pendingUsers.filter((user) => user.type === type);
+      const allOfTypeSelected = usersOfType.every((user) =>
+        newSelection.includes(user._id)
+      );
+
+      if (type === "student") {
+        setSelectAllStudents(allOfTypeSelected);
+      } else {
+        setSelectAllStaff(allOfTypeSelected);
+      }
+
+      return newSelection;
+    });
   };
 
   const studentUsers = pendingUsers.filter((user) => user.type === "student");
@@ -270,169 +297,182 @@ function NewUserRequest({ onBack }) {
     );
   };
 
-  if (isLoading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="new-user-requests">
-      <ToastContainer />
-      <header className="new-user-requests-top-bar">
-        <button className="new-user-requests-back-button" onClick={onBack}>
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
-        <div className="new-user-requests-header">
-          <h2>New User Requests</h2>
-        </div>
-      </header>
+    <>
+      {isLoading ? (
+        <Loading message="Loading New User Requests..." />
+      ) : (
+        <div className="new-user-requests">
+          <ToastContainer />
+          <header className="new-user-requests-top-bar">
+            <button className="new-user-requests-back-button" onClick={onBack}>
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </button>
+            <div className="new-user-requests-header">
+              <h2>New User Requests</h2>
+            </div>
+          </header>
 
-      <main className="new-user-requests-main-content">
-        <div className="new-user-requests-search-bar-container">
-          <div className="search-input-wrapper">
-            <FontAwesomeIcon icon={faSearch} className="search-icon" />
-            <input
-              type="text"
-              className="new-user-requests-search-bar"
-              placeholder="Search by Stop Name"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-        </div>
+          <main className="new-user-requests-main-content">
+            <div className="new-user-requests-search-bar-container">
+              <div className="search-input-wrapper">
+                <FontAwesomeIcon icon={faSearch} className="search-icon" />
+                <input
+                  type="text"
+                  className="new-user-requests-search-bar"
+                  placeholder="Search by Stop Name"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </div>
 
-        <div className="new-user-action-buttons-container">
-          <ActionButton
-            label="Approve"
-            onClick={() => handleAction("approve")}
-            type="approve"
-          />
-          <ActionButton
-            label="Decline"
-            onClick={() => handleAction("reject")}
-            type="decline"
-          />
-        </div>
+            <div className="new-user-action-buttons-container">
+              <ActionButton
+                label="Approve"
+                onClick={() => handleAction("approve")}
+                type="approve"
+              />
+              <ActionButton
+                label="Decline"
+                onClick={() => handleAction("reject")}
+                type="decline"
+              />
+            </div>
 
-        {currentStudents.length > 0 && (
-          <div className="new-user-requests-table-container">
-            <h3>Student Table</h3>
-            <table className="new-user-requests-table">
-              <thead>
-                <tr>
-                  <th>
-                    <input
-                      type="checkbox"
-                      checked={selectAllStudents}
-                      onChange={() => handleSelectAll("student")}
-                    />
-                  </th>
-                  <th>S.No</th>
-                  <th>Student Name</th>
-                  <th>Reg No</th>
-                  <th>Roll No</th>
-                  <th>Year</th>
-                  <th>Department</th>
-                  <th>Section</th>
-                  <th>Institute Name</th>
-                  <th>Stop Name</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentStudents.map((user, index) => (
-                  <tr key={user._id}>
-                    <td>
-                      <input
-                        type="checkbox"
-                        checked={selectedUsers.includes(user._id)}
-                        onChange={() => handleSelectUser(user._id, "student")}
-                      />
-                    </td>
-                    <td>{indexOfFirstItemStudent + index + 1}</td>
-                    <td>{user.basicDetails.name}</td>
-                    <td>{user.studentDetails.regNo || "N/A"}</td>
-                    <td>{user.studentDetails.rollNo || "N/A"}</td>
-                    <td>{user.studentDetails.year || "N/A"}</td>
-                    <td>{user.studentDetails.department || "N/A"}</td>
-                    <td>{user.studentDetails.section || "N/A"}</td>
-                    <td>{user.studentDetails.instituteName || "N/A"}</td>
-                    <td>{user.locationDetails.stopName || "N/A"}</td>
-                    <td>Not Approved</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {renderPagination(
-              currentPageStudent,
-              studentUsers.length,
-              paginateStudent
+            {currentStudents.length > 0 && (
+              <div className="new-user-requests-table-container">
+                <h3>Student Table</h3>
+                <table className="new-user-requests-table">
+                  <thead>
+                    <tr>
+                      <th>
+                        <label className="new-user-requests-custom-checkbox">
+                          <input
+                            type="checkbox"
+                            checked={selectAllStudents}
+                            onChange={() => handleSelectAll("student")}
+                          />
+                          <span className="new-user-requests-checkmark"></span>
+                        </label>
+                      </th>
+                      <th>S.No</th>
+                      <th>Student Name</th>
+                      <th>Reg No</th>
+                      <th>Roll No</th>
+                      <th>Year</th>
+                      <th>Department</th>
+                      <th>Section</th>
+                      <th>Institute Name</th>
+                      <th>Stop Name</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentStudents.map((user, index) => (
+                      <tr key={user._id}>
+                        <td>
+                          <label className="new-user-requests-custom-checkbox">
+                            <input
+                              type="checkbox"
+                              checked={selectedUsers.includes(user._id)}
+                              onChange={() =>
+                                handleSelectUser(user._id, "student")
+                              }
+                            />
+                            <span className="new-user-requests-checkmark"></span>
+                          </label>
+                        </td>
+                        <td>{indexOfFirstItemStudent + index + 1}</td>
+                        <td>{user.basicDetails.name}</td>
+                        <td>{user.studentDetails.regNo || "N/A"}</td>
+                        <td>{user.studentDetails.rollNo || "N/A"}</td>
+                        <td>{user.studentDetails.year || "N/A"}</td>
+                        <td>{user.studentDetails.department || "N/A"}</td>
+                        <td>{user.studentDetails.section || "N/A"}</td>
+                        <td>{user.studentDetails.instituteName || "N/A"}</td>
+                        <td>{user.locationDetails.stopName || "N/A"}</td>
+                        <td>Not Approved</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {renderPagination(
+                  currentPageStudent,
+                  studentUsers.length,
+                  paginateStudent
+                )}
+              </div>
             )}
-          </div>
-        )}
 
-        {currentStaff.length > 0 && (
-          <div className="new-user-requests-table-container">
-            <h3>Staff Table</h3>
-            <table className="new-user-requests-table">
-              <thead>
-                <tr>
-                  <th>
-                    <input
-                      type="checkbox"
-                      checked={selectAllStaff}
-                      onChange={() => handleSelectAll("staff")}
-                    />
-                  </th>
-                  <th>S.No</th>
-                  <th>Staff Name</th>
-                  <th>Staff ID</th>
-                  <th>Institute Name</th>
-                  <th>Department</th>
-                  <th>Designation</th>
-                  <th>Stop Name</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentStaff.map((user, index) => (
-                  <tr key={user._id}>
-                    <td>
-                      <input
-                        type="checkbox"
-                        checked={selectedUsers.includes(user._id)}
-                        onChange={() => handleSelectUser(user._id, "staff")}
-                      />
-                    </td>
-                    <td>{indexOfFirstItemStaff + index + 1}</td>
-                    <td>{user.basicDetails.name}</td>
-                    <td>{user.staffDetails.staffId || "N/A"}</td>
-                    <td>{user.staffDetails.instituteName || "N/A"}</td>
-                    <td>{user.staffDetails.department || "N/A"}</td>
-                    <td>{user.staffDetails.designation || "N/A"}</td>
-                    <td>{user.locationDetails.stopName || "N/A"}</td>
-                    <td>Not Approved</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {renderPagination(
-              currentPageStaff,
-              staffUsers.length,
-              paginateStaff
+            {currentStaff.length > 0 && (
+              <div className="new-user-requests-table-container">
+                <h3>Staff Table</h3>
+                <table className="new-user-requests-table">
+                  <thead>
+                    <tr>
+                      <th>
+                        <label className="new-user-requests-custom-checkbox">
+                          <input
+                            type="checkbox"
+                            checked={selectAllStaff}
+                            onChange={() => handleSelectAll("staff")}
+                          />
+                          <span className="new-user-requests-checkmark"></span>
+                        </label>
+                      </th>
+                      <th>S.No</th>
+                      <th>Staff Name</th>
+                      <th>Staff ID</th>
+                      <th>Institute Name</th>
+                      <th>Department</th>
+                      <th>Designation</th>
+                      <th>Stop Name</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentStaff.map((user, index) => (
+                      <tr key={user._id}>
+                        <td>
+                          <label className="new-user-requests-custom-checkbox">
+                            <input
+                              type="checkbox"
+                              checked={selectedUsers.includes(user._id)}
+                              onChange={() =>
+                                handleSelectUser(user._id, "staff")
+                              }
+                            />
+                            <span className="new-user-requests-checkmark"></span>
+                          </label>
+                        </td>
+                        <td>{indexOfFirstItemStaff + index + 1}</td>
+                        <td>{user.basicDetails.name}</td>
+                        <td>{user.staffDetails.staffId || "N/A"}</td>
+                        <td>{user.staffDetails.instituteName || "N/A"}</td>
+                        <td>{user.staffDetails.department || "N/A"}</td>
+                        <td>{user.staffDetails.designation || "N/A"}</td>
+                        <td>{user.locationDetails.stopName || "N/A"}</td>
+                        <td>Not Approved</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {renderPagination(
+                  currentPageStaff,
+                  staffUsers.length,
+                  paginateStaff
+                )}
+              </div>
             )}
-          </div>
-        )}
 
-        {studentUsers.length === 0 && staffUsers.length === 0 && (
-          <p className="no-requests">No new user requests at the moment.</p>
-        )}
-      </main>
-    </div>
+            {studentUsers.length === 0 && staffUsers.length === 0 && (
+              <p className="no-requests">No new user requests at the moment.</p>
+            )}
+          </main>
+        </div>
+      )}
+    </>
   );
 }
 

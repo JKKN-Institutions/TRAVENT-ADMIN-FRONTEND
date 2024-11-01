@@ -15,6 +15,7 @@ import {
 import "./ScheduleHome.css";
 import ScheduledPassengers from "../ScheduledPassengers/ScheduledPassengers";
 import GeneratedPlan from "../GeneratedPlan/GeneratedPlan";
+import Loading from "../../../../components/Shared/Loading/Loading";
 
 const ScheduleHome = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -113,22 +114,10 @@ const ScheduleHome = ({ toggleSidebar }) => {
     return <GeneratedPlan onBack={handleBackFromGeneratedPlan} />;
   }
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="loading-container">
-  //       <div className="loading-spinner"></div>
-  //       <p>Loading...</p>
-  //     </div>
-  //   );
-  // }
-
   return (
     <>
       {isLoading ? (
-        <div className="schedules-loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading schedules...</p>
-        </div>
+        <Loading message="Loading Schedules..." />
       ) : (
         <div className="schedules-container">
           <header className="schedules-top-bar">
@@ -228,7 +217,7 @@ const ScheduleHome = ({ toggleSidebar }) => {
                         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                       >
                         <XAxis dataKey="name" tick={false} />
-                        <YAxis width={40} />
+                        <YAxis width={40} fontSize={14} />
                         <Tooltip content={<CustomTooltip />} />
                         <Bar dataKey="count" fill="#8884d8" barSize={40}>
                           {institutionWiseSchedulings.map((entry, index) => (

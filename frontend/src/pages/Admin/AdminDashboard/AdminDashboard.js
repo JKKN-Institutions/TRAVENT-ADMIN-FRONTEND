@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import AdminSidebar from "../../../components/Shared/Sidebar/AdminSidebar";
 import AdminHome from "../AdminHome/AdminHome";
 import AdminNotifications from "../AdminNotifications/AdminNotifications";
@@ -9,7 +9,9 @@ import SubscriptionPlans from "../SubscriptionModule/SubscriptionPlans/AdminSubs
 import DriversHome from "../DriversModule/DriversHome/DriversHome";
 import PaymentsDashboardHome from "../PaymentModule/PaymentDashboardHome/PaymentDashboardHome";
 import MaintenanceFuelHome from "../MaintenanceModule/MaintenanceFuelHome/MaintenanceFuelHome";
-
+import FeedbackHome from "../FeedbackModule/FeedbackHome/FeedbackHome";
+import LiveTrackingHome from "../LiveTrackingModule/LiveTrackingHome/LiveTrackingHome";
+import UnifiedSidebar from "../../../components/Shared/Sidebar/UnifiedSidebar";
 import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
@@ -18,22 +20,17 @@ const AdminDashboard = () => {
   const [resetHomeState, setResetHomeState] = useState(false);
   const dashboardRef = useRef(null);
 
-  const handleResize = () => {
-    if (window.innerWidth > 768) {
-      setIsSidebarOpen(true);
-    } else {
-      setIsSidebarOpen(false);
-    }
-  };
+  const handleResize = useCallback(() => {
+    setIsSidebarOpen(window.innerWidth > 768);
+  }, []);
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [handleResize]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Safeguard against null values
       if (
         dashboardRef.current &&
         !dashboardRef.current.contains(event.target)
@@ -42,66 +39,54 @@ const AdminDashboard = () => {
       }
     };
 
-    // Add event listener after component is mounted
     document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-    return () => {
-      // Clean up the event listener
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dashboardRef]); // Dependency on dashboardRef to ensure the latest ref is used
-
-  const toggleSidebar = () => {
+  const toggleSidebar = useCallback(() => {
     setIsSidebarOpen((prev) => !prev);
-  };
+  }, []);
 
-  const resetAdminHomeState = () => {
+  const resetAdminHomeState = useCallback(() => {
     setResetHomeState(true);
     setTimeout(() => setResetHomeState(false), 100);
-  };
+  }, []);
 
-  const renderActiveComponent = () => {
-    switch (activeComponent) {
-      case "home":
-        return (
-          <AdminHome
-            key="home"
-            toggleSidebar={toggleSidebar}
-            resetState={resetHomeState}
-          />
-        );
-      case "notifications":
-        return <AdminNotifications toggleSidebar={toggleSidebar} />;
-      case "buses":
-        return <BusesHome toggleSidebar={toggleSidebar} />;
-      case "passengers":
-        return <PassengersHome toggleSidebar={toggleSidebar} />;
-      case "schedules":
-        return <Schedules toggleSidebar={toggleSidebar} />;
-      case "subscriptionPlans":
-        return <SubscriptionPlans toggleSidebar={toggleSidebar} />;
-      case "drivers":
-        return <DriversHome toggleSidebar={toggleSidebar} />;
-      case "payment":
-        return <PaymentsDashboardHome toggleSidebar={toggleSidebar} />;
-      case "maintenance":
-        return <MaintenanceFuelHome toggleSidebar={toggleSidebar} />;
-      default:
-        return <AdminHome toggleSidebar={toggleSidebar} />;
-    }
-  };
+  const renderActiveComponent = useCallback(() => {
+    const components = {
+      home: (
+        <AdminHome
+          key="home"
+          toggleSidebar={toggleSidebar}
+          resetState={resetHomeState}
+        />
+      ),
+      notifications: <AdminNotifications toggleSidebar={toggleSidebar} />,
+      buses: <BusesHome toggleSidebar={toggleSidebar} />,
+      passengers: <PassengersHome toggleSidebar={toggleSidebar} />,
+      schedules: <Schedules toggleSidebar={toggleSidebar} />,
+      subscriptionPlans: <SubscriptionPlans toggleSidebar={toggleSidebar} />,
+      drivers: <DriversHome toggleSidebar={toggleSidebar} />,
+      payment: <PaymentsDashboardHome toggleSidebar={toggleSidebar} />,
+      maintenance: <MaintenanceFuelHome toggleSidebar={toggleSidebar} />,
+      feedback: <FeedbackHome toggleSidebar={toggleSidebar} />,
+      liveTracking: <LiveTrackingHome toggleSidebar={toggleSidebar} />,
+    };
+    return (
+      components[activeComponent] || <AdminHome toggleSidebar={toggleSidebar} />
+    );
+  }, [activeComponent, toggleSidebar, resetHomeState]);
 
   return (
     <div className="admin-dashboard-container" ref={dashboardRef}>
-      <AdminSidebar
+      <UnifiedSidebar
         isOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
         setActiveComponent={(component) => {
           setActiveComponent(component);
-          if (component === "home") {
-            resetAdminHomeState();
-          }
+          if (component === "home") resetAdminHomeState();
         }}
+        userRole="admin"
       />
       <div
         className={`admin-dashboard-main-content ${

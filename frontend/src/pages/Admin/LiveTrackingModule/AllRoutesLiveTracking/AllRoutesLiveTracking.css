@@ -1,0 +1,248 @@
+.all-routes-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
+
+.all-routes-live-tracking-top-bar {
+  background-color: #222222;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.all-routes-live-tracking-back-icon {
+  font-size: 1rem;
+  cursor: pointer;
+  color: #ffffff;
+  margin-right: 1rem;
+}
+
+.all-routes-live-tracking-top-bar h2 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.all-routes-live-tracking-map-container {
+  /* flex: 1; */
+  position: relative;
+  height: 80%;
+  border-radius: 10px;
+}
+
+.bus-marker {
+  position: relative;
+  cursor: pointer;
+  width: 50px;
+  height: 60px;
+}
+
+.marker-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.route-number {
+  background: #dddddd;
+  color: #000000;
+  padding: 0.2rem 0.8rem;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  position: absolute;
+  top: -8px;
+  left: 100%;
+  transform: translateX(-50%);
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.all-routes-live-tracking-bus-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background: transparent; */
+  border: none;
+  margin-top: 10px;
+
+  position: relative;
+  z-index: 1;
+}
+
+.all-routes-live-tracking-bus-icon i {
+  font-size: 28px;
+  color: #333333;
+  position: relative;
+  z-index: 2;
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); */
+}
+
+.route-number {
+  background: #333333;
+  color: #ffffff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot.delay {
+  background-color: #ff4500;
+}
+
+.status-dot.early {
+  background-color: #32cd32;
+}
+
+.status-dot.on-time {
+  background-color: #00bfff;
+}
+
+.destination-marker {
+  position: relative;
+  cursor: pointer;
+  width: 50px;
+  height: 60px;
+}
+
+.destination-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.destination-label {
+  background: #ff4500;
+  color: #eeeeee;
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
+.destination-content i {
+  color: #ff4500;
+  font-size: 30px;
+  margin-top: 20px;
+}
+
+.arrival-status {
+  background-color: #222222;
+  padding: 1rem;
+  border-top: 1px solid #333;
+}
+
+.arrival-status h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+}
+
+.chart-container {
+  height: 200px;
+  position: relative;
+}
+
+.marker-popup {
+  padding: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.marker-popup h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 14px;
+}
+
+.marker-popup p {
+  margin: 4px 0;
+  color: #666;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.marker-popup strong {
+  color: #333;
+}
+
+.mapboxgl-popup {
+  max-width: 200px !important;
+}
+
+.mapboxgl-popup-content {
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .all-routes-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .search-container {
+    max-width: none;
+  }
+
+  .chart-container {
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .back-button {
+    font-size: 1rem;
+  }
+
+  .search-input {
+    font-size: 0.8rem;
+  }
+
+  .chart-container {
+    height: 120px;
+  }
+}

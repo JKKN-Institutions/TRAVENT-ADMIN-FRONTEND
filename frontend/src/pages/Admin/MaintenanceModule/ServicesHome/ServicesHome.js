@@ -113,6 +113,7 @@ const ServicesHome = ({
   setShowViewGoodConditionBuses,
   setShowViewSatisfactoryConditionBuses,
   setShowViewCriticalConditionBuses,
+  handleViewBus,
 }) => {
   const [criticalSearch, setCriticalSearch] = useState("");
   const [satisfactorySearch, setSatisfactorySearch] = useState("");
@@ -231,6 +232,7 @@ const ServicesHome = ({
                       <FontAwesomeIcon
                         icon={faEye}
                         className="good-view-icon"
+                        onClick={() => handleViewBus(bus)}
                       />
                     </td>
                   </tr>
@@ -289,6 +291,7 @@ const ServicesHome = ({
                       <FontAwesomeIcon
                         icon={faEye}
                         className="satisfactory-view-icon"
+                        onClick={() => handleViewBus(bus)}
                       />
                     </td>
                   </tr>
@@ -347,6 +350,7 @@ const ServicesHome = ({
                       <FontAwesomeIcon
                         icon={faEye}
                         className="critical-view-icon"
+                        onClick={() => handleViewBus(bus)}
                       />
                     </td>
                   </tr>

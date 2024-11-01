@@ -10,6 +10,7 @@ import "./DriversHome.css";
 import AddNewDriver from "../AddNewDriver/AddNewDriver";
 import ViewAllDrivers from "../ViewAllDrivers/ViewAllDrivers";
 import Button from "../../../../components/Shared/Button/Button";
+import Loading from "../../../../components/Shared/Loading/Loading";
 
 const DriversHome = ({ toggleSidebar }) => {
   const [showAddNewDriver, setShowAddNewDriver] = useState(false);
@@ -86,10 +87,7 @@ const DriversHome = ({ toggleSidebar }) => {
   return (
     <>
       {isLoading ? (
-        <div className="schedules-loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading Drivers...</p>
-        </div>
+        <Loading message="Loading Drivers..." />
       ) : (
         <div className="drivers-home-container">
           <header className="drivers-home-top-bar">

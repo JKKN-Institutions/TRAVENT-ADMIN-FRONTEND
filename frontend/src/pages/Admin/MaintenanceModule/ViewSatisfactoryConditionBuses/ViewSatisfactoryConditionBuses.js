@@ -12,6 +12,8 @@ import {
 import "./ViewSatisfactoryConditionBuses.css";
 import { format } from "date-fns";
 import Button from "../../../../components/Shared/Button/Button";
+import AddBusCondition from "../AddBusCondition/AddBusCondition";
+import SpecificBusCondition from "../SpecificBusCondition/SpecificBusCondition";
 
 const satisfactoryBusesData = [
   {
@@ -154,6 +156,8 @@ const ViewSatisfactoryConditionBuses = ({ onBack }) => {
   const [selectedBus, setSelectedBus] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [viewingBus, setViewingBus] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingBus, setEditingBus] = useState(null);
 
   const containerRef = useRef(null);
 
@@ -174,6 +178,24 @@ const ViewSatisfactoryConditionBuses = ({ onBack }) => {
     if (selectedBus) {
       setShowDeleteConfirmation(true);
     }
+  };
+
+  const handleEdit = () => {
+    if (selectedBus) {
+      setEditingBus(selectedBus);
+      setShowAddForm(true);
+    }
+  };
+
+  const handleAddOrEditComplete = (busData) => {
+    if (editingBus) {
+      console.log("Updating bus:", busData);
+    } else {
+      console.log("Adding new bus:", busData);
+    }
+    setShowAddForm(false);
+    setEditingBus(null);
+    setSelectedBus(null);
   };
 
   const confirmDelete = () => {
@@ -203,6 +225,19 @@ const ViewSatisfactoryConditionBuses = ({ onBack }) => {
   const handleRowClick = (bus) => {
     setSelectedBus(selectedBus === bus ? null : bus);
   };
+
+  if (showAddForm) {
+    return (
+      <AddBusCondition
+        bus={editingBus}
+        onBack={() => {
+          setShowAddForm(false);
+          setEditingBus(null);
+        }}
+        onSave={handleAddOrEditComplete}
+      />
+    );
+  }
 
   return (
     <div className="satisfactory-buses-container" ref={containerRef}>
@@ -239,7 +274,7 @@ const ViewSatisfactoryConditionBuses = ({ onBack }) => {
                   <FontAwesomeIcon icon={faEdit} /> Edit
                 </>
               }
-              onClick={() => console.log("Edit clicked")}
+              onClick={handleEdit}
               disabled={!selectedBus}
             />
             <Button
@@ -361,6 +396,12 @@ const ViewSatisfactoryConditionBuses = ({ onBack }) => {
             </div>
           </div>
         </div>
+      )}
+      {viewingBus && (
+        <SpecificBusCondition
+          bus={viewingBus}
+          onClose={() => setViewingBus(null)}
+        />
       )}
     </div>
   );

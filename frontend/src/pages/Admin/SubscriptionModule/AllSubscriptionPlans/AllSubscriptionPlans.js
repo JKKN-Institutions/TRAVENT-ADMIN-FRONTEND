@@ -63,8 +63,12 @@ const AllSubscriptionPlans = ({ onBack }) => {
   );
 
   const handleSubscribe = (plan) => {
+    // Remove commas and convert price to a number
+    const parsedPrice = parseFloat(plan.price.replace(/,/g, ""));
+
     setSelectedPlan({
       ...plan,
+      price: parsedPrice, // Store the numeric value
       paymentDate: new Date().toLocaleString(),
       institutionName: "JKKN Group of Institutions",
     });

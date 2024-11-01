@@ -12,6 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./ViewAllBusConditions.css";
 import Button from "../../../../components/Shared/Button/Button";
+import AddBusCondition from "../AddBusCondition/AddBusCondition";
 
 const busConditionsData = [
   {
@@ -82,6 +83,8 @@ const ViewAllBusConditions = ({ onBack }) => {
   const [itemsPerPage] = useState(10);
   const [selectedBus, setSelectedBus] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingBus, setEditingBus] = useState(null);
 
   const containerRef = useRef(null);
 
@@ -89,6 +92,24 @@ const ViewAllBusConditions = ({ onBack }) => {
     if (selectedBus) {
       setShowDeleteConfirmation(true);
     }
+  };
+
+  const handleEdit = () => {
+    if (selectedBus) {
+      setEditingBus(selectedBus);
+      setShowAddForm(true);
+    }
+  };
+
+  const handleAddOrEditComplete = (busData) => {
+    if (editingBus) {
+      console.log("Updating bus:", busData);
+    } else {
+      console.log("Adding new bus:", busData);
+    }
+    setShowAddForm(false);
+    setEditingBus(null);
+    setSelectedBus(null);
   };
 
   const confirmDelete = () => {
@@ -128,6 +149,30 @@ const ViewAllBusConditions = ({ onBack }) => {
     );
   };
 
+  const handleAddClick = () => {
+    setShowAddForm(true);
+    setEditingBus(null);
+  };
+
+  const handleAddSave = (data) => {
+    console.log("New bus condition:", data);
+    setShowAddForm(false);
+    // Add logic to save the data
+  };
+
+  if (showAddForm) {
+    return (
+      <AddBusCondition
+        bus={editingBus}
+        onBack={() => {
+          setShowAddForm(false);
+          setEditingBus(null);
+        }}
+        onSave={handleAddOrEditComplete}
+      />
+    );
+  }
+
   return (
     <div className="bus-conditions-container" ref={containerRef}>
       <header className="bus-conditions-top-bar">
@@ -163,6 +208,7 @@ const ViewAllBusConditions = ({ onBack }) => {
                   <FontAwesomeIcon icon={faPlus} /> Add
                 </>
               }
+              onClick={handleAddClick}
             />
             <Button
               label={
@@ -170,6 +216,7 @@ const ViewAllBusConditions = ({ onBack }) => {
                   <FontAwesomeIcon icon={faPencil} /> Edit
                 </>
               }
+              onClick={handleEdit}
               disabled={!selectedBus}
             />
             <Button

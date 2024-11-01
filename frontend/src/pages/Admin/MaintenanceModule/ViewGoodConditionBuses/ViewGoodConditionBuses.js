@@ -12,6 +12,8 @@ import {
 import "./ViewGoodConditionBuses.css";
 import { format } from "date-fns";
 import Button from "../../../../components/Shared/Button/Button";
+import AddBusCondition from "../AddBusCondition/AddBusCondition";
+import SpecificBusCondition from "../SpecificBusCondition/SpecificBusCondition";
 
 const goodBusesData = [
   {
@@ -144,6 +146,8 @@ const ViewGoodConditionBuses = ({ onBack }) => {
   const [selectedBus, setSelectedBus] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [viewingBus, setViewingBus] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingBus, setEditingBus] = useState(null);
 
   const containerRef = useRef(null);
 
@@ -158,6 +162,24 @@ const ViewGoodConditionBuses = ({ onBack }) => {
     if (containerRef.current && !containerRef.current.contains(event.target)) {
       setSelectedBus(null);
     }
+  };
+
+  const handleEdit = () => {
+    if (selectedBus) {
+      setEditingBus(selectedBus);
+      setShowAddForm(true);
+    }
+  };
+
+  const handleAddOrEditComplete = (busData) => {
+    if (editingBus) {
+      console.log("Updating bus:", busData);
+    } else {
+      console.log("Adding new bus:", busData);
+    }
+    setShowAddForm(false);
+    setEditingBus(null);
+    setSelectedBus(null);
   };
 
   const handleDelete = () => {
@@ -192,6 +214,19 @@ const ViewGoodConditionBuses = ({ onBack }) => {
   const handleRowClick = (bus) => {
     setSelectedBus(selectedBus === bus ? null : bus);
   };
+
+  if (showAddForm) {
+    return (
+      <AddBusCondition
+        bus={editingBus}
+        onBack={() => {
+          setShowAddForm(false);
+          setEditingBus(null);
+        }}
+        onSave={handleAddOrEditComplete}
+      />
+    );
+  }
 
   return (
     <div className="good-buses-container" ref={containerRef}>
@@ -228,7 +263,7 @@ const ViewGoodConditionBuses = ({ onBack }) => {
                   <FontAwesomeIcon icon={faEdit} /> Edit
                 </>
               }
-              onClick={() => console.log("Edit clicked")}
+              onClick={handleEdit}
               disabled={!selectedBus}
             />
             <Button
@@ -346,6 +381,12 @@ const ViewGoodConditionBuses = ({ onBack }) => {
             </div>
           </div>
         </div>
+      )}
+      {viewingBus && (
+        <SpecificBusCondition
+          bus={viewingBus}
+          onClose={() => setViewingBus(null)}
+        />
       )}
     </div>
   );

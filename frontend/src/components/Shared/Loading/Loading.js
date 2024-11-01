@@ -2,10 +2,11 @@
 import React from "react";
 import "./Loading.css";
 
-const Loading = React.memo(() => {
+const Loading = React.memo(({ message }) => {
   return (
-    <div className="loading-container">
-      <div className="loading-spinner"></div>
+    <div className="menu-loading-container">
+      <div className="menu-loading-spinner"></div>
+      <p>{message}</p>
     </div>
   );
 });

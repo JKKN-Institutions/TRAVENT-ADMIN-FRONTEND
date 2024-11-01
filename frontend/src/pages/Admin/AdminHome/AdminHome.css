@@ -1,5 +1,6 @@
 .admin-home-container {
   background-color: #1e1e1e;
+
   color: #ffffff;
   height: 100%; /* Set to 100% of the viewport height */
   display: flex;
@@ -17,7 +18,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .admin-menu-icon {
@@ -47,7 +48,7 @@
 
 .admin-main-content {
   flex: 1;
-  padding: 1rem;
+  padding: 0.5rem;
   overflow-y: auto;
   padding-right: 0.5rem;
   scrollbar-width: thin;

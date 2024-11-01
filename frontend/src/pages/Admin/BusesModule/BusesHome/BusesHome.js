@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell } from "recharts";
 import "./BusesHome.css";
 import ViewRoutes from "../ViewRoutes/ViewRoutes";
 import PassengerArrivalStatus from "../PassengerArrivalStatus/PassengerArrivalStatus";
+import Loading from "../../../../components/Shared/Loading/Loading";
 
 const BusesHome = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -80,10 +81,7 @@ const BusesHome = ({ toggleSidebar }) => {
   return (
     <>
       {isLoading ? (
-        <div className="schedules-loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading Buses...</p>
-        </div>
+        <Loading message="Loading Buses..." />
       ) : (
         <div className="buses-home-container">
           <header className="buses-top-bar">

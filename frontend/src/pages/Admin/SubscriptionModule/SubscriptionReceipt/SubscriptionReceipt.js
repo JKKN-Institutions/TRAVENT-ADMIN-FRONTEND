@@ -8,7 +8,6 @@ import "./SubscriptionReceipt.css";
 
 const SubscriptionReceipt = ({ onClose, receiptData }) => {
   const handleDownload = () => {
-    // Implement actual download logic here
     toast.success("Receipt downloaded successfully!");
   };
 

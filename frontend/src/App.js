@@ -5,12 +5,8 @@ import AboutApp from "./pages/prelogin/AboutApp";
 import NewUserForm from "./pages/prelogin/NewUserForm";
 import AppAdminDashboard from "./pages/AppAdmin/AppAdminDashboard/AppAdminDashboard";
 import AdminDashboard from "./pages/Admin/AdminDashboard/AdminDashboard";
-import AdminHome from "./pages/Admin/AdminHome/AdminHome";
-import StaffDashboard from "./pages/StaffDashboard/StaffDashboard";
-import StudentDashboard from "./pages/StudentDashboard/StudentDashboard";
-import BusesLayout from "./pages/Admin/BusesModule/BusesLayout/BusesLayout"; // Import BusesLayout
-// import ViewRoutes from "./pages/Admin/BusesModule/ViewRoutes/ViewRoutes"; // Import ViewRoutes
 import AddNewRoute from "./pages/Admin/BusesModule/AddNewRoute/AddNewRoute"; // Import AddNewRoute
+import AllRoutesLiveTracking from "./pages/Admin/LiveTrackingModule/AllRoutesLiveTracking/AllRoutesLiveTracking";
 
 function App() {
   return (
@@ -26,6 +22,10 @@ function App() {
         {/* Independent route for ViewRoutes */}
         {/* <Route path="/view-routes" element={<ViewRoutes />} /> */}
         <Route path="/add-route" element={<AddNewRoute />} />
+        <Route
+          path="/all-routes-live-tracking"
+          element={<AllRoutesLiveTracking />}
+        />
       </Routes>
     </Router>
   );

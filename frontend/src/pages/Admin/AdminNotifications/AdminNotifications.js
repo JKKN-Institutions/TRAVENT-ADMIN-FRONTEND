@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faBars } from "@fortawesome/free-solid-svg-icons";
 import "./AdminNotifications.css";
 import AdminNotificationChatItem from "./AdminNotificationChatItem";
+import Loading from "../../../components/Shared/Loading/Loading";
 
 const AdminNotifications = ({ toggleSidebar }) => {
   const [systemNotifications, setSystemNotifications] = useState([
@@ -70,7 +71,14 @@ const AdminNotifications = ({ toggleSidebar }) => {
   const [activeTab, setActiveTab] = useState("system");
   const [showUnreadOnly, setShowUnreadOnly] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const notificationListRef = useRef(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -148,86 +156,102 @@ const AdminNotifications = ({ toggleSidebar }) => {
   }
 
   return (
-    <div className="admin-notifications-container">
-      <header className="admin-notifications-top-bar">
-        <div className="admin-notifications-menu-icon" onClick={toggleSidebar}>
-          <FontAwesomeIcon icon={faBars} className="admin-menu-icon" />
-        </div>
-        <div className="admin-notifications-header">
-          <h2>Notifications</h2>
-        </div>
-      </header>
-
-      <main className="admin-notifications-main-content">
-        <div className="admin-notifications-search-bar-container">
-          <div className="admin-notifications-search-input-wrapper">
-            <FontAwesomeIcon icon={faSearch} className="admin-search-icon" />
-            <input
-              type="text"
-              className="admin-notifications-search-bar"
-              placeholder="Search notifications..."
-            />
-          </div>
-        </div>
-
-        <div className="admin-filter-container">
-          <span
-            className={`admin-filter-button ${showUnreadOnly ? "active" : ""}`}
-            onClick={handleUnreadFilterClick}
-          >
-            Unread
-            {renderUnreadCount(totalUnreadCount)}
-          </span>
-        </div>
-
-        <div className="admin-notifications-tabs">
-          <button
-            className={`tab ${activeTab === "system" ? "active" : ""}`}
-            onClick={() => setActiveTab("system")}
-          >
-            System Notifications
-            {renderUnreadCount(systemUnreadCount)}
-          </button>
-          <button
-            className={`tab ${activeTab === "user" ? "active" : ""}`}
-            onClick={() => setActiveTab("user")}
-          >
-            User Notifications
-            {renderUnreadCount(userUnreadCount)}
-          </button>
-        </div>
-
-        <div className="admin-notifications-list" ref={notificationListRef}>
-          {(activeTab === "system"
-            ? filteredSystemNotifications
-            : filteredUserNotifications
-          ).map((notification) => (
+    <>
+      {isLoading ? (
+        <Loading message="Loading Notifications..." />
+      ) : (
+        <div className="admin-notifications-container">
+          <header className="admin-notifications-top-bar">
             <div
-              key={notification.id}
-              className={`admin-notification-item ${
-                notification.unread ? "unread" : ""
-              }`}
-              onClick={(event) => handleNotificationClick(event, notification)}
+              className="admin-notifications-menu-icon"
+              onClick={toggleSidebar}
             >
-              <div className="admin-notification-avatar">
-                {notification.title.charAt(0)}
-              </div>
-              <div className="admin-notification-content">
-                <h3>{notification.title}</h3>
-                <p>{notification.message}</p>
-              </div>
-              <div className="admin-notification-meta">
-                {notification.unread && notification.count > 0 && (
-                  <div className="admin-notification-count">
-                    {notification.count}
-                  </div>
-                )}
+              <FontAwesomeIcon icon={faBars} className="admin-menu-icon" />
+            </div>
+            <div className="admin-notifications-header">
+              <h2>Notifications</h2>
+            </div>
+          </header>
+
+          <main className="admin-notifications-main-content">
+            <div className="admin-notifications-search-bar-container">
+              <div className="admin-notifications-search-input-wrapper">
+                <FontAwesomeIcon
+                  icon={faSearch}
+                  className="admin-search-icon"
+                />
+                <input
+                  type="text"
+                  className="admin-notifications-search-bar"
+                  placeholder="Search notifications..."
+                />
               </div>
             </div>
-          ))}
+
+            <div className="admin-filter-container">
+              <span
+                className={`admin-filter-button ${
+                  showUnreadOnly ? "active" : ""
+                }`}
+                onClick={handleUnreadFilterClick}
+              >
+                Unread
+                {renderUnreadCount(totalUnreadCount)}
+              </span>
+            </div>
+
+            <div className="admin-notifications-tabs">
+              <button
+                className={`tab ${activeTab === "system" ? "active" : ""}`}
+                onClick={() => setActiveTab("system")}
+              >
+                System Notifications
+                {renderUnreadCount(systemUnreadCount)}
+              </button>
+              <button
+                className={`tab ${activeTab === "user" ? "active" : ""}`}
+                onClick={() => setActiveTab("user")}
+              >
+                User Notifications
+                {renderUnreadCount(userUnreadCount)}
+              </button>
+            </div>
+
+            <div className="admin-notifications-list" ref={notificationListRef}>
+              {(activeTab === "system"
+                ? filteredSystemNotifications
+                : filteredUserNotifications
+              ).map((notification) => (
+                <div
+                  key={notification.id}
+                  className={`admin-notification-item ${
+                    notification.unread ? "unread" : ""
+                  }`}
+                  onClick={(event) =>
+                    handleNotificationClick(event, notification)
+                  }
+                >
+                  <div className="admin-notification-avatar">
+                    {notification.title.charAt(0)}
+                  </div>
+                  <div className="admin-notification-content">
+                    <h3>{notification.title}</h3>
+                    <p>{notification.message}</p>
+                  </div>
+                  <div className="admin-notification-meta">
+                    {notification.unread && notification.count > 0 && (
+                      <div className="admin-notification-count">
+                        {notification.count}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </main>
         </div>
-      </main>
-    </div>
+      )}
+    </>
   );
 };
 

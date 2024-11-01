@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+/* App.css or LoginLoading.css */
+.fixed-fallback {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Match the height of the viewport */
+  width: 100%; /* Ensure it takes the full width */
+  background: #1e1e1e; /* Match the background of your app for consistency */
+}

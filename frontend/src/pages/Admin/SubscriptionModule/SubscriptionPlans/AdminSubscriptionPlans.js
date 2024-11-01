@@ -9,6 +9,7 @@ import "./AdminSubscriptionPlans.css";
 import AllSubscriptionPlans from "../AllSubscriptionPlans/AllSubscriptionPlans";
 import SubscriptionPaymentHistory from "../SubscriptionPaymentHistory/SubscriptionPaymentHistory";
 import PaymentSummary from "../PaymentSummary/PaymentSummary";
+import Loading from "../../../../components/Shared/Loading/Loading";
 
 const AdminSubscriptionPlans = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -31,7 +32,7 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
   const [allPlans, setAllPlans] = useState([
     {
       name: "Small Scale - Premium",
-      price: "1,00,000",
+      price: "10,000",
       validity: "6 Months",
       userRange: "1-2000",
     },
@@ -94,8 +95,12 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
   ]);
 
   const handleSubscribe = (plan) => {
+    // Remove commas and convert price to a number
+    const parsedPrice = parseFloat(plan.price.replace(/,/g, ""));
+
     setSelectedPlan({
       ...plan,
+      price: parsedPrice, // Store the numeric value
       paymentDate: new Date().toLocaleString(),
       institutionName: "JKKN Group of Institutions",
     });
@@ -117,6 +122,7 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
       <PaymentSummary
         onBack={() => setShowPaymentSummary(false)}
         planDetails={selectedPlan}
+        setShowPaymentHistory={setShowPaymentHistory}
       />
     );
   }
@@ -124,10 +130,7 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
   return (
     <>
       {isLoading ? (
-        <div className="schedules-loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading Subscription Plans...</p>
-        </div>
+        <Loading message="Loading Subscription Plans..." />
       ) : (
         <div className="admin-subscription-plans-container">
           <header className="admin-subscription-plans-top-bar">

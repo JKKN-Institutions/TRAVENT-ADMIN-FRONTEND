@@ -20,6 +20,8 @@ import ViewAllBusConditions from "../ViewAllBusConditions/ViewAllBusConditions";
 import ViewGoodConditionBuses from "../ViewGoodConditionBuses/ViewGoodConditionBuses";
 import ViewSatisfactoryConditionBuses from "../ViewSatisfactoryConditionBuses/ViewSatisfactoryConditionBuses";
 import ViewCriticalConditionBuses from "../ViewCriticalConditionBuses/ViewCriticalConditionBuses";
+import SpecificBusCondition from "../SpecificBusCondition/SpecificBusCondition";
+import Loading from "../../../../components/Shared/Loading/Loading";
 
 const MaintenanceFuelHome = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -36,6 +38,7 @@ const MaintenanceFuelHome = ({ toggleSidebar }) => {
   const [showViewAllOrderDetails, setShowViewAllOrderDetails] = useState(false);
   const [showAddNewOrder, setShowAddNewOrder] = useState(false);
   const [showViewAllUsedSpares, setShowViewAllUsedSpares] = useState(false);
+  const [viewingBus, setViewingBus] = useState(null);
 
   const [showViewAllBusConditions, setShowViewAllBusConditions] =
     useState(false);
@@ -73,6 +76,10 @@ const MaintenanceFuelHome = ({ toggleSidebar }) => {
 
   const handleViewSpares = (spare) => {
     setViewingSpares(spare);
+  };
+
+  const handleViewBus = (bus) => {
+    setViewingBus(bus);
   };
 
   const handleAddNewStock = (stockData) => {
@@ -165,10 +172,7 @@ const MaintenanceFuelHome = ({ toggleSidebar }) => {
   return (
     <>
       {isLoading ? (
-        <div className="schedules-loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading Maintenance...</p>
-        </div>
+        <Loading message="Loading Maintenance..." />
       ) : (
         <div className="maintenance-fuel-container">
           <header className="maintenance-fuel-top-bar">
@@ -247,16 +251,25 @@ const MaintenanceFuelHome = ({ toggleSidebar }) => {
             )}
 
             {activeTab === "Services" && (
-              <ServicesHome
-                setShowViewAllBusConditions={setShowViewAllBusConditions}
-                setShowViewGoodConditionBuses={setShowViewGoodConditionBuses}
-                setShowViewSatisfactoryConditionBuses={
-                  setShowViewSatisfactoryConditionBuses
-                }
-                setShowViewCriticalConditionBuses={
-                  setShowViewCriticalConditionBuses
-                }
-              />
+              <>
+                <ServicesHome
+                  setShowViewAllBusConditions={setShowViewAllBusConditions}
+                  setShowViewGoodConditionBuses={setShowViewGoodConditionBuses}
+                  setShowViewSatisfactoryConditionBuses={
+                    setShowViewSatisfactoryConditionBuses
+                  }
+                  setShowViewCriticalConditionBuses={
+                    setShowViewCriticalConditionBuses
+                  }
+                  handleViewBus={handleViewBus}
+                />
+                {viewingBus && (
+                  <SpecificBusCondition
+                    bus={viewingBus}
+                    onClose={() => setViewingBus(null)}
+                  />
+                )}
+              </>
             )}
           </main>
         </div>
