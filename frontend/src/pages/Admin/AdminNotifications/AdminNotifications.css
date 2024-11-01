@@ -14,6 +14,7 @@
   justify-content: flex-start;
   align-items: center;
   border-radius: 10px;
+  margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
@@ -22,7 +23,7 @@
 
 .admin-notifications-main-content {
   flex: 1;
-  padding: 1rem 0.5rem;
+  padding: 0 0.5rem;
   overflow-y: auto;
   background-color: #1e1e1e;
   scrollbar-width: thin;

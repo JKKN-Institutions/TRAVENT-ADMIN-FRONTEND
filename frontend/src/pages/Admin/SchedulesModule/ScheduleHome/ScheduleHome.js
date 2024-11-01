@@ -65,16 +65,16 @@ const ScheduleHome = ({ toggleSidebar }) => {
 
   const ToggleSwitch = ({ id, checked, onChange, label }) => {
     return (
-      <div className="setting-item">
+      <div className="schedules-setting-item">
         <label htmlFor={id}>{label}</label>
-        <div className="toggle-switch">
+        <div className="schedules-toggle-switch">
           <input
             type="checkbox"
             id={id}
             checked={checked}
             onChange={onChange}
           />
-          <span className="slider"></span>
+          <span className="schedules-slider"></span>
         </div>
       </div>
     );
@@ -246,19 +246,19 @@ const ScheduleHome = ({ toggleSidebar }) => {
             </div>
             <div className="schedules-settings">
               <h2>Settings</h2>
-              <div className="settings-grid">
-                <div className="settings-column">
+              <div className="schedules-settings-grid">
+                <div className="schedules-settings-column">
                   <ToggleSwitch
                     id="auto-planning"
                     checked={autoPlanning}
                     onChange={handleToggle(setAutoPlanning)}
                     label="Enable Auto Planning and Scheduling"
                   />
-                  <p className="setting-description">
+                  <p className="schedules-setting-description">
                     Generates the plan automatically on the specified time and
                     updates everyone with their schedule
                   </p>
-                  <div className="setting-item">
+                  <div className="schedules-setting-item">
                     <label htmlFor="closing-time">
                       Scheduling Closing Time
                     </label>
@@ -275,15 +275,15 @@ const ScheduleHome = ({ toggleSidebar }) => {
                     </button>
                   </div>
                 </div>
-                <div className="settings-divider"></div>
-                <div className="settings-column">
+                <div className="schedules-settings-divider"></div>
+                <div className="schedules-settings-column">
                   <ToggleSwitch
                     id="reminder-notification"
                     checked={reminderNotification}
                     onChange={handleToggle(setReminderNotification)}
                     label="Reminder Notification"
                   />
-                  <div className="setting-item">
+                  <div className="schedules-setting-item">
                     <label htmlFor="notification-time">
                       Notification Sending Time
                     </label>
@@ -307,7 +307,7 @@ const ScheduleHome = ({ toggleSidebar }) => {
                     onChange={handleToggle(setDontAllowTomorrow)}
                     label="Don't Allow Scheduling On Tomorrow"
                   />
-                  <p className="setting-description">
+                  <p className="schedules-setting-description">
                     Not Allowing the users to schedule for tomorrow due to any
                     reason like holiday etc.,
                   </p>

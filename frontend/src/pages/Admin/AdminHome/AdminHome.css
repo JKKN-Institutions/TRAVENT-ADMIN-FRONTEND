@@ -48,7 +48,7 @@
 
 .admin-main-content {
   flex: 1;
-  padding: 0.5rem;
+  padding: 0 0.5rem;
   overflow-y: auto;
   padding-right: 0.5rem;
   scrollbar-width: thin;

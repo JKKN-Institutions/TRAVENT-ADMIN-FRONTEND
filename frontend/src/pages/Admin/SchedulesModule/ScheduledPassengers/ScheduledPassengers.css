@@ -32,7 +32,7 @@
 .scheduled-passengers-main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem 0.8rem;
+  padding: 0 0.5rem;
   background-color: #1e1e1e;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
@@ -42,7 +42,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
-  gap: 1rem;
+  gap: 0.7rem;
 }
 .scheduled-passengers-search-container {
   flex: 1;
@@ -73,7 +73,6 @@
 }
 .scheduled-passengers-search-bar:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
 .scheduled-passengers-action-button-container {
@@ -265,8 +264,8 @@
   }
   .scheduled-passengers-table th,
   .scheduled-passengers-table td {
-    padding: 0.5rem;
-    font-size: 0.7rem;
+    padding: 0.8rem;
+    font-size: 0.8rem;
   }
   .scheduled-passengers-pagination-button {
     padding: 0.4rem 0.6rem;

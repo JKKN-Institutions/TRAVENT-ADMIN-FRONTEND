@@ -128,10 +128,6 @@
 }
 
 @media (max-width: 768px) {
-  .admin-chat-header {
-    padding: 0.8rem;
-  }
-
   .admin-chat-avatar {
     width: 36px;
     height: 36px;

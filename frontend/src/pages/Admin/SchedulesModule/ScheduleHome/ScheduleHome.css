@@ -14,6 +14,7 @@
   align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
+  margin-bottom: 10px;
   top: 0;
   z-index: 1000;
   border-radius: 10px;
@@ -32,7 +33,7 @@
 
 .schedules-main-content {
   flex: 1;
-  padding: 1rem 0.8rem 0 0;
+  padding: 0 0.5rem;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
@@ -207,51 +208,51 @@
 
 .schedules-settings h2 {
   font-size: 1.2rem;
-  margin-bottom: 20px;
+  margin-bottom: 0.7rem;
 }
 
-.settings-grid {
+.schedules-settings-grid {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   gap: 10px;
 }
 
-.settings-column {
+.schedules-settings-column {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-.settings-divider {
+.schedules-settings-divider {
   width: 1px;
   background-color: #444;
 }
 
-.setting-item {
+.schedules-setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.setting-item label {
+.schedules-setting-item label {
   font-size: 1rem;
   color: #ffffff;
 }
 
-.toggle-switch {
+.schedules-toggle-switch {
   position: relative;
   display: inline-block;
   width: 60px;
   height: 30px;
 }
 
-.toggle-switch input {
+.schedules-toggle-switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-.slider {
+.schedules-slider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -263,7 +264,7 @@
   border-radius: 34px;
 }
 
-.slider:before {
+.schedules-slider:before {
   position: absolute;
   content: "";
   height: 22px;
@@ -275,15 +276,14 @@
   border-radius: 50%;
 }
 
-input:checked + .slider {
+input:checked + .schedules-slider {
   background-color: #11a8fd;
 }
-
-input:checked + .slider:before {
+input:checked + .schedules-slider:before {
   transform: translateX(26px);
 }
 
-.setting-description {
+.schedules-setting-description {
   font-size: 0.9rem;
   color: #cccccc;
 }
@@ -352,29 +352,20 @@ input[type="time"] {
     flex-direction: column;
   }
 
-  .settings-grid {
+  .schedules-settings-grid {
     grid-template-columns: 1fr;
   }
 
-  .settings-divider {
+  .schedules-settings-divider {
     display: none;
   }
 }
 
 @media (max-width: 768px) {
-  .schedules-top-bar h1 {
-    font-size: 1.2rem;
-  }
-
   .schedules-stat-card h2,
   .schedules-settings h2 {
     font-size: 1.1rem;
   }
-
-  .total-passengers h2 {
-    font-size: 1.8rem;
-  }
-
   .usage-categories-title {
     font-size: 1rem;
   }
@@ -387,23 +378,15 @@ input[type="time"] {
     font-size: 1rem;
   }
 
-  .setting-item label {
+  .schedules-setting-item label {
     font-size: 0.9rem;
   }
 }
 
 @media (max-width: 576px) {
-  .schedules-top-bar h1 {
-    font-size: 1.1rem;
-  }
-
   .schedules-stat-card h2,
   .schedules-settings h2 {
     font-size: 1rem;
-  }
-
-  .total-passengers h2 {
-    font-size: 1.6rem;
   }
 
   .usage-categories-legend {
@@ -412,6 +395,7 @@ input[type="time"] {
 
   .usage-categories-title {
     font-size: 1rem;
+    text-align: left;
   }
 
   .institution-wise h2 {
@@ -419,19 +403,19 @@ input[type="time"] {
   }
 
   .schedule-home-action-card h3 {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
-  .setting-item {
+  .schedules-setting-item {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .setting-item label {
+  .schedules-setting-item label {
     margin-bottom: 5px;
   }
 
-  .toggle-switch {
+  .schedules-toggle-switch {
     align-self: flex-start;
   }
 }

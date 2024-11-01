@@ -13,6 +13,7 @@
   justify-content: flex-start;
   align-items: center;
   border-radius: 10px;
+  margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
@@ -32,7 +33,7 @@
 
 .live-tracking-main-content {
   flex: 1;
-  padding: 1rem 0.5rem;
+  padding: 0 0.5rem;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
@@ -432,12 +433,6 @@
 
 /* Small Mobile (320px to 575px) */
 @media (max-width: 575px) {
-  .warning-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
   .live-tracking-table th,
   .live-tracking-table td {
     padding: 0.5rem;
