@@ -1,4 +1,4 @@
-.admin-notification-item-chat {
+.app-admin-notification-item-chat {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -6,7 +6,7 @@
   color: #ffffff;
 }
 
-.admin-chat-header {
+.app-admin-chat-header {
   background-color: #222222;
   padding: 0.7rem;
   display: flex;
@@ -19,14 +19,14 @@
   z-index: 1000;
 }
 
-.admin-notification-item-back-icon {
+.app-admin-notification-item-back-icon {
   font-size: 1.3rem;
   cursor: pointer;
   color: #ffffff;
   margin-right: 1rem;
 }
 
-.admin-chat-avatar {
+.app-admin-chat-avatar {
   width: 40px;
   height: 40px;
   background-color: #0a84ff;
@@ -38,13 +38,13 @@
   font-weight: bold;
 }
 
-.admin-chat-header h2 {
+.app-admin-chat-header h2 {
   margin: 0;
   font-size: 1.2rem;
   margin-left: 1rem;
 }
 
-.admin-chat-body {
+.app-admin-chat-body {
   flex: 1;
   overflow-y: auto;
   padding: 1rem;
@@ -52,19 +52,19 @@
   flex-direction: column-reverse;
 }
 
-.admin-chat-messages {
+.app-admin-chat-messages {
   display: flex;
   flex-direction: column;
 }
 
-.admin-message-timestamp {
+.app-admin-message-timestamp {
   text-align: center;
   color: #888;
   font-size: 0.8rem;
   margin-bottom: 1rem;
 }
 
-.admin-message {
+.app-admin-message {
   max-width: 70%;
   padding: 0.8rem 1rem;
   border-radius: 18px;
@@ -72,23 +72,23 @@
   word-wrap: break-word;
 }
 
-.admin-message.received {
+.app-admin-message.received {
   align-self: flex-start;
   background-color: #323232;
 }
 
-.admin-message.sent {
+.app-admin-message.sent {
   align-self: flex-end;
   background-color: #0a84ff;
 }
 
-.admin-chat-footer {
+.app-admin-chat-footer {
   padding: 0.8rem;
   display: flex;
   align-items: center;
 }
 
-.admin-message-input {
+.app-admin-message-input {
   flex: 1;
   padding: 0.75rem;
   border: none;
@@ -100,12 +100,12 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.admin-message-input:focus {
+.app-admin-message-input:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.5);
 }
 
-.admin-send-button {
+.app-admin-send-button {
   background-color: #0a84ff;
   color: #ffffff;
   border: none;
@@ -120,40 +120,40 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.admin-send-button:hover {
+.app-admin-send-button:hover {
   background-color: #0056b3;
 }
 
 @media (max-width: 768px) {
-  .admin-chat-header {
+  .app-admin-chat-header {
     padding: 0.8rem;
   }
 
-  .admin-chat-avatar {
+  .app-admin-chat-avatar {
     width: 36px;
     height: 36px;
     font-size: 16px;
   }
 
-  .admin-chat-header h2 {
+  .app-admin-chat-header h2 {
     font-size: 1rem;
   }
 
-  .admin-message {
+  .app-admin-message {
     max-width: 80%;
     padding: 0.6rem 0.8rem;
   }
 
-  .admin-chat-footer {
+  .app-admin-chat-footer {
     padding: 0.3rem;
   }
 
-  .admin-message-input {
+  .app-admin-message-input {
     padding: 0.6rem;
     font-size: 0.9rem;
   }
 
-  .admin-send-button {
+  .app-admin-send-button {
     width: 36px;
     height: 36px;
   }

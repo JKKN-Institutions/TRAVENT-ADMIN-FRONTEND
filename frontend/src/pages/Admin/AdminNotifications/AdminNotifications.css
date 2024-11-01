@@ -14,7 +14,6 @@
   justify-content: flex-start;
   align-items: center;
   border-radius: 10px;
-  margin-bottom: 1rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
@@ -23,6 +22,7 @@
 
 .admin-notifications-main-content {
   flex: 1;
+  padding: 1rem 0.5rem;
   overflow-y: auto;
   background-color: #1e1e1e;
   scrollbar-width: thin;
@@ -43,7 +43,7 @@
 }
 
 .admin-notifications-search-bar-container {
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
 }
 
 .admin-notifications-search-input-wrapper {
@@ -118,7 +118,7 @@
   background: none;
   border: none;
   color: #ffffff;
-  font-size: 1rem;
+  font-size: 0.9rem;
   padding: 0.5rem 1rem;
   cursor: pointer;
   opacity: 0.7;
@@ -204,33 +204,21 @@
   }
 
   .admin-notification-content h3 {
-    font-size: 15px;
+    font-size: 0.7rem;
   }
 
   .admin-notification-content p {
-    font-size: 13px;
+    font-size: 0.6rem;
   }
 }
 
 @media (max-width: 768px) {
-  .admin-notifications-top-bar {
-    padding: 0.8rem;
-  }
-
-  .admin-notifications-top-bar h2 {
-    font-size: 1.2rem;
-  }
-
-  .admin-notifications-menu-icon {
-    font-size: 1.3rem;
-  }
-
   .admin-notifications-search-bar {
     font-size: 0.9rem;
   }
 
   .admin-filter-button {
-    font-size: 13px;
+    font-size: 0.8rem;
     padding: 6px 12px;
   }
 
@@ -242,11 +230,11 @@
   }
 
   .admin-notification-content h3 {
-    font-size: 14px;
+    font-size: 0.9rem;
   }
 
   .admin-notification-content p {
-    font-size: 12px;
+    font-size: 0.8rem;
   }
 
   .admin-notification-count {
@@ -255,24 +243,12 @@
 }
 
 @media (max-width: 480px) {
-  .admin-notifications-top-bar {
-    padding: 0.6rem;
-  }
-
-  .admin-notifications-top-bar h2 {
-    font-size: 1.1rem;
-  }
-
-  .admin-notifications-menu-icon {
-    font-size: 1.2rem;
-  }
-
   .admin-notifications-search-bar {
     font-size: 0.8rem;
   }
 
   .admin-filter-button {
-    font-size: 12px;
+    font-size: 0.8rem;
     padding: 5px 10px;
   }
 
@@ -285,15 +261,15 @@
   }
 
   .admin-notification-content h3 {
-    font-size: 13px;
+    font-size: 0.9rem;
   }
 
   .admin-notification-content p {
-    font-size: 11px;
+    font-size: 0.8rem;
   }
 
   .admin-notification-count {
-    font-size: 0.6rem;
-    padding: 0.1rem 0.3rem;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
   }
 }

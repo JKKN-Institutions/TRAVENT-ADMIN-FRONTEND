@@ -167,22 +167,73 @@ function NewUserRequest({ onBack }) {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleAction = (action) => {
+  const handleAction = async (action) => {
     if (selectedUsers.length === 0) {
       toast.warn("Please select at least one user.");
       return;
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      toast.success(`Users ${action}ed successfully`);
-      setPendingUsers(
-        pendingUsers.filter((user) => !selectedUsers.includes(user._id))
+    // Show loading toast
+    const loadingToastId = toast.loading(
+      `${action === "approve" ? "Approving" : "Declining"} selected users...`
+    );
+
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Get selected user details for email notification
+      const selectedUserDetails = pendingUsers.filter((user) =>
+        selectedUsers.includes(user._id)
       );
+
+      // Simulate sending emails
+      selectedUserDetails.forEach((user) => {
+        const emailSubject = `Transport Request ${
+          action === "approve" ? "Approved" : "Declined"
+        }`;
+        const emailBody = `Dear ${
+          user.basicDetails.name
+        }, your transport request has been ${
+          action === "approve" ? "approved" : "declined"
+        }.`;
+        console.log(`Sending email to ${user.basicDetails.name}:`, {
+          subject: emailSubject,
+          body: emailBody,
+        });
+      });
+
+      // Update UI
+      setPendingUsers((prevUsers) =>
+        prevUsers.map((user) =>
+          selectedUsers.includes(user._id)
+            ? {
+                ...user,
+                status: action === "approve" ? "Approved" : "Declined",
+              }
+            : user
+        )
+      );
+
+      // Clear selections
       setSelectedUsers([]);
       setSelectAllStudents(false);
       setSelectAllStaff(false);
-    }, 1000);
+
+      // Show success toast
+      toast.dismiss(loadingToastId);
+      toast.success(
+        <div>
+          Successfully {action}d {selectedUsers.length} user
+          {selectedUsers.length > 1 ? "s" : ""}.
+          <br />
+          <small>Email notifications have been sent.</small>
+        </div>
+      );
+    } catch (error) {
+      toast.dismiss(loadingToastId);
+      toast.error(`Failed to ${action} users. Please try again.`);
+    }
   };
 
   const handleSelectAll = (type) => {
@@ -297,13 +348,36 @@ function NewUserRequest({ onBack }) {
     );
   };
 
+  // Update the status cell in both tables
+  const renderStatus = (userId) => {
+    const user = pendingUsers.find((u) => u._id === userId);
+    return (
+      <span
+        className={`status-badge ${user.status?.toLowerCase() || "pending"}`}
+      >
+        {user.status || "Not Approved"}
+      </span>
+    );
+  };
+
   return (
     <>
       {isLoading ? (
         <Loading message="Loading New User Requests..." />
       ) : (
         <div className="new-user-requests">
-          <ToastContainer />
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
           <header className="new-user-requests-top-bar">
             <button className="new-user-requests-back-button" onClick={onBack}>
               <FontAwesomeIcon icon={faArrowLeft} />
@@ -314,89 +388,96 @@ function NewUserRequest({ onBack }) {
           </header>
 
           <main className="new-user-requests-main-content">
-            <div className="new-user-requests-search-bar-container">
-              <div className="search-input-wrapper">
-                <FontAwesomeIcon icon={faSearch} className="search-icon" />
-                <input
-                  type="text"
-                  className="new-user-requests-search-bar"
-                  placeholder="Search by Stop Name"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+            <div className="new-user-requests-controls">
+              <div className="new-user-requests-search-bar-container">
+                <div className="new-user-requests-search-input-wrapper">
+                  <FontAwesomeIcon
+                    icon={faSearch}
+                    className="new-user-requests-search-icon"
+                  />
+                  <input
+                    type="text"
+                    className="new-user-requests-search-bar"
+                    placeholder="Search by Stop Name"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="new-user-action-buttons-container">
+                <ActionButton
+                  label="Approve"
+                  onClick={() => handleAction("approve")}
+                  type="approve"
+                />
+                <ActionButton
+                  label="Decline"
+                  onClick={() => handleAction("reject")}
+                  type="decline"
                 />
               </div>
-            </div>
-
-            <div className="new-user-action-buttons-container">
-              <ActionButton
-                label="Approve"
-                onClick={() => handleAction("approve")}
-                type="approve"
-              />
-              <ActionButton
-                label="Decline"
-                onClick={() => handleAction("reject")}
-                type="decline"
-              />
             </div>
 
             {currentStudents.length > 0 && (
               <div className="new-user-requests-table-container">
                 <h3>Student Table</h3>
-                <table className="new-user-requests-table">
-                  <thead>
-                    <tr>
-                      <th>
-                        <label className="new-user-requests-custom-checkbox">
-                          <input
-                            type="checkbox"
-                            checked={selectAllStudents}
-                            onChange={() => handleSelectAll("student")}
-                          />
-                          <span className="new-user-requests-checkmark"></span>
-                        </label>
-                      </th>
-                      <th>S.No</th>
-                      <th>Student Name</th>
-                      <th>Reg No</th>
-                      <th>Roll No</th>
-                      <th>Year</th>
-                      <th>Department</th>
-                      <th>Section</th>
-                      <th>Institute Name</th>
-                      <th>Stop Name</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentStudents.map((user, index) => (
-                      <tr key={user._id}>
-                        <td>
+                <div className="new-user-requests-table-wrapper">
+                  <table className="new-user-requests-table">
+                    <thead>
+                      <tr>
+                        <th>
                           <label className="new-user-requests-custom-checkbox">
                             <input
                               type="checkbox"
-                              checked={selectedUsers.includes(user._id)}
-                              onChange={() =>
-                                handleSelectUser(user._id, "student")
-                              }
+                              checked={selectAllStudents}
+                              onChange={() => handleSelectAll("student")}
                             />
                             <span className="new-user-requests-checkmark"></span>
                           </label>
-                        </td>
-                        <td>{indexOfFirstItemStudent + index + 1}</td>
-                        <td>{user.basicDetails.name}</td>
-                        <td>{user.studentDetails.regNo || "N/A"}</td>
-                        <td>{user.studentDetails.rollNo || "N/A"}</td>
-                        <td>{user.studentDetails.year || "N/A"}</td>
-                        <td>{user.studentDetails.department || "N/A"}</td>
-                        <td>{user.studentDetails.section || "N/A"}</td>
-                        <td>{user.studentDetails.instituteName || "N/A"}</td>
-                        <td>{user.locationDetails.stopName || "N/A"}</td>
-                        <td>Not Approved</td>
+                        </th>
+                        <th>S.No</th>
+                        <th>Student Name</th>
+                        <th>Reg No</th>
+                        <th>Roll No</th>
+                        <th>Year</th>
+                        <th>Department</th>
+                        <th>Section</th>
+                        <th>Institute Name</th>
+                        <th>Stop Name</th>
+                        <th>Status</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {currentStudents.map((user, index) => (
+                        <tr key={user._id}>
+                          <td>
+                            <label className="new-user-requests-custom-checkbox">
+                              <input
+                                type="checkbox"
+                                checked={selectedUsers.includes(user._id)}
+                                onChange={() =>
+                                  handleSelectUser(user._id, "student")
+                                }
+                              />
+                              <span className="new-user-requests-checkmark"></span>
+                            </label>
+                          </td>
+                          <td>{indexOfFirstItemStudent + index + 1}</td>
+                          <td>{user.basicDetails.name}</td>
+                          <td>{user.studentDetails.regNo || "N/A"}</td>
+                          <td>{user.studentDetails.rollNo || "N/A"}</td>
+                          <td>{user.studentDetails.year || "N/A"}</td>
+                          <td>{user.studentDetails.department || "N/A"}</td>
+                          <td>{user.studentDetails.section || "N/A"}</td>
+                          <td>{user.studentDetails.instituteName || "N/A"}</td>
+                          <td>{user.locationDetails.stopName || "N/A"}</td>
+                          <td>{renderStatus(user._id)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
                 {renderPagination(
                   currentPageStudent,
                   studentUsers.length,
@@ -408,56 +489,58 @@ function NewUserRequest({ onBack }) {
             {currentStaff.length > 0 && (
               <div className="new-user-requests-table-container">
                 <h3>Staff Table</h3>
-                <table className="new-user-requests-table">
-                  <thead>
-                    <tr>
-                      <th>
-                        <label className="new-user-requests-custom-checkbox">
-                          <input
-                            type="checkbox"
-                            checked={selectAllStaff}
-                            onChange={() => handleSelectAll("staff")}
-                          />
-                          <span className="new-user-requests-checkmark"></span>
-                        </label>
-                      </th>
-                      <th>S.No</th>
-                      <th>Staff Name</th>
-                      <th>Staff ID</th>
-                      <th>Institute Name</th>
-                      <th>Department</th>
-                      <th>Designation</th>
-                      <th>Stop Name</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentStaff.map((user, index) => (
-                      <tr key={user._id}>
-                        <td>
+                <div className="new-user-requests-table-wrapper">
+                  <table className="new-user-requests-table">
+                    <thead>
+                      <tr>
+                        <th>
                           <label className="new-user-requests-custom-checkbox">
                             <input
                               type="checkbox"
-                              checked={selectedUsers.includes(user._id)}
-                              onChange={() =>
-                                handleSelectUser(user._id, "staff")
-                              }
+                              checked={selectAllStaff}
+                              onChange={() => handleSelectAll("staff")}
                             />
                             <span className="new-user-requests-checkmark"></span>
                           </label>
-                        </td>
-                        <td>{indexOfFirstItemStaff + index + 1}</td>
-                        <td>{user.basicDetails.name}</td>
-                        <td>{user.staffDetails.staffId || "N/A"}</td>
-                        <td>{user.staffDetails.instituteName || "N/A"}</td>
-                        <td>{user.staffDetails.department || "N/A"}</td>
-                        <td>{user.staffDetails.designation || "N/A"}</td>
-                        <td>{user.locationDetails.stopName || "N/A"}</td>
-                        <td>Not Approved</td>
+                        </th>
+                        <th>S.No</th>
+                        <th>Staff Name</th>
+                        <th>Staff ID</th>
+                        <th>Institute Name</th>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th>Stop Name</th>
+                        <th>Status</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {currentStaff.map((user, index) => (
+                        <tr key={user._id}>
+                          <td>
+                            <label className="new-user-requests-custom-checkbox">
+                              <input
+                                type="checkbox"
+                                checked={selectedUsers.includes(user._id)}
+                                onChange={() =>
+                                  handleSelectUser(user._id, "staff")
+                                }
+                              />
+                              <span className="new-user-requests-checkmark"></span>
+                            </label>
+                          </td>
+                          <td>{indexOfFirstItemStaff + index + 1}</td>
+                          <td>{user.basicDetails.name}</td>
+                          <td>{user.staffDetails.staffId || "N/A"}</td>
+                          <td>{user.staffDetails.instituteName || "N/A"}</td>
+                          <td>{user.staffDetails.department || "N/A"}</td>
+                          <td>{user.staffDetails.designation || "N/A"}</td>
+                          <td>{user.locationDetails.stopName || "N/A"}</td>
+                          <td>{renderStatus(user._id)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
                 {renderPagination(
                   currentPageStaff,
                   staffUsers.length,

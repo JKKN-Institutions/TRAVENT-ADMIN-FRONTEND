@@ -80,7 +80,7 @@
 .admin-content-wrapper h2,
 .admin-boarding-data h2,
 .admin-warnings h2 {
-  margin-bottom: 20px;
+  margin-bottom: 0.7rem;
   font-size: 1.2rem;
 }
 
@@ -289,11 +289,13 @@
   .admin-boarding-chart {
     margin-right: 0;
     margin-bottom: 15px;
+    width: 120px;
+    height: 120px;
   }
 
-  .admin-main-content {
-    padding: 1rem 0.8rem;
-  }
+  /* .admin-main-content {
+    padding: 0rem 0.5rem;
+  } */
 }
 
 @media (max-width: 480px) {
