@@ -13,6 +13,7 @@ import {
 import "./ViewAllBusConditions.css";
 import Button from "../../../../components/Shared/Button/Button";
 import AddBusCondition from "../AddBusCondition/AddBusCondition";
+import SpecificBusCondition from "../SpecificBusCondition/SpecificBusCondition";
 
 const busConditionsData = [
   {
@@ -85,8 +86,13 @@ const ViewAllBusConditions = ({ onBack }) => {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingBus, setEditingBus] = useState(null);
+  const [viewingBus, setViewingBus] = useState(null);
 
   const containerRef = useRef(null);
+
+  const handleViewBus = (bus) => {
+    setViewingBus(bus);
+  };
 
   const handleDelete = () => {
     if (selectedBus) {
@@ -262,6 +268,7 @@ const ViewAllBusConditions = ({ onBack }) => {
                         className="view-icon"
                         onClick={(e) => {
                           e.stopPropagation();
+                          handleViewBus(bus);
                         }}
                       />
                     </td>
@@ -326,6 +333,12 @@ const ViewAllBusConditions = ({ onBack }) => {
             </div>
           </div>
         </div>
+      )}
+      {viewingBus && (
+        <SpecificBusCondition
+          bus={viewingBus}
+          onClose={() => setViewingBus(null)}
+        />
       )}
     </div>
   );

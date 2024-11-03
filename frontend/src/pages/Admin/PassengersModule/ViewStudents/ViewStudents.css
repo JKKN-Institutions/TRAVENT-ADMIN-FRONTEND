@@ -121,8 +121,6 @@
 
 .view-students-search-bar:focus {
   outline: none;
-
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
 .view-students-action-button-container {
@@ -339,10 +337,6 @@
   .view-students-action-button-container {
     flex-direction: row;
     flex-wrap: wrap;
-  }
-
-  .view-students-filter-button {
-    /* width: 100%; */
   }
 
   .view-students-table-wrapper {

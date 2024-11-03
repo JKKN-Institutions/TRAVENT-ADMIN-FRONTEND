@@ -17,14 +17,14 @@
   margin-bottom: 10px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .driver-details-back-button {
   background: none;
   border: none;
   color: #ffffff;
-  font-size: 1.2rem;
+  font-size: 1rem;
   cursor: pointer;
   margin-right: 1rem;
 }
@@ -37,7 +37,7 @@
 .driver-details-main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem 0.8rem 0 0;
+  padding: 0 0.5rem;
   border-radius: 10px;
   background-color: #222222;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -128,7 +128,7 @@
 }
 
 .driver-details-section-title {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin-bottom: 1rem;
   color: #ffffff;
 }
@@ -208,7 +208,7 @@
   }
 
   .driver-details-name {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 
   .driver-details-avatar {

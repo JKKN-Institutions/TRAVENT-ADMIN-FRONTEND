@@ -12,6 +12,7 @@
   padding: 1rem;
   display: flex;
   align-items: center;
+  margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   margin-bottom: 10px;
@@ -36,7 +37,7 @@
 .view-staffs-main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem 0.8rem;
+  padding: 0 0.5rem;
   background-color: #1e1e1e;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
@@ -46,7 +47,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
 }
 
 .view-staffs-search-input-wrapper {
@@ -74,12 +75,11 @@
   border: 1px solid #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #fff;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .view-staffs-search-bar:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
 .view-staffs-action-button-container {
@@ -237,7 +237,7 @@
 
   .view-staffs-search-input-wrapper {
     margin-right: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 0.7rem;
   }
 
   .view-staffs-action-button-container {
@@ -261,8 +261,8 @@
 
   .view-staffs-table th,
   .view-staffs-table td {
-    padding: 0.5rem;
-    font-size: 0.7rem;
+    padding: 0.7rem;
+    font-size: 0.8rem;
   }
 
   .view-staffs-pagination-button {

@@ -37,7 +37,7 @@ const FuelHome = ({
   };
 
   return (
-    <>
+    <div className="fuel-home">
       <div className="fuel-home-row">
         <div className="fuel-home-column">
           <div className="fuel-home-chart-card fuel-consumption-chart">
@@ -96,7 +96,7 @@ const FuelHome = ({
           <p>Billed Amount Jul 24</p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

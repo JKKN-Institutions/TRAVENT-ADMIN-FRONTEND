@@ -139,7 +139,8 @@
 
 .add-new-driver-buttons-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 1rem;
   margin-top: 2rem;
 }
 
@@ -176,10 +177,6 @@
 
 /* Tablet Responsiveness */
 @media (max-width: 1024px) {
-  .add-new-driver-container {
-    padding: 1.5rem;
-  }
-
   .add-new-driver-form-grid {
     grid-template-columns: 1fr;
   }
@@ -187,11 +184,8 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-  .add-new-driver-container {
-    padding: 1rem;
-  }
-
-  .add-new-driver-form-group input {
+  .add-new-driver-form-group input,
+  .add-new-driver-form-group select {
     font-size: 0.875rem;
   }
 
@@ -208,14 +202,15 @@
     font-size: 1.2rem;
   }
 
-  .add-new-driver-form-group input {
-    padding: 0.5rem;
-    font-size: 0.75rem;
+  .add-new-driver-form-group input,
+  .add-new-driver-form-group select {
+    padding: 0.7rem;
+    font-size: 0.8rem;
   }
 
   .add-new-driver-cancel-button,
   .add-new-driver-save-button {
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     padding: 0.5rem 1rem;
   }
 }

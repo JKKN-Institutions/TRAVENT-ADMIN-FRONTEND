@@ -160,8 +160,8 @@ const ViewAllDrivers = ({ category, drivers, onBack }) => {
             <Button
               label={
                 <>
-                  <FontAwesomeIcon icon={faEye} className="view-icon" /> View
-                  Driver Details
+                  <FontAwesomeIcon icon={faEye} className="drivers-view-icon" />{" "}
+                  View Driver Details
                 </>
               }
               onClick={handleViewDriverDetails}

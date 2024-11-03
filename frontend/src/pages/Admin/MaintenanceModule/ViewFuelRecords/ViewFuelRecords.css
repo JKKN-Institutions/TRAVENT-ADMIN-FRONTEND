@@ -3,7 +3,7 @@
   color: #ffffff;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -17,7 +17,7 @@
   margin-bottom: 10px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .view-fuel-records-back-icon {
@@ -36,7 +36,7 @@
 .view-fuel-records-main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 0.5rem 0.3rem;
+  padding: 0rem 0.5rem;
   background-color: #1e1e1e;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
@@ -46,8 +46,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  padding: 0 0.2rem;
+  margin-bottom: 0.7rem;
   gap: 0.5rem;
 }
 
@@ -79,12 +78,11 @@
   border: 1px solid #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #fff;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .view-fuel-records-search-bar:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
 .view-fuel-records-date input {
@@ -310,11 +308,15 @@
   .view-fuel-records-date,
   .view-fuel-records-action-buttons {
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 0.7rem;
+    justify-content: flex-end;
   }
 }
 
 @media (max-width: 768px) {
+  .view-fuel-records-top-bar h2 {
+    font-size: 1.2rem;
+  }
   .view-fuel-records-table {
     font-size: 0.9rem;
   }
@@ -330,9 +332,13 @@
     align-items: center;
   }
 
+  .view-fuel-records-top-bar h2 {
+    font-size: 1.2rem;
+  }
+
   .view-fuel-records-table th,
   .view-fuel-records-table td {
-    padding: 0.5rem;
-    font-size: 0.7rem;
+    padding: 0.7rem;
+    font-size: 0.8rem;
   }
 }

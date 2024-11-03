@@ -17,7 +17,7 @@
   margin-bottom: 10px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .add-new-order-back-button {
@@ -93,8 +93,9 @@
 
 .add-new-order-buttons-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 2rem;
+  gap: 1rem;
 }
 
 .add-new-order-cancel-button,
@@ -130,10 +131,6 @@
 
 /* Tablet Responsiveness */
 @media (max-width: 1024px) {
-  .add-new-order-container {
-    padding: 1.5rem;
-  }
-
   .add-new-order-form-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -141,10 +138,6 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-  .add-new-order-container {
-    padding: 1rem;
-  }
-
   .add-new-order-form-grid {
     grid-template-columns: 1fr;
   }
@@ -167,13 +160,13 @@
   }
 
   .add-new-order-form-group input {
-    padding: 0.5rem;
-    font-size: 0.75rem;
+    padding: 0.7rem;
+    font-size: 0.8rem;
   }
 
   .add-new-order-cancel-button,
   .add-new-order-save-button {
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     padding: 0.5rem 1rem;
   }
 }

@@ -3,7 +3,7 @@
   color: #ffffff;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -17,7 +17,7 @@
   margin-bottom: 10px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .bus-conditions-back-icon {
@@ -36,7 +36,7 @@
 .bus-conditions-main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 0.5rem 0.3rem;
+  padding: 0 0.5rem;
   background-color: #1e1e1e;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
@@ -46,8 +46,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  padding: 0 0.2rem;
+  margin-bottom: 0.7rem;
   gap: 0.5rem;
   flex-wrap: wrap;
 }
@@ -80,24 +79,23 @@
   border: 1px solid #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #fff;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .bus-conditions-search-bar:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
 .bus-conditions-action-buttons {
   display: flex;
   gap: 10px;
+  justify-content: flex-end;
 }
 
 .bus-conditions-table-container {
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   border-radius: 8px;
-  margin-bottom: 20px;
 }
 
 .bus-conditions-table-wrapper {
@@ -293,13 +291,12 @@
     width: 100%;
     margin-bottom: 10px;
   }
-
-  .bus-conditions-action-buttons {
-    justify-content: flex-start;
-  }
 }
 
 @media (max-width: 768px) {
+  .bus-conditions-top-bar h2 {
+    font-size: 1.2rem;
+  }
   .bus-conditions-table {
     font-size: 0.9rem;
   }
@@ -314,14 +311,10 @@
 }
 
 @media (max-width: 480px) {
-  .bus-conditions-top-bar {
-    padding: 0.75rem;
-  }
-
   .bus-conditions-table th,
   .bus-conditions-table td {
-    padding: 0.5rem;
-    font-size: 0.7rem;
+    padding: 0.7rem;
+    font-size: 0.76rem;
   }
 
   .bus-conditions-search-bar {

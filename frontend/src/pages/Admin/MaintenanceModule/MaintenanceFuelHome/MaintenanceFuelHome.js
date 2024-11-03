@@ -185,13 +185,15 @@ const MaintenanceFuelHome = ({ toggleSidebar }) => {
           <main className="maintenance-fuel-main-content">
             <div className="maintenance-fuel-tabs">
               <button
-                className={`tab-button ${activeTab === "Fuel" ? "active" : ""}`}
+                className={`maintenance-tab-button ${
+                  activeTab === "Fuel" ? "active" : ""
+                }`}
                 onClick={() => setActiveTab("Fuel")}
               >
                 Fuel
               </button>
               <button
-                className={`tab-button ${
+                className={`maintenance-tab-button ${
                   activeTab === "Inventory" ? "active" : ""
                 }`}
                 onClick={() => setActiveTab("Inventory")}
@@ -199,7 +201,7 @@ const MaintenanceFuelHome = ({ toggleSidebar }) => {
                 Inventory
               </button>
               <button
-                className={`tab-button ${
+                className={`maintenance-tab-button ${
                   activeTab === "Services" ? "active" : ""
                 }`}
                 onClick={() => setActiveTab("Services")}

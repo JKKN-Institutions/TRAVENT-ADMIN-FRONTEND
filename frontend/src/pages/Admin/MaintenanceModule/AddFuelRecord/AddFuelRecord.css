@@ -96,8 +96,9 @@
 
 .add-fuel-record-buttons-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 2rem;
+  gap: 1rem;
 }
 
 .add-fuel-record-cancel-button,
@@ -133,10 +134,6 @@
 
 /* Tablet Responsiveness */
 @media (max-width: 1024px) {
-  .add-fuel-record-container {
-    padding: 1.5rem;
-  }
-
   .add-fuel-record-form-grid {
     grid-template-columns: 1fr;
   }
@@ -144,10 +141,6 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
-  .add-fuel-record-container {
-    padding: 1rem;
-  }
-
   .add-fuel-record-form-group input,
   .add-fuel-record-form-group select,
   .add-fuel-record-form-group textarea {
@@ -158,6 +151,12 @@
   .add-fuel-record-save-button {
     font-size: 0.875rem;
     padding: 0.5rem 1.5rem;
+  }
+
+  .add-fuel-record-form-group input,
+  .add-fuel-record-form-group select,
+  .add-fuel-record-form-group textarea {
+    font-size: 0.875rem;
   }
 }
 
@@ -170,13 +169,13 @@
   .add-fuel-record-form-group input,
   .add-fuel-record-form-group select,
   .add-fuel-record-form-group textarea {
-    padding: 0.5rem;
-    font-size: 0.75rem;
+    padding: 0.7rem;
+    font-size: 0.8rem;
   }
 
   .add-fuel-record-cancel-button,
   .add-fuel-record-save-button {
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     padding: 0.5rem 1rem;
   }
 }

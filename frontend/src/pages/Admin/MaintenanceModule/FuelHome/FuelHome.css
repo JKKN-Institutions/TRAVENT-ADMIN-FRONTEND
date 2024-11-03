@@ -1,3 +1,14 @@
+.fuel-home {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  /* padding: 0 0.8rem 0 0; */
+  height: 100%;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+}
+
 .fuel-home-row {
   display: flex;
   gap: 10px;
@@ -60,7 +71,7 @@
 
 .fuel-home-action-card h3 {
   font-size: 1.2rem;
-  margin-bottom: 5px;
+  margin-bottom: 0.7rem;
 }
 
 .fuel-home-action-card p {
@@ -103,7 +114,7 @@
 
 @media (max-width: 576px) {
   .fuel-home-chart-header h2 {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
   }
 
   .fuel-home-info-card h2 {
@@ -116,6 +127,9 @@
 }
 
 @media (max-width: 480px) {
+  .fuel-home {
+    max-height: calc(100vh - 220px);
+  }
   .fuel-home-chart-card,
   .fuel-home-action-card,
   .fuel-home-info-card {
@@ -128,7 +142,7 @@
   }
 
   .fuel-home-action-card p {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .fuel-home-info-card h2 {
@@ -136,6 +150,6 @@
   }
 
   .fuel-home-info-card p {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 }
