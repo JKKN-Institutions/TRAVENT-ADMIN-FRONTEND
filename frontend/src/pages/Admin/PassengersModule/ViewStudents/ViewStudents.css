@@ -22,6 +22,7 @@
   display: flex;
 
   align-items: center;
+  margin-bottom: 10px;
 
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
@@ -57,7 +58,7 @@
 
   overflow-y: auto;
 
-  padding: 1rem 0rem;
+  padding: 0 0.5rem;
 
   background-color: #1e1e1e;
 
@@ -73,7 +74,7 @@
 
   align-items: center;
 
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
 }
 
 .view-students-search-input-wrapper {
@@ -115,7 +116,7 @@
 
   color: #fff;
 
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .view-students-search-bar:focus {
@@ -332,7 +333,7 @@
   .view-students-search-input-wrapper {
     margin-right: 0;
 
-    margin-bottom: 1rem;
+    margin-bottom: 0.7rem;
   }
 
   .view-students-action-button-container {
@@ -351,14 +352,14 @@
 
 @media (max-width: 576px) {
   .view-students-top-bar h2 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
 
   .view-students-table th,
   .view-students-table td {
-    padding: 0.5rem;
+    padding: 0.7rem;
 
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
 
   .view-students-pagination-button {
