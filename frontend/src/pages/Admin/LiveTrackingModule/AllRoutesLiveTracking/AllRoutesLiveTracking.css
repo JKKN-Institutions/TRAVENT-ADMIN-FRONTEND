@@ -16,7 +16,7 @@
   margin-bottom: 10px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .all-routes-live-tracking-back-icon {
@@ -236,6 +236,10 @@
 @media (max-width: 480px) {
   .back-button {
     font-size: 1rem;
+  }
+
+  .all-routes-live-tracking-top-bar h2 {
+    font-size: 1.2rem;
   }
 
   .search-input {

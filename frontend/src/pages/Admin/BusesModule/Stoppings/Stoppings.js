@@ -120,50 +120,54 @@ const Stoppings = ({ route, onBack, institutionId }) => {
           </header>
 
           <main className="stoppings-main-content">
-            <div className="stoppings-search-bar-container">
-              <div className="search-input-wrapper">
-                <FontAwesomeIcon icon={faSearch} className="search-icon" />
-                <input
-                  type="text"
-                  className="stoppings-search-bar"
-                  placeholder="Search by Stop Name"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+            <div className="stoppings-controls">
+              <div className="stoppings-search-bar-container">
+                <div className="stoppings-search-input-wrapper">
+                  <FontAwesomeIcon
+                    icon={faSearch}
+                    className="stoppings-search-icon"
+                  />
+                  <input
+                    type="text"
+                    className="stoppings-search-bar"
+                    placeholder="Search by Stop Name"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="stoppings-action-buttons-container">
+                <Button
+                  label={
+                    <>
+                      <FontAwesomeIcon icon={faPlus} /> Add
+                    </>
+                  }
+                  onClick={() => setShowAddStop(true)}
+                />
+
+                <Button
+                  label={
+                    <>
+                      <FontAwesomeIcon icon={faEdit} /> Edit
+                    </>
+                  }
+                  onClick={handleEditStop}
+                  disabled={!selectedStop}
+                />
+
+                <Button
+                  label={
+                    <>
+                      <FontAwesomeIcon icon={faTrash} /> Delete
+                    </>
+                  }
+                  onClick={() => setShowDeleteConfirmation(true)}
+                  disabled={!selectedStop}
                 />
               </div>
             </div>
-
-            <div className="action-buttons-container">
-              <Button
-                label={
-                  <>
-                    <FontAwesomeIcon icon={faPlus} /> Add
-                  </>
-                }
-                onClick={() => setShowAddStop(true)}
-              />
-
-              <Button
-                label={
-                  <>
-                    <FontAwesomeIcon icon={faEdit} /> Edit
-                  </>
-                }
-                onClick={handleEditStop}
-                disabled={!selectedStop}
-              />
-
-              <Button
-                label={
-                  <>
-                    <FontAwesomeIcon icon={faTrash} /> Delete
-                  </>
-                }
-                onClick={() => setShowDeleteConfirmation(true)}
-                disabled={!selectedStop}
-              />
-            </div>
-
             <div className="stoppings-table-container">
               <div className="stoppings-table-wrapper">
                 <table className="stoppings-table">

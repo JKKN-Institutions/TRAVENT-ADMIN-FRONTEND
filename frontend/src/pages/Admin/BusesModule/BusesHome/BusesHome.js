@@ -236,7 +236,7 @@ const ArrivalStatusTable = ({
             <th>Driver</th>
             <th>Scheduled</th>
             <th>Scanned</th>
-            <th>Details</th>
+            <th>View Details</th>
           </tr>
         </thead>
         <tbody>

@@ -827,11 +827,11 @@ const Passengers = ({ route, onBack }) => {
     }
 
     return (
-      <div className="passengers-pagination">
+      <div className="bus-passengers-pagination">
         <button
           onClick={() => paginate(currentPage - 1)}
           disabled={currentPage === 1}
-          className="passengers-pagination-button"
+          className="bus-passengers-pagination-button"
         >
           <FontAwesomeIcon icon={faChevronLeft} />
         </button>
@@ -839,7 +839,7 @@ const Passengers = ({ route, onBack }) => {
           <button
             key={number}
             onClick={() => paginate(number)}
-            className={`passengers-pagination-button ${
+            className={`bus-passengers-pagination-button ${
               currentPage === number ? "active" : ""
             }`}
           >
@@ -849,7 +849,7 @@ const Passengers = ({ route, onBack }) => {
         <button
           onClick={() => paginate(currentPage + 1)}
           disabled={currentPage === pageNumbers.length}
-          className="passengers-pagination-button"
+          className="bus-passengers-pagination-button"
         >
           <FontAwesomeIcon icon={faChevronRight} />
         </button>
@@ -863,9 +863,9 @@ const Passengers = ({ route, onBack }) => {
     const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
-      <div className="passengers-table-container">
-        <div className="passengers-table-wrapper">
-          <table className="passengers-table">
+      <div className="bus-passengers-table-container">
+        <div className="bus-passengers-table-wrapper">
+          <table className="bus-passengers-table">
             <thead>
               <tr>
                 {columns.map((column) => (
@@ -930,24 +930,27 @@ const Passengers = ({ route, onBack }) => {
   ];
 
   return (
-    <div className="passengers-container" ref={containerRef}>
-      <header className="passengers-top-bar">
+    <div className="bus-passengers-container" ref={containerRef}>
+      <header className="bus-passengers-top-bar">
         <FontAwesomeIcon
           icon={faArrowLeft}
-          className="passengers-menu-icon"
+          className="bus-passengers-menu-icon"
           onClick={onBack}
         />
         <h2>Passengers for Route {route.routeNumber}</h2>
       </header>
 
-      <main className="passengers-main-content">
-        <div className="passengers-actions">
-          <div className="passengers-search-container">
-            <div className="search-input-wrapper">
-              <FontAwesomeIcon icon={faSearch} className="search-icon" />
+      <main className="bus-passengers-main-content">
+        <div className="bus-passengers-actions">
+          <div className="bus-passengers-search-container">
+            <div className="bus-passengers-search-input-wrapper">
+              <FontAwesomeIcon
+                icon={faSearch}
+                className="bus-passengers-search-icon"
+              />
               <input
                 type="text"
-                className="passengers-search-bar"
+                className="bus-passengers-search-bar"
                 placeholder="Search passengers..."
                 value={searchTermStudent}
                 onChange={(e) => {
@@ -957,7 +960,7 @@ const Passengers = ({ route, onBack }) => {
               />
             </div>
           </div>
-          <div className="action-buttons-container">
+          <div className="bus-passengers-action-buttons-container">
             {/* Delete Button */}
             <Button
               label={
@@ -982,8 +985,8 @@ const Passengers = ({ route, onBack }) => {
           </div>
         </div>
 
-        <div className="passengers-tables-container">
-          <div className="passengers-table-section">
+        <div className="bus-passengers-tables-container">
+          <div className="bus-passengers-table-section">
             <h3>
               <FontAwesomeIcon icon={faUserGraduate} /> Students
             </h3>
@@ -1000,7 +1003,7 @@ const Passengers = ({ route, onBack }) => {
               paginateStudent
             )}
           </div>
-          <div className="passengers-table-section">
+          <div className="bus-passengers-table-section">
             <h3>
               <FontAwesomeIcon icon={faUserTie} /> Staff
             </h3>
@@ -1021,20 +1024,20 @@ const Passengers = ({ route, onBack }) => {
       </main>
 
       {showDeleteConfirmation && (
-        <div className="passengers-delete-confirmation-modal">
-          <div className="passengers-delete-confirmation-content">
+        <div className="bus-passengers-delete-confirmation-modal">
+          <div className="bus-passengers-delete-confirmation-content">
             <h3>Confirm Deletion</h3>
             <p>Are you sure you want to delete this passenger?</p>
-            <div className="passengers-delete-confirmation-buttons">
+            <div className="bus-passengers-delete-confirmation-buttons">
               <button
                 onClick={() => setShowDeleteConfirmation(false)}
-                className="passengers-cancel-delete"
+                className="bus-passengers-cancel-delete"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeletePassenger}
-                className="passengers-confirm-delete"
+                className="bus-passengers-confirm-delete"
               >
                 Yes, Delete
               </button>

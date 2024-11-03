@@ -264,7 +264,7 @@ const PassengersHome = ({ toggleSidebar }) => {
                 <h2>Passengers Amulets Status</h2>
                 <div className="amulet-chart-container">
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={amuletStatus} barSize={50}>
+                    <BarChart data={amuletStatus} barSize={40}>
                       <XAxis dataKey="none" />
                       <YAxis fontSize={14} color="#fff" />
                       <Tooltip content={<CustomTooltip />} />
@@ -312,7 +312,7 @@ const PassengersHome = ({ toggleSidebar }) => {
                       width={200}
                     />
                     <Tooltip content={<CustomTooltip />} />
-                    <Bar dataKey="count" barSize={30}>
+                    <Bar dataKey="count" barSize={40}>
                       {institutions.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}

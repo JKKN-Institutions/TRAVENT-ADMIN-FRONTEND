@@ -13,11 +13,12 @@
   align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-  margin-bottom: 1rem;
+  margin-bottom: 10px;
+  z-index: 999;
 }
 
 .passenger-arrival-status-back-icon {
-  font-size: 1.2rem;
+  font-size: 1rem;
   cursor: pointer;
   margin-right: 1rem;
 }
@@ -29,7 +30,7 @@
 
 .passenger-arrival-status-main {
   flex: 1;
-  padding: 1rem 0.8rem;
+  padding: 0 0.5rem;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
@@ -39,11 +40,11 @@
 }
 
 .passenger-arrival-status-route-info {
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
 }
 
 .passenger-arrival-status-route-info h2 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 
   margin: 0;
 }
@@ -51,8 +52,8 @@
 .passenger-arrival-status-status-circles {
   display: flex;
   justify-content: space-around;
-  margin-bottom: 2rem;
-  gap: 1rem;
+  /* margin-bottom: 0.7rem; */
+  gap: 0.7rem;
 }
 
 .passenger-arrival-status-status-circle-container {
@@ -262,11 +263,11 @@
 
 @media (max-width: 480px) {
   .passenger-arrival-status-header h1 {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 
   .passenger-arrival-status-table-header h3 {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   .passenger-arrival-status-view-selector select {
@@ -275,7 +276,7 @@
 
   .passenger-arrival-status-table th,
   .passenger-arrival-status-table td {
-    padding: 0.5rem;
+    padding: 0.7rem;
     font-size: 0.8rem;
   }
 }

@@ -17,7 +17,7 @@
   margin-bottom: 10px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .stoppings-menu-icon {
@@ -36,23 +36,32 @@
 .stoppings-main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem 0.8rem;
+  padding: 0 0.5rem;
   background-color: #1e1e1e;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
 }
 
-.stoppings-search-bar-container {
-  margin-bottom: 1rem;
+.stoppings-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.7rem;
+  padding: 0 0.2rem;
+  gap: 0.5rem;
 }
 
-.search-input-wrapper {
+.stoppings-search-bar-container {
+  max-width: 600px;
+  width: 100%;
+}
+
+.stoppings-search-input-wrapper {
   position: relative;
   width: 100%;
-  margin-bottom: 20px;
 }
 
-.search-input-wrapper .search-icon {
+.stoppings-search-input-wrapper .stoppings-search-icon {
   position: absolute;
   left: 10px;
   top: 50%;
@@ -70,7 +79,7 @@
   border: 1px solid #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #fff;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .stoppings-search-bar:focus {
@@ -78,10 +87,9 @@
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
-.action-buttons-container {
+.stoppings-action-buttons-container {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 20px;
   gap: 10px;
   flex-wrap: wrap;
 }
@@ -233,7 +241,7 @@
 .stoppings-cancel-delete {
   padding: 0.5rem 2rem;
   border-radius: 30px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
   font-weight: 600;
@@ -306,8 +314,25 @@
   text-decoration: underline;
 }
 
+@media (max-width: 1024px) {
+  .stoppings-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .stoppings-search-bar-container {
+    max-width: 100%;
+    margin-bottom: 0.7rem;
+  }
+
+  .stoppings-action-buttons-container {
+    justify-content: flex-end;
+  }
+}
+
 @media (max-width: 768px) {
-  .action-buttons-container {
+  .stoppings-action-buttons-container {
     flex-direction: row;
     flex-wrap: wrap;
   }
@@ -326,5 +351,11 @@
 
   .stoppings-pagination {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .stoppings-top-bar h2 {
+    font-size: 1.2rem;
   }
 }

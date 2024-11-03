@@ -17,7 +17,7 @@
   margin-bottom: 10px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .generated-plan-back-icon {
@@ -73,7 +73,7 @@
   border: 1px solid #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #fff;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .generated-plan-search-bar:focus {
@@ -131,7 +131,7 @@
 }
 
 .generated-plan-info h3 {
-  font-size: 1.2rem;
+  font-size: 1rem;
   margin: 0;
 }
 
@@ -283,7 +283,7 @@
 
 @media (max-width: 576px) {
   .generated-plan-top-bar h2 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
 
   .generated-plan-table th,

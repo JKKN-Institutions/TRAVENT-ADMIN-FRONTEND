@@ -17,7 +17,7 @@
   margin-bottom: 10px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .add-stop-back-button {
@@ -94,8 +94,9 @@
 
 .add-stop-buttons-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 2rem;
+  gap: 1rem;
 }
 
 .add-stop-cancel-button,
@@ -130,20 +131,12 @@
 }
 
 @media (max-width: 1024px) {
-  .add-stop-container {
-    padding: 1.5rem;
-  }
-
   .add-stop-form-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 768px) {
-  .add-stop-container {
-    padding: 1rem;
-  }
-
   .add-stop-form-group input {
     font-size: 0.875rem;
   }
@@ -161,13 +154,13 @@
   }
 
   .add-stop-form-group input {
-    padding: 0.5rem;
-    font-size: 0.75rem;
+    padding: 0.7rem;
+    font-size: 0.9rem;
   }
 
   .add-stop-cancel-button,
   .add-stop-save-button {
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     padding: 0.5rem 1rem;
   }
 }

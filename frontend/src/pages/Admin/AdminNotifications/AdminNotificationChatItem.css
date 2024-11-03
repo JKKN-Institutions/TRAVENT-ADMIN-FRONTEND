@@ -27,7 +27,7 @@
   font-size: 1.3rem;
   cursor: pointer;
   color: #ffffff;
-  margin-right: 1rem;
+  margin-right: 0.5rem;
 }
 
 .admin-chat-avatar {
@@ -45,7 +45,7 @@
 .admin-chat-header h2 {
   margin: 0;
   font-size: 1.2rem;
-  margin-left: 1rem;
+  margin-left: 0.5rem;
 }
 
 .admin-chat-body {
@@ -79,6 +79,7 @@
 .admin-message.received {
   align-self: flex-start;
   background-color: #323232;
+  font-size: 0.9rem;
 }
 
 .admin-message.sent {

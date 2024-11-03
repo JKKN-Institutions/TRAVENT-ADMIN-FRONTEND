@@ -12,10 +12,11 @@
   display: flex;
   align-items: center;
   border-radius: 10px;
+  margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .show-routes-menu-icon {
@@ -31,7 +32,7 @@
 
 .show-routes-main-content {
   flex: 1;
-  padding: 1rem 0.8rem 0 0;
+  padding: 0 0.5rem;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
@@ -41,7 +42,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
   padding: 0 0.2rem;
   gap: 0.5rem;
 }
@@ -72,7 +73,7 @@
   border: 1px solid #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #fff;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .show-routes-search-bar:focus {
@@ -123,7 +124,7 @@
 .show-routes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
+  gap: 10px;
 }
 
 .show-routes-card {
@@ -250,11 +251,12 @@
   .show-routes-controls {
     flex-direction: column;
     align-items: stretch;
+    gap: 0;
   }
 
   .show-routes-search-bar-container {
     max-width: 100%;
-    margin-bottom: 1rem;
+    margin-bottom: 0.7rem;
   }
 
   .show-routes-action-buttons {
@@ -287,11 +289,11 @@
   }
 
   .show-routes-card-name {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   .show-routes-card-info {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -315,10 +317,10 @@
   }
 
   .show-routes-card-name {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
   }
 
   .show-routes-card-info {
-    font-size: 0.7rem;
+    font-size: 0.9rem;
   }
 }

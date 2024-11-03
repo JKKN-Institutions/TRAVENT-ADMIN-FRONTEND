@@ -176,11 +176,7 @@ const LiveTrackingHome = ({ toggleSidebar }) => {
 
               <div className="status-grid">
                 {statusCards.map((card, index) => (
-                  <div
-                    key={index}
-                    className="status-card"
-                    style={{ borderColor: card.color }}
-                  >
+                  <div key={index} className="status-card">
                     <h3>
                       {card.title}{" "}
                       <FontAwesomeIcon

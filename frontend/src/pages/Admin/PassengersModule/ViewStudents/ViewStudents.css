@@ -31,7 +31,7 @@
 
   top: 0;
 
-  z-index: 1000;
+  z-index: 999;
 }
 
 .view-students-back-icon {

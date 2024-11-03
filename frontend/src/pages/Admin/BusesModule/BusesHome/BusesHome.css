@@ -14,8 +14,9 @@
   align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
+  margin-bottom: 10px;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
   border-radius: 10px;
 }
 
@@ -34,7 +35,7 @@
 
 .buses-main-content {
   flex: 1;
-  padding: 1rem 0.8rem 0 0;
+  padding: 0 0.5rem;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
@@ -364,6 +365,12 @@
   .buses-table {
     min-width: 600px;
   }
+
+  .buses-status-container h2,
+  .buses-condition-container h2,
+  .buses-boarding-data h2 {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -396,7 +403,7 @@
   }
 
   .buses-condition-label {
-    font-size: 0.7rem;
+    font-size: 0.9rem;
   }
 
   .buses-arrival-status {
@@ -408,13 +415,13 @@
   }
 
   .buses-view-routes {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .buses-table th,
   .buses-table td {
-    padding: 0.5rem;
-    font-size: 0.7rem;
+    padding: 0.7rem;
+    font-size: 0.8rem;
   }
 
   .buses-view-details {

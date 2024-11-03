@@ -244,6 +244,10 @@
 }
 
 @media (max-width: 480px) {
+  .admin-notifications-top-bar h2 {
+    font-size: 1.2rem;
+  }
+
   .admin-notifications-search-bar {
     font-size: 0.8rem;
   }

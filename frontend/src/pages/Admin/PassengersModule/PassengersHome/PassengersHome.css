@@ -12,10 +12,11 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
   border-radius: 10px;
 }
 
@@ -32,7 +33,7 @@
 
 .passengers-home-main-content {
   flex: 1;
-  padding: 1rem 0.8rem 0 0;
+  padding: 0 0.5rem;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
@@ -57,7 +58,6 @@
 
 .passengers-stat-card h2 {
   font-size: 1.2rem;
-  margin-bottom: 15px;
 }
 
 .boarding-status {
@@ -225,7 +225,7 @@
 
 .passengers-action-card h3 {
   font-size: 1.1rem;
-  margin-bottom: 25px;
+  margin-bottom: 1rem;
 }
 
 .passengers-action-card p {
@@ -466,7 +466,7 @@
 /* Mobile Responsiveness */
 @media (max-width: 575px) {
   .passengers-home-top-bar h1 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
 
   .passengers-stats-row {

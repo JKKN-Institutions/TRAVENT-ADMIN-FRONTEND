@@ -856,6 +856,31 @@ const ScheduledPassengers = ({ onBack }) => {
   };
 
   const renderTable = (data, columns, currentPage, itemsPerPage) => {
+    if (data.length === 0) {
+      return (
+        <div className="scheduled-passengers-table-container">
+          <div className="scheduled-passengers-table-wrapper">
+            <table className="scheduled-passengers-table">
+              <thead>
+                <tr>
+                  {columns.map((column) => (
+                    <th key={column.key}>{column.label}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colSpan={columns.length} className="no-data-message">
+                    No data available
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);

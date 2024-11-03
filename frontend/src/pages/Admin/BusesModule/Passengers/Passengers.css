@@ -1,4 +1,4 @@
-.passengers-container {
+.bus-passengers-container {
   background-color: #1e1e1e;
   color: #ffffff;
   display: flex;
@@ -7,7 +7,7 @@
   overflow: hidden;
 }
 
-.passengers-top-bar {
+.bus-passengers-top-bar {
   background-color: #222222;
   padding: 1rem;
   display: flex;
@@ -17,32 +17,32 @@
   margin-bottom: 10px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
-.passengers-menu-icon {
+.bus-passengers-menu-icon {
   font-size: 1rem;
   cursor: pointer;
   color: #ffffff;
   margin-right: 1rem;
 }
 
-.passengers-top-bar h2 {
+.bus-passengers-top-bar h2 {
   color: #ffffff;
   margin: 0;
   font-size: 1.3rem;
 }
 
-.passengers-main-content {
+.bus-passengers-main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem 0.8rem;
+  padding: 0 0.5rem;
   background-color: #1e1e1e;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
 }
 
-.passengers-actions {
+.bus-passengers-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -50,17 +50,17 @@
   gap: 1rem;
 }
 
-.passengers-search-container {
+.bus-passengers-search-container {
   flex: 1;
   max-width: 600px;
 }
 
-.search-input-wrapper {
+.bus-passengers-search-input-wrapper {
   position: relative;
   width: 100%;
 }
 
-.search-input-wrapper .search-icon {
+.bus-passengers-search-input-wrapper .bus-passengers-search-icon {
   position: absolute;
   left: 10px;
   top: 50%;
@@ -69,7 +69,7 @@
   font-size: 1rem;
 }
 
-.passengers-search-bar {
+.bus-passengers-search-bar {
   width: 100%;
   padding: 0.75rem 0.75rem 0.75rem 2.5rem;
   border: none;
@@ -81,17 +81,17 @@
   font-size: 1rem;
 }
 
-.passengers-search-bar:focus {
+.bus-passengers-search-bar:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
-.action-buttons-container {
+.bus-passengers-action-buttons-container {
   display: flex;
   gap: 10px;
 }
 
-.passengers-action-button {
+.bus-passengers-action-button {
   padding: 0.5rem 1rem;
   border-radius: 20px;
   border: none;
@@ -104,63 +104,63 @@
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.passengers-add-button,
-.passengers-edit-button,
-.passengers-delete-button {
+.bus-passengers-add-button,
+.bus-passengers-edit-button,
+.bus-passengers-delete-button {
   background-color: rgba(215, 215, 215, 0.05);
   border: 1px solid #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #fff;
 }
 
-.passengers-action-button:hover {
+.bus-passengers-action-button:hover {
   opacity: 0.9;
 }
 
-.passengers-action-button.disabled {
+.bus-passengers-action-button.disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.passengers-tables-container {
+.bus-passengers-tables-container {
   display: flex;
   flex-direction: column;
   gap: 2rem;
   margin-bottom: 2rem;
 }
 
-.passengers-table-section {
+.bus-passengers-table-section {
   flex: 1;
   min-width: 0;
   /* width: 100%; */
 }
 
-.passengers-table-section h3 {
+.bus-passengers-table-section h3 {
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.passengers-table-section h3 svg {
+.bus-passengers-table-section h3 svg {
   color: #11a8fd;
 }
 
-.passengers-table-container {
+.bus-passengers-table-container {
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   border-radius: 8px;
   margin-bottom: 1rem;
 }
 
-.passengers-table-wrapper {
+.bus-passengers-table-wrapper {
   overflow-x: auto;
   max-height: calc(100vh - 300px);
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
 }
 
-.passengers-table {
+.bus-passengers-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
@@ -168,8 +168,8 @@
   /* table-layout: fixed; */
 }
 
-.passengers-table th,
-.passengers-table td {
+.bus-passengers-table th,
+.bus-passengers-table td {
   padding: 0.75rem;
   text-align: left;
   border-bottom: 1px solid #666;
@@ -178,7 +178,7 @@
   max-width: 685px; */
 }
 
-.passengers-table th {
+.bus-passengers-table th {
   background-color: #1e1e1e;
   color: #fff;
   font-weight: 600;
@@ -189,42 +189,42 @@
   z-index: 10;
 }
 
-.passengers-table td {
+.bus-passengers-table td {
   background-color: #2c2c2c;
   color: #fff;
   font-size: 0.8rem;
 }
 
-.passengers-table tbody tr {
+.bus-passengers-table tbody tr {
   transition: background-color 0.3s ease;
 }
 
-.passengers-table tbody tr:hover {
+.bus-passengers-table tbody tr:hover {
   background-color: #444;
   cursor: pointer;
 }
 
-.passengers-table tbody tr.selected {
+.bus-passengers-table tbody tr.selected {
   background-color: rgba(33, 150, 243, 0.3);
   box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
   z-index: 5;
   position: relative;
 }
 
-.passengers-table tbody tr.selected td {
+.bus-passengers-table tbody tr.selected td {
   border-top: 2px solid #2196f3;
   border-bottom: 2px solid #2196f3;
 }
 
-.passengers-table tbody tr.selected td:first-child {
+.bus-passengers-table tbody tr.selected td:first-child {
   border-left: 2px solid #2196f3;
 }
 
-.passengers-table tbody tr.selected td:last-child {
+.bus-passengers-table tbody tr.selected td:last-child {
   border-right: 2px solid #2196f3;
 }
 
-.passengers-pagination {
+.bus-passengers-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -232,7 +232,7 @@
   gap: 0.5rem;
 }
 
-.passengers-pagination-button {
+.bus-passengers-pagination-button {
   background-color: #2c2c2c;
   color: #fff;
   border: 1px solid #444;
@@ -243,21 +243,21 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.passengers-pagination-button:hover {
+.bus-passengers-pagination-button:hover {
   background-color: #444;
 }
 
-.passengers-pagination-button.active {
+.bus-passengers-pagination-button.active {
   background-color: #11a8fd;
   border-color: #11a8fd;
 }
 
-.passengers-pagination-button:disabled {
+.bus-passengers-pagination-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.passengers-delete-confirmation-modal {
+.bus-passengers-delete-confirmation-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -270,7 +270,7 @@
   z-index: 1000;
 }
 
-.passengers-delete-confirmation-content {
+.bus-passengers-delete-confirmation-content {
   background-color: #2c2c2c;
   padding: 2rem;
   border-radius: 10px;
@@ -280,24 +280,24 @@
   width: 400px;
 }
 
-.passengers-delete-confirmation-content h3 {
+.bus-passengers-delete-confirmation-content h3 {
   margin-bottom: 1rem;
   color: #ffffff;
 }
 
-.passengers-delete-confirmation-content p {
+.bus-passengers-delete-confirmation-content p {
   margin-bottom: 1.5rem;
   color: #cccccc;
 }
 
-.passengers-delete-confirmation-buttons {
+.bus-passengers-delete-confirmation-buttons {
   display: flex;
   justify-content: center;
   gap: 1rem;
 }
 
-.passengers-confirm-delete,
-.passengers-cancel-delete {
+.bus-passengers-confirm-delete,
+.bus-passengers-cancel-delete {
   padding: 0.5rem 2rem;
   border-radius: 30px;
   font-size: 1rem;
@@ -307,104 +307,105 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.passengers-confirm-delete {
+.bus-passengers-confirm-delete {
   background-color: #11a8fd;
   color: #ffffff;
   border: none;
 }
 
-.passengers-cancel-delete {
+.bus-passengers-cancel-delete {
   background-color: transparent;
   color: #11a8fd;
   border: 1px solid #11a8fd;
 }
 
-.passengers-confirm-delete:hover,
-.passengers-cancel-delete:hover {
+.bus-passengers-confirm-delete:hover,
+.bus-passengers-cancel-delete:hover {
   opacity: 0.9;
 }
 
 /* Responsive styles */
 @media (max-width: 1024px) {
-  .passengers-table th,
-  .passengers-table td {
-    padding: 0.5rem;
-    font-size: 0.75rem;
+  .bus-passengers-table th,
+  .bus-passengers-table td {
+    padding: 0.7rem;
+    font-size: 0.8rem;
   }
 
-  .passengers-table-wrapper {
+  .bus-passengers-table-wrapper {
     max-height: calc(100vh - 250px);
   }
 }
 
 @media (max-width: 768px) {
-  .passengers-actions {
+  .bus-passengers-actions {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .passengers-search-container {
+  .bus-passengers-search-container {
     max-width: 100%;
     /* margin-bottom: 1rem; */
   }
 
-  .action-buttons-container {
+  .bus-passengers-action-buttons-container {
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
-  .passengers-action-button {
+  .bus-passengers-action-button {
     font-size: 0.8rem;
     padding: 0.4rem 0.8rem;
   }
 
-  .passengers-table-wrapper {
+  .bus-passengers-table-wrapper {
     max-height: calc(100vh - 218px);
   }
 
-  .passengers-table th,
-  .passengers-table td {
-    padding: 0.4rem;
-    font-size: 0.7rem;
+  .bus-passengers-table th,
+  .bus-passengers-table td {
+    padding: 0.7rem;
+    font-size: 0.8rem;
   }
 
-  .passengers-pagination-button {
+  .bus-passengers-pagination-button {
     padding: 0.4rem 0.6rem;
     font-size: 0.8rem;
   }
 }
 
 @media (max-width: 480px) {
-  .passengers-top-bar h2 {
-    font-size: 1rem;
+  .bus-passengers-top-bar h2 {
+    font-size: 1.2rem;
   }
 
-  .passengers-search-bar {
+  .bus-passengers-search-bar {
     font-size: 0.9rem;
   }
 
-  .passengers-action-button {
+  .bus-passengers-action-button {
     font-size: 0.7rem;
     padding: 0.3rem 0.6rem;
   }
 
-  .passengers-table th,
-  .passengers-table td {
-    padding: 0.3rem;
-    font-size: 0.65rem;
+  .bus-passengers-table th,
+  .bus-passengers-table td {
+    padding: 0.7rem;
+    font-size: 0.8rem;
   }
 
-  .passengers-pagination-button {
+  .bus-passengers-pagination-button {
     padding: 0.3rem 0.5rem;
     font-size: 0.7rem;
   }
 
-  .passengers-delete-confirmation-content {
+  .bus-passengers-delete-confirmation-content {
     padding: 1.5rem;
   }
 
-  .passengers-confirm-delete,
-  .passengers-cancel-delete {
+  .bus-passengers-confirm-delete,
+  .bus-passengers-cancel-delete {
     padding: 0.4rem 1.5rem;
     font-size: 0.9rem;
   }

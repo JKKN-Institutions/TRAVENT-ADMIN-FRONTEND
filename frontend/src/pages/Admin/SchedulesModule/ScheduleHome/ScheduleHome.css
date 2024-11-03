@@ -16,7 +16,7 @@
   position: sticky;
   margin-bottom: 10px;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
   border-radius: 10px;
 }
 
@@ -288,7 +288,7 @@ input:checked + .schedules-slider:before {
   color: #cccccc;
 }
 
-input[type="time"] {
+.schedules-setting-item input[type="time"] {
   background-color: #333;
   border: 1px solid #444;
   color: #fff;
@@ -384,6 +384,10 @@ input[type="time"] {
 }
 
 @media (max-width: 576px) {
+  .schedules-top-bar h1 {
+    font-size: 1.2rem;
+  }
+
   .schedules-stat-card h2,
   .schedules-settings h2 {
     font-size: 1rem;
