@@ -48,7 +48,7 @@ const FuelHome = ({
                   type="month"
                   value={format(selectedDate, "yyyy-MM")}
                   onChange={handleDateChange}
-                  className="month-picker"
+                  className="fuel-home-month-picker"
                 />
               </div>
             </div>
