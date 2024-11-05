@@ -85,14 +85,20 @@ const AddAmuletsFee = ({ onBack }) => {
     }
   };
 
-  const handleAddAmuletFee = (feeData) => {
-    console.log(
-      "Adding amulet fee for student:",
-      selectedStudent,
-      "Fee data:",
-      feeData
-    );
-    setSelectedStudent(null);
+  const handleAddAmuletFee = async (feeData) => {
+    try {
+      // Simulate API call with setTimeout
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      console.log(
+        "Adding amulet fee for student:",
+        selectedStudent,
+        "Fee data:",
+        feeData
+      );
+    } catch (error) {
+      console.error("Error adding amulet fee:", error);
+    }
   };
 
   const handleRowClick = (student) => {

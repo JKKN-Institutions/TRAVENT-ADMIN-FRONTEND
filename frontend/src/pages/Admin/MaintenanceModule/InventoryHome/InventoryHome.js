@@ -200,7 +200,7 @@ const InventoryHome = ({
                 type="month"
                 value={format(selectedDate, "yyyy-MM")}
                 onChange={handleDateChange}
-                className="month-picker"
+                className="inventory-month-picker"
               />
             </div>
           </div>

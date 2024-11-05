@@ -128,10 +128,6 @@
   color: #11a8fd;
 }
 
-.payment-summary-details {
-  /* margin-bottom: 1.5rem; */
-}
-
 .payment-summary-row {
   display: flex;
   justify-content: space-between;
