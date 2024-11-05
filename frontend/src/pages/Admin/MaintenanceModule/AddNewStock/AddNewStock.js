@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./AddNewStock.css";
 
 const AddNewStock = ({ stock, onBack, onSave }) => {
@@ -24,7 +26,6 @@ const AddNewStock = ({ stock, onBack, onSave }) => {
 
   useEffect(() => {
     if (stock) {
-      // Create a complete stock object with all fields
       const completeStockData = {
         itemName: stock.itemName || "",
         itemCategory: stock.itemCategory || "",
@@ -68,18 +69,83 @@ const AddNewStock = ({ stock, onBack, onSave }) => {
     return formErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
+      toast.error("Please fill in all required fields", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } else {
-      onSave(stockData);
+      try {
+        const loadingToastId = toast.loading(
+          stock ? "Updating stock..." : "Adding new stock...",
+          {
+            position: "top-right",
+          }
+        );
+
+        const savedStock = await onSave(stockData);
+
+        // Dismiss loading toast
+        toast.dismiss(loadingToastId);
+
+        // Show success toast with a delay to ensure visibility
+        setTimeout(() => {
+          toast.success(
+            <div>
+              Successfully {stock ? "updated" : "added"} stock.
+              <br />
+              <small>Stock details have been saved.</small>
+            </div>,
+            {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            }
+          );
+        }, 100);
+
+        // Delay the onBack call slightly to ensure success toast is visible
+        setTimeout(() => onBack(savedStock), 3100);
+      } catch (error) {
+        toast.dismiss();
+        toast.error(
+          `Failed to ${stock ? "update" : "add"} stock. Please try again.`,
+          {
+            position: "top-right",
+            autoClose: 3000,
+          }
+        );
+        console.error("Error saving stock:", error);
+      }
     }
   };
 
   return (
     <div className="add-new-stock-container">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        limit={3}
+      />
       <header className="add-new-stock-top-bar">
         <button className="add-new-stock-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} />

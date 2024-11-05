@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import "./AddNewStop.css";
 
@@ -55,8 +57,23 @@ const AddNewStop = ({ route, onBack, institutionId, editingStop }) => {
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
+      toast.error("Please fill in all required fields", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } else {
       try {
+        const loadingToastId = toast.loading(
+          editingStop ? "Updating stop..." : "Adding new stop...",
+          {
+            position: "top-right",
+          }
+        );
+
         const url = editingStop
           ? "https://travent-admin-server.vercel.app/api/bus/update-stop"
           : "https://travent-admin-server.vercel.app/api/bus/add-stop";
@@ -69,25 +86,69 @@ const AddNewStop = ({ route, onBack, institutionId, editingStop }) => {
         });
 
         if (response.data.success) {
-          const newStop = response.data.stop; // Ensure API returns the added stop data
-          alert(
-            editingStop
-              ? "Stop updated successfully!"
-              : "Stop added successfully!"
-          );
-          onBack(newStop); // Pass the newly added or updated stop to the parent component
+          const newStop = response.data.stop;
+
+          // First dismiss the loading toast
+          toast.dismiss(loadingToastId);
+
+          // Show success toast with a delay to ensure it's visible
+          setTimeout(() => {
+            toast.success(
+              <div>
+                Successfully {editingStop ? "updated" : "added"} stop.
+                <br />
+                <small>Stop details have been saved.</small>
+              </div>,
+              {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+              }
+            );
+          }, 100);
+
+          // Delay the onBack call to ensure toast is visible
+          setTimeout(() => onBack(newStop), 3100);
         } else {
-          alert(response.data.message);
+          toast.dismiss(loadingToastId);
+          toast.error(response.data.message, {
+            position: "top-right",
+            autoClose: 3000,
+          });
         }
       } catch (error) {
+        toast.dismiss();
+        toast.error(
+          `Failed to ${editingStop ? "update" : "add"} stop. Please try again.`,
+          {
+            position: "top-right",
+            autoClose: 3000,
+          }
+        );
         console.error("Error saving stop:", error);
-        alert("Failed to save stop.");
       }
     }
   };
 
   return (
     <div className="add-stop-container">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        limit={3}
+      />
+
       <header className="add-stop-top-bar">
         <button className="add-stop-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} />

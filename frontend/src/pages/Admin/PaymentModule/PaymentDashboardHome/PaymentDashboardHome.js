@@ -35,6 +35,17 @@ const PaymentsDashboardHome = ({ toggleSidebar }) => {
     setSelectedDate(new Date(year, month - 1));
   };
 
+  const handleAddBusFee = async (busFee) => {
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log("New Bus Fee:", busFee);
+      return busFee; // Return the saved data to trigger success toast
+    } catch (error) {
+      throw error; // Throw error to trigger error toast
+    }
+  };
+
   if (showViewTransactions) {
     return <ViewTransactions onBack={() => setShowViewTransactions(false)} />;
   }
@@ -47,7 +58,7 @@ const PaymentsDashboardHome = ({ toggleSidebar }) => {
     return (
       <AddBusFee
         onBack={() => setShowAddBusFee(false)}
-        onSave={() => setShowAddBusFee(false)}
+        onSave={handleAddBusFee}
       />
     );
   }

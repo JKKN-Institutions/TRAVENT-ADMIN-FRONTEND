@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faUser } from "@fortawesome/free-solid-svg-icons";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./AddNewDriver.css";
 
 const AddNewDriver = ({ driver, onBack, onSave }) => {
@@ -47,8 +49,53 @@ const AddNewDriver = ({ driver, onBack, onSave }) => {
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
+      toast.error("Please fill in all required fields", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } else {
-      onSave(driverData);
+      const loadingToastId = toast.loading(
+        driver ? "Updating driver..." : "Adding new driver...",
+        {
+          position: "top-right",
+        }
+      );
+
+      try {
+        onSave(driverData);
+        toast.dismiss(loadingToastId);
+        setTimeout(() => {
+          toast.success(
+            <div>
+              Successfully {driver ? "updated" : "added"} driver.
+              <br />
+              <small>Driver details have been saved.</small>
+            </div>,
+            {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            }
+          );
+        }, 100);
+      } catch (error) {
+        toast.dismiss(loadingToastId);
+        toast.error(
+          `Failed to ${driver ? "update" : "add"} driver. Please try again.`,
+          {
+            position: "top-right",
+            autoClose: 3000,
+          }
+        );
+        console.error("Error saving driver:", error);
+      }
     }
   };
 
@@ -90,6 +137,19 @@ const AddNewDriver = ({ driver, onBack, onSave }) => {
 
   return (
     <div className="add-new-driver-container">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        limit={3}
+      />
       <header className="add-new-driver-top-bar">
         <button className="add-new-driver-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} />

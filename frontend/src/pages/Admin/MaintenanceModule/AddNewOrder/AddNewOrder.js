@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./AddNewOrder.css";
 
 const AddNewOrder = ({ order, onBack, onSave }) => {
@@ -59,18 +61,87 @@ const AddNewOrder = ({ order, onBack, onSave }) => {
     return formErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
+      toast.error("Please fill in all required fields", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } else {
-      onSave(orderData);
+      try {
+        const loadingToastId = toast.loading(
+          order ? "Updating order..." : "Adding new order...",
+          {
+            position: "top-right",
+          }
+        );
+
+        // Simulate API call delay
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // First dismiss the loading toast
+        toast.dismiss(loadingToastId);
+
+        // Show success toast with a delay to ensure it's visible
+        setTimeout(() => {
+          toast.success(
+            <div>
+              Successfully {order ? "updated" : "added"} order.
+              <br />
+              <small>Order details have been saved.</small>
+            </div>,
+            {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            }
+          );
+        }, 100);
+
+        // Delay the onSave and onBack calls to ensure toast is visible
+        setTimeout(() => {
+          onSave(orderData);
+        }, 3100);
+      } catch (error) {
+        toast.dismiss();
+        toast.error(
+          `Failed to ${order ? "update" : "add"} order. Please try again.`,
+          {
+            position: "top-right",
+            autoClose: 3000,
+          }
+        );
+        console.error("Error saving order:", error);
+      }
     }
   };
 
   return (
     <div className="add-new-order-container">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        limit={3}
+      />
+
       <header className="add-new-order-top-bar">
         <button className="add-new-order-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} />

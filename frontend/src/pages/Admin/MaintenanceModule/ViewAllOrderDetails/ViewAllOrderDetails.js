@@ -9,6 +9,8 @@ import {
   faEdit,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./ViewAllOrderDetails.css";
 import { format } from "date-fns";
 import Button from "../../../../components/Shared/Button/Button";
@@ -109,10 +111,19 @@ const ViewAllOrderDetails = ({ onBack }) => {
     }
   };
 
-  const handleEditComplete = (orderData) => {
-    console.log("Updated order data:", orderData);
-    setShowEditOrder(false);
-    setSelectedOrder(null);
+  const handleEditComplete = async (orderData) => {
+    try {
+      // Simulate API call delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Update the order data
+      console.log("Updated order data:", orderData);
+
+      setShowEditOrder(false);
+      setSelectedOrder(null);
+    } catch (error) {
+      console.error("Error updating order:", error);
+    }
   };
 
   const handleDelete = () => {

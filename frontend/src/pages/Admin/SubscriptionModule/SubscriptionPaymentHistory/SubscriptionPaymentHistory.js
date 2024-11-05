@@ -97,21 +97,23 @@ const SubscriptionPaymentHistory = ({ onBack }) => {
       </header>
       <main className="subscription-payment-history-main-content">
         <div className="subscription-payment-history-year-filter">
-          <FontAwesomeIcon
-            icon={faCalendar}
-            className="subscription-calendar-icon"
-          />
-          <select
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-            className="year-select"
-          >
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
+          <div className="subscription-payment-history-calendar">
+            <FontAwesomeIcon
+              icon={faCalendar}
+              className="subscription-calendar-icon"
+            />
+            <select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+              className="year-select"
+            >
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <div className="subscription-payment-history-grid">
           {paymentHistory.map((payment, index) => (

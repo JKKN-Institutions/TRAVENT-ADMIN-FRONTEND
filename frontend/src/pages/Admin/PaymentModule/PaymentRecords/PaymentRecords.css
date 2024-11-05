@@ -3,7 +3,7 @@
   color: #ffffff;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -17,7 +17,7 @@
   margin-bottom: 10px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .payment-records-back-icon {
@@ -36,7 +36,7 @@
 .payment-records-main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 0.5rem 0.3rem;
+  padding: 0 0.5rem;
   background-color: #1e1e1e;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
@@ -46,8 +46,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  gap: 1rem;
+  margin-bottom: 0.7rem;
+  gap: 0.7rem;
+}
+
+.payment-records-action-buttons {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .payment-records-search-container {
@@ -78,7 +83,7 @@
   border: 1px solid #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   color: #fff;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .payment-records-search-bar:focus {
@@ -235,6 +240,12 @@
   .payment-records-table-wrapper {
     max-height: calc(100vh - 250px);
   }
+
+  .payment-records-action-buttons {
+    width: 100%;
+
+    justify-content: flex-end;
+  }
 }
 
 @media (max-width: 768px) {
@@ -257,8 +268,8 @@
 
   .payment-records-table th,
   .payment-records-table td {
-    padding: 0.4rem;
-    font-size: 0.7rem;
+    padding: 0.7rem;
+    font-size: 0.8rem;
   }
 
   .payment-records-pagination-button {
@@ -269,7 +280,7 @@
 
 @media (max-width: 480px) {
   .payment-records-top-bar h2 {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 
   .payment-records-search-bar {
@@ -283,8 +294,8 @@
 
   .payment-records-table th,
   .payment-records-table td {
-    padding: 0.3rem;
-    font-size: 0.65rem;
+    padding: 0.7rem;
+    font-size: 0.8rem;
   }
 
   .payment-records-pagination-button {

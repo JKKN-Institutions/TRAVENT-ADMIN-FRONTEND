@@ -128,7 +128,7 @@
 
 @media (max-width: 480px) {
   .fuel-home {
-    max-height: calc(100vh - 220px);
+    max-height: calc(100vh - 150px);
   }
   .fuel-home-chart-card,
   .fuel-home-action-card,

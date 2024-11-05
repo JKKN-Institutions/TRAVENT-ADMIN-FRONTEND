@@ -12,10 +12,11 @@
   display: flex;
   align-items: center;
   border-radius: 10px;
+  margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .feedback-home-menu-icon {
@@ -34,7 +35,7 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-top: 1rem;
+  margin-bottom: 10px;
   padding: 0 1.5rem;
 }
 
@@ -68,7 +69,7 @@
 
 .feedback-home-main-content {
   flex: 1;
-  padding: 1rem 0.8rem 0 0;
+  padding: 0 0.5rem;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
@@ -266,9 +267,12 @@
     grid-template-columns: 1fr;
   }
 
+  .feedback-home-top-bar h1 {
+    font-size: 1.2rem;
+  }
+
   .feedback-home-top-bar {
     flex-wrap: wrap;
-    gap: 0.5rem;
   }
 
   .view-each-feedback-btn {

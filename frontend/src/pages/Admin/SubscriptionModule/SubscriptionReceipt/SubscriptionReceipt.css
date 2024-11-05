@@ -3,7 +3,7 @@
   color: #ffffff;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -17,11 +17,11 @@
   margin-bottom: 10px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .subscription-receipt-back-icon {
-  font-size: 1.2rem;
+  font-size: 1rem;
   cursor: pointer;
   color: #ffffff;
   margin-right: 1rem;
@@ -175,15 +175,23 @@
   }
 
   .subscription-receipt-top-bar h2 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+  }
+
+  .subscription-receipt-main-content {
+    padding: 0 0.5rem;
   }
 
   .receipt-row {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .subscription-receipt-total {
     font-size: 1rem;
+  }
+
+  .subscription-receipt-barcode svg {
+    max-width: 100%;
   }
 
   .subscription-receipt-download {

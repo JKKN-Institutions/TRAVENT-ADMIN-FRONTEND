@@ -47,7 +47,7 @@ const PaymentDashboard = ({
   };
 
   return (
-    <>
+    <div className="payments-dashboard">
       <div className="payments-dashboard-row">
         <div className="payments-dashboard-column">
           <div className="payments-dashboard-chart-card transactions-chart">
@@ -58,14 +58,14 @@ const PaymentDashboard = ({
                   type="month"
                   value={format(selectedDate, "yyyy-MM")}
                   onChange={handleDateChange}
-                  className="month-picker"
+                  className="payments-dashboard-month-picker"
                 />
               </div>
             </div>
             <ResponsiveContainer width="100%" height={275}>
               <LineChart data={transactionData}>
-                <XAxis dataKey="week" />
-                <YAxis />
+                <XAxis dataKey="week" fontSize={14} />
+                <YAxis fontSize={14} />
                 <Tooltip content={<CustomTooltip />} />
                 <Line
                   type="monotone"
@@ -155,7 +155,7 @@ const PaymentDashboard = ({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

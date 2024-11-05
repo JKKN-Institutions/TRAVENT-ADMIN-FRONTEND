@@ -53,14 +53,14 @@ const AmuletsFeeHome = ({
                   type="month"
                   value={format(selectedDate, "yyyy-MM")}
                   onChange={handleDateChange}
-                  className="month-picker"
+                  className="amulets-fee-month-picker"
                 />
               </div>
             </div>
             <ResponsiveContainer width="100%" height={275}>
               <LineChart data={transactionData}>
-                <XAxis dataKey="week" />
-                <YAxis />
+                <XAxis dataKey="week" fontSize={14} />
+                <YAxis fontSize={14} />
                 <Tooltip content={<CustomTooltip />} />
                 <Line
                   type="monotone"

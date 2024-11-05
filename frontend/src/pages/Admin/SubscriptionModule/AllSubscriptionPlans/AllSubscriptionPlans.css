@@ -17,7 +17,7 @@
   margin-bottom: 10px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .all-subscription-back-icon {
@@ -36,7 +36,7 @@
 .all-subscription-plans-main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 0 0.5rem;
   background-color: #1e1e1e;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
@@ -48,7 +48,7 @@
 
 .all-subscription-plans-section h2 {
   font-size: 20px;
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
 }
 
 .all-subscription-plans-grid {
@@ -127,7 +127,18 @@
 }
 
 @media (max-width: 768px) {
+  .all-subscription-plans-top-bar h2 {
+    font-size: 1.2rem;
+  }
   .all-subscription-plans-grid {
     grid-template-columns: 1fr;
+  }
+
+  .all-subscription-plans-section h2 {
+    font-size: 1.1rem;
+  }
+
+  .all-subscription-plan-card h3 {
+    font-size: 1rem;
   }
 }

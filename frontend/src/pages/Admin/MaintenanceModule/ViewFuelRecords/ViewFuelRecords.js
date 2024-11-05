@@ -12,7 +12,7 @@ import "./ViewFuelRecords.css";
 import Button from "../../../../components/Shared/Button/Button";
 import AddFuelRecord from "../AddFuelRecord/AddFuelRecord";
 
-const fuelRecordsData = [
+const initialFuelRecordsData = [
   {
     route: 1,
     driver: "Murugan S",
@@ -156,6 +156,7 @@ const fuelRecordsData = [
 ];
 
 const ViewFuelRecords = ({ onBack }) => {
+  const [fuelRecords, setFuelRecords] = useState(initialFuelRecordsData);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -179,7 +180,7 @@ const ViewFuelRecords = ({ onBack }) => {
     }
   };
 
-  const filteredRecords = fuelRecordsData.filter(
+  const filteredRecords = fuelRecords.filter(
     (record) =>
       record.driver.toLowerCase().includes(searchTerm.toLowerCase()) ||
       record.route.toString().includes(searchTerm)
@@ -205,16 +206,32 @@ const ViewFuelRecords = ({ onBack }) => {
   };
 
   const confirmDelete = () => {
-    // Implement delete logic here
-    console.log("Deleting record:", selectedRecord);
+    setFuelRecords(fuelRecords.filter((record) => record !== selectedRecord));
     setShowDeleteConfirmation(false);
     setSelectedRecord(null);
   };
 
-  const handleAddOrEditComplete = (newOrUpdatedRecord) => {
-    if (newOrUpdatedRecord) {
-      // Implement save/update logic here
-      console.log("Saving/updating record:", newOrUpdatedRecord);
+  const handleAddOrEditComplete = async (fuelRecord) => {
+    if (fuelRecord) {
+      try {
+        // Simulate API call with a delay
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // If editing, update the existing record
+        if (editingRecord) {
+          // Here you would typically make an API call to update the record
+          console.log("Updating record:", fuelRecord);
+        } else {
+          // Here you would typically make an API call to create a new record
+          console.log("Creating new record:", fuelRecord);
+        }
+
+        // Return the saved/updated record to trigger the success toast
+        return fuelRecord;
+      } catch (error) {
+        console.error("Error saving fuel record:", error);
+        throw error; // Throw error to trigger error toast
+      }
     }
     setShowAddFuelRecord(false);
     setEditingRecord(null);
@@ -397,7 +414,10 @@ const ViewFuelRecords = ({ onBack }) => {
         </>
       ) : (
         <AddFuelRecord
-          onBack={handleAddOrEditComplete}
+          onBack={() => {
+            setShowAddFuelRecord(false);
+            setEditingRecord(null);
+          }}
           onSave={handleAddOrEditComplete}
           editingRecord={editingRecord}
         />

@@ -154,29 +154,29 @@ const UpdateBusFee = ({ onBack }) => {
       <main className="update-bus-fee-main-content">
         <div className="update-bus-fee-controls">
           <div className="update-bus-fee-institute-selector">
-            <label>Select Institute</label>
-            <div className="select-wrapper">
+            <div className="update-bus-fee-select-wrapper">
               <select
                 value={selectedInstitute}
                 onChange={(e) => setSelectedInstitute(e.target.value)}
               >
+                <option value="College Name">College Name</option>
                 <option value="JKKN Arts and Science">
                   JKKN Arts and Science
                 </option>
-                {/* Add more institute options here */}
               </select>
-              <FontAwesomeIcon icon={faChevronDown} className="select-icon" />
             </div>
           </div>
-          <Button
-            label={
-              <>
-                <FontAwesomeIcon icon={faEdit} /> Edit
-              </>
-            }
-            onClick={handleEditClick}
-            disabled={selectedRow === null}
-          />
+          <div className="update-bus-fee-action-buttons">
+            <Button
+              label={
+                <>
+                  <FontAwesomeIcon icon={faEdit} /> Edit
+                </>
+              }
+              onClick={handleEditClick}
+              disabled={selectedRow === null}
+            />
+          </div>
         </div>
 
         <div className="update-bus-fee-table-container">

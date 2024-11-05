@@ -797,8 +797,11 @@ const ReceivedFeedback = ({ onBack }) => {
       <main className="received-feedback-main-content">
         <div className="received-feedback-actions">
           <div className="received-feedback-search-container">
-            <div className="search-input-wrapper">
-              <FontAwesomeIcon icon={faSearch} className="search-icon" />
+            <div className="received-feedback-search-input-wrapper">
+              <FontAwesomeIcon
+                icon={faSearch}
+                className="received-feedback-search-icon"
+              />
               <input
                 type="text"
                 className="received-feedback-search-bar"
@@ -808,7 +811,7 @@ const ReceivedFeedback = ({ onBack }) => {
               />
             </div>
           </div>
-          <div className="action-buttons-container">
+          <div className="received-feedback-action-buttons-container">
             <Button
               label={
                 <>

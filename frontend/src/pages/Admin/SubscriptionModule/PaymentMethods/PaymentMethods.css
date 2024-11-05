@@ -17,7 +17,7 @@
   margin-bottom: 15px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .payment-methods-back-icon {

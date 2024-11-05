@@ -132,9 +132,9 @@
 }
 
 @media (max-width: 480px) {
-  .maintenance-fuel-tabs {
+  /* .maintenance-fuel-tabs {
     flex-direction: column;
-  }
+  } */
 
   .maintenance-tab-button {
     width: 100%;

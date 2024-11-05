@@ -15,7 +15,7 @@ import Button from "../../../../components/Shared/Button/Button";
 import SpecificStockDetails from "../SpecificStockDetails/SpecificStockDetails";
 import AddNewStock from "../AddNewStock/AddNewStock";
 
-const stockData = [
+const initialStockData = [
   {
     id: "INV-001",
     itemName: "Engine Oil",
@@ -74,6 +74,7 @@ const stockData = [
 ];
 
 const ViewAllStockDetails = ({ onBack }) => {
+  const [stockData, setStockData] = useState(initialStockData);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -120,17 +121,35 @@ const ViewAllStockDetails = ({ onBack }) => {
     }
   };
 
-  const handleAddOrEditComplete = (stockData) => {
-    if (editingStock) {
-      // Handle edit save
-      console.log("Updating stock:", stockData);
-    } else {
-      // Handle new stock save
-      console.log("Adding new stock:", stockData);
+  const handleAddOrEditComplete = async (stockData) => {
+    try {
+      // Simulate API call with a delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      if (editingStock) {
+        // Handle edit save
+        setStockData((prevStockData) =>
+          prevStockData.map((stock) =>
+            stock.id === editingStock.id ? stockData : stock
+          )
+        );
+        console.log("Updating stock:", stockData);
+      } else {
+        // Handle new stock save
+        setStockData((prevStockData) => [...prevStockData, stockData]);
+        console.log("Adding new stock:", stockData);
+      }
+
+      // Reset form state
+      setShowAddNewStock(false);
+      setEditingStock(null);
+      setSelectedStock(null);
+
+      return stockData; // Return the saved or updated data to trigger success toast
+    } catch (error) {
+      console.error("Error saving stock data:", error);
+      throw error; // Throw error to trigger error toast
     }
-    setShowAddNewStock(false);
-    setEditingStock(null);
-    setSelectedStock(null);
   };
 
   if (showAddNewStock) {
@@ -153,8 +172,7 @@ const ViewAllStockDetails = ({ onBack }) => {
   };
 
   const confirmDelete = () => {
-    // Implement delete logic here
-    console.log("Deleting stock:", selectedStock);
+    setStockData(stockData.filter((stock) => stock.id !== selectedStock.id));
     setShowDeleteConfirmation(false);
     setSelectedStock(null);
   };

@@ -107,15 +107,20 @@ const ViewAllBusConditions = ({ onBack }) => {
     }
   };
 
-  const handleAddOrEditComplete = (busData) => {
-    if (editingBus) {
-      console.log("Updating bus:", busData);
-    } else {
-      console.log("Adding new bus:", busData);
+  const handleAddOrEditComplete = async (busData) => {
+    try {
+      // Simulate API call delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Update the bus data
+      console.log(editingBus ? "Updating bus:" : "Adding new bus:", busData);
+
+      setShowAddForm(false);
+      setEditingBus(null);
+      setSelectedBus(null);
+    } catch (error) {
+      console.error("Error saving bus condition:", error);
     }
-    setShowAddForm(false);
-    setEditingBus(null);
-    setSelectedBus(null);
   };
 
   const confirmDelete = () => {

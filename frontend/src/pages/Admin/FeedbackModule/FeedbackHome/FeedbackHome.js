@@ -145,7 +145,7 @@ const FeedbackHome = ({ toggleSidebar }) => {
               <div className="feedback-chart-card">
                 <h2>Overall satisfaction</h2>
                 <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={satisfactionData} barSize={45}>
+                  <BarChart data={satisfactionData} barSize={40}>
                     <XAxis
                       dataKey="label"
                       tick={<CustomXAxisTick />}
@@ -165,7 +165,7 @@ const FeedbackHome = ({ toggleSidebar }) => {
               <div className="feedback-chart-card">
                 <h2>Punctuality of Bus</h2>
                 <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={punctualityData} barSize={45}>
+                  <BarChart data={punctualityData} barSize={40}>
                     <XAxis
                       dataKey="label"
                       tick={<CustomXAxisTick />}
@@ -190,7 +190,7 @@ const FeedbackHome = ({ toggleSidebar }) => {
               <div className="feedback-chart-card">
                 <h2>Behavior and Attitude of the Bus Driver</h2>
                 <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={driverBehaviorData} barSize={45}>
+                  <BarChart data={driverBehaviorData} barSize={40}>
                     <XAxis
                       dataKey="label"
                       tick={<CustomXAxisTick />}
@@ -229,7 +229,7 @@ const FeedbackHome = ({ toggleSidebar }) => {
               <div className="feedback-chart-card">
                 <h2>Safety and Security on the Bus</h2>
                 <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={safetyData} barSize={45}>
+                  <BarChart data={safetyData} barSize={40}>
                     <XAxis
                       dataKey="label"
                       tick={<CustomXAxisTick />}
@@ -251,7 +251,7 @@ const FeedbackHome = ({ toggleSidebar }) => {
               <div className="feedback-chart-wide">
                 <h2>Condition and Cleanliness of Bus</h2>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={cleanlinessData} barSize={45}>
+                  <BarChart data={cleanlinessData} barSize={40}>
                     <XAxis
                       dataKey="label"
                       tick={<CustomXAxisTick />}
@@ -271,7 +271,7 @@ const FeedbackHome = ({ toggleSidebar }) => {
               <div className="feedback-chart-wide">
                 <h2>What Could Be Improved</h2>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={improvementData} barSize={45}>
+                  <BarChart data={improvementData} barSize={40}>
                     <XAxis
                       dataKey="category"
                       tick={false}

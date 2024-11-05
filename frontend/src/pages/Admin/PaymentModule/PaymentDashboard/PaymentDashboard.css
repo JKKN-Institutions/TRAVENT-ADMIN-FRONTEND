@@ -1,3 +1,14 @@
+.payments-dashboard {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  /* padding: 0 0.8rem 0 0; */
+  height: 100%;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #4a4a4a #2c2c2c;
+}
+
 .payments-dashboard-row {
   display: flex;
   gap: 10px;
@@ -37,7 +48,7 @@
   align-items: center;
 }
 
-.month-picker {
+.payments-dashboard-month-picker {
   background-color: #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
@@ -49,7 +60,7 @@
   cursor: pointer;
 }
 
-.month-picker::-webkit-calendar-picker-indicator {
+.payments-dashboard-month-picker::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
 
@@ -218,12 +229,17 @@
 }
 
 @media (max-width: 576px) {
-  .chart-header h2 {
-    font-size: 1rem;
+  .payments-dashboard {
+    max-height: calc(100vh - 150px);
+  }
+
+  .chart-header h2,
+  .fee-paid h3 {
+    font-size: 1.1rem;
   }
 
   .transactions-count {
-    font-size: 2.5rem;
+    font-size: 1.5rem;
   }
 
   .amount {
@@ -235,7 +251,7 @@
   }
 
   .view-all-records span {
-    font-size: 0.85rem;
+    font-size: 1rem;
   }
 
   .arrow-icon-container {

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import "./AddNewRoute.css";
 
@@ -58,7 +60,22 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
+      toast.error("Please fill in all required fields", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } else {
+      // Show loading toast
+      const loadingToastId = toast.loading(
+        route ? "Updating route..." : "Adding new route...",
+        {
+          position: "top-right",
+        }
+      );
       try {
         const url = route
           ? "https://travent-admin-server.vercel.app/api/bus/update-route"
@@ -68,22 +85,62 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
           institutionId: institutionId,
         });
         if (response.data.success) {
-          alert(
-            route ? "Route updated successfully!" : "Route added successfully!"
-          );
+          toast.dismiss(loadingToastId);
+          setTimeout(() => {
+            toast.success(
+              <div>
+                Successfully {route ? "updated" : "added"} route.
+                <br />
+                <small>Route details have been saved.</small>
+              </div>,
+              {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+              }
+            );
+          }, 100);
+
           onSave(response.data.route);
         } else {
-          alert(response.data.message);
+          toast.dismiss(loadingToastId);
+          toast.error(response.data.message, {
+            position: "top-right",
+            autoClose: 3000,
+          });
         }
       } catch (error) {
+        toast.dismiss(loadingToastId);
+        toast.error(
+          `Failed to ${route ? "update" : "add"} route. Please try again.`,
+          {
+            position: "top-right",
+            autoClose: 3000,
+          }
+        );
         console.error("Error saving route:", error);
-        alert("Failed to save route.");
       }
     }
   };
 
   return (
     <div className="add-new-route-container">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        limit={3}
+      />
       <header className="add-new-route-top-bar">
         <button className="add-new-route-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} />

@@ -9,15 +9,15 @@
 
 .payment-summary-top-bar {
   background-color: #222222;
-  padding: 1.25rem;
+  padding: 1rem;
   display: flex;
   align-items: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .payment-summary-back-icon {
@@ -38,7 +38,7 @@
 .payment-summary-main-content {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem 0.8rem;
+  padding: 0 0.5rem;
   /* background-color: #222222; */
   /* border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); */
@@ -273,6 +273,9 @@
 }
 
 @media (max-width: 768px) {
+  .payment-summary-top-bar h2 {
+    font-size: 1.2rem;
+  }
   .payment-summary-actions {
     flex-direction: column;
   }
@@ -285,10 +288,6 @@
 }
 
 @media (max-width: 480px) {
-  .payment-summary-top-bar h2 {
-    font-size: 1.3rem;
-  }
-
   .payment-summary-content h3 {
     font-size: 1.2rem;
   }

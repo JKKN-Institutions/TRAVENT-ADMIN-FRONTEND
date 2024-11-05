@@ -82,9 +82,15 @@ const MaintenanceFuelHome = ({ toggleSidebar }) => {
     setViewingBus(bus);
   };
 
-  const handleAddNewStock = (stockData) => {
-    console.log("New stock data:", stockData);
-    setShowAddNewStock(false);
+  const handleAddNewStock = async (stockData) => {
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log("New stock data:", stockData);
+      return stockData; // Return the saved data to trigger success toast
+    } catch (error) {
+      throw error; // Throw error to trigger error toast
+    }
   };
 
   const handleAddNewOrder = (orderData) => {

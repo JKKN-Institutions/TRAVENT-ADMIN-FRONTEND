@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./AddFuelRecord.css";
 
 const AddFuelRecord = ({ onBack, onSave, editingRecord }) => {
@@ -48,18 +50,85 @@ const AddFuelRecord = ({ onBack, onSave, editingRecord }) => {
     return formErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
+      toast.error("Please fill in all required fields", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } else {
-      onSave(fuelData);
+      const loadingToastId = toast.loading(
+        editingRecord ? "Updating fuel record..." : "Adding new fuel record...",
+        {
+          position: "top-right",
+        }
+      );
+
+      try {
+        const savedRecord = await onSave(fuelData);
+
+        // Dismiss the loading toast
+        toast.dismiss(loadingToastId);
+
+        // Show success toast with a delay to ensure it's visible
+        setTimeout(() => {
+          toast.success(
+            <div>
+              Successfully {editingRecord ? "updated" : "added"} fuel record.
+              <br />
+              <small>Fuel record details have been saved.</small>
+            </div>,
+            {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            }
+          );
+        }, 100);
+
+        // Delay the onBack call to ensure toast is visible
+        setTimeout(() => onBack(savedRecord), 3100);
+      } catch (error) {
+        toast.dismiss(loadingToastId);
+        toast.error(
+          `Failed to ${
+            editingRecord ? "update" : "add"
+          } fuel record. Please try again.`,
+          {
+            position: "top-right",
+            autoClose: 3000,
+          }
+        );
+        console.error("Error saving fuel record:", error);
+      }
     }
   };
 
   return (
     <div className="add-fuel-record-container">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        limit={3}
+      />
       <header className="add-fuel-record-top-bar">
         <button className="add-fuel-record-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} />

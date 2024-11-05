@@ -10,6 +10,7 @@ import {
 import Stoppings from "../Stoppings/Stoppings";
 import Passengers from "../Passengers/Passengers";
 import AddNewRoute from "../AddNewRoute/AddNewRoute";
+import SpecificRouteLiveTracking from "../../LiveTrackingModule/SpecificRouteLiveTracking/SpecificRouteLiveTracking";
 import "./RouteDetails.css";
 import Button from "../../../../components/Shared/Button/Button";
 
@@ -17,15 +18,18 @@ const RouteDetails = ({ route, onBack, institutionId, onRouteUpdate }) => {
   const [showStoppings, setShowStoppings] = useState(false);
   const [showPassengers, setShowPassengers] = useState(false);
   const [showEditRoute, setShowEditRoute] = useState(false);
+  const [showTracking, setShowTracking] = useState(false);
 
   const handleStoppingsClick = () => setShowStoppings(true);
   const handlePassengersClick = () => setShowPassengers(true);
   const handleEditClick = () => setShowEditRoute(true);
+  const handleTrackClick = () => setShowTracking(true);
 
   const handleBackClick = () => {
     if (showStoppings) setShowStoppings(false);
     else if (showPassengers) setShowPassengers(false);
     else if (showEditRoute) setShowEditRoute(false);
+    else if (showTracking) setShowTracking(false);
     else if (onBack) onBack();
   };
 
@@ -65,6 +69,19 @@ const RouteDetails = ({ route, onBack, institutionId, onRouteUpdate }) => {
     );
   }
 
+  if (showTracking) {
+    return (
+      <SpecificRouteLiveTracking
+        routeData={{
+          routeNo: route.routeNumber,
+          routeName: route.routeName,
+        }}
+        initialZoom={13}
+        onBack={handleBackClick}
+      />
+    );
+  }
+
   return (
     <div className="route-details-container">
       <header className="route-details-top-bar">
@@ -99,6 +116,7 @@ const RouteDetails = ({ route, onBack, institutionId, onRouteUpdate }) => {
                 <FontAwesomeIcon icon={faGasPump} /> Track
               </>
             }
+            onClick={handleTrackClick}
           />
 
           <Button

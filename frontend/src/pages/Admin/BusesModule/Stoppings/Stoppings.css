@@ -343,6 +343,12 @@
     font-size: 0.9rem;
   }
 
+  .stoppings-table th,
+  .stoppings-table td {
+    padding: 0.7rem;
+    font-size: 0.8rem;
+  }
+
   .stoppings-delete-confirmation-content {
     width: 90%;
   }

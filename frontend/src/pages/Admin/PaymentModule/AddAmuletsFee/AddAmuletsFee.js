@@ -1,16 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowLeft,
   faSearch,
+  faArrowLeft,
+  faChevronLeft,
+  faChevronRight,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import "./AddAmuletsFee.css";
+import Button from "../../../../components/Shared/Button/Button";
 import AddAmuletFees from "../AddAmuletFees/AddAmuletFees";
 
 const AddAmuletsFee = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
+  const handleOutsideClick = (event) => {
+    if (containerRef.current && !containerRef.current.contains(event.target)) {
+      setSelectedStudent(null);
+    }
+  };
 
   const students = [
     {
@@ -51,12 +70,22 @@ const AddAmuletsFee = ({ onBack }) => {
       student.rollNo.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAddClick = (student) => {
-    setSelectedStudent(student);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredStudents.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleAddClick = () => {
+    if (selectedStudent) {
+      setSelectedStudent(selectedStudent);
+    }
   };
 
   const handleAddAmuletFee = (feeData) => {
-    // Handle adding amulet fee logic here
     console.log(
       "Adding amulet fee for student:",
       selectedStudent,
@@ -66,7 +95,11 @@ const AddAmuletsFee = ({ onBack }) => {
     setSelectedStudent(null);
   };
 
-  if (selectedStudent) {
+  const handleRowClick = (student) => {
+    setSelectedStudent(selectedStudent === student ? null : student);
+  };
+
+  if (selectedStudent && selectedStudent.isBeingEdited) {
     return (
       <AddAmuletFees
         student={selectedStudent}
@@ -77,8 +110,8 @@ const AddAmuletsFee = ({ onBack }) => {
   }
 
   return (
-    <div className="add-amulets-fee-container">
-      <header className="add-amulets-fee-header">
+    <div className="add-amulets-fee-container" ref={containerRef}>
+      <header className="add-amulets-fee-top-bar">
         <FontAwesomeIcon
           icon={faArrowLeft}
           className="add-amulets-fee-back-icon"
@@ -88,67 +121,117 @@ const AddAmuletsFee = ({ onBack }) => {
       </header>
 
       <main className="add-amulets-fee-main-content">
-        <div className="add-amulets-fee-search-container">
-          <div className="add-amulets-fee-search-wrapper">
-            <FontAwesomeIcon icon={faSearch} className="search-icon" />
-            <input
-              type="text"
-              className="add-amulets-fee-search-bar"
-              placeholder="Search by Name, Reg No, or Roll No"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+        <div className="add-amulets-fee-controls">
+          <div className="add-amulets-fee-search-bar-container">
+            <div className="add-amulets-fee-search-input-wrapper">
+              <FontAwesomeIcon
+                icon={faSearch}
+                className="add-amulets-fee-search-icon"
+              />
+              <input
+                type="text"
+                className="add-amulets-fee-search-bar"
+                placeholder="Search by Name, Reg No, or Roll No"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="add-amulets-fee-action-buttons">
+            <Button
+              label={
+                <>
+                  <FontAwesomeIcon icon={faPlus} /> Add
+                </>
+              }
+              onClick={() => {
+                if (selectedStudent) {
+                  setSelectedStudent({
+                    ...selectedStudent,
+                    isBeingEdited: true,
+                  });
+                }
+              }}
+              disabled={!selectedStudent}
             />
           </div>
         </div>
 
         <div className="add-amulets-fee-table-container">
-          <table className="add-amulets-fee-table">
-            <thead>
-              <tr>
-                <th>S.No</th>
-                <th>Student Name</th>
-                <th>Reg No</th>
-                <th>Roll No</th>
-                <th>Year</th>
-                <th>Department</th>
-                <th>Section</th>
-                <th>Institute Name</th>
-                <th>Route No</th>
-                <th>Stop Name</th>
-                <th>Academic Year</th>
-                <th>Pending Amulets</th>
-
-                <th>Add and Refill</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredStudents.map((student, index) => (
-                <tr key={student.id}>
-                  <td>{index + 1}</td>
-                  <td>{student.name}</td>
-                  <td>{student.regNo}</td>
-                  <td>{student.rollNo}</td>
-                  <td>{student.year}</td>
-                  <td>{student.department}</td>
-                  <td>{student.section}</td>
-                  <td>{student.instituteName}</td>
-                  <td>{student.routeNo}</td>
-                  <td>{student.stopName}</td>
-                  <td>{student.academicYear}</td>
-                  <td>{student.pending}</td>
-
-                  <td>
-                    <button
-                      className="add-refill-button"
-                      onClick={() => handleAddClick(student)}
-                    >
-                      <FontAwesomeIcon icon={faPlus} /> Add
-                    </button>
-                  </td>
+          <div className="add-amulets-fee-table-wrapper">
+            <table className="add-amulets-fee-table">
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Student Name</th>
+                  <th>Reg No</th>
+                  <th>Roll No</th>
+                  <th>Year</th>
+                  <th>Department</th>
+                  <th>Section</th>
+                  <th>Institute Name</th>
+                  <th>Route No</th>
+                  <th>Stop Name</th>
+                  <th>Academic Year</th>
+                  <th>Pending Amulets</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {currentItems.map((student, index) => (
+                  <tr
+                    key={student.id}
+                    onClick={() => handleRowClick(student)}
+                    className={selectedStudent === student ? "selected" : ""}
+                  >
+                    <td>{indexOfFirstItem + index + 1}</td>
+                    <td>{student.name}</td>
+                    <td>{student.regNo}</td>
+                    <td>{student.rollNo}</td>
+                    <td>{student.year}</td>
+                    <td>{student.department}</td>
+                    <td>{student.section}</td>
+                    <td>{student.instituteName}</td>
+                    <td>{student.routeNo}</td>
+                    <td>{student.stopName}</td>
+                    <td>{student.academicYear}</td>
+                    <td>{student.pending}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="add-amulets-fee-pagination">
+          <button
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="add-amulets-fee-pagination-button"
+          >
+            <FontAwesomeIcon icon={faChevronLeft} />
+          </button>
+          {Array.from({
+            length: Math.ceil(filteredStudents.length / itemsPerPage),
+          }).map((_, index) => (
+            <button
+              key={index}
+              onClick={() => paginate(index + 1)}
+              className={`add-amulets-fee-pagination-button ${
+                currentPage === index + 1 ? "active" : ""
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => paginate(currentPage + 1)}
+            disabled={
+              currentPage === Math.ceil(filteredStudents.length / itemsPerPage)
+            }
+            className="add-amulets-fee-pagination-button"
+          >
+            <FontAwesomeIcon icon={faChevronRight} />
+          </button>
         </div>
       </main>
     </div>

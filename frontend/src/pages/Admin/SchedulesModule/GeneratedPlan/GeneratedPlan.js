@@ -9,12 +9,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "./GeneratedPlan.css";
 import Button from "../../../../components/Shared/Button/Button";
+import SpecificRouteGeneratedPlan from "../SpecificRouteGeneratedPlan/SpecificRouteGeneratedPlan";
 
 const GeneratedPlan = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [selectedRoute, setSelectedRoute] = useState(null);
+
   const [filters, setFilters] = useState({
     route: "",
   });
@@ -59,6 +62,15 @@ const GeneratedPlan = ({ onBack }) => {
   const getUniqueRoutes = () => {
     return [...new Set(generatedPlanData.map((item) => item.route))];
   };
+
+  if (selectedRoute) {
+    return (
+      <SpecificRouteGeneratedPlan
+        onBack={() => setSelectedRoute(null)}
+        routeData={selectedRoute}
+      />
+    );
+  }
 
   return (
     <div className="generated-plan-container">
@@ -140,7 +152,10 @@ const GeneratedPlan = ({ onBack }) => {
                     <td>{item.driver}</td>
                     <td>{item.scheduled}</td>
                     <td>
-                      <button className="view-details-button">
+                      <button
+                        className="view-details-button"
+                        onClick={() => setSelectedRoute(item)}
+                      >
                         View <FontAwesomeIcon icon={faChevronRight} />
                       </button>
                     </td>

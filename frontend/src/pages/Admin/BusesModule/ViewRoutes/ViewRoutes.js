@@ -154,7 +154,7 @@ const ViewRoutes = ({ onBack }) => {
                 <Button
                   label={
                     <>
-                      <FontAwesomeIcon icon={faTrash} /> Delete Selected Routes
+                      <FontAwesomeIcon icon={faTrash} /> Delete Selected Route
                     </>
                   }
                   onClick={() => setShowDeleteConfirmation(true)}

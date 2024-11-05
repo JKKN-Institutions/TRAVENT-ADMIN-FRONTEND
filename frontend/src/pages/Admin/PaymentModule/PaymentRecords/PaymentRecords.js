@@ -434,15 +434,17 @@ const PaymentRecords = ({ onBack }) => {
               />
             </div>
           </div>
-          <Button
-            label={
-              <>
-                <FontAwesomeIcon icon={faFilter} /> Filter by
-              </>
-            }
-            onClick={() => setShowFilters(!showFilters)}
-            className="payment-records-filter-button"
-          />
+          <div className="payment-records-action-buttons">
+            <Button
+              label={
+                <>
+                  <FontAwesomeIcon icon={faFilter} /> Filter by
+                </>
+              }
+              onClick={() => setShowFilters(!showFilters)}
+              className="payment-records-filter-button"
+            />
+          </div>
         </div>
 
         {showFilters && (

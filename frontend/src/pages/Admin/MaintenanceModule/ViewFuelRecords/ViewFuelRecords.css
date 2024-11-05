@@ -170,7 +170,7 @@
 
 .view-fuel-records-table tbody tr.selected {
   background-color: rgba(33, 150, 243, 0.3);
-  box-shadow: 0 0 10px rgba(33, 150, 243, 0.2);
+
   z-index: 5;
   position: relative;
 }
@@ -309,6 +309,7 @@
   .view-fuel-records-action-buttons {
     width: 100%;
     margin-bottom: 0.7rem;
+    display: flex;
     justify-content: flex-end;
   }
 }
