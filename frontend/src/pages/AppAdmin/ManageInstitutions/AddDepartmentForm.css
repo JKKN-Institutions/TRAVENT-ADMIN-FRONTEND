@@ -172,12 +172,22 @@
     max-width: 100%;
   }
 
+  .department-left-side h3,
+  .department-form-header {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .add-department-form-container h2 {
+    font-size: 1.2rem;
+  }
+
   .department-form-grid {
     grid-template-columns: 1fr;
   }
 
-  .add-department-form-container input,
-  .add-department-form-container textarea {
+  .add-department-form-container .department-form-group input,
+  .add-department-form-container .department-form-group textarea {
     font-size: 0.875rem;
     max-width: 100%;
   }
@@ -198,10 +208,6 @@
 
   .department-left-side {
     padding-right: 0;
-  }
-
-  .department-left-side ul {
-    padding: 1rem;
   }
 
   .department-left-side li {
@@ -226,18 +232,6 @@
   .department-form-grid {
     grid-template-columns: 1fr;
   }
-
-  .add-department-form-container input,
-  .add-department-form-container textarea {
-    padding: 0.5rem;
-    font-size: 0.75rem;
-    max-width: 100%;
-  }
-
-  .department-submit-button {
-    font-size: 0.75rem;
-  }
-
   .department-form-content {
     flex-direction: column;
     align-items: center;
@@ -247,7 +241,6 @@
     display: block;
     width: 100%;
     height: 2px;
-    margin: 1rem 0;
   }
 
   .department-left-side ul {

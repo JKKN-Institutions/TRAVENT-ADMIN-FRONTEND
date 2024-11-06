@@ -76,26 +76,33 @@ const AddSectionForm = ({ year, onSave, onBack, initialData, yearData }) => {
         </div>
         <div className="section-vertical-line"></div>
         <div className="section-right-side">
-          <h2>Select Section for Year {year}</h2>
+          <div className="section-form-header">
+            <h2>Select Section for Year {year}</h2>
+          </div>
           <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Select Section:</label>
-              <select
-                value={selectedSection}
-                onChange={handleSectionChange}
-                className={`form-select ${errors.section ? "input-error" : ""}`} // Add error class if validation fails
-              >
-                <option value="">Select Section</option> {/* Default option */}
-                {sectionOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              {errors.section && (
-                <p className="error-message">{errors.section}</p>
-              )}{" "}
-              {/* Display error message */}
+            <div className="section-form-grid">
+              <div className="section-form-group full-width">
+                <label>Select Section:</label>
+                <select
+                  value={selectedSection}
+                  onChange={handleSectionChange}
+                  className={`form-select ${
+                    errors.section ? "input-error" : ""
+                  }`} // Add error class if validation fails
+                >
+                  <option value="">Select Section</option>{" "}
+                  {/* Default option */}
+                  {sectionOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+                {errors.section && (
+                  <p className="error-message">{errors.section}</p>
+                )}{" "}
+                {/* Display error message */}
+              </div>
             </div>
           </form>
         </div>

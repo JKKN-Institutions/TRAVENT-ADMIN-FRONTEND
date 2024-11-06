@@ -191,9 +191,10 @@
     grid-template-columns: 1fr; /* 2 columns for tablets */
   }
 
-  .add-institute-form-container input,
-  .add-institute-form-container textarea {
+  .add-institute-form-container .institute-form-group input,
+  .add-institute-form-container .institute-form-group textarea {
     font-size: 0.875rem;
+    padding: 10px;
     max-width: 100%;
   }
 
@@ -217,10 +218,6 @@
     /* margin-bottom: 2rem; */
   }
 
-  .institute-left-side ul {
-    padding: 1rem; /* Reduce padding for tablet */
-  }
-
   .institute-left-side li {
     flex-direction: row; /* Keep labels and values aligned horizontally */
     text-align: left;
@@ -232,6 +229,15 @@
     text-align: left;
   }
 
+  .institute-form-header,
+  .institute-left-side h3 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+  }
+
+  .add-institute-form-container h2 {
+    font-size: 1.2rem;
+  }
   .institute-buttons-container {
     justify-content: space-between;
   }
@@ -248,17 +254,6 @@
     grid-template-columns: 1fr; /* Single column for mobile */
   }
 
-  .add-institute-form-container input,
-  .add-institute-form-container textarea {
-    padding: 0.5rem;
-    font-size: 0.75rem;
-    max-width: 100%; /* Full width on mobile */
-  }
-
-  .institute-submit-button {
-    font-size: 0.75rem;
-  }
-
   .institute-form-content {
     flex-direction: column; /* Stack left and right */
     align-items: center; /* Center the content */
@@ -268,7 +263,6 @@
     display: block;
     width: 100%; /* Turn the line horizontal */
     height: 2px; /* Horizontal line height */
-    margin: 1rem 0; /* Add margin around the line */
   }
 
   .institute-left-side {

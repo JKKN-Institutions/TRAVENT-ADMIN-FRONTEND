@@ -11,12 +11,11 @@
 .chart h3 {
   margin: 0 0 20px;
   font-size: 18px;
-  color: var(--text-muted);
+  color: #ccc;
 }
 
 @media (max-width: 768px) {
   .chart {
     width: 100%;
-    margin-bottom: 10px;
   }
 }

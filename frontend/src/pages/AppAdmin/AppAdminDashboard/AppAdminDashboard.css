@@ -1,10 +1,10 @@
-.dashboard-container {
+.app-admin-dashboard-container {
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
 
-.main-content {
+.app-admin-dashboard-main-content {
   flex: 1;
   padding: 1rem;
   background-color: #1e1e1e;
@@ -12,12 +12,12 @@
   transition: margin-left 0.3s ease-in-out;
 }
 
-.main-content.sidebar-open {
+.app-admin-dashboard-main-content.sidebar-open {
   margin-left: 200px;
 }
 
 @media (max-width: 768px) {
-  .main-content.sidebar-open {
+  .app-admin-dashboard-main-content.sidebar-open {
     margin-left: 0;
   }
 }

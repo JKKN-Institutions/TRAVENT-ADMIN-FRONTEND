@@ -14,11 +14,11 @@
   justify-content: flex-start;
   align-items: center;
   border-radius: 10px;
-  margin-bottom: 1rem;
+  margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .app-admin-notifications-main-content {
@@ -29,7 +29,7 @@
   scrollbar-color: #4a4a4a #2c2c2c;
 }
 
-.app-admin-notifications-menu-icon {
+.app-admin-notifications-menu-icon .app-admin-menu-icon {
   font-size: 1rem;
   cursor: pointer;
   margin-right: 1rem;
@@ -41,7 +41,7 @@
 }
 
 .app-admin-notifications-search-bar-container {
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
 }
 
 .app-admin-notifications-search-input-wrapper {
@@ -71,7 +71,6 @@
 
 .app-admin-notifications-search-bar:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
 .app-admin-filter-container {
@@ -185,19 +184,15 @@
   }
 
   .app-admin-notification-content h3 {
-    font-size: 15px;
+    font-size: 0.9rem;
   }
 
   .app-admin-notification-content p {
-    font-size: 13px;
+    font-size: 0.8rem;
   }
 }
 
 @media (max-width: 768px) {
-  .app-admin-notifications-top-bar {
-    padding: 0.8rem;
-  }
-
   .app-admin-notifications-top-bar h2 {
     font-size: 1.2rem;
   }
@@ -211,7 +206,7 @@
   }
 
   .app-admin-filter-button {
-    font-size: 13px;
+    font-size: 0.8;
     padding: 6px 12px;
   }
 
@@ -222,67 +217,22 @@
     font-size: 16px;
   }
 
-  .app-admin-notification-content h3 {
-    font-size: 14px;
-  }
-
-  .app-admin-notification-content p {
-    font-size: 12px;
-  }
-
   .app-admin-notification-time {
-    font-size: 11px;
+    font-size: 0.8rem;
   }
 
   .app-admin-notification-count {
     font-size: 0.7rem;
+    padding: 0.2rem 0.4rem;
   }
 }
 
 @media (max-width: 480px) {
-  .app-admin-notifications-top-bar {
-    padding: 0.6rem;
-  }
-
-  .app-admin-notifications-top-bar h2 {
-    font-size: 1.1rem;
-  }
-
-  .app-admin-notifications-menu-icon {
-    font-size: 1.2rem;
-  }
-
-  .app-admin-notifications-search-bar {
-    font-size: 0.8rem;
-  }
-
-  .app-admin-filter-button {
-    font-size: 12px;
-    padding: 5px 10px;
-  }
-
   .app-admin-notification-avatar {
     width: 30px;
     height: 30px;
     min-width: 30px;
     font-size: 14px;
     margin-right: 12px;
-  }
-
-  .app-admin-notification-content h3 {
-    font-size: 13px;
-  }
-
-  .app-admin-notification-content p {
-    font-size: 11px;
-  }
-
-  .app-admin-notification-time {
-    font-size: 10px;
-  }
-
-  .app-admin-notification-count {
-    font-size: 0.6rem;
-    padding: 0.1rem 0.3rem;
   }
 }

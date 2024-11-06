@@ -16,14 +16,14 @@
   margin-bottom: 10px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .app-admin-notification-item-back-icon {
-  font-size: 1.3rem;
+  font-size: 1rem;
   cursor: pointer;
   color: #ffffff;
-  margin-right: 1rem;
+  margin-right: 0.5rem;
 }
 
 .app-admin-chat-avatar {
@@ -41,13 +41,13 @@
 .app-admin-chat-header h2 {
   margin: 0;
   font-size: 1.2rem;
-  margin-left: 1rem;
+  margin-left: 0.5rem;
 }
 
 .app-admin-chat-body {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
+  /* padding: 1rem; */
   display: flex;
   flex-direction: column-reverse;
 }
@@ -83,7 +83,7 @@
 }
 
 .app-admin-chat-footer {
-  padding: 0.8rem;
+  /* padding: 0.8rem; */
   display: flex;
   align-items: center;
 }
@@ -142,10 +142,7 @@
   .app-admin-message {
     max-width: 80%;
     padding: 0.6rem 0.8rem;
-  }
-
-  .app-admin-chat-footer {
-    padding: 0.3rem;
+    font-size: 0.9rem;
   }
 
   .app-admin-message-input {

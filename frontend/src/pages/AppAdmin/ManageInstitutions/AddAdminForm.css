@@ -9,7 +9,7 @@
   color: #ffffff;
 }
 
-.form-header {
+.add-admin-form-header {
   display: flex;
   align-items: center;
   margin-bottom: 2rem;
@@ -24,18 +24,18 @@
   font-size: 1.3rem;
 }
 
-.form-grid {
+.add-admin-form-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 }
 
-.form-group {
+.add-admin-form-group {
   display: flex;
   flex-direction: column;
 }
 
-.add-admin-form-container .form-group input {
+.add-admin-form-container .add-admin-form-group input {
   width: 100%;
   padding: 10px;
   margin-bottom: 0.5rem;
@@ -47,12 +47,12 @@
   border-bottom: 2px solid #666;
 }
 
-.add-admin-form-container .form-group input:focus {
+.add-admin-form-container .add-admin-form-group input:focus {
   outline: none;
   box-shadow: 0 0 0 2px #11a8fd;
 }
 
-.add-admin-form-container .form-group input.input-error {
+.add-admin-form-container .add-admin-form-group input.input-error {
   border: 1px solid #ff4d4f;
 }
 
@@ -63,14 +63,14 @@
   margin-bottom: 0.5rem;
 }
 
-.admin-buttons-container {
+.add-admin-form-buttons-container {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   flex-wrap: wrap;
 }
 
-.admin-submit-button {
+.add-admin-form-submit-button {
   width: 100%;
   max-width: 220px;
   padding: 0.6rem;
@@ -86,7 +86,7 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.admin-submit-button:hover {
+.add-admin-form-submit-button:hover {
   background-color: #0e86c9;
 }
 
@@ -95,15 +95,27 @@
     padding: 1.5rem;
   }
 
-  .form-grid {
+  .add-admin-form-header {
+    margin-bottom: 1rem;
+  }
+
+  .add-admin-form-container h2 {
+    font-size: 1.2rem;
+  }
+
+  .add-admin-form-grid {
     grid-template-columns: 1fr;
   }
 
-  .add-admin-form-container input {
+  .add-admin-form-container .add-admin-form-group input {
     font-size: 0.875rem;
+    padding: 10px;
   }
 
-  .admin-submit-button {
+  .add-admin-form-buttons-container {
+    justify-content: center;
+  }
+  .add-admin-form-submit-button {
     font-size: 0.875rem;
   }
 }
@@ -111,14 +123,5 @@
 @media (max-width: 480px) {
   .add-admin-form-container {
     padding: 1rem;
-  }
-
-  .add-admin-form-container input {
-    padding: 0.5rem;
-    font-size: 0.75rem;
-  }
-
-  .admin-submit-button {
-    font-size: 0.75rem;
   }
 }

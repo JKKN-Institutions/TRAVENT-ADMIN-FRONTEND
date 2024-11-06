@@ -56,7 +56,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="app-admin-dashboard-container">
       <UnifiedSidebar
         isOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
@@ -69,7 +69,7 @@ const AdminDashboard = () => {
         userRole="appadmin"
       />
       <div
-        className={`main-content ${
+        className={`app-admin-dashboard-main-content ${
           isSidebarOpen ? "sidebar-open" : "sidebar-closed"
         }`}
       >

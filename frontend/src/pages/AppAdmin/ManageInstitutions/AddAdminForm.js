@@ -47,12 +47,12 @@ const AddAdminForm = ({ onSave, onBack }) => {
 
   return (
     <div className="add-admin-form-container">
-      <div className="form-header">
+      <div className="add-admin-form-header">
         <h2>Add Admin Details</h2>
       </div>
       <form>
-        <div className="form-grid">
-          <div className="form-group">
+        <div className="add-admin-form-grid">
+          <div className="add-admin-form-group">
             <input
               name="adminName"
               placeholder="Admin Name"
@@ -62,7 +62,7 @@ const AddAdminForm = ({ onSave, onBack }) => {
             />
             {errors.adminName && <p className="error">{errors.adminName}</p>}
           </div>
-          <div className="form-group">
+          <div className="add-admin-form-group">
             <input
               name="email"
               type="email"
@@ -73,7 +73,7 @@ const AddAdminForm = ({ onSave, onBack }) => {
             />
             {errors.email && <p className="error">{errors.email}</p>}
           </div>
-          <div className="form-group">
+          <div className="add-admin-form-group">
             <input
               name="contactNumber"
               placeholder="Contact Number"
@@ -85,7 +85,7 @@ const AddAdminForm = ({ onSave, onBack }) => {
               <p className="error">{errors.contactNumber}</p>
             )}
           </div>
-          <div className="form-group">
+          <div className="add-admin-form-group">
             <input
               name="password"
               type="password"
@@ -96,7 +96,7 @@ const AddAdminForm = ({ onSave, onBack }) => {
             />
             {errors.password && <p className="error">{errors.password}</p>}
           </div>
-          <div className="form-group">
+          <div className="add-admin-form-group">
             <input
               name="confirmPassword"
               type="password"
@@ -110,17 +110,17 @@ const AddAdminForm = ({ onSave, onBack }) => {
             )}
           </div>
         </div>
-        <div className="admin-buttons-container">
+        <div className="add-admin-form-buttons-container">
           <button
             type="button"
-            className="admin-submit-button"
+            className="add-admin-form-submit-button"
             onClick={handleBack}
           >
             Back
           </button>
           <button
             type="submit"
-            className="admin-submit-button"
+            className="add-admin-form-submit-button"
             onClick={handleSubmit}
           >
             Save Admin Details

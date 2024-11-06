@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./NewSubscriptionPlanForm.css";
 
 const NewSubscriptionPlanForm = ({ onSave, onBack, editingPlan }) => {
@@ -42,19 +44,92 @@ const NewSubscriptionPlanForm = ({ onSave, onBack, editingPlan }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
+      toast.error("Please fill in all required fields", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } else {
-      console.log("Subscription plan data to save:", planData);
-      onSave(planData);
+      try {
+        const loadingToastId = toast.loading(
+          editingPlan
+            ? "Updating subscription plan..."
+            : "Adding new subscription plan...",
+          {
+            position: "top-right",
+          }
+        );
+
+        // Simulate API call or actual save operation
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        console.log("Subscription plan data to save:", planData);
+        onSave(planData);
+
+        // Dismiss the loading toast
+        toast.dismiss(loadingToastId);
+
+        // Show success toast with a delay to ensure it's visible
+        setTimeout(() => {
+          toast.success(
+            <div>
+              Successfully {editingPlan ? "updated" : "added"} subscription
+              plan.
+              <br />
+              <small>Subscription plan details have been saved.</small>
+            </div>,
+            {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            }
+          );
+        }, 100);
+
+        // Delay the onBack call to ensure toast is visible
+        setTimeout(() => onBack(), 3100);
+      } catch (error) {
+        toast.dismiss();
+        toast.error(
+          `Failed to ${
+            editingPlan ? "update" : "add"
+          } subscription plan. Please try again.`,
+          {
+            position: "top-right",
+            autoClose: 3000,
+          }
+        );
+        console.error("Error saving subscription plan:", error);
+      }
     }
   };
 
   return (
     <div className="new-subscription-plan-form-container">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        limit={3}
+      />
       <header className="new-subscription-plan-top-bar">
         <button className="new-subscription-plan-back-button" onClick={onBack}>
           <FontAwesomeIcon icon={faArrowLeft} />

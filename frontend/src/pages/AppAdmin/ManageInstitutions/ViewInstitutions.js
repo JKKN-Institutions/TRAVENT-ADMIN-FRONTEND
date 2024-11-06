@@ -537,51 +537,56 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
           <main className="view-institutions-main-content">
             {currentStep === "list" ? (
               <>
-                <div className="view-institutions-search-bar-container">
-                  <div className="search-input-wrapper">
-                    <FontAwesomeIcon icon={faSearch} className="search-icon" />
-                    <input
-                      type="text"
-                      className="view-institutions-search-bar"
-                      placeholder="Search institutions..."
+                <div className="view-institutions-controls">
+                  <div className="view-institutions-search-bar-container">
+                    <div className="view-institutions-search-input-wrapper">
+                      <FontAwesomeIcon
+                        icon={faSearch}
+                        className="view-institutions-search-icon"
+                      />
+                      <input
+                        type="text"
+                        className="view-institutions-search-bar"
+                        placeholder="Search institutions..."
+                      />
+                    </div>
+                  </div>
+
+                  <div className="view-institutions-action-buttons-container">
+                    <Button
+                      label={
+                        <>
+                          <FontAwesomeIcon icon={faPlus} /> Add
+                        </>
+                      }
+                      onClick={handleAddClick}
+                      className="view-institutions-action-button view-institutions-add-button"
+                    />
+                    <Button
+                      label={
+                        <>
+                          <FontAwesomeIcon icon={faEdit} /> Edit
+                        </>
+                      }
+                      onClick={handleEditClick}
+                      className={`view-institutions-action-button view-institutions-edit-button ${
+                        !selectedInstitution ? "disabled" : ""
+                      }`}
+                      disabled={!selectedInstitution}
+                    />
+                    <Button
+                      label={
+                        <>
+                          <FontAwesomeIcon icon={faTrash} /> Delete
+                        </>
+                      }
+                      onClick={handleDeleteClick}
+                      className={`view-institutions-action-button view-institutions-delete-button ${
+                        !selectedInstitution ? "disabled" : ""
+                      }`}
+                      disabled={!selectedInstitution}
                     />
                   </div>
-                </div>
-
-                <div className="action-buttons-container">
-                  <Button
-                    label={
-                      <>
-                        <FontAwesomeIcon icon={faPlus} /> Add
-                      </>
-                    }
-                    onClick={handleAddClick}
-                    className="view-institutions-action-button view-institutions-add-button"
-                  />
-                  <Button
-                    label={
-                      <>
-                        <FontAwesomeIcon icon={faEdit} /> Edit
-                      </>
-                    }
-                    onClick={handleEditClick}
-                    className={`view-institutions-action-button view-institutions-edit-button ${
-                      !selectedInstitution ? "disabled" : ""
-                    }`}
-                    disabled={!selectedInstitution}
-                  />
-                  <Button
-                    label={
-                      <>
-                        <FontAwesomeIcon icon={faTrash} /> Delete
-                      </>
-                    }
-                    onClick={handleDeleteClick}
-                    className={`view-institutions-action-button view-institutions-delete-button ${
-                      !selectedInstitution ? "disabled" : ""
-                    }`}
-                    disabled={!selectedInstitution}
-                  />
                 </div>
 
                 <div className="view-institutions-table-container">

@@ -9,13 +9,13 @@
   color: #ffffff;
 }
 
-.form-header {
+.add-institution-form-header {
   display: flex;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
-.back-button {
+.add-institution-form-back-button {
   background: none;
   border: none;
   color: #11a8fd;
@@ -35,23 +35,23 @@
   font-size: 1.3rem;
 }
 
-.form-grid {
+.add-institution-form-form-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 }
 
-.form-group {
+.add-institution-form-form-group {
   display: flex;
   flex-direction: column;
 }
 
-.form-group.full-width {
+.add-institution-form-form-group.full-width {
   grid-column: 1 / -1;
 }
 
-.add-institution-form-container .form-group input,
-.add-institution-form-container .form-group textarea {
+.add-institution-form-container .add-institution-form-form-group input,
+.add-institution-form-container .add-institution-form-form-group textarea {
   width: 100%;
   padding: 10px;
   margin-bottom: 0.5rem;
@@ -63,19 +63,25 @@
   border-bottom: 2px solid #666;
 }
 
-.add-institution-form-container .form-group textarea {
+.add-institution-form-container .add-institution-form-form-group textarea {
   resize: vertical;
   min-height: 100px;
 }
 
-.add-institution-form-container .form-group input:focus,
-.add-institution-form-container .form-group textarea:focus {
+.add-institution-form-container .add-institution-form-form-group input:focus,
+.add-institution-form-container
+  .add-institution-form-form-group
+  textarea:focus {
   outline: none;
   box-shadow: 0 0 0 2px #11a8fd;
 }
 
-.add-institution-form-container .form-group input.input-error,
-.add-institution-form-container .form-group textarea.input-error {
+.add-institution-form-container
+  .add-institution-form-form-group
+  input.input-error,
+.add-institution-form-container
+  .add-institution-form-form-group
+  textarea.input-error {
   border: 1px solid #ff4d4f;
 }
 
@@ -118,12 +124,12 @@
     padding: 1.5rem;
   }
 
-  .form-grid {
+  .add-institution-form-form-grid {
     grid-template-columns: 1fr;
   }
 
-  .add-institution-form-container input,
-  .add-institution-form-container textarea {
+  .add-institution-form-container .add-institution-form-form-group input,
+  .add-institution-form-container .add-institution-form-form-group textarea {
     font-size: 0.875rem;
   }
 
@@ -132,18 +138,24 @@
   }
 }
 
+@media (max-width: 540px) {
+  .institution-buttons-container {
+    justify-content: center;
+  }
+}
+
 @media (max-width: 480px) {
   .add-institution-form-container {
     padding: 1rem;
   }
 
+  .institution-buttons-container {
+    justify-content: center;
+  }
+
   .add-institution-form-container input,
   .add-institution-form-container textarea {
     padding: 0.5rem;
-    font-size: 0.75rem;
-  }
-
-  .institution-submit-button {
     font-size: 0.75rem;
   }
 }

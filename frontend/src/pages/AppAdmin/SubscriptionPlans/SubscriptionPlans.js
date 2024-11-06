@@ -80,19 +80,30 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
     setShowNewPlanForm(true);
   };
 
-  const handleSavePlan = (newPlan) => {
-    if (editingPlan) {
-      setPlans(
-        plans.map((plan) =>
-          plan.id === editingPlan.id ? { ...newPlan, id: plan.id } : plan
-        )
-      );
-      setSelectedPlan(null); // Deselect the plan after editing
-    } else {
-      setPlans([...plans, { ...newPlan, id: Date.now() }]);
+  const handleSavePlan = async (newPlan) => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      if (editingPlan) {
+        setPlans(
+          plans.map((plan) =>
+            plan.id === editingPlan.id ? { ...newPlan, id: plan.id } : plan
+          )
+        );
+
+        setSelectedPlan(null); // Deselect the plan after editing
+      } else {
+        setPlans([...plans, { ...newPlan, id: Date.now() }]);
+      }
+
+      setTimeout(() => {
+        setShowNewPlanForm(false);
+
+        setEditingPlan(null);
+      }, 3100);
+    } catch (error) {
+      console.error("Error saving subscription plan:", error);
     }
-    setShowNewPlanForm(false);
-    setEditingPlan(null);
   };
 
   const handleBackFromForm = () => {
@@ -159,49 +170,53 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
             </div>
           </header>
           <main className="subscription-plans-main-content">
-            <div className="subscription-plans-search-bar-container">
-              <div className="subscription-plans-search-input-wrapper">
-                <FontAwesomeIcon icon={faSearch} className="search-icon" />
-                <input
-                  type="text"
-                  className="subscription-plans-search-bar"
-                  placeholder="Search institutions..."
+            <div className="subscription-plans-controls">
+              <div className="subscription-plans-search-bar-container">
+                <div className="subscription-plans-search-input-wrapper">
+                  <FontAwesomeIcon
+                    icon={faSearch}
+                    className="subscription-plans-search-icon"
+                  />
+                  <input
+                    type="text"
+                    className="subscription-plans-search-bar"
+                    placeholder="Search institutions..."
+                  />
+                </div>
+              </div>
+
+              <div className="subscription-plans-action-buttons-container">
+                <Button
+                  label={
+                    <>
+                      <FontAwesomeIcon icon={faPlus} /> Add
+                    </>
+                  }
+                  onClick={handleAddPlan}
+                  className="subscription-plans-action-button subscription-plans-add-button"
+                />
+                <Button
+                  label={
+                    <>
+                      <FontAwesomeIcon icon={faEdit} /> Edit
+                    </>
+                  }
+                  onClick={handleEditPlan}
+                  className="subscription-plans-action-button subscription-plans-edit-button"
+                  disabled={!selectedPlan}
+                />
+                <Button
+                  label={
+                    <>
+                      <FontAwesomeIcon icon={faTrash} /> Delete
+                    </>
+                  }
+                  onClick={handleDeletePlan}
+                  className="subscription-plans-action-button subscription-plans-delete-button"
+                  disabled={!selectedPlan}
                 />
               </div>
             </div>
-
-            <div className="action-buttons-container">
-              <Button
-                label={
-                  <>
-                    <FontAwesomeIcon icon={faPlus} /> Add
-                  </>
-                }
-                onClick={handleAddPlan}
-                className="subscription-plans-action-button subscription-plans-add-button"
-              />
-              <Button
-                label={
-                  <>
-                    <FontAwesomeIcon icon={faEdit} /> Edit
-                  </>
-                }
-                onClick={handleEditPlan}
-                className="subscription-plans-action-button subscription-plans-edit-button"
-                disabled={!selectedPlan}
-              />
-              <Button
-                label={
-                  <>
-                    <FontAwesomeIcon icon={faTrash} /> Delete
-                  </>
-                }
-                onClick={handleDeletePlan}
-                className="subscription-plans-action-button subscription-plans-delete-button"
-                disabled={!selectedPlan}
-              />
-            </div>
-
             <div className="plans-section">
               <h2>6 Months Plans - Premium</h2>
               <div className="plans-grid">

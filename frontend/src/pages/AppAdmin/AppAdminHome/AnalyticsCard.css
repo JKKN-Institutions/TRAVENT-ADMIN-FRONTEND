@@ -12,7 +12,7 @@
   margin: 0;
   font-size: 18px;
 
-  color: var(--text-muted);
+  color: #ccc;
 }
 .analytics-card p {
   font-size: 24px;

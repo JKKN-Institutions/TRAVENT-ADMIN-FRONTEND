@@ -35,15 +35,15 @@ const ReviewForm = ({
 
   return (
     <div className="review-form-container">
-      <div className="form-header">
+      <div className="review-form-header">
         <h2>Review Institution Data</h2>
-        <div className="progress-indicator">
-          <div className="progress-text">
+        <div className="review-form-progress-indicator">
+          <div className="review-form-progress-text">
             Step {currentStep + 1} of {totalSteps}
           </div>
-          <div className="progress-bar">
+          <div className="review-form-progress-bar">
             <div
-              className="progress-bar-filled"
+              className="review-form-progress-bar-filled"
               style={{ width: progressBarWidth }}
             ></div>
           </div>
@@ -96,7 +96,10 @@ const ReviewForm = ({
                 </div>
 
                 {institute.departments.map((department, depIndex) => (
-                  <div key={depIndex} className="department-container">
+                  <div
+                    key={depIndex}
+                    className="review-form-department-container"
+                  >
                     <h4>Department {depIndex + 1}</h4>
                     <div className="review-grid">
                       {renderReviewItem(
@@ -114,12 +117,14 @@ const ReviewForm = ({
                         department.hodContactNumber
                       )}
                     </div>
-                    <div className="years-container">
+                    <div className="review-form-years-container">
                       <h5>Years and Sections</h5>
                       {department.years.map((year, yearIndex) => (
-                        <div key={yearIndex} className="year-item">
-                          <span className="year-label">Year {year.year}:</span>
-                          <span className="year-sections">
+                        <div key={yearIndex} className="review-form-year-item">
+                          <span className="review-form-year-label">
+                            Year {year.year}:
+                          </span>
+                          <span className="review-form-year-sections">
                             Sections: {year.sections.join(", ")}
                           </span>
                         </div>

@@ -10,32 +10,31 @@
   color: #ffffff;
 }
 
-.form-header {
+.review-form-header {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 2rem;
 }
 
-.form-header h2 {
+.review-form-header h2 {
   font-size: 1.3rem;
   color: #ffffff;
-  margin-bottom: 1rem;
 }
 
-.progress-indicator {
+.review-form-progress-indicator {
   width: 100%;
   max-width: 400px;
 }
 
-.progress-text {
+.review-form-progress-text {
   text-align: center;
   font-size: 0.9rem;
   color: #ffffff;
   margin-bottom: 0.5rem;
 }
 
-.progress-bar {
+.review-form-progress-bar {
   background-color: #2c2c2c;
   border-radius: 20px;
   height: 8px;
@@ -43,7 +42,7 @@
   overflow: hidden;
 }
 
-.progress-bar-filled {
+.review-form-progress-bar-filled {
   background-color: #11a8fd;
   height: 100%;
   border-radius: 20px;
@@ -64,7 +63,7 @@
 }
 
 .review-section h3 {
-  font-size: 1.3rem;
+  font-size: 1.275rem;
   color: #fff;
   margin-bottom: 1rem;
   border-bottom: 2px solid #11a8fd;
@@ -103,29 +102,29 @@
   color: #000;
 }
 
-.department-container {
+.review-form-department-container {
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid #444444;
+  border-top: 1px solid #666;
 }
 
-.department-container h4 {
+.review-form-department-container h4 {
   font-size: 1.3rem;
   color: #fff;
   margin-bottom: 1rem;
 }
 
-.years-container {
+.review-form-years-container {
   margin-top: 2rem;
 }
 
-.years-container h5 {
+.review-form-years-container h5 {
   font-size: 1.2rem;
   color: #fff;
   margin-bottom: 0.5rem;
 }
 
-.year-item {
+.review-form-year-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -135,23 +134,23 @@
   margin-bottom: 0.5rem;
 }
 
-.year-label {
+.review-form-year-label {
   font-weight: 600;
   color: #11a8fd;
 }
 
-.year-sections {
+.review-form-year-sections {
   color: #ffffff;
 }
 
 .review-buttons-container {
   display: flex;
   justify-content: space-between;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 .review-button {
-  padding: 0.6rem 1.5rem;
+  padding: 0.5rem 1.5rem;
   font-size: 1rem;
   border: none;
   border-radius: 30px;
@@ -213,10 +212,19 @@
 }
 
 @media (max-width: 768px) {
-  .review-form-container {
-    padding: 1.5rem;
+  .review-form-header h2 {
+    font-size: 1.2rem;
   }
 
+  .review-section h3,
+  .review-form-department-container h4,
+  .review-form-years-container h5 {
+    font-size: 1.1rem;
+  }
+
+  .review-form-header {
+    margin-bottom: 1rem;
+  }
   .review-grid {
     grid-template-columns: 1fr;
   }
@@ -230,14 +238,5 @@
 @media (max-width: 480px) {
   .review-form-container {
     padding: 1rem;
-  }
-
-  .form-header h2 {
-    font-size: 1.5rem;
-  }
-
-  .review-button {
-    font-size: 0.8rem;
-    padding: 0.5rem 1rem;
   }
 }

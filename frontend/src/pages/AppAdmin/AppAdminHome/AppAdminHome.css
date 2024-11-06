@@ -17,7 +17,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .app-admin-header h2 {
@@ -32,6 +32,7 @@
 
 .app-admin-search-container .menu-icon {
   margin-right: 1rem;
+  font-size: 1rem;
   cursor: pointer;
   color: #ffffff;
 }
@@ -50,10 +51,10 @@
 
 .app-admin-main-content {
   flex: 1;
-  padding: 1rem;
+  padding: 0 0.5rem;
   background-color: #1e1e1e;
   overflow-y: auto;
-  padding-right: 0.5rem;
+
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
 }
@@ -80,25 +81,21 @@
 .app-admin-analytics-cards {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 0.7rem;
+  margin-bottom: 0.7rem;
 }
 
 .app-admin-charts {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 0.7rem;
+  margin-bottom: 0.7rem;
 }
 
 @media (max-width: 768px) {
   .app-admin-analytics-cards,
   .app-admin-charts {
     flex-direction: column;
-  }
-
-  .app-admin-main-content {
-    padding: 1rem 0;
   }
 
   .app-admin-header h2 {

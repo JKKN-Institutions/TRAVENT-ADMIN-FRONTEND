@@ -88,12 +88,12 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
 
   return (
     <div className="add-institution-form-container">
-      <div className="form-header">
+      <div className="add-institution-form-header">
         <h2>Add New Institution</h2>
       </div>
       <form>
-        <div className="form-grid">
-          <div className="form-group">
+        <div className="add-institution-form-form-grid">
+          <div className="add-institution-form-form-group">
             <input
               name="institutionName"
               placeholder="Institution Name"
@@ -105,7 +105,7 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
               <p className="error">{errors.institutionName}</p>
             )}
           </div>
-          <div className="form-group">
+          <div className="add-institution-form-form-group">
             <input
               name="state"
               placeholder="State"
@@ -115,7 +115,7 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
             />
             {errors.state && <p className="error">{errors.state}</p>}
           </div>
-          <div className="form-group">
+          <div className="add-institution-form-form-group">
             <input
               name="founderName"
               placeholder="Founder Name"
@@ -127,7 +127,7 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
               <p className="error">{errors.founderName}</p>
             )}
           </div>
-          <div className="form-group">
+          <div className="add-institution-form-form-group">
             <input
               name="founderEmail"
               placeholder="Founder Email"
@@ -139,7 +139,7 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
               <p className="error">{errors.founderEmail}</p>
             )}
           </div>
-          <div className="form-group">
+          <div className="add-institution-form-form-group">
             <input
               name="founderContactNumber"
               placeholder="Founder Contact Number"
@@ -151,7 +151,7 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
               <p className="error">{errors.founderContactNumber}</p>
             )}
           </div>
-          <div className="form-group full-width">
+          <div className="add-institution-form-form-group full-width">
             <textarea
               name="address"
               placeholder="Address"
@@ -162,7 +162,7 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
             />
             {errors.address && <p className="error">{errors.address}</p>}
           </div>
-          <div className="form-group">
+          <div className="add-institution-form-form-group">
             <input
               name="contact1"
               placeholder="Contact 1"
@@ -172,7 +172,7 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
             />
             {errors.contact1 && <p className="error">{errors.contact1}</p>}
           </div>
-          <div className="form-group">
+          <div className="add-institution-form-form-group">
             <input
               name="contact2"
               placeholder="Contact 2 (Optional)"
@@ -180,7 +180,7 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
               onChange={handleInputChange}
             />
           </div>
-          <div className="form-group">
+          <div className="add-institution-form-form-group">
             <input
               name="emailDomain"
               placeholder="Email Domain"

@@ -63,14 +63,14 @@ const AddDepartmentForm = ({ onBack, onSave, initialData, instituteData }) => {
     <div className="add-department-form-container">
       <div className="department-form-content">
         <div className="department-left-side">
-          <h3>Institution Details</h3>
+          <h3>Institute Details</h3>
           {instituteData && Object.keys(instituteData).length > 0 ? (
             <ul className="institution-details">
               <li>
-                <strong>Institution Code:</strong> {instituteData.instituteCode}
+                <strong>Institute Code:</strong> {instituteData.instituteCode}
               </li>
               <li>
-                <strong>Institution Name:</strong> {instituteData.instituteName}
+                <strong>Institute Name:</strong> {instituteData.instituteName}
               </li>
               <li>
                 <strong>State:</strong> {instituteData.state}
