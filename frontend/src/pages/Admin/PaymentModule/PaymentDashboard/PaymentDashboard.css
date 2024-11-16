@@ -31,6 +31,24 @@
   border: 2px solid #333;
 }
 
+.fee-paid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fee-paid-chart-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.fee-paid-chart {
+  display: flex;
+  justify-content: center;
+}
+
 .chart-header {
   display: flex;
   justify-content: space-between;
@@ -62,38 +80,6 @@
 
 .payments-dashboard-month-picker::-webkit-calendar-picker-indicator {
   filter: invert(1);
-}
-
-.fee-paid-chart {
-  height: 200px;
-}
-
-.fee-paid-legend {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-top: 1rem;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-}
-
-.legend-color {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  margin-right: 8px;
-}
-
-.legend-label {
-  margin-right: 8px;
-  color: #cccccc;
-}
-
-.legend-value {
-  font-weight: bold;
 }
 
 .view-all-records {

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowLeft,
   faGasPump,
   faRoad,
   faUsers,
@@ -11,171 +10,136 @@ import Stoppings from "../Stoppings/Stoppings";
 import Passengers from "../Passengers/Passengers";
 import AddNewRoute from "../AddNewRoute/AddNewRoute";
 import SpecificRouteLiveTracking from "../../LiveTrackingModule/SpecificRouteLiveTracking/SpecificRouteLiveTracking";
-import "./RouteDetails.css";
 import Button from "../../../../components/Shared/Button/Button";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import "./RouteDetails.css";
 
 const RouteDetails = ({ route, onBack, institutionId, onRouteUpdate }) => {
-  const [showStoppings, setShowStoppings] = useState(false);
-  const [showPassengers, setShowPassengers] = useState(false);
-  const [showEditRoute, setShowEditRoute] = useState(false);
-  const [showTracking, setShowTracking] = useState(false);
+  const [activeView, setActiveView] = useState(null); // To control which component to display
 
-  const handleStoppingsClick = () => setShowStoppings(true);
-  const handlePassengersClick = () => setShowPassengers(true);
-  const handleEditClick = () => setShowEditRoute(true);
-  const handleTrackClick = () => setShowTracking(true);
+  // Handle changing active view
+  const handleViewChange = (view) => setActiveView(view);
 
+  // Handle back click, reset view to null to go back to the main RouteDetails page
   const handleBackClick = () => {
-    if (showStoppings) setShowStoppings(false);
-    else if (showPassengers) setShowPassengers(false);
-    else if (showEditRoute) setShowEditRoute(false);
-    else if (showTracking) setShowTracking(false);
-    else if (onBack) onBack();
+    if (activeView) {
+      setActiveView(null); // Reset to RouteDetails page if we're on a sub-page
+    } else {
+      onBack(); // If we're already on RouteDetails, call onBack function to navigate back
+    }
   };
 
   const handleRouteUpdate = (updatedRoute) => {
     onRouteUpdate(updatedRoute);
-    setShowEditRoute(false);
+    setActiveView(null); // Reset view after updating route
   };
 
-  if (showStoppings) {
-    return (
-      <Stoppings
-        route={route}
-        onBack={handleBackClick}
-        institutionId={institutionId}
-      />
-    );
-  }
-
-  if (showPassengers) {
-    return (
-      <Passengers
-        route={route}
-        onBack={handleBackClick}
-        institutionId={institutionId}
-      />
-    );
-  }
-
-  if (showEditRoute) {
-    return (
-      <AddNewRoute
-        route={route}
-        onBack={handleBackClick}
-        onSave={handleRouteUpdate}
-        institutionId={institutionId}
-      />
-    );
-  }
-
-  if (showTracking) {
-    return (
-      <SpecificRouteLiveTracking
-        routeData={{
-          routeNo: route.routeNumber,
-          routeName: route.routeName,
-        }}
-        initialZoom={13}
-        onBack={handleBackClick}
-      />
-    );
-  }
-
-  return (
-    <div className="route-details-container">
-      <header className="route-details-top-bar">
-        <button className="route-details-back-button" onClick={handleBackClick}>
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
-        <h2>Route {route.routeNumber}</h2>
-      </header>
-      <main className="route-details-main-content">
-        <div className="route-details-action-buttons">
-          <Button
-            label={
-              <>
-                <FontAwesomeIcon icon={faRoad} /> Stoppings
-              </>
-            }
-            onClick={handleStoppingsClick}
+  // Render different views based on activeView state
+  const renderView = () => {
+    switch (activeView) {
+      case "stoppings":
+        return (
+          <Stoppings
+            route={route}
+            onBack={handleBackClick}
+            institutionId={institutionId}
           />
-
-          <Button
-            label={
-              <>
-                <FontAwesomeIcon icon={faUsers} /> Passengers
-              </>
-            }
-            onClick={handlePassengersClick}
+        );
+      case "passengers":
+        return (
+          <Passengers
+            route={route}
+            onBack={handleBackClick}
+            institutionId={institutionId}
           />
-
-          <Button
-            label={
-              <>
-                <FontAwesomeIcon icon={faGasPump} /> Track
-              </>
-            }
-            onClick={handleTrackClick}
+        );
+      case "editRoute":
+        return (
+          <AddNewRoute
+            route={route}
+            onBack={handleBackClick}
+            onSave={handleRouteUpdate}
+            institutionId={institutionId}
           />
-
-          <Button
-            label={
-              <>
-                <FontAwesomeIcon icon={faPencilAlt} /> Edit
-              </>
-            }
-            onClick={handleEditClick}
-            disabled={false} // If you want to control when to disable the button
+        );
+      case "tracking":
+        return (
+          <SpecificRouteLiveTracking
+            routeData={{
+              routeNo: route.routeNumber,
+              routeName: route.routeName,
+            }}
+            initialZoom={13}
+            onBack={handleBackClick}
           />
-        </div>
-        <div className="route-details-info">
-          <div className="route-details-info-item">
-            <span className="route-details-info-label">Route Name:</span>
-            <span className="route-details-info-value">{route.routeName}</span>
+        );
+      default:
+        return (
+          <div className="route-details-container">
+            <TopBar
+              title={`Route ${route.routeNumber}`}
+              onBack={onBack}
+              backButton={true}
+            />
+            <main className="route-details-main-content">
+              <div className="route-details-action-buttons">
+                <Button
+                  label={
+                    <>
+                      <FontAwesomeIcon icon={faRoad} /> Stoppings
+                    </>
+                  }
+                  onClick={() => handleViewChange("stoppings")}
+                />
+                <Button
+                  label={
+                    <>
+                      <FontAwesomeIcon icon={faUsers} /> Passengers
+                    </>
+                  }
+                  onClick={() => handleViewChange("passengers")}
+                />
+                <Button
+                  label={
+                    <>
+                      <FontAwesomeIcon icon={faGasPump} /> Track
+                    </>
+                  }
+                  onClick={() => handleViewChange("tracking")}
+                />
+                <Button
+                  label={
+                    <>
+                      <FontAwesomeIcon icon={faPencilAlt} /> Edit
+                    </>
+                  }
+                  onClick={() => handleViewChange("editRoute")}
+                />
+              </div>
+              <div className="route-details-info">
+                {[
+                  ["Route Name", route.routeName],
+                  ["Main Driver", route.mainDriver],
+                  ["Departure Time", route.departureFromHalt],
+                  ["ETA", route.eta],
+                  ["Seat Capacity", route.sittingCapacity],
+                  ["Standing Capacity", route.standingCapacity],
+                  ["Vehicle Registration No", route.vehicleRegistrationNumber],
+                  ["Fuel", "60 / 80 litres"],
+                ].map(([label, value], index) => (
+                  <div key={index} className="route-details-info-item">
+                    <span className="route-details-info-label">{label}:</span>
+                    <span className="route-details-info-value">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </main>
           </div>
-          <div className="route-details-info-item">
-            <span className="route-details-info-label">Main Driver:</span>
-            <span className="route-details-info-value">{route.mainDriver}</span>
-          </div>
-          <div className="route-details-info-item">
-            <span className="route-details-info-label">Departure Time:</span>
-            <span className="route-details-info-value">
-              {route.departureFromHalt}
-            </span>
-          </div>
-          <div className="route-details-info-item">
-            <span className="route-details-info-label">ETA:</span>
-            <span className="route-details-info-value">{route.eta}</span>
-          </div>
-          <div className="route-details-info-item">
-            <span className="route-details-info-label">Seat Capacity:</span>
-            <span className="route-details-info-value">
-              {route.sittingCapacity}
-            </span>
-          </div>
-          <div className="route-details-info-item">
-            <span className="route-details-info-label">Standing Capacity:</span>
-            <span className="route-details-info-value">
-              {route.standingCapacity}
-            </span>
-          </div>
-          <div className="route-details-info-item">
-            <span className="route-details-info-label">
-              Vehicle Registration No:
-            </span>
-            <span className="route-details-info-value">
-              {route.vehicleRegistrationNumber}
-            </span>
-          </div>
-          <div className="route-details-info-item">
-            <span className="route-details-info-label">Fuel:</span>
-            <span className="route-details-info-value">60 / 80 litres</span>
-          </div>
-        </div>
-      </main>
-    </div>
-  );
+        );
+    }
+  };
+
+  return renderView(); // Renders the correct component based on the active view
 };
 
 export default RouteDetails;

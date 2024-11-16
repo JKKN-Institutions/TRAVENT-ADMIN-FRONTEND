@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import "./ReviewForm.css";
+import ToastNotification, {
+  showToast,
+} from "../../../components/Shared/ToastNotification/ToastNotification";
 
 const ReviewForm = ({
   data,
@@ -24,6 +27,21 @@ const ReviewForm = ({
     }
   };
 
+  const handleFinalSubmit = () => {
+    try {
+      onSubmit();
+      showToast("success", "Data submitted successfully!");
+      goToViewInstitutions();
+    } catch (error) {
+      showToast("error", "Submission failed. Please try again.");
+    }
+  };
+
+  const handleCancel = () => {
+    showToast("warn", "Submission canceled");
+    onBackToSection();
+  };
+
   const progressBarWidth = `${((currentStep + 1) / totalSteps) * 100}%`;
 
   const renderReviewItem = (label, value) => (
@@ -35,6 +53,7 @@ const ReviewForm = ({
 
   return (
     <div className="review-form-container">
+      <ToastNotification /> {/* Toast container for notifications */}
       <div className="review-form-header">
         <h2>Review Institution Data</h2>
         <div className="review-form-progress-indicator">
@@ -49,7 +68,6 @@ const ReviewForm = ({
           </div>
         </div>
       </div>
-
       <div className="review-content">
         {currentStep === 0 && (
           <div className="review-section">
@@ -171,14 +189,14 @@ const ReviewForm = ({
               <button
                 type="button"
                 className="review-button primary"
-                onClick={onSubmit}
+                onClick={handleFinalSubmit}
               >
                 Submit Data
               </button>
               <button
                 type="button"
                 className="review-button secondary"
-                onClick={onBackToSection}
+                onClick={handleCancel}
               >
                 Cancel
               </button>

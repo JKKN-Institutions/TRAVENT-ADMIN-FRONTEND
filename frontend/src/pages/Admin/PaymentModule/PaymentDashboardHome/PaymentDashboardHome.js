@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { format } from "date-fns";
 import "./PaymentDashboardHome.css";
 import ViewTransactions from "../ViewTransactions/ViewTransactions";
 import PaymentRecords from "../PaymentRecords/PaymentRecords";
@@ -13,25 +10,21 @@ import AddAmuletsFee from "../AddAmuletsFee/AddAmuletsFee";
 import AmuletsRefilledList from "../AmuletsRefilledList/AmuletsRefilledList";
 import PaymentDashboard from "../PaymentDashboard/PaymentDashboard";
 import Loading from "../../../../components/Shared/Loading/Loading";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
 
 const PaymentsDashboardHome = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [showViewTransactions, setShowViewTransactions] = useState(false);
-  const [showPaymentRecords, setShowPaymentRecords] = useState(false);
-  const [showAddBusFee, setShowAddBusFee] = useState(false);
-  const [showUpdateBusFee, setShowUpdateBusFee] = useState(false);
-  const [showAddAmuletsFee, setShowAddAmuletsFee] = useState(false);
-  const [showAmuletsRefilledList, setShowAmuletsRefilledList] = useState(false);
+  const [activeView, setActiveView] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
 
-  const handleDateChange = (event) => {
-    const [year, month] = event.target.value.split("-");
+  const handleDateChange = (e) => {
+    const [year, month] = e.target.value.split("-");
     setSelectedDate(new Date(year, month - 1));
   };
 
@@ -40,126 +33,80 @@ const PaymentsDashboardHome = ({ toggleSidebar }) => {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
       console.log("New Bus Fee:", busFee);
-      return busFee; // Return the saved data to trigger success toast
+      return busFee;
     } catch (error) {
-      throw error; // Throw error to trigger error toast
+      throw error;
     }
   };
 
-  if (showViewTransactions) {
-    return <ViewTransactions onBack={() => setShowViewTransactions(false)} />;
-  }
-
-  if (showPaymentRecords) {
-    return <PaymentRecords onBack={() => setShowPaymentRecords(false)} />;
-  }
-
-  if (showAddBusFee) {
-    return (
-      <AddBusFee
-        onBack={() => setShowAddBusFee(false)}
-        onSave={handleAddBusFee}
-      />
-    );
-  }
-
-  if (showUpdateBusFee) {
-    return (
+  const views = {
+    ViewTransactions: <ViewTransactions onBack={() => setActiveView(null)} />,
+    PaymentRecords: <PaymentRecords onBack={() => setActiveView(null)} />,
+    AddBusFee: (
+      <AddBusFee onBack={() => setActiveView(null)} onSave={handleAddBusFee} />
+    ),
+    UpdateBusFee: (
       <UpdateBusFee
-        onBack={() => setShowUpdateBusFee(false)}
-        onSave={() => setShowUpdateBusFee(false)}
+        onBack={() => setActiveView(null)}
+        onSave={() => setActiveView(null)}
       />
-    );
-  }
-
-  if (showAddAmuletsFee) {
-    return (
+    ),
+    AddAmuletsFee: (
       <AddAmuletsFee
-        onBack={() => setShowAddAmuletsFee(false)}
-        onSave={() => setShowAddAmuletsFee(false)}
+        onBack={() => setActiveView(null)}
+        onSave={() => setActiveView(null)}
       />
-    );
-  }
-
-  if (showAmuletsRefilledList) {
-    return (
+    ),
+    AmuletsRefilledList: (
       <AmuletsRefilledList
-        onBack={() => setShowAmuletsRefilledList(false)}
-        onSave={() => setShowAmuletsRefilledList(false)}
+        onBack={() => setActiveView(null)}
+        onSave={() => setActiveView(null)}
       />
-    );
-  }
+    ),
+  };
+
+  if (isLoading) return <Loading message="Loading Payments..." />;
+  if (activeView) return views[activeView];
 
   return (
-    <>
-      {isLoading ? (
-        <Loading message="Loading Payments..." />
-      ) : (
-        <div className="payments-dashboard-container">
-          <header className="payments-dashboard-top-bar">
-            <div
-              className="payments-dashboard-menu-icon"
-              onClick={toggleSidebar}
+    <div className="payments-dashboard-container">
+      <TopBar title="Payments" toggleSidebar={toggleSidebar} />
+      <main className="payments-dashboard-main-content">
+        <div className="payments-dashboard-tabs">
+          {["Dashboard", "Bus fee", "Amulets Fee"].map((tab) => (
+            <button
+              key={tab}
+              className={`tab-button ${activeTab === tab ? "active" : ""}`}
+              onClick={() => setActiveTab(tab)}
             >
-              <FontAwesomeIcon icon={faBars} />
-            </div>
-            <h1>Payments</h1>
-          </header>
-
-          <main className="payments-dashboard-main-content">
-            <div className="payments-dashboard-tabs">
-              <button
-                className={`tab-button ${
-                  activeTab === "Dashboard" ? "active" : ""
-                }`}
-                onClick={() => setActiveTab("Dashboard")}
-              >
-                Dashboard
-              </button>
-              <button
-                className={`tab-button ${
-                  activeTab === "Bus fee" ? "active" : ""
-                }`}
-                onClick={() => setActiveTab("Bus fee")}
-              >
-                Bus fee
-              </button>
-              <button
-                className={`tab-button ${
-                  activeTab === "Amulets Fee" ? "active" : ""
-                }`}
-                onClick={() => setActiveTab("Amulets Fee")}
-              >
-                Amulets Fee
-              </button>
-            </div>
-
-            {activeTab === "Dashboard" && (
-              <PaymentDashboard
-                selectedDate={selectedDate}
-                handleDateChange={handleDateChange}
-                setShowPaymentRecords={setShowPaymentRecords}
-                setShowViewTransactions={setShowViewTransactions}
-              />
-            )}
-
-            {activeTab === "Bus fee" && (
-              <BusFeeHome
-                setShowAddBusFee={setShowAddBusFee}
-                setShowUpdateBusFee={setShowUpdateBusFee}
-              />
-            )}
-
-            {activeTab === "Amulets Fee" && (
-              <AmuletsFeeHome
-                setShowAddAmuletsFee={setShowAddAmuletsFee}
-                setShowAmuletsRefilledList={setShowAmuletsRefilledList}
-              />
-            )}
-          </main>
+              {tab}
+            </button>
+          ))}
         </div>
-      )}
-    </>
+        {activeTab === "Dashboard" && (
+          <PaymentDashboard
+            selectedDate={selectedDate}
+            handleDateChange={handleDateChange}
+            setShowPaymentRecords={() => setActiveView("PaymentRecords")}
+            setShowViewTransactions={() => setActiveView("ViewTransactions")}
+          />
+        )}
+        {activeTab === "Bus fee" && (
+          <BusFeeHome
+            setShowAddBusFee={() => setActiveView("AddBusFee")}
+            setShowUpdateBusFee={() => setActiveView("UpdateBusFee")}
+          />
+        )}
+        {activeTab === "Amulets Fee" && (
+          <AmuletsFeeHome
+            setShowAddAmuletsFee={() => setActiveView("AddAmuletsFee")}
+            setShowAmuletsRefilledList={() =>
+              setActiveView("AmuletsRefilledList")
+            }
+          />
+        )}
+      </main>
+    </div>
   );
 };
 

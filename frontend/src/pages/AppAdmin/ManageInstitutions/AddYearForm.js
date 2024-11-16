@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from "react";
 import "./AddYearForm.css";
+import FormInput from "../../../components/Shared/FormInput/FormInput";
+import ActionButtons from "../../../components/Shared/ActionButtons/ActionButtons";
 
 const AddYearForm = ({ onBack, onSave, initialData, departmentData }) => {
   const [yearData, setYearData] = useState(
-    initialData || { yearCount: "", years: [] } // Default to empty
+    initialData || { yearCount: "", years: [] }
   );
   const yearOptions = [1, 2, 3, 4];
-
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (!initialData) {
-      setYearData({ yearCount: "", years: [] }); // Reset if no initial data
+      setYearData({ yearCount: "", years: [] });
     }
   }, [initialData]);
 
   const validateForm = () => {
-    let formErrors = {};
+    const formErrors = {};
     if (
       !yearData.yearCount ||
       yearData.yearCount < 1 ||
@@ -30,10 +31,10 @@ const AddYearForm = ({ onBack, onSave, initialData, departmentData }) => {
   const handleYearCountChange = (e) => {
     const count = parseInt(e.target.value);
     if (!isNaN(count)) {
-      const years = Array.from({ length: count }, (_, index) => index + 1); // Generate array of years
-      setYearData({ yearCount: count, years }); // Update the yearData with the count and years array
+      const years = Array.from({ length: count }, (_, index) => index + 1);
+      setYearData({ yearCount: count, years });
     } else {
-      setYearData({ yearCount: "", years: [] }); // Reset if no valid selection
+      setYearData({ yearCount: "", years: [] });
     }
   };
 
@@ -43,7 +44,7 @@ const AddYearForm = ({ onBack, onSave, initialData, departmentData }) => {
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
     } else {
-      onSave(yearData); // Pass the yearData object to the parent component
+      onSave(yearData);
     }
   };
 
@@ -88,44 +89,30 @@ const AddYearForm = ({ onBack, onSave, initialData, departmentData }) => {
           </div>
           <form onSubmit={handleSubmit}>
             <div className="year-form-grid">
-              <div className="year-form-group full-width">
-                <label htmlFor="yearCount">Select Number of Years:</label>
-                <select
+              <div className="full-width">
+                <FormInput
                   id="yearCount"
-                  value={yearData.yearCount} // Bind to yearData.yearCount
+                  name="yearCount"
+                  type="select"
+                  placeholder="Select Number of Years"
+                  value={yearData.yearCount}
                   onChange={handleYearCountChange}
-                  className="form-select"
-                >
-                  <option value="">Select Year</option> {/* Default option */}
-                  {yearOptions.map((year) => (
-                    <option key={year} value={year}>
-                      {year} Year{year > 1 ? "s" : ""}
-                    </option>
-                  ))}
-                </select>
-                {errors.yearCount && (
-                  <p className="error">{errors.yearCount}</p>
-                )}
+                  error={errors.yearCount}
+                  options={yearOptions.map((year) => ({
+                    value: year,
+                    label: `${year} Year${year > 1 ? "s" : ""}`,
+                  }))}
+                />
               </div>
             </div>
+            <ActionButtons
+              onCancel={handleBackClick}
+              onSubmit={handleSubmit}
+              submitText="Save Years & Next"
+              cancelText="Previous"
+            />
           </form>
         </div>
-      </div>
-      <div className="year-buttons-container">
-        <button
-          type="button"
-          className="year-submit-button"
-          onClick={handleBackClick}
-        >
-          Previous
-        </button>
-        <button
-          type="submit"
-          className="year-submit-button"
-          onClick={handleSubmit}
-        >
-          Save Years & Next
-        </button>
       </div>
     </div>
   );

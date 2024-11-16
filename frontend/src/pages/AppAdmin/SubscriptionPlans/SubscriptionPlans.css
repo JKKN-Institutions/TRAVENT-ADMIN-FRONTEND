@@ -7,32 +7,6 @@
   overflow: hidden;
 }
 
-.subscription-plans-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  margin-bottom: 10px;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
-.subscription-plans-menu-icon .menu-icon {
-  font-size: 1rem;
-  cursor: pointer;
-  color: #ffffff;
-  margin-right: 1rem;
-}
-
-.subscription-plans-header h2 {
-  color: #ffffff;
-  margin: 0;
-  font-size: 1.3rem;
-}
-
 .subscription-plans-main-content {
   flex: 1;
   overflow-y: auto;
@@ -50,88 +24,11 @@
   gap: 0.5rem;
 }
 
-.subscription-plans-search-bar-container {
-  width: 100%;
-  max-width: 600px;
-}
-
-.subscription-plans-search-input-wrapper {
-  position: relative;
-}
-
-.subscription-plans-search-input-wrapper .subscription-plans-search-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #888;
-  font-size: 1rem;
-}
-
-.subscription-plans-search-bar {
-  width: 100%;
-  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-  border: none;
-  border-radius: 20px;
-  background-color: #2c2c2c;
-  border: 1px solid #333;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: #fff;
-  font-size: 0.9rem;
-}
-
-.subscription-plans-search-bar:focus {
-  outline: none;
-}
-
 .subscription-plans-action-buttons-container {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
   flex-wrap: wrap;
-}
-
-.subscription-plans-action-button {
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.subscription-plans-action-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.subscription-plans-add-button {
-  background-color: rgba(215, 215, 215, 0.05);
-  border: 1px solid #333;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: #fff;
-}
-
-.subscription-plans-edit-button {
-  background-color: rgba(215, 215, 215, 0.05);
-  border: 1px solid #333;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: #fff;
-}
-
-.subscription-plans-delete-button {
-  background-color: rgba(215, 215, 215, 0.05);
-  border: 1px solid #333;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: #fff;
-}
-
-.subscription-plans-action-button:hover:not(:disabled) {
-  opacity: 0.9;
 }
 
 .plans-section {
@@ -199,76 +96,6 @@
   justify-content: center;
 }
 
-.subscription-delete-confirmation-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.subscription-delete-confirmation-modal {
-  background-color: #2c2c2c;
-  border-radius: 10px;
-  padding: 2rem;
-  max-width: 400px;
-  width: 90%;
-  text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.subscription-delete-confirmation-modal h3 {
-  margin-bottom: 1rem;
-  color: #fff;
-}
-
-.subscription-delete-confirmation-modal p {
-  margin-bottom: 1.5rem;
-  color: #ccc;
-}
-
-.subscription-delete-confirmation-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.subscription-cancel-delete-button,
-.subscription-confirm-delete-button {
-  padding: 0.5rem 2rem;
-  border-radius: 30px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-weight: 600;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.subscription-cancel-delete-button {
-  background-color: transparent;
-  color: #11a8fd;
-  border: 1px solid #11a8fd;
-}
-
-.subscription-confirm-delete-button {
-  background-color: #11a8fd;
-  color: #ffffff;
-  border: none;
-}
-
-.subscription-cancel-delete-button:hover {
-  background-color: rgba(17, 168, 253, 0.1);
-}
-
-.subscription-confirm-delete-button:hover {
-  background-color: #0e86c9;
-}
-
 @media (max-width: 768px) {
   .subscription-plans-header h2 {
     font-size: 1.2rem;
@@ -286,12 +113,6 @@
     flex-direction: column;
     align-items: stretch;
   }
-
-  .search-bar-container {
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-
   .plans-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }

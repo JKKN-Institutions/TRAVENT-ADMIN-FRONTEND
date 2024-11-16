@@ -21,8 +21,6 @@ const PaymentMethods = ({
       return;
     }
 
-    console.log("yyyyy", planDetails);
-
     const options = {
       key: "rzp_test_Z9Ag0AoPT2joJY",
       amount: planDetails.price * 100,
@@ -30,7 +28,7 @@ const PaymentMethods = ({
       name: "Travent",
       description: `Payment for ${planDetails.name}`,
       handler: function (response) {
-        if (response.razorpay_payment_id) {
+        if (response?.razorpay_payment_id) {
           setPaymentResponse(response);
           setShowSuccessOverlay(true);
         } else {

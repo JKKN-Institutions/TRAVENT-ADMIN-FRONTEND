@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faChevronDown,
-  faEdit,
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import "./UpdateBusFee.css";
 import AddBusFee from "../AddBusFee/AddBusFee";
 import Button from "../../../../components/Shared/Button/Button";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
 
 const UpdateBusFee = ({ onBack }) => {
   const [selectedInstitute, setSelectedInstitute] = useState(
@@ -106,10 +103,8 @@ const UpdateBusFee = ({ onBack }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = busFeeData.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const handleRowSelect = (index) => {
-    setSelectedRow(index === selectedRow ? null : index);
+  const handleRowSelect = (row) => {
+    setSelectedRow(selectedRow === row.id ? null : row.id);
   };
 
   const handleEditClick = () => {
@@ -120,15 +115,78 @@ const UpdateBusFee = ({ onBack }) => {
 
   const handleSave = (updatedData) => {
     if (selectedRow !== null) {
-      const updatedBusFeeData = [...busFeeData];
-      updatedBusFeeData[selectedRow] = updatedData;
-      setBusFeeData(updatedBusFeeData);
+      setBusFeeData((prevData) =>
+        prevData.map((item, index) =>
+          index === selectedRow ? updatedData : item
+        )
+      );
     } else {
       setBusFeeData([...busFeeData, updatedData]);
     }
     setShowAddBusFee(false);
     setSelectedRow(null);
   };
+
+  const headers = [
+    "S.No",
+    "Academic Year",
+    "Institute",
+    "Total Bus Fee",
+    "Term Selection",
+    "Duration",
+    "Term-wise Payment",
+  ];
+
+  const rows = currentItems.map((item, index) => ({
+    id: indexOfFirstItem + index,
+    data: {
+      "S.No": indexOfFirstItem + index + 1,
+      "Academic Year": item.academicYear,
+      Institute: item.institute,
+      "Total Bus Fee": `₹${item.totalBusFee}`,
+      "Term Selection": (
+        <div className="term-selection">
+          {Object.entries(item.termSelection).map(([term, selected]) => (
+            <span
+              key={term}
+              className={`term-badge ${selected ? "selected" : ""}`}
+            >
+              {term.charAt(0).toUpperCase() + term.slice(1)}
+            </span>
+          ))}
+        </div>
+      ),
+      Duration: (
+        <div className="duration-info">
+          {Object.entries(item.duration).map(([term, { start, end }]) => (
+            <div key={term} className="duration-item">
+              <span className="duration-term">
+                {term.charAt(0).toUpperCase() + term.slice(1)}:
+              </span>
+              <span className="duration-dates">
+                {start} to {end}
+              </span>
+            </div>
+          ))}
+        </div>
+      ),
+      "Term-wise Payment": (
+        <div className="payment-info">
+          {Object.entries(item.termWisePayment).map(
+            ([term, { amount, dueDate }]) => (
+              <div key={term} className="payment-item">
+                <span className="payment-term">
+                  {term.charAt(0).toUpperCase() + term.slice(1)}:
+                </span>
+                <span className="payment-amount">₹{amount}</span>
+                <span className="payment-due-date">Due: {dueDate}</span>
+              </div>
+            )
+          )}
+        </div>
+      ),
+    },
+  }));
 
   if (showAddBusFee) {
     return (
@@ -142,15 +200,7 @@ const UpdateBusFee = ({ onBack }) => {
 
   return (
     <div className="update-bus-fee-container">
-      <header className="update-bus-fee-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="update-bus-fee-back-icon"
-          onClick={onBack}
-        />
-        <h2>Update Bus Fee</h2>
-      </header>
-
+      <TopBar title="Update Bus Fee" onBack={onBack} backButton={true} />
       <main className="update-bus-fee-main-content">
         <div className="update-bus-fee-controls">
           <div className="update-bus-fee-institute-selector">
@@ -166,133 +216,30 @@ const UpdateBusFee = ({ onBack }) => {
               </select>
             </div>
           </div>
-          <div className="update-bus-fee-action-buttons">
-            <Button
-              label={
-                <>
-                  <FontAwesomeIcon icon={faEdit} /> Edit
-                </>
-              }
-              onClick={handleEditClick}
-              disabled={selectedRow === null}
-            />
-          </div>
-        </div>
 
-        <div className="update-bus-fee-table-container">
-          <div className="update-bus-fee-table-wrapper">
-            <table className="update-bus-fee-table">
-              <thead>
-                <tr>
-                  <th>S.No</th>
-                  <th>Academic Year</th>
-                  <th>Institute</th>
-                  <th>Total Bus Fee</th>
-                  <th>Term Selection</th>
-                  <th>Duration</th>
-                  <th>Term-wise Payment</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((item, index) => (
-                  <tr
-                    key={index}
-                    onClick={() => handleRowSelect(indexOfFirstItem + index)}
-                    className={
-                      selectedRow === indexOfFirstItem + index ? "selected" : ""
-                    }
-                  >
-                    <td>{indexOfFirstItem + index + 1}</td>
-                    <td>{item.academicYear}</td>
-                    <td>{item.institute}</td>
-                    <td>₹{item.totalBusFee}</td>
-                    <td>
-                      <div className="term-selection">
-                        {Object.entries(item.termSelection).map(
-                          ([term, selected]) => (
-                            <span
-                              key={term}
-                              className={`term-badge ${
-                                selected ? "selected" : ""
-                              }`}
-                            >
-                              {term.charAt(0).toUpperCase() + term.slice(1)}
-                            </span>
-                          )
-                        )}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="duration-info">
-                        {Object.entries(item.duration).map(
-                          ([term, { start, end }]) => (
-                            <div key={term} className="duration-item">
-                              <span className="duration-term">
-                                {term.charAt(0).toUpperCase() + term.slice(1)}:
-                              </span>
-                              <span className="duration-dates">
-                                {start} to {end}
-                              </span>
-                            </div>
-                          )
-                        )}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="payment-info">
-                        {Object.entries(item.termWisePayment).map(
-                          ([term, { amount, dueDate }]) => (
-                            <div key={term} className="payment-item">
-                              <span className="payment-term">
-                                {term.charAt(0).toUpperCase() + term.slice(1)}:
-                              </span>
-                              <span className="payment-amount">₹{amount}</span>
-                              <span className="payment-due-date">
-                                Due: {dueDate}
-                              </span>
-                            </div>
-                          )
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="update-bus-fee-pagination">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="update-bus-fee-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronLeft} />
-          </button>
-          {Array.from({
-            length: Math.ceil(busFeeData.length / itemsPerPage),
-          }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => paginate(index + 1)}
-              className={`update-bus-fee-pagination-button ${
-                currentPage === index + 1 ? "active" : ""
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={
-              currentPage === Math.ceil(busFeeData.length / itemsPerPage)
+          <Button
+            label={
+              <>
+                <FontAwesomeIcon icon={faEdit} /> Edit
+              </>
             }
-            className="update-bus-fee-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronRight} />
-          </button>
+            onClick={handleEditClick}
+            disabled={selectedRow === null}
+          />
         </div>
+
+        <TableContainer
+          headers={headers}
+          rows={rows}
+          onRowClick={handleRowSelect}
+          selectedRowId={selectedRow}
+        />
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(busFeeData.length / itemsPerPage)}
+          onPageChange={setCurrentPage}
+        />
       </main>
     </div>
   );

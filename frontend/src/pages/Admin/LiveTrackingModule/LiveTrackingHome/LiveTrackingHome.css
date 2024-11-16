@@ -6,31 +6,6 @@
   flex-direction: column;
 }
 
-.live-tracking-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
-.live-tracking-menu-icon {
-  font-size: 1rem;
-  cursor: pointer;
-  margin-right: 0.5rem;
-}
-
-.live-tracking-top-bar h1 {
-  margin: 0;
-  font-size: 1.3rem;
-}
-
 .live-tracking-main-content {
   flex: 1;
   padding: 0 0.5rem;
@@ -228,59 +203,6 @@
   box-shadow: 0 0 0 2px rgba(17, 168, 253, 0.2);
 }
 
-.live-tracking-table-container {
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  border-radius: 8px;
-  margin-bottom: 1rem;
-}
-
-.live-tracking-table-wrapper {
-  overflow-x: auto;
-  max-height: calc(100vh - 300px);
-  scrollbar-width: thin;
-  scrollbar-color: #4a4a4a #2c2c2c;
-}
-
-.live-tracking-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.live-tracking-table th,
-.live-tracking-table td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid #666;
-}
-
-.live-tracking-table th {
-  background-color: #1e1e1e;
-  color: #fff;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.live-tracking-table td {
-  background-color: #2c2c2c;
-  color: #fff;
-  font-size: 0.8rem;
-}
-
-.live-tracking-table tbody tr {
-  transition: background-color 0.3s ease;
-}
-
-.live-tracking-table tbody tr:hover {
-  background-color: #444;
-  cursor: pointer;
-}
-
 .status-badge {
   padding: 4px 8px;
   border-radius: 12px;
@@ -349,10 +271,6 @@
 }
 
 @media (max-width: 768px) {
-  .live-tracking-table {
-    font-size: 0.9rem;
-  }
-
   .live-tracking-date {
     flex-direction: column;
     gap: 0.5rem;
@@ -382,21 +300,12 @@
   .live-tracking-main-content h2 {
     font-size: 1.1rem;
   }
-  .live-tracking-table th,
-  .live-tracking-table td {
-    padding: 0.5rem;
-    font-size: 0.7rem;
-  }
 }
 
 /* Standard Desktops (992px to 1199px) */
 @media (max-width: 1199px) {
   .status-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .live-tracking-table-wrapper {
-    max-height: calc(100vh - 250px);
   }
 }
 
@@ -428,10 +337,6 @@
     gap: 0.75rem;
   }
 
-  .live-tracking-table {
-    font-size: 0.85rem;
-  }
-
   .live-tracking-pagination {
     flex-wrap: wrap;
     justify-content: center;
@@ -446,12 +351,6 @@
 
 /* Small Mobile (320px to 575px) */
 @media (max-width: 575px) {
-  .live-tracking-table th,
-  .live-tracking-table td {
-    padding: 0.5rem;
-    font-size: 0.75rem;
-  }
-
   .status-badge {
     padding: 2px 6px;
     font-size: 0.75rem;
@@ -471,11 +370,5 @@
 @media (max-width: 320px) {
   .live-tracking-top-bar h1 {
     font-size: 1rem;
-  }
-
-  .live-tracking-table th,
-  .live-tracking-table td {
-    padding: 0.4rem;
-    font-size: 0.7rem;
   }
 }

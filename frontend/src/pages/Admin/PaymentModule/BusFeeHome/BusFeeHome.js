@@ -1,19 +1,89 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faEdit } from "@fortawesome/free-solid-svg-icons";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import Switch from "react-switch";
+import { Line } from "react-chartjs-2";
 import { format } from "date-fns";
 import "./BusFeeHome.css";
 
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  scales: {
+    y: {
+      beginAtZero: true,
+      ticks: { stepSize: 200, color: "#fff", font: { size: 14 } },
+      grid: { color: "rgba(255, 255, 255, 0.1)" },
+    },
+    x: {
+      ticks: { color: "#fff", font: { size: 14 } },
+      grid: { color: "rgba(255, 255, 255, 0.1)" },
+    },
+  },
+  plugins: {
+    tooltip: {
+      backgroundColor: "rgba(0, 0, 0, 0.8)",
+      padding: 12,
+      titleColor: "#fff",
+      bodyColor: "#fff",
+      bodyFont: { size: 14 },
+      callbacks: {
+        label: ({ parsed }) => `Transactions: ${parsed.y}`,
+      },
+    },
+    legend: { display: false },
+  },
+};
+
+const TransactionsChart = ({
+  transactionData,
+  selectedDate,
+  handleDateChange,
+}) => {
+  const chartData = {
+    labels: transactionData.map((data) => data.week),
+    datasets: [
+      {
+        data: transactionData.map((data) => data.transactions),
+        borderColor: "#11a8fd",
+        backgroundColor: "rgba(17, 168, 253, 0.1)",
+        borderWidth: 2,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: "#11a8fd",
+      },
+    ],
+  };
+
+  return (
+    <div className="bus-fee-chart-card transactions-chart">
+      <div className="chart-header">
+        <h2>No. of Transactions</h2>
+        <input
+          type="month"
+          value={format(selectedDate, "yyyy-MM")}
+          onChange={handleDateChange}
+          className="bus-fee-month-picker"
+        />
+      </div>
+      <div style={{ height: "275px", width: "100%" }}>
+        <Line options={chartOptions} data={chartData} />
+      </div>
+    </div>
+  );
+};
+
+const ActionCard = ({ icon, title, description, onClick }) => (
+  <div className="bus-fee-action-card" onClick={onClick}>
+    <FontAwesomeIcon icon={icon} className="action-icon" />
+    <h3>{title}</h3>
+    <p>{description}</p>
+  </div>
+);
+
 const BusFeeHome = ({ setShowAddBusFee, setShowUpdateBusFee }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [dueNotificationEnabled, setDueNotificationEnabled] = useState(false);
 
   const transactionData = [
     { week: "Week 1", transactions: 100 },
@@ -21,17 +91,6 @@ const BusFeeHome = ({ setShowAddBusFee, setShowUpdateBusFee }) => {
     { week: "Week 3", transactions: 800 },
     { week: "Week 4", transactions: 500 },
   ];
-
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip">
-          <p className="label">{`${label} : ${payload[0].value}`}</p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   const handleDateChange = (event) => {
     const [year, month] = event.target.value.split("-");
@@ -42,50 +101,25 @@ const BusFeeHome = ({ setShowAddBusFee, setShowUpdateBusFee }) => {
     <div className="bus-fee-container">
       <div className="bus-fee-row">
         <div className="bus-fee-column">
-          <div className="bus-fee-chart-card transactions-chart">
-            <div className="chart-header">
-              <h2>No. of Transactions</h2>
-              <div className="chart-controls">
-                <input
-                  type="month"
-                  value={format(selectedDate, "yyyy-MM")}
-                  onChange={handleDateChange}
-                  className="bus-fee-month-picker"
-                />
-              </div>
-            </div>
-            <ResponsiveContainer width="100%" height={275}>
-              <LineChart data={transactionData}>
-                <XAxis dataKey="week" fontSize={14} />
-                <YAxis fontSize={14} />
-                <Tooltip content={<CustomTooltip />} />
-                <Line
-                  type="monotone"
-                  dataKey="transactions"
-                  stroke="#11a8fd"
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          <TransactionsChart
+            transactionData={transactionData}
+            selectedDate={selectedDate}
+            handleDateChange={handleDateChange}
+          />
         </div>
         <div className="bus-fee-column">
-          <div
-            className="bus-fee-action-card"
+          <ActionCard
+            icon={faPlus}
+            title="Add Bus Fee"
+            description="Add Bus Fee for the next academic year"
             onClick={() => setShowAddBusFee(true)}
-          >
-            <FontAwesomeIcon icon={faPlus} className="action-icon" />
-            <h3>Add Bus Fee</h3>
-            <p>Add Bus Fee for the next academic year</p>
-          </div>
-          <div
-            className="bus-fee-action-card"
+          />
+          <ActionCard
+            icon={faEdit}
+            title="Update Bus Fee"
+            description="Update modifications in the bus fee"
             onClick={() => setShowUpdateBusFee(true)}
-          >
-            <FontAwesomeIcon icon={faEdit} className="action-icon" />
-            <h3>Update Bus Fee</h3>
-            <p>Update modifications in the bus fee</p>
-          </div>
+          />
         </div>
       </div>
       <div className="bus-fee-row">
@@ -93,13 +127,17 @@ const BusFeeHome = ({ setShowAddBusFee, setShowUpdateBusFee }) => {
           <h2>Settings</h2>
           <div className="setting-item">
             <label htmlFor="enable-notification">Enable Due Notification</label>
-            <div className="toggle-switch">
-              <input type="checkbox" id="enable-notification" />
-              <span className="slider"></span>
-            </div>
+            <Switch
+              onChange={setDueNotificationEnabled}
+              checked={dueNotificationEnabled}
+              onColor="#11a8fd"
+              offColor="#ccc"
+              uncheckedIcon={false}
+              checkedIcon={false}
+            />
           </div>
           <p className="setting-description">
-            Enable or Disable payment due notification for each all terms.
+            Enable or Disable payment due notification for each term.
           </p>
         </div>
       </div>

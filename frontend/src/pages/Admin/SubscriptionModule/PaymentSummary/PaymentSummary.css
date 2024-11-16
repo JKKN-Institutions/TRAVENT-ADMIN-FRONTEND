@@ -7,34 +7,6 @@
   overflow: hidden;
 }
 
-.payment-summary-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  margin-bottom: 1rem;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
-.payment-summary-back-icon {
-  font-size: 1rem;
-  cursor: pointer;
-  margin-right: 1rem;
-  color: #fff;
-  transition: color 0.3s ease;
-}
-
-.payment-summary-top-bar h2 {
-  color: #ffffff;
-  margin: 0;
-  font-size: 1.3rem;
-  font-weight: 600;
-}
-
 .payment-summary-main-content {
   flex: 1;
   overflow-y: auto;
@@ -269,9 +241,6 @@
 }
 
 @media (max-width: 768px) {
-  .payment-summary-top-bar h2 {
-    font-size: 1.2rem;
-  }
   .payment-summary-actions {
     flex-direction: column;
   }

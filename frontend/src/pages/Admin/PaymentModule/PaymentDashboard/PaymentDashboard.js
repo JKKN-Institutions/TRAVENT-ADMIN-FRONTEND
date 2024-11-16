@@ -2,18 +2,28 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
   Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
+  Legend,
+} from "chart.js";
+import { Line, Pie } from "react-chartjs-2";
 import { format } from "date-fns";
 import "./PaymentDashboard.css";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const PaymentDashboard = ({
   selectedDate,
@@ -35,81 +45,116 @@ const PaymentDashboard = ({
     { name: "Not Paid", value: 4564, color: "#F44336" },
   ];
 
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip">
-          <p className="label">{`${label} : ${payload[0].value}`}</p>
-        </div>
-      );
-    }
-    return null;
+  const chartData = {
+    labels: transactionData.map((data) => data.week),
+    datasets: [
+      {
+        data: transactionData.map((data) => data.transactions),
+        borderColor: "#11a8fd",
+        backgroundColor: "rgba(17, 168, 253, 0.1)",
+        borderWidth: 2,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: "#11a8fd",
+      },
+    ],
   };
+
+  const pieChartData = {
+    labels: feePaidData.map((item) => item.name),
+    datasets: [
+      {
+        data: feePaidData.map((item) => item.value),
+        backgroundColor: feePaidData.map((item) => item.color),
+        borderColor: "rgba(255, 255, 255, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { stepSize: 200, color: "#fff", font: { size: 14 } },
+        grid: { color: "rgba(255, 255, 255, 0.1)" },
+      },
+      x: {
+        ticks: { color: "#fff", font: { size: 14 } },
+        grid: { color: "rgba(255, 255, 255, 0.1)" },
+      },
+    },
+    plugins: {
+      tooltip: {
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        padding: 12,
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        bodyFont: { size: 14 },
+        callbacks: {
+          label: ({ parsed }) => `Transactions: ${parsed.y}`,
+        },
+      },
+      legend: {
+        display: false,
+      },
+    },
+  };
+
+  const pieChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: "bottom",
+        labels: {
+          color: "#fff",
+          font: {
+            size: 14,
+          },
+        },
+      },
+    },
+  };
+
+  const Card = ({ title, children }) => (
+    <div className="payments-dashboard-chart-card">
+      <h3>{title}</h3>
+      {children}
+    </div>
+  );
 
   return (
     <div className="payments-dashboard">
       <div className="payments-dashboard-row">
         <div className="payments-dashboard-column">
-          <div className="payments-dashboard-chart-card transactions-chart">
+          <Card>
             <div className="chart-header">
               <h2>No. of Transactions</h2>
-              <div className="chart-controls">
-                <input
-                  type="month"
-                  value={format(selectedDate, "yyyy-MM")}
-                  onChange={handleDateChange}
-                  className="payments-dashboard-month-picker"
-                />
-              </div>
+              <input
+                type="month"
+                value={format(selectedDate, "yyyy-MM")}
+                onChange={handleDateChange}
+                className="payments-dashboard-month-picker"
+              />
             </div>
-            <ResponsiveContainer width="100%" height={275}>
-              <LineChart data={transactionData}>
-                <XAxis dataKey="week" fontSize={14} />
-                <YAxis fontSize={14} />
-                <Tooltip content={<CustomTooltip />} />
-                <Line
-                  type="monotone"
-                  dataKey="transactions"
-                  stroke="#11a8fd"
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+            <div style={{ height: "275px", width: "100%" }}>
+              <Line options={chartOptions} data={chartData} />
+            </div>
+          </Card>
         </div>
         <div className="payments-dashboard-column">
-          <div className="payments-dashboard-chart-card fee-paid">
+          <Card>
             <h3>Fee Paid</h3>
-            <div className="fee-paid-chart">
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie
-                    data={feePaidData}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    dataKey="value"
-                  >
-                    {feePaidData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
+            <div className="fee-paid-chart-container">
+              <div style={{ height: "200px", width: "100%" }}>
+                <Pie data={pieChartData} options={pieChartOptions} />
+              </div>
             </div>
-            <div className="fee-paid-legend">
-              {feePaidData.map((item) => (
-                <div key={item.name} className="legend-item">
-                  <span
-                    className="legend-color"
-                    style={{ backgroundColor: item.color }}
-                  ></span>
-                  <span className="legend-label">{item.name}</span>
-                  <span className="legend-value">{item.value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          </Card>
         </div>
       </div>
       <div className="payments-dashboard-row">
@@ -127,22 +172,20 @@ const PaymentDashboard = ({
             </div>
           </div>
         </div>
-        <div className="payments-dashboard-column">
-          <div className="total-transactions">
-            <p className="transactions-count-label">Total Transactions</p>
-            <p className="transactions-count">1458</p>
 
-            <div
-              className="view-transactions-link"
-              onClick={() => setShowViewTransactions(true)}
-            >
-              <span>View Transactions</span>
-              <div className="transaction-arrow-icon-container">
-                <FontAwesomeIcon
-                  icon={faArrowRight}
-                  className="transaction-arrow-icon"
-                />
-              </div>
+        <div className="total-transactions payments-dashboard-column">
+          <p className="transactions-count-label">Total Transactions</p>
+          <p className="transactions-count">1458</p>
+          <div
+            className="view-transactions-link"
+            onClick={() => setShowViewTransactions(true)}
+          >
+            <span>View Transactions</span>
+            <div className="transaction-arrow-icon-container">
+              <FontAwesomeIcon
+                icon={faArrowRight}
+                className="transaction-arrow-icon"
+              />
             </div>
           </div>
         </div>

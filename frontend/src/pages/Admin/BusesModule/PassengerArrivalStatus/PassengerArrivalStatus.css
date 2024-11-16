@@ -246,6 +246,10 @@
   cursor: not-allowed;
 }
 
+.passenger-arrival-status-total {
+  position: "absolute", top;
+}
+
 @media (max-width: 768px) {
   .passenger-arrival-status-table-header {
     flex-direction: row;

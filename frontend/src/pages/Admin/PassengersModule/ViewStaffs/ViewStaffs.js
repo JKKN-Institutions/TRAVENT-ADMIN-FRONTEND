@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faSearch,
-  faFilter,
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import "./ViewStaffs.css";
 import Button from "../../../../components/Shared/Button/Button";
+import TopBar from "../../../../components/Shared/TopBar/TopBar"; // Import TopBar
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar"; // Import SearchBar
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer"; // Import TableContainer
+import Pagination from "../../../../components/Shared/Pagination/Pagination"; // Import Pagination
 
 const staffsData = [
   {
@@ -116,93 +114,80 @@ const ViewStaffs = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
-  const [filteredStaffs, setFilteredStaffs] = useState(staffsData);
-
   const [filters, setFilters] = useState({
-    route: "",
+    routeNo: "",
     department: "",
     designation: "",
     instituteName: "",
     status: "",
   });
 
-  useEffect(() => {
-    const results = staffsData.filter((staff) =>
-      Object.values(staff).some(
-        (value) =>
-          typeof value === "string" &&
-          value.toLowerCase().includes(searchTerm.toLowerCase())
+  // Optimized filtering logic
+  const filterData = (data, term, filters) => {
+    return data
+      .filter((staff) =>
+        Object.values(staff).some(
+          (value) =>
+            typeof value === "string" &&
+            value.toLowerCase().includes(term.toLowerCase())
+        )
       )
-    );
-    setFilteredStaffs(results);
-    setCurrentPage(1);
-  }, [searchTerm]);
+      .filter((staff) =>
+        Object.entries(filters).every(([key, value]) =>
+          value
+            ? staff[key].toString().toLowerCase().includes(value.toLowerCase())
+            : true
+        )
+      );
+  };
+
+  const [filteredStaffs, setFilteredStaffs] = useState(staffsData);
 
   useEffect(() => {
-    const results = staffsData.filter((staff) => {
-      return Object.entries(filters).every(([key, value]) => {
-        if (!value) return true;
-        return staff[key].toLowerCase().includes(value.toLowerCase());
-      });
-    });
-    setFilteredStaffs(results);
+    setFilteredStaffs(filterData(staffsData, searchTerm, filters));
     setCurrentPage(1);
-  }, [filters]);
+  }, [searchTerm, filters]);
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredStaffs.slice(indexOfFirstItem, indexOfLastItem);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const handleSearchChange = (term) => setSearchTerm(term);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: value,
-    }));
+    setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
   };
 
-  const getUniqueValues = (data, key) => {
-    return [...new Set(data.map((item) => item[key]))];
-  };
+  const getUniqueValues = (key) => [
+    ...new Set(staffsData.map((staff) => staff[key])),
+  ];
 
-  const filterData = (data, filters) => {
-    return data.filter((item) => {
-      return Object.entries(filters).every(([key, value]) => {
-        if (!value) return true;
-        return item[key].toLowerCase().includes(value.toLowerCase());
-      });
-    });
-  };
+  const staffColumns = [
+    { key: "sNo", label: "S.No" },
+    { key: "staffName", label: "Staff Name" },
+    { key: "empId", label: "Emp ID" },
+    { key: "department", label: "Department" },
+    { key: "designation", label: "Designation" },
+    { key: "instituteName", label: "Institute Name" },
+    { key: "routeNo", label: "Route No" },
+    { key: "stopName", label: "Stop Name" },
+    { key: "pendingFee", label: "Pending Fee" },
+    { key: "remainingAmulets", label: "Remaining Amulets" },
+    { key: "refilledAmulets", label: "Refilled Amulets" },
+    { key: "status", label: "Status" },
+  ];
+
+  const currentItems = filteredStaffs.slice(
+    (currentPage - 1) * 10,
+    currentPage * 10
+  );
 
   return (
     <div className="view-staffs-container">
-      <header className="view-staffs-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="view-staffs-back-icon"
-          onClick={onBack}
-        />
-        <h2>View Staffs</h2>
-      </header>
-
+      <TopBar title="View Staffs" onBack={onBack} backButton={true} />
       <main className="view-staffs-main-content">
         <div className="view-staffs-search-filter">
-          <div className="view-staffs-search-input-wrapper">
-            <FontAwesomeIcon
-              icon={faSearch}
-              className="view-staffs-search-icon"
-            />
-            <input
-              type="text"
-              className="view-staffs-search-bar"
-              placeholder="Search by Route No or Name"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+          <SearchBar
+            placeholder="Search by Route No or Name"
+            onSearch={handleSearchChange}
+          />
           <div className="view-staffs-action-button-container">
             <Button
               label={
@@ -217,141 +202,52 @@ const ViewStaffs = ({ onBack }) => {
 
         {showFilters && (
           <div className="view-staffs-filters">
-            <select
-              name="routeNo"
-              value={filters.routeNo}
-              onChange={handleFilterChange}
-            >
-              <option value="">Route</option>
-              {getUniqueValues(staffsData, "routeNo").map((route) => (
-                <option key={route} value={route}>
-                  {route}
+            {[
+              "routeNo",
+              "department",
+              "designation",
+              "instituteName",
+              "status",
+            ].map((filter) => (
+              <select
+                key={filter}
+                name={filter}
+                value={filters[filter]}
+                onChange={handleFilterChange}
+              >
+                <option value="">
+                  {filter.charAt(0).toUpperCase() + filter.slice(1)}
                 </option>
-              ))}
-            </select>
-            <select
-              name="department"
-              value={filters.department}
-              onChange={handleFilterChange}
-            >
-              <option value="">Department</option>
-              {getUniqueValues(staffsData, "department").map((dept) => (
-                <option key={dept} value={dept}>
-                  {dept}
-                </option>
-              ))}
-            </select>
-            <select
-              name="designation"
-              value={filters.designation}
-              onChange={handleFilterChange}
-            >
-              <option value="">Designation</option>
-              {getUniqueValues(staffsData, "designation").map((desig) => (
-                <option key={desig} value={desig}>
-                  {desig}
-                </option>
-              ))}
-            </select>
-            <select
-              name="instituteName"
-              value={filters.instituteName}
-              onChange={handleFilterChange}
-            >
-              <option value="">Institute Name</option>
-              {getUniqueValues(staffsData, "instituteName").map((inst) => (
-                <option key={inst} value={inst}>
-                  {inst}
-                </option>
-              ))}
-            </select>
-            <select
-              name="status"
-              value={filters.status}
-              onChange={handleFilterChange}
-            >
-              <option value="">Status</option>
-              {getUniqueValues(staffsData, "status").map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
+                {getUniqueValues(filter).map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            ))}
           </div>
         )}
 
-        <div className="view-staffs-table-container">
-          <div className="view-staffs-table-wrapper">
-            <table className="view-staffs-table">
-              <thead>
-                <tr>
-                  <th>S.No</th>
-                  <th>Staff Name</th>
-                  <th>Emp ID</th>
-                  <th>Department</th>
-                  <th>Designation</th>
-                  <th>Institute Name</th>
-                  <th>Route No</th>
-                  <th>Stop Name</th>
-                  <th>Pending Fee</th>
-                  <th>Remaining Amulets</th>
-                  <th>Refilled Amulets</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((staff) => (
-                  <tr key={staff.empId}>
-                    <td>{staff.sNo}</td>
-                    <td>{staff.staffName}</td>
-                    <td>{staff.empId}</td>
-                    <td>{staff.department}</td>
-                    <td>{staff.designation}</td>
-                    <td>{staff.instituteName}</td>
-                    <td>{staff.routeNo}</td>
-                    <td>{staff.stopName}</td>
-                    <td>{staff.pendingFee}</td>
-                    <td>{staff.remainingAmulets}</td>
-                    <td>{staff.refilledAmulets}</td>
-                    <td>{staff.status}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <TableContainer
+          headers={staffColumns.map((col) => col.label)}
+          rows={
+            currentItems.length > 0
+              ? currentItems.map((staff) => ({ id: staff.empId, data: staff }))
+              : [
+                  {
+                    id: "no-data",
+                    data: { message: "No data available" },
+                    colSpan: staffColumns.length,
+                  },
+                ]
+          }
+        />
 
-        <div className="view-staffs-pagination">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="view-staffs-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronLeft} />
-          </button>
-          {Array.from({
-            length: Math.ceil(filteredStaffs.length / itemsPerPage),
-          }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => paginate(index + 1)}
-              className={`view-staffs-pagination-button ${
-                currentPage === index + 1 ? "active" : ""
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={
-              currentPage === Math.ceil(filteredStaffs.length / itemsPerPage)
-            }
-            className="view-staffs-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronRight} />
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(filteredStaffs.length / 10)}
+          onPageChange={setCurrentPage}
+        />
       </main>
     </div>
   );

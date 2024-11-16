@@ -7,31 +7,6 @@
   overflow-y: hidden;
 }
 
-.maintenance-fuel-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  border-radius: 10px;
-}
-
-.maintenance-fuel-menu-icon {
-  font-size: 1rem;
-  cursor: pointer;
-  margin-right: 1rem;
-}
-
-.maintenance-fuel-top-bar h1 {
-  margin: 0;
-  font-size: 1.3rem;
-}
-
 .maintenance-fuel-tabs {
   display: flex;
   justify-content: center;
@@ -105,10 +80,6 @@
 }
 
 @media (max-width: 768px) {
-  .maintenance-fuel-top-bar h1 {
-    font-size: 1.2rem;
-  }
-
   .maintenance-fuel-tabs {
     flex-wrap: wrap;
   }
@@ -121,10 +92,6 @@
 }
 
 @media (max-width: 576px) {
-  .maintenance-fuel-top-bar h1 {
-    font-size: 1.2rem;
-  }
-
   .maintenance-tab-button {
     font-size: 0.9rem;
     padding: 0.7rem;
@@ -132,10 +99,6 @@
 }
 
 @media (max-width: 480px) {
-  /* .maintenance-fuel-tabs {
-    flex-direction: column;
-  } */
-
   .maintenance-tab-button {
     width: 100%;
   }

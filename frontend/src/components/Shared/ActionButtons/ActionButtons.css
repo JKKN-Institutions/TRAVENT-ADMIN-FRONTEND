@@ -1,0 +1,38 @@
+.buttons-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.cancel-button,
+.save-button {
+  padding: 0.5rem 2rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.cancel-button {
+  background-color: transparent;
+  color: #11a8fd;
+  border: 1px solid #11a8fd;
+}
+
+.save-button {
+  background-color: #11a8fd;
+  color: #ffffff;
+  border: none;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .cancel-button,
+  .save-button {
+    font-size: 0.875rem;
+    padding: 0.5rem 1.5rem;
+  }
+}

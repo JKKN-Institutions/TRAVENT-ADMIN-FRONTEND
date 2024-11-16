@@ -7,10 +7,9 @@ import {
   faExchangeAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import "./DriverDetails.css";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
 
 const DriverDetails = ({ driver, onBack, onEdit, onToggleCategory }) => {
-  console.log(driver);
-
   // Sample route history data
   const routeHistory = [
     {
@@ -24,22 +23,23 @@ const DriverDetails = ({ driver, onBack, onEdit, onToggleCategory }) => {
     { sNo: 4, routeNo: "12", stopName: "Sangariri", duration: "6 months" },
   ];
 
-  const isMainOrSpare =
-    driver.category === "main" || driver.category === "spare";
-
-  // Define the label and logic for the category toggle button
+  // Define category toggle label dynamically
   const toggleCategoryLabel =
     driver.category === "main" ? "Set as Spare Driver" : "Set as Main Driver";
 
+  // Utility function to render table rows
+  const renderTableRows = (data) => {
+    return Object.entries(data).map(([key, value]) => (
+      <tr key={key}>
+        <th>{key.replace(/([A-Z])/g, " $1").toUpperCase()}</th>
+        <td>{value || "N/A"}</td>
+      </tr>
+    ));
+  };
+
   return (
     <div className="driver-details-container">
-      <header className="driver-details-top-bar">
-        <button className="driver-details-back-button" onClick={onBack}>
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
-        <h1>Profile</h1>
-      </header>
-
+      <TopBar title="Profile" onBack={onBack} backButton={true} />
       <main className="driver-details-main-content">
         <div className="driver-details-header">
           <div className="driver-details-avatar">
@@ -50,7 +50,7 @@ const DriverDetails = ({ driver, onBack, onEdit, onToggleCategory }) => {
           </div>
           <h2 className="driver-details-name">{driver.name}</h2>
           <div className="driver-details-actions">
-            {isMainOrSpare && (
+            {(driver.category === "main" || driver.category === "spare") && (
               <button
                 className="driver-details-toggle-category-button"
                 onClick={() => onToggleCategory(driver)}
@@ -71,38 +71,16 @@ const DriverDetails = ({ driver, onBack, onEdit, onToggleCategory }) => {
             <div className="driver-details-table-wrapper">
               <table className="driver-details-table">
                 <tbody>
-                  <tr>
-                    <th>Assigned Route</th>
-                    <td>{driver.routeAssigned || "1"}</td>
-                  </tr>
-                  <tr>
-                    <th>Route Name</th>
-                    <td>{driver.routeName || "Thiruvagowndanoor Bypass"}</td>
-                  </tr>
-                  <tr>
-                    <th>Driver Category</th>
-                    <td>{driver.category || "Spare Driver"}</td>
-                  </tr>
-                  <tr>
-                    <th>License Number</th>
-                    <td>{driver.licenseNumber || "9876543210"}</td>
-                  </tr>
-                  <tr>
-                    <th>Aadhar Number</th>
-                    <td>{driver.aadharNumber || "9876 5432 1012"}</td>
-                  </tr>
-                  <tr>
-                    <th>Experience</th>
-                    <td>{driver.experience || "10 Years"}</td>
-                  </tr>
-                  <tr>
-                    <th>Referral Employee</th>
-                    <td>{driver.referralEmployee || "Murugan S"}</td>
-                  </tr>
-                  <tr>
-                    <th>Attendance</th>
-                    <td>{driver.attendance || "78/109"}</td>
-                  </tr>
+                  {renderTableRows({
+                    "Assigned Route": driver.routeAssigned,
+                    "Route Name": driver.routeName,
+                    "Driver Category": driver.category,
+                    "License Number": driver.licenseNumber,
+                    "Aadhar Number": driver.aadharNumber,
+                    Experience: driver.experience,
+                    "Referral Employee": driver.referralEmployee,
+                    Attendance: driver.attendance,
+                  })}
                 </tbody>
               </table>
             </div>

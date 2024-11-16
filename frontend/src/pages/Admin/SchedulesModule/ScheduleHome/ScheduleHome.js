@@ -1,21 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import Switch from "react-switch";
+import { Pie, Bar } from "react-chartjs-2";
 import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  ArcElement,
+  BarElement,
   Tooltip,
-} from "recharts";
+  Legend,
+} from "chart.js";
 import "./ScheduleHome.css";
 import ScheduledPassengers from "../ScheduledPassengers/ScheduledPassengers";
 import GeneratedPlan from "../GeneratedPlan/GeneratedPlan";
 import Loading from "../../../../components/Shared/Loading/Loading";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  ArcElement,
+  BarElement,
+  Tooltip,
+  Legend
+);
 
 const ScheduleHome = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +35,6 @@ const ScheduleHome = ({ toggleSidebar }) => {
   const [notificationSendingTime, setNotificationSendingTime] =
     useState("19:40");
   const [dontAllowTomorrow, setDontAllowTomorrow] = useState(false);
-
   const [showScheduledPassengers, setShowScheduledPassengers] = useState(false);
   const [showGeneratedPlan, setShowGeneratedPlan] = useState(false);
 
@@ -36,75 +45,84 @@ const ScheduleHome = ({ toggleSidebar }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const usageCategories = [
-    { name: "Morning", value: 18, color: "#3498db" },
-    { name: "Evening", value: 65, color: "#2ecc71" },
-    { name: "Both", value: 6800, color: "#f1c40f" },
-    { name: "Absent", value: 3, color: "#e74c3c" },
-    { name: "Not Selected", value: 1, color: "#e84393" },
-  ];
-
-  const institutionWiseSchedulings = [
-    { name: "JKKN Engineering", count: 1805, color: "#3498db" },
-    { name: "JKKN Dental College", count: 2065, color: "#2ecc71" },
-    { name: "JKKN College of Pharmacy", count: 2309, color: "#e74c3c" },
-    { name: "JKKN College of Arts", count: 637, color: "#f1c40f" },
-    { name: "JKKN Arts & Science", count: 1235, color: "#9b59b6" },
-  ];
-
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip">
-          <p className="label">{`${payload[0].name} : ${payload[0].value}`}</p>
-        </div>
-      );
-    }
-    return null;
+  // Pie chart data and options
+  const usageCategoriesData = {
+    labels: ["Morning", "Evening", "Both", "Absent", "Not Selected"],
+    datasets: [
+      {
+        data: [1800, 2356, 3800, 1003, 900],
+        backgroundColor: [
+          "rgba(52, 152, 219, 1)",
+          "rgba(46, 204, 113, 1)",
+          "rgba(241, 196, 15, 1)",
+          "rgba(231, 76, 60, 1)",
+          "rgba(232, 67, 147, 1)",
+        ],
+        borderColor: ["rgba(255, 255, 255, 1)"],
+        borderWidth: 1,
+      },
+    ],
   };
 
-  const ToggleSwitch = ({ id, checked, onChange, label }) => {
-    return (
-      <div className="schedules-setting-item">
-        <label htmlFor={id}>{label}</label>
-        <div className="schedules-toggle-switch">
-          <input
-            type="checkbox"
-            id={id}
-            checked={checked}
-            onChange={onChange}
-          />
-          <span className="schedules-slider"></span>
-        </div>
-      </div>
-    );
+  const pieChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      tooltip: { enabled: true },
+      legend: {
+        position: "bottom",
+        labels: { color: "#ccc" },
+      },
+    },
   };
 
-  const handleToggle = (setter) => {
-    return () => {
-      setter((prevState) => {
-        const newState = !prevState;
-        console.log("Toggling state:", newState);
-        return newState;
-      });
-    };
+  // Bar chart data and options
+  const institutionWiseSchedulingsData = {
+    labels: [
+      "JKKN Engineering",
+      "JKKN Dental College",
+      "JKKN College of Pharmacy",
+      "JKKN College of Arts",
+      "JKKN Arts & Science",
+    ],
+    datasets: [
+      {
+        label: "Institution Wise Schedulings",
+        data: [1805, 2065, 2309, 637, 1235],
+        backgroundColor: [
+          "rgba(52, 152, 219, 1)",
+          "rgba(46, 204, 113, 1)",
+          "rgba(231, 76, 60, 1)",
+          "rgba(241, 196, 15, 1)",
+          "rgba(155, 89, 182, 1)",
+        ],
+        borderColor: ["rgba(255, 255, 255, 1)"],
+        borderWidth: 1,
+      },
+    ],
   };
 
-  const handleShowScheduledPassengers = () => {
-    setShowScheduledPassengers(true);
+  const barChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        titleColor: "#fff",
+        bodyColor: "#fff",
+      },
+    },
+    scales: {
+      x: { ticks: { color: "#ccc" } },
+      y: { ticks: { color: "#ccc" } },
+    },
   };
 
-  const handleBackFromScheduledPassengers = () => {
+  const handleShowScheduledPassengers = () => setShowScheduledPassengers(true);
+  const handleBackFromScheduledPassengers = () =>
     setShowScheduledPassengers(false);
-  };
-
-  const handleShowGeneratedPlan = () => {
-    setShowGeneratedPlan(true);
-  };
-
-  const handleBackFromGeneratedPlan = () => {
-    setShowGeneratedPlan(false);
-  };
+  const handleShowGeneratedPlan = () => setShowGeneratedPlan(true);
+  const handleBackFromGeneratedPlan = () => setShowGeneratedPlan(false);
 
   if (showScheduledPassengers) {
     return <ScheduledPassengers onBack={handleBackFromScheduledPassengers} />;
@@ -120,12 +138,7 @@ const ScheduleHome = ({ toggleSidebar }) => {
         <Loading message="Loading Schedules..." />
       ) : (
         <div className="schedules-container">
-          <header className="schedules-top-bar">
-            <div className="schedules-menu-icon" onClick={toggleSidebar}>
-              <FontAwesomeIcon icon={faBars} />
-            </div>
-            <h1>Schedules</h1>
-          </header>
+          <TopBar title="Schedules" toggleSidebar={toggleSidebar} />
           <main className="schedules-main-content">
             <div className="schedules-stats-row">
               <div className="schedules-column">
@@ -160,35 +173,7 @@ const ScheduleHome = ({ toggleSidebar }) => {
                     Categories of Usage
                   </h3>
                   <div className="usage-categories-chart">
-                    <ResponsiveContainer width="100%" height={200}>
-                      <PieChart>
-                        <Pie
-                          data={usageCategories}
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={80}
-                          dataKey="value"
-                          startAngle={90}
-                          endAngle={-270}
-                        >
-                          {usageCategories.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="usage-categories-legend">
-                    {usageCategories.map((category) => (
-                      <div key={category.name} className="legend-item">
-                        <span
-                          className="legend-color"
-                          style={{ backgroundColor: category.color }}
-                        ></span>
-                        <span className="legend-label">{category.name}</span>
-                        <span className="legend-value">{category.value}</span>
-                      </div>
-                    ))}
+                    <Pie data={usageCategoriesData} options={pieChartOptions} />
                   </div>
                 </div>
                 <div className="schedule-home-action-card">
@@ -211,35 +196,10 @@ const ScheduleHome = ({ toggleSidebar }) => {
                 <div className="schedules-stat-card institution-wise">
                   <h2>Institution Wise Schedulings</h2>
                   <div className="institution-chart">
-                    <ResponsiveContainer width="100%" height={300}>
-                      <BarChart
-                        data={institutionWiseSchedulings}
-                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                      >
-                        <XAxis dataKey="name" tick={false} />
-                        <YAxis width={40} fontSize={14} />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Bar dataKey="count" fill="#8884d8" barSize={40}>
-                          {institutionWiseSchedulings.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="institution-legend">
-                    {institutionWiseSchedulings.map((institution) => (
-                      <div key={institution.name} className="legend-item">
-                        <span
-                          className="legend-color"
-                          style={{ backgroundColor: institution.color }}
-                        ></span>
-                        <span className="legend-label">{institution.name}</span>
-                        <span className="legend-value">
-                          {institution.count}
-                        </span>
-                      </div>
-                    ))}
+                    <Bar
+                      data={institutionWiseSchedulingsData}
+                      options={barChartOptions}
+                    />
                   </div>
                 </div>
               </div>
@@ -248,12 +208,18 @@ const ScheduleHome = ({ toggleSidebar }) => {
               <h2>Settings</h2>
               <div className="schedules-settings-grid">
                 <div className="schedules-settings-column">
-                  <ToggleSwitch
-                    id="auto-planning"
-                    checked={autoPlanning}
-                    onChange={handleToggle(setAutoPlanning)}
-                    label="Enable Auto Planning and Scheduling"
-                  />
+                  <div className="schedules-setting-item">
+                    <label htmlFor="auto-planning">
+                      Enable Auto Planning and Scheduling
+                    </label>
+                    <Switch
+                      onChange={setAutoPlanning}
+                      checked={autoPlanning}
+                      onColor="#11a8fd"
+                      uncheckedIcon={false}
+                      checkedIcon={false}
+                    />
+                  </div>
                   <p className="schedules-setting-description">
                     Generates the plan automatically on the specified time and
                     updates everyone with their schedule
@@ -277,12 +243,18 @@ const ScheduleHome = ({ toggleSidebar }) => {
                 </div>
                 <div className="schedules-settings-divider"></div>
                 <div className="schedules-settings-column">
-                  <ToggleSwitch
-                    id="reminder-notification"
-                    checked={reminderNotification}
-                    onChange={handleToggle(setReminderNotification)}
-                    label="Reminder Notification"
-                  />
+                  <div className="schedules-setting-item">
+                    <label htmlFor="reminder-notification">
+                      Reminder Notification
+                    </label>
+                    <Switch
+                      onChange={setReminderNotification}
+                      checked={reminderNotification}
+                      onColor="#11a8fd"
+                      uncheckedIcon={false}
+                      checkedIcon={false}
+                    />
+                  </div>
                   <div className="schedules-setting-item">
                     <label htmlFor="notification-time">
                       Notification Sending Time
@@ -301,15 +273,21 @@ const ScheduleHome = ({ toggleSidebar }) => {
                       Change Notification Sending Time
                     </button>
                   </div>
-                  <ToggleSwitch
-                    id="dont-allow-tomorrow"
-                    checked={dontAllowTomorrow}
-                    onChange={handleToggle(setDontAllowTomorrow)}
-                    label="Don't Allow Scheduling On Tomorrow"
-                  />
+                  <div className="schedules-setting-item">
+                    <label htmlFor="dont-allow-tomorrow">
+                      Don't Allow Scheduling On Tomorrow
+                    </label>
+                    <Switch
+                      onChange={setDontAllowTomorrow}
+                      checked={dontAllowTomorrow}
+                      onColor="#11a8fd"
+                      uncheckedIcon={false}
+                      checkedIcon={false}
+                    />
+                  </div>
                   <p className="schedules-setting-description">
-                    Not Allowing the users to schedule for tomorrow due to any
-                    reason like holiday etc.,
+                    Not allowing the users to schedule for tomorrow due to any
+                    reason like holiday, etc.
                   </p>
                 </div>
               </div>

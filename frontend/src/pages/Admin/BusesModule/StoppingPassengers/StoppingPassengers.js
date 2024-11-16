@@ -1,18 +1,14 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faArrowLeft,
-  faUserGraduate,
-  faUserTie,
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUserGraduate, faUserTie } from "@fortawesome/free-solid-svg-icons";
 import "./StoppingPassengers.css";
+import TopBar from "../../../../components/Shared/TopBar/TopBar"; // Import TopBar
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar"; // Import SearchBar
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer"; // Import TableContainer
+import Pagination from "../../../../components/Shared/Pagination/Pagination"; // Import Pagination
 
 const StoppingPassengers = ({ stop, onBack, institutionId }) => {
-  const [searchTermStudent, setSearchTermStudent] = useState("");
-  const [searchTermStaff, setSearchTermStaff] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPageStudent, setCurrentPageStudent] = useState(1);
   const [currentPageStaff, setCurrentPageStaff] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -74,91 +70,15 @@ const StoppingPassengers = ({ stop, onBack, institutionId }) => {
 
   const filteredStudents = studentsData.filter(
     (student) =>
-      student.studentName
-        .toLowerCase()
-        .includes(searchTermStudent.toLowerCase()) ||
-      student.regNo.toLowerCase().includes(searchTermStudent.toLowerCase())
+      student.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.regNo.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredStaff = staffData.filter(
     (staff) =>
-      staff.staffName.toLowerCase().includes(searchTermStaff.toLowerCase()) ||
-      staff.staffID.toLowerCase().includes(searchTermStaff.toLowerCase())
+      staff.staffName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      staff.staffID.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const renderTable = (data, columns, currentPage, itemsPerPage) => {
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-
-    return (
-      <div className="stopping-passengers-table-container">
-        <div className="stopping-passengers-table-wrapper">
-          <table className="stopping-passengers-table">
-            <thead>
-              <tr>
-                {columns.map((column) => (
-                  <th key={column.key}>{column.label}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((item, index) => (
-                <tr key={item.id}>
-                  {columns.map((column) => (
-                    <td key={column.key}>
-                      {column.key === "serialNumber"
-                        ? indexOfFirstItem + index + 1
-                        : column.key === "amulets"
-                        ? `${item.amulets.remaining} / ${item.amulets.refilled}`
-                        : item[column.key]}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    );
-  };
-
-  const renderPagination = (currentPage, totalItems, paginate) => {
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
-      pageNumbers.push(i);
-    }
-
-    return (
-      <div className="stopping-passengers-pagination">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="stopping-passengers-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-        {pageNumbers.map((number) => (
-          <button
-            key={number}
-            onClick={() => paginate(number)}
-            className={`stopping-passengers-pagination-button ${
-              currentPage === number ? "active" : ""
-            }`}
-          >
-            {number}
-          </button>
-        ))}
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === pageNumbers.length}
-          className="stopping-passengers-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </button>
-      </div>
-    );
-  };
 
   const studentColumns = [
     { key: "serialNumber", label: "S.No" },
@@ -188,64 +108,64 @@ const StoppingPassengers = ({ stop, onBack, institutionId }) => {
 
   return (
     <div className="stopping-passengers-container">
-      <header className="stopping-passengers-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="stopping-passengers-menu-icon"
-          onClick={onBack}
-        />
-        <h2>Passengers for Stop: {stop.stopName}</h2>
-      </header>
+      <TopBar
+        title={`Passengers for Stop: ${stop.stopName}`}
+        onBack={onBack}
+        backButton={true}
+      />
 
       <main className="stopping-passengers-main-content">
-        <div className="stopping-passengers-search-container">
-          <div className="search-input-wrapper">
-            <FontAwesomeIcon icon={faSearch} className="search-icon" />
-            <input
-              type="text"
-              className="stopping-passengers-search-bar"
-              placeholder="Search passengers..."
-              value={searchTermStudent}
-              onChange={(e) => {
-                setSearchTermStudent(e.target.value);
-                setSearchTermStaff(e.target.value);
-              }}
-            />
-          </div>
+        <div className="stopping-passengers-controls">
+          <SearchBar
+            placeholder="Search passengers..."
+            onSearch={setSearchTerm}
+          />
         </div>
-
         <div className="stopping-passengers-tables-container">
           <div className="stopping-passengers-table-section">
             <h3>
               <FontAwesomeIcon icon={faUserGraduate} /> Students
             </h3>
-            {renderTable(
-              filteredStudents,
-              studentColumns,
-              currentPageStudent,
-              itemsPerPage
-            )}
-            {renderPagination(
-              currentPageStudent,
-              filteredStudents.length,
-              setCurrentPageStudent
-            )}
+            <TableContainer
+              headers={studentColumns.map((col) => col.label)}
+              rows={filteredStudents.map((student, index) => ({
+                id: student.id,
+                data: {
+                  ...student,
+                  serialNumber:
+                    index + 1 + (currentPageStudent - 1) * itemsPerPage,
+                  amulets: `${student.amulets.remaining} / ${student.amulets.refilled}`,
+                },
+              }))}
+            />
+            <Pagination
+              currentPage={currentPageStudent}
+              totalPages={Math.ceil(filteredStudents.length / itemsPerPage)}
+              onPageChange={setCurrentPageStudent}
+            />
           </div>
+
           <div className="stopping-passengers-table-section">
             <h3>
               <FontAwesomeIcon icon={faUserTie} /> Staff
             </h3>
-            {renderTable(
-              filteredStaff,
-              staffColumns,
-              currentPageStaff,
-              itemsPerPage
-            )}
-            {renderPagination(
-              currentPageStaff,
-              filteredStaff.length,
-              setCurrentPageStaff
-            )}
+            <TableContainer
+              headers={staffColumns.map((col) => col.label)}
+              rows={filteredStaff.map((staff, index) => ({
+                id: staff.id,
+                data: {
+                  ...staff,
+                  serialNumber:
+                    index + 1 + (currentPageStaff - 1) * itemsPerPage,
+                  amulets: `${staff.amulets.remaining} / ${staff.amulets.refilled}`,
+                },
+              }))}
+            />
+            <Pagination
+              currentPage={currentPageStaff}
+              totalPages={Math.ceil(filteredStaff.length / itemsPerPage)}
+              onPageChange={setCurrentPageStaff}
+            />
           </div>
         </div>
       </main>

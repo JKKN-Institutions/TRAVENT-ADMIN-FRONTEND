@@ -1,16 +1,30 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faEye } from "@fortawesome/free-solid-svg-icons";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { format } from "date-fns";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
 import "./FuelHome.css";
+
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const FuelHome = ({
   selectedDate,
@@ -25,15 +39,73 @@ const FuelHome = ({
     { week: "Week 4", purchase: 1.8 },
   ];
 
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip">
-          <p className="label">{`${label} : ${payload[0].value} L`}</p>
-        </div>
-      );
-    }
-    return null;
+  // Chart.js configuration
+  const chartData = {
+    labels: fuelPurchaseData.map((data) => data.week),
+    datasets: [
+      {
+        data: fuelPurchaseData.map((data) => data.purchase),
+        borderColor: "#11a8fd",
+        backgroundColor: "rgba(17, 168, 253, 0.1)",
+        borderWidth: 2,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: "#11a8fd",
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        padding: 12,
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        bodyFont: {
+          size: 14,
+        },
+        callbacks: {
+          label: function (context) {
+            return `${context.parsed.y} L`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: true,
+          color: "rgba(255, 255, 255, 0.1)",
+        },
+        ticks: {
+          color: "#fff",
+          font: {
+            size: 14,
+          },
+        },
+      },
+      y: {
+        grid: {
+          display: true,
+          color: "rgba(255, 255, 255, 0.1)",
+        },
+        ticks: {
+          color: "#fff",
+          font: {
+            size: 14,
+          },
+        },
+        min: 0,
+        max: 2.5,
+        stepSize: 0.5,
+      },
+    },
   };
 
   return (
@@ -52,19 +124,9 @@ const FuelHome = ({
                 />
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={275}>
-              <LineChart data={fuelPurchaseData}>
-                <XAxis dataKey="week" fontSize={14} />
-                <YAxis domain={[0, 2.5]} fontSize={14} />
-                <Tooltip content={<CustomTooltip />} />
-                <Line
-                  type="monotone"
-                  dataKey="purchase"
-                  stroke="#11a8fd"
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <div style={{ height: "275px", width: "100%" }}>
+              <Line data={chartData} options={chartOptions} />
+            </div>
           </div>
         </div>
         <div className="fuel-home-column">

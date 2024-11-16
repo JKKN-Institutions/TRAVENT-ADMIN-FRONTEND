@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import FormInput from "../../../../components/Shared/FormInput/FormInput";
+import ActionButtons from "../../../../components/Shared/ActionButtons/ActionButtons";
 import "./AddNewStock.css";
 
 const AddNewStock = ({ stock, onBack, onSave }) => {
@@ -26,22 +28,7 @@ const AddNewStock = ({ stock, onBack, onSave }) => {
 
   useEffect(() => {
     if (stock) {
-      const completeStockData = {
-        itemName: stock.itemName || "",
-        itemCategory: stock.itemCategory || "",
-        itemType: stock.itemType || "",
-        quantityInStock: stock.quantityInStock || "",
-        reorderLevel: stock.reorderLevel || "",
-        unitOfMeasure: stock.unitOfMeasure || "",
-        storageLocation: stock.storageLocation || "",
-        totalCost: stock.totalCost || "",
-        supplierName: stock.supplierName || "",
-        supplierContact: stock.supplierContact || "",
-        purchaseOrderNo: stock.purchaseOrderNo || "",
-        purchaseDate: stock.purchaseDate || "",
-        purchaseTime: stock.purchaseTime || "",
-      };
-      setStockData(completeStockData);
+      setStockData(stock);
     }
   }, [stock]);
 
@@ -58,11 +45,7 @@ const AddNewStock = ({ stock, onBack, onSave }) => {
     Object.keys(stockData).forEach((key) => {
       if (!stockData[key]) {
         formErrors[key] = `${
-          key.charAt(0).toUpperCase() +
-          key
-            .slice(1)
-            .replace(/([A-Z])/g, " $1")
-            .trim()
+          key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, " $1")
         } is required`;
       }
     });
@@ -74,57 +57,25 @@ const AddNewStock = ({ stock, onBack, onSave }) => {
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
-      toast.error("Please fill in all required fields", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      showToast("error", "Please fill in all required fields");
     } else {
+      const loadingToastId = showToast(
+        "loading",
+        stock ? "Updating stock..." : "Adding new stock..."
+      );
       try {
-        const loadingToastId = toast.loading(
-          stock ? "Updating stock..." : "Adding new stock...",
-          {
-            position: "top-right",
-          }
-        );
-
         const savedStock = await onSave(stockData);
-
-        // Dismiss loading toast
-        toast.dismiss(loadingToastId);
-
-        // Show success toast with a delay to ensure visibility
-        setTimeout(() => {
-          toast.success(
-            <div>
-              Successfully {stock ? "updated" : "added"} stock.
-              <br />
-              <small>Stock details have been saved.</small>
-            </div>,
-            {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-            }
-          );
-        }, 100);
-
-        // Delay the onBack call slightly to ensure success toast is visible
+        showToast(
+          "success",
+          `Successfully ${stock ? "updated" : "added"} stock.`,
+          loadingToastId
+        );
         setTimeout(() => onBack(savedStock), 3100);
       } catch (error) {
-        toast.dismiss();
-        toast.error(
+        showToast(
+          "error",
           `Failed to ${stock ? "update" : "add"} stock. Please try again.`,
-          {
-            position: "top-right",
-            autoClose: 3000,
-          }
+          loadingToastId
         );
         console.error("Error saving stock:", error);
       }
@@ -133,34 +84,20 @@ const AddNewStock = ({ stock, onBack, onSave }) => {
 
   return (
     <div className="add-new-stock-container">
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        limit={3}
+      <ToastNotification />
+      <TopBar
+        title={stock ? "Edit Stock" : "Add New Stock"}
+        onBack={onBack}
+        backButton={true}
       />
-      <header className="add-new-stock-top-bar">
-        <button className="add-new-stock-back-button" onClick={onBack}>
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
-        <div className="add-new-stock-header">
-          <h2>{stock ? "Edit Stock" : "Add New Stock"}</h2>
-        </div>
-      </header>
-
       <main className="add-new-stock-main-content">
         <form onSubmit={handleSubmit}>
           <div className="add-new-stock-form-grid">
             {Object.keys(stockData).map((key) => (
               <div key={key} className="add-new-stock-form-group">
-                <input
+                <FormInput
+                  id={key}
+                  name={key}
                   type={
                     key.includes("quantity") ||
                     key.includes("reorder") ||
@@ -172,10 +109,7 @@ const AddNewStock = ({ stock, onBack, onSave }) => {
                       ? "time"
                       : "text"
                   }
-                  id={key}
-                  name={key}
                   value={stockData[key]}
-                  onChange={handleChange}
                   placeholder={
                     key.charAt(0).toUpperCase() +
                     key
@@ -183,24 +117,17 @@ const AddNewStock = ({ stock, onBack, onSave }) => {
                       .replace(/([A-Z])/g, " $1")
                       .trim()
                   }
-                  className={errors[key] ? "input-error" : ""}
+                  error={errors[key]}
+                  onChange={handleChange}
                 />
-                {errors[key] && <p className="error">{errors[key]}</p>}
               </div>
             ))}
           </div>
-          <div className="add-new-stock-buttons-container">
-            <button
-              type="button"
-              className="add-new-stock-cancel-button"
-              onClick={onBack}
-            >
-              Cancel
-            </button>
-            <button type="submit" className="add-new-stock-save-button">
-              {stock ? "Update Stock" : "Add Stock"}
-            </button>
-          </div>
+          <ActionButtons
+            onCancel={onBack}
+            onSubmit={handleSubmit}
+            submitText={stock ? "Update Stock" : "Add Stock"}
+          />
         </form>
       </main>
     </div>

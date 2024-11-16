@@ -1,28 +1,23 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faSearch,
-  faFilter,
-  faChevronRight,
-  faChevronLeft,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faEye } from "@fortawesome/free-solid-svg-icons";
 import "./GeneratedPlan.css";
 import Button from "../../../../components/Shared/Button/Button";
 import SpecificRouteGeneratedPlan from "../SpecificRouteGeneratedPlan/SpecificRouteGeneratedPlan";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
 
 const GeneratedPlan = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const [filters, setFilters] = useState({ route: "" });
   const [selectedRoute, setSelectedRoute] = useState(null);
 
-  const [filters, setFilters] = useState({
-    route: "",
-  });
+  const itemsPerPage = 10;
 
-  // Mock data for the generated plan
   const generatedPlanData = [
     { route: 1, driver: "Murugan S", scheduled: 60 },
     { route: 2, driver: "Murugan S", scheduled: 56 },
@@ -34,7 +29,6 @@ const GeneratedPlan = ({ onBack }) => {
     { route: 8, driver: "Vel K", scheduled: 51 },
     { route: 9, driver: "Raju S", scheduled: 80 },
     { route: 10, driver: "Gokul K", scheduled: 40 },
-    // Add more mock data as needed
   ];
 
   const filteredPlan = generatedPlanData.filter(
@@ -45,23 +39,18 @@ const GeneratedPlan = ({ onBack }) => {
       (filters.route === "" || item.route.toString() === filters.route)
   );
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredPlan.slice(indexOfFirstItem, indexOfLastItem);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const currentItems = filteredPlan.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: value,
-    }));
+    setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
-  const getUniqueRoutes = () => {
-    return [...new Set(generatedPlanData.map((item) => item.route))];
-  };
+  const uniqueRoutes = [
+    ...new Set(generatedPlanData.map((item) => item.route)),
+  ];
 
   if (selectedRoute) {
     return (
@@ -74,30 +63,13 @@ const GeneratedPlan = ({ onBack }) => {
 
   return (
     <div className="generated-plan-container">
-      <header className="generated-plan-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="generated-plan-back-icon"
-          onClick={onBack}
-        />
-        <h2>Generated Plan</h2>
-      </header>
-
+      <TopBar title="Generated Plan" backButton onBack={onBack} />
       <main className="generated-plan-main-content">
         <div className="generated-plan-search-filter">
-          <div className="generated-plan-search-input-wrapper">
-            <FontAwesomeIcon
-              icon={faSearch}
-              className="generated-plan-search-icon"
-            />
-            <input
-              type="text"
-              className="generated-plan-search-bar"
-              placeholder="Search by Route No or Driver Name"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+          <SearchBar
+            placeholder="Search by Route No or Driver Name"
+            onSearch={setSearchTerm}
+          />
           <div className="generated-plan-action-button-container">
             <Button
               label={
@@ -105,7 +77,7 @@ const GeneratedPlan = ({ onBack }) => {
                   <FontAwesomeIcon icon={faFilter} /> Filter by
                 </>
               }
-              onClick={() => setShowFilters(!showFilters)}
+              onClick={() => setShowFilters((prev) => !prev)}
             />
           </div>
         </div>
@@ -118,7 +90,7 @@ const GeneratedPlan = ({ onBack }) => {
               onChange={handleFilterChange}
             >
               <option value="">Route</option>
-              {getUniqueRoutes().map((route) => (
+              {uniqueRoutes.map((route) => (
                 <option key={route} value={route.toString()}>
                   {route}
                 </option>
@@ -134,69 +106,36 @@ const GeneratedPlan = ({ onBack }) => {
           </span>
         </div>
 
-        <div className="generated-plan-table-container">
-          <div className="generated-plan-table-wrapper">
-            <table className="generated-plan-table">
-              <thead>
-                <tr>
-                  <th>Route</th>
-                  <th>Driver</th>
-                  <th>Scheduled</th>
-                  <th>Details</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.route}</td>
-                    <td>{item.driver}</td>
-                    <td>{item.scheduled}</td>
-                    <td>
-                      <button
-                        className="view-details-button"
-                        onClick={() => setSelectedRoute(item)}
-                      >
-                        View <FontAwesomeIcon icon={faChevronRight} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        {filteredPlan.length > 0 ? (
+          <>
+            <TableContainer
+              headers={["Route", "Driver", "Scheduled", "Details"]}
+              rows={currentItems.map((item) => ({
+                id: item.route,
+                data: {
+                  Route: item.route,
+                  Driver: item.driver,
+                  Scheduled: item.scheduled,
+                  Details: (
+                    <FontAwesomeIcon
+                      icon={faEye}
+                      className="generated-plan-view-icon"
+                      onClick={() => setSelectedRoute(item)}
+                    />
+                  ),
+                },
+              }))}
+            />
 
-        <div className="generated-plan-pagination">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="generated-plan-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronLeft} />
-          </button>
-          {Array.from({
-            length: Math.ceil(filteredPlan.length / itemsPerPage),
-          }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => paginate(index + 1)}
-              className={`generated-plan-pagination-button ${
-                currentPage === index + 1 ? "active" : ""
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={
-              currentPage === Math.ceil(filteredPlan.length / itemsPerPage)
-            }
-            className="generated-plan-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronRight} />
-          </button>
-        </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={Math.ceil(filteredPlan.length / itemsPerPage)}
+              onPageChange={setCurrentPage}
+            />
+          </>
+        ) : (
+          <p className="no-data-message">No data available</p>
+        )}
       </main>
     </div>
   );

@@ -1,20 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./AdminHome.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Doughnut } from "react-chartjs-2";
 import {
   faBell,
-  faBars,
   faEnvelope,
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import TopBar from "../../../components/Shared/TopBar/TopBar";
 import NewUserRequest from "../AdminDashboard/NewUserRequest/NewUserRequest";
 import AdminNotifications from "../AdminNotifications/AdminNotifications";
 import Loading from "../../../components/Shared/Loading/Loading";
+import "./AdminHome.css";
 
 const AdminHome = ({ toggleSidebar, resetState }) => {
-  const [showNotifications, setShowNotifications] = useState(false);
   const [showNewUserRequests, setShowNewUserRequests] = useState(false);
   const [showAdminNotifications, setShowAdminNotifications] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,28 +20,23 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
 
   const handleEnvelopeClick = (event) => {
     event.preventDefault();
-    event.stopPropagation();
     setShowNewUserRequests(true);
   };
 
   const handleBellClick = (event) => {
     event.preventDefault();
-    event.stopPropagation();
     setShowAdminNotifications(true);
   };
 
-  // Reset the component state when `resetState` changes
   useEffect(() => {
     if (resetState) {
-      setShowNotifications(false);
       setShowNewUserRequests(false);
       setShowAdminNotifications(false);
-      setIsLoading(true); // Set loading to true when reset
-      setTimeout(() => setIsLoading(false), 1500); // Simulate loading
+      setIsLoading(true);
+      setTimeout(() => setIsLoading(false), 1500);
     }
   }, [resetState]);
 
-  // Dismiss modal or overlay when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -65,9 +58,10 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
     };
   }, [isLoading]);
 
-  const handleBackFromForm = () => {
-    setShowNewUserRequests(false);
-  };
+  const additionalIcons = [
+    { icon: faEnvelope, onClick: handleEnvelopeClick },
+    { icon: faBell, onClick: handleBellClick },
+  ];
 
   const realTimeData = [
     { title: "On Route", value: 36 },
@@ -76,10 +70,10 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
   ];
 
   const statusCards = [
-    { title: "Deviation In Route", value: 4, color: "#FF0000" }, // Red
-    { title: "Being Late", value: 18, color: "#FFA500" }, // Orange
-    { title: "Traffic Jam", value: 14, color: "#FFFF00" }, // Yellow
-    { title: "Accidents", value: 0, color: "#00FF00" }, // Green
+    { title: "Deviation In Route", value: 4, color: "#FF0000" },
+    { title: "Being Late", value: 18, color: "#FFA500" },
+    { title: "Traffic Jam", value: 14, color: "#FFFF00" },
+    { title: "Accidents", value: 0, color: "#00FF00" },
   ];
 
   const warnings = [
@@ -97,13 +91,31 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
     },
   ];
 
-  if (showNewUserRequests) {
-    return <NewUserRequest onBack={handleBackFromForm} />;
-  }
+  // Doughnut chart data for boarding data
+  const boardingData = {
+    labels: ["Boarded", "Not Boarded"],
+    datasets: [
+      {
+        data: [1326, 698], // 1326 boarded out of 2024 total
+        backgroundColor: ["#4caf50", "#555555"],
+        hoverBackgroundColor: ["#66bb6a", "#757575"],
+        borderWidth: 1,
+      },
+    ],
+  };
 
-  if (showAdminNotifications) {
+  const boardingChartOptions = {
+    cutout: "70%",
+    plugins: {
+      tooltip: { enabled: true },
+      legend: { display: false },
+    },
+  };
+
+  if (showNewUserRequests)
+    return <NewUserRequest onBack={() => setShowNewUserRequests(false)} />;
+  if (showAdminNotifications)
     return <AdminNotifications toggleSidebar={toggleSidebar} />;
-  }
 
   return (
     <>
@@ -111,25 +123,11 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
         <Loading message="Loading Admin Home..." />
       ) : (
         <div className="admin-home-container">
-          <header className="admin-top-bar">
-            <div className="admin-menu-icon" onClick={toggleSidebar}>
-              <FontAwesomeIcon icon={faBars} />
-            </div>
-            <h1>Admin Home</h1>
-            <div className="admin-top-bar-icons">
-              <FontAwesomeIcon
-                icon={faEnvelope}
-                className="admin-icon"
-                onClick={handleEnvelopeClick}
-                ref={envelopeRef}
-              />
-              <FontAwesomeIcon
-                icon={faBell}
-                className="admin-home-icon"
-                onClick={handleBellClick}
-              />
-            </div>
-          </header>
+          <TopBar
+            title="Admin Home"
+            toggleSidebar={toggleSidebar}
+            additionalIcons={additionalIcons}
+          />
 
           <main className="admin-main-content">
             <div className="admin-content-wrapper">
@@ -167,14 +165,9 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
                   <section className="admin-boarding-data">
                     <h2>Boarding Data</h2>
                     <div className="admin-boarding-chart">
-                      <CircularProgressbar
-                        value={65}
-                        text={`${65}%`}
-                        styles={buildStyles({
-                          textColor: "#ffffff",
-                          pathColor: "#4caf50",
-                          trailColor: "#555555",
-                        })}
+                      <Doughnut
+                        data={boardingData}
+                        options={boardingChartOptions}
                       />
                     </div>
                     <div className="admin-boarding-info">
@@ -188,10 +181,10 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
                 </div>
               </div>
             </div>
+
             <section className="admin-warnings">
               <h2>
-                Warnings{"  "}
-                <FontAwesomeIcon icon={faExclamationTriangle} />
+                Warnings <FontAwesomeIcon icon={faExclamationTriangle} />
               </h2>
               {warnings.map((warning, index) => (
                 <div key={index} className="admin-warning-item">

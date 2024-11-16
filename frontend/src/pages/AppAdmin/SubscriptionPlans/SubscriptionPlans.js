@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSearch,
   faPlus,
   faTrash,
-  faBars,
   faEdit,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import NewSubscriptionPlanForm from "./NewSubscriptionPlanForm";
-import "./SubscriptionPlans.css";
+import TopBar from "../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../components/Shared/SearchBar/SearchBar";
+import ConfirmationModal from "../../../components/Shared/ConfirmationModal/ConfirmationModal";
 import Button from "../../../components/Shared/Button/Button";
+import Loading from "../../../components/Shared/Loading/Loading";
+import ToastNotification, {
+  showToast,
+} from "../../../components/Shared/ToastNotification/ToastNotification"; // Import ToastNotification and showToast
+import "./SubscriptionPlans.css";
 
 const SubscriptionPlans = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [showNewPlanForm, setShowNewPlanForm] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [selectedPlans, setSelectedPlans] = useState([]);
   const [editingPlan, setEditingPlan] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [plans, setPlans] = useState([
     {
       id: 1,
@@ -90,16 +96,14 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
             plan.id === editingPlan.id ? { ...newPlan, id: plan.id } : plan
           )
         );
-
-        setSelectedPlan(null); // Deselect the plan after editing
       } else {
         setPlans([...plans, { ...newPlan, id: Date.now() }]);
       }
 
       setTimeout(() => {
         setShowNewPlanForm(false);
-
         setEditingPlan(null);
+        setSelectedPlans([]);
       }, 3100);
     } catch (error) {
       console.error("Error saving subscription plan:", error);
@@ -112,31 +116,58 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
   };
 
   const handleSelectPlan = (plan) => {
-    setSelectedPlan(selectedPlan && selectedPlan.id === plan.id ? null : plan);
+    const alreadySelected = selectedPlans.find((p) => p.id === plan.id);
+    const updatedSelection = alreadySelected
+      ? selectedPlans.filter((p) => p.id !== plan.id)
+      : [...selectedPlans, plan];
+    setSelectedPlans(updatedSelection);
   };
 
   const handleEditPlan = () => {
-    if (selectedPlan) {
-      setEditingPlan(selectedPlan);
+    if (selectedPlans.length === 1) {
+      setEditingPlan(selectedPlans[0]);
       setShowNewPlanForm(true);
     }
   };
 
   const handleDeletePlan = () => {
-    if (selectedPlan) {
+    if (selectedPlans.length > 0) {
       setShowDeleteConfirmation(true);
     }
   };
 
   const confirmDelete = () => {
-    setPlans(plans.filter((plan) => plan.id !== selectedPlan.id));
-    setSelectedPlan(null);
-    setShowDeleteConfirmation(false);
+    try {
+      setPlans(
+        plans.filter((plan) => !selectedPlans.some((p) => p.id === plan.id))
+      );
+      setSelectedPlans([]);
+      setShowDeleteConfirmation(false);
+
+      showToast(
+        "success",
+        `${selectedPlans.length} plan(s) deleted successfully.`
+      );
+    } catch (error) {
+      console.error("Error deleting subscription plans:", error);
+      showToast(
+        "error",
+        "An error occurred while deleting the selected plans."
+      );
+    }
   };
 
   const cancelDelete = () => {
     setShowDeleteConfirmation(false);
   };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
+  const filteredPlans = plans.filter((plan) =>
+    plan.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   if (showNewPlanForm) {
     return (
@@ -151,39 +182,18 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
   return (
     <>
       {isLoading ? (
-        <div className="schedules-loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading Subscriptions...</p>
-        </div>
+        <Loading message="Loading Subscriptions..." />
       ) : (
         <div className="subscription-plans-container">
-          <header className="subscription-plans-top-bar">
-            <div className="subscription-plans-menu-icon">
-              <FontAwesomeIcon
-                icon={faBars}
-                className="menu-icon"
-                onClick={toggleSidebar}
-              />
-            </div>
-            <div className="subscription-plans-header">
-              <h2>Subscription Plans</h2>
-            </div>
-          </header>
+          <TopBar title="Subscription Plans" toggleSidebar={toggleSidebar} />
+          <ToastNotification position="top-right" theme="dark" />{" "}
+          {/* Toast notification container */}
           <main className="subscription-plans-main-content">
             <div className="subscription-plans-controls">
-              <div className="subscription-plans-search-bar-container">
-                <div className="subscription-plans-search-input-wrapper">
-                  <FontAwesomeIcon
-                    icon={faSearch}
-                    className="subscription-plans-search-icon"
-                  />
-                  <input
-                    type="text"
-                    className="subscription-plans-search-bar"
-                    placeholder="Search institutions..."
-                  />
-                </div>
-              </div>
+              <SearchBar
+                placeholder="Search subscription plans..."
+                onSearch={handleSearch}
+              />
 
               <div className="subscription-plans-action-buttons-container">
                 <Button
@@ -203,7 +213,7 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
                   }
                   onClick={handleEditPlan}
                   className="subscription-plans-action-button subscription-plans-edit-button"
-                  disabled={!selectedPlan}
+                  disabled={selectedPlans.length !== 1}
                 />
                 <Button
                   label={
@@ -213,26 +223,26 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
                   }
                   onClick={handleDeletePlan}
                   className="subscription-plans-action-button subscription-plans-delete-button"
-                  disabled={!selectedPlan}
+                  disabled={selectedPlans.length === 0}
                 />
               </div>
             </div>
             <div className="plans-section">
               <h2>6 Months Plans - Premium</h2>
               <div className="plans-grid">
-                {plans
+                {filteredPlans
                   .filter((plan) => plan.validity === "6 Months")
                   .map((plan) => (
                     <div
                       key={plan.id}
                       className={`plan-card ${
-                        selectedPlan && selectedPlan.id === plan.id
+                        selectedPlans.some((p) => p.id === plan.id)
                           ? "selected"
                           : ""
                       }`}
                       onClick={() => handleSelectPlan(plan)}
                     >
-                      {selectedPlan && selectedPlan.id === plan.id && (
+                      {selectedPlans.some((p) => p.id === plan.id) && (
                         <div className="plan-card-check">
                           <FontAwesomeIcon icon={faCheck} />
                         </div>
@@ -249,19 +259,19 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
             <div className="plans-section">
               <h2>12 Months Plans - Ultra Premium</h2>
               <div className="plans-grid">
-                {plans
+                {filteredPlans
                   .filter((plan) => plan.validity === "12 Months")
                   .map((plan) => (
                     <div
                       key={plan.id}
                       className={`plan-card ${
-                        selectedPlan && selectedPlan.id === plan.id
+                        selectedPlans.some((p) => p.id === plan.id)
                           ? "selected"
                           : ""
                       }`}
                       onClick={() => handleSelectPlan(plan)}
                     >
-                      {selectedPlan && selectedPlan.id === plan.id && (
+                      {selectedPlans.some((p) => p.id === plan.id) && (
                         <div className="plan-card-check">
                           <FontAwesomeIcon icon={faCheck} />
                         </div>
@@ -275,28 +285,15 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
               </div>
             </div>
           </main>
-
           {showDeleteConfirmation && (
-            <div className="subscription-delete-confirmation-overlay">
-              <div className="subscription-delete-confirmation-modal">
-                <h3>Confirm Deletion</h3>
-                <p>Are you sure you want to delete this plan?</p>
-                <div className="subscription-delete-confirmation-buttons">
-                  <button
-                    onClick={cancelDelete}
-                    className="subscription-cancel-delete-button"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={confirmDelete}
-                    className="subscription-confirm-delete-button"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ConfirmationModal
+              title="Confirm Deletion"
+              message={`Are you sure you want to delete ${selectedPlans.length} plan(s)?`}
+              confirmText="Delete"
+              cancelText="Cancel"
+              onConfirm={confirmDelete}
+              onCancel={cancelDelete}
+            />
           )}
         </div>
       )}

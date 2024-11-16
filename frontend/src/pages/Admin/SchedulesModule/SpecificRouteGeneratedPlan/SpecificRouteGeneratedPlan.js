@@ -1,23 +1,23 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowLeft,
-  faSearch,
   faFilter,
-  faChevronLeft,
-  faChevronRight,
   faUserGraduate,
   faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import "./SpecificRouteGeneratedPlan.css";
 import Button from "../../../../components/Shared/Button/Button";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
 
 const SpecificRouteGeneratedPlan = ({ onBack, routeData }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [currentPageStudent, setCurrentPageStudent] = useState(1);
   const [currentPageStaff, setCurrentPageStaff] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const itemsPerPage = 5;
   const [filters, setFilters] = useState({
     year: "",
     department: "",
@@ -236,190 +236,149 @@ const SpecificRouteGeneratedPlan = ({ onBack, routeData }) => {
     },
   ];
 
-  const filteredStudentData = specificRouteData.filter((item) => {
-    const matchesSearch = Object.values(item).some(
-      (value) =>
-        typeof value === "string" &&
-        value.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    const matchesFilters = Object.entries(filters).every(([key, value]) => {
-      if (!value) return true;
-      return item[key]?.toLowerCase().includes(value.toLowerCase());
+  const applyFiltersAndSearch = (data) => {
+    return data.filter((item) => {
+      const matchesSearch = Object.values(item).some(
+        (value) =>
+          typeof value === "string" &&
+          value.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      const matchesFilters = Object.entries(filters).every(
+        ([key, value]) =>
+          !value || item[key]?.toLowerCase().includes(value.toLowerCase())
+      );
+      return matchesSearch && matchesFilters;
     });
-
-    return matchesSearch && matchesFilters;
-  });
-
-  const filteredStaffData = specificRouteStaffData.filter((item) => {
-    const matchesSearch = Object.values(item).some(
-      (value) =>
-        typeof value === "string" &&
-        value.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    const matchesFilters = Object.entries(filters).every(([key, value]) => {
-      if (!value) return true;
-      return item[key]?.toLowerCase().includes(value.toLowerCase());
-    });
-
-    return matchesSearch && matchesFilters;
-  });
-
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  const getUniqueValues = (data, key) => {
-    return [...new Set(data.map((item) => item[key]))];
+  const filteredStudentData = applyFiltersAndSearch(specificRouteData);
+  const filteredStaffData = applyFiltersAndSearch(specificRouteStaffData);
+
+  const handleFilterChange = (e) =>
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+
+  const getUniqueValues = (data, key) => [
+    ...new Set(data.map((item) => item[key])),
+  ];
+
+  const renderFilterOptions = () => {
+    const filterKeys = [
+      "year",
+      "department",
+      "section",
+      "instituteName",
+      "designation",
+    ];
+    return filterKeys.map((filter) => (
+      <select
+        key={filter}
+        name={filter}
+        value={filters[filter]}
+        onChange={handleFilterChange}
+      >
+        <option value="">
+          {filter.charAt(0).toUpperCase() + filter.slice(1)}
+        </option>
+        {getUniqueValues(
+          filter === "designation" ? specificRouteStaffData : specificRouteData,
+          filter
+        ).map((value) => (
+          <option key={value} value={value}>
+            {value}
+          </option>
+        ))}
+      </select>
+    ));
   };
 
-  const studentColumns = [
-    { key: "S.No", label: "S.No" },
-    { key: "studentName", label: "Student Name" },
-    { key: "regNo", label: "Reg No" },
-    { key: "scheduledFor", label: "Scheduled For" },
-    { key: "rollNo", label: "Roll No" },
-    { key: "year", label: "Year" },
-    { key: "department", label: "Department" },
-    { key: "section", label: "Section" },
-    { key: "instituteName", label: "Institute Name" },
-    { key: "stopName", label: "Stop Name" },
-  ];
+  const columns = {
+    student: [
+      { key: "S.No", label: "S.No" },
+      { key: "studentName", label: "Student Name" },
+      { key: "regNo", label: "Reg No" },
+      { key: "scheduledFor", label: "Scheduled For" },
+      { key: "rollNo", label: "Roll No" },
+      { key: "year", label: "Year" },
+      { key: "department", label: "Department" },
+      { key: "section", label: "Section" },
+      { key: "instituteName", label: "Institute Name" },
+      { key: "stopName", label: "Stop Name" },
+    ],
+    staff: [
+      { key: "S.No", label: "S.No" },
+      { key: "staffName", label: "Staff Name" },
+      { key: "staffID", label: "Staff ID" },
+      { key: "scheduledFor", label: "Scheduled For" },
+      { key: "department", label: "Department" },
+      { key: "designation", label: "Designation" },
+      { key: "instituteName", label: "Institute Name" },
+      { key: "boardingPoint", label: "Boarding Point" },
+    ],
+  };
 
-  const staffColumns = [
-    { key: "S.No", label: "S.No" },
-    { key: "staffName", label: "Staff Name" },
-    { key: "staffID", label: "Staff ID" },
-    { key: "scheduledFor", label: "Scheduled For" },
-    { key: "department", label: "Department" },
-    { key: "designation", label: "Designation" },
-    { key: "instituteName", label: "Institute Name" },
-    { key: "boardingPoint", label: "Boarding Point" },
-  ];
+  const renderTableSection = (
+    title,
+    icon,
+    data,
+    columns,
+    currentPage,
+    setPage
+  ) => {
+    const iconClass = title.includes("Student")
+      ? "student-schedule-icon"
+      : "staff-schedule-icon";
 
-  const renderTable = (data, columns, currentPage) => {
+    // Slice data according to pagination
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
-    if (data.length === 0) {
-      return (
-        <div className="specific-route-table-container">
-          <div className="specific-route-table-wrapper">
-            <table className="specific-route-table">
-              <thead>
-                <tr>
-                  {columns.map((column) => (
-                    <th key={column.key}>{column.label}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colSpan={columns.length} className="no-data-message">
-                    No data available
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      );
-    }
-
     return (
-      <div className="specific-route-table-container">
-        <div className="specific-route-table-wrapper">
-          <table className="specific-route-table">
-            <thead>
-              <tr>
-                {columns.map((column) => (
-                  <th key={column.key}>{column.label}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((item) => (
-                <tr key={item["S.No"]}>
-                  {columns.map((column) => (
-                    <td key={column.key}>{item[column.key]}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <div className="specific-route-table-section">
+        <div className="specific-route-table-sub-section">
+          <h3>
+            <FontAwesomeIcon icon={icon} className={iconClass} /> {title}
+          </h3>
+          <p className="total-count">Total of {data.length}</p>
         </div>
-      </div>
-    );
-  };
-
-  const renderPagination = (currentPage, totalItems, setCurrentPage) => {
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
-      pageNumbers.push(i);
-    }
-
-    return (
-      <div className="specific-route-pagination">
-        <button
-          onClick={() => setCurrentPage((prev) => prev - 1)}
-          disabled={currentPage === 1}
-          className="specific-route-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-        {pageNumbers.map((number) => (
-          <button
-            key={number}
-            onClick={() => setCurrentPage(number)}
-            className={`specific-route-pagination-button ${
-              currentPage === number ? "active" : ""
-            }`}
-          >
-            {number}
-          </button>
-        ))}
-        <button
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-          disabled={currentPage === pageNumbers.length}
-          className="specific-route-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </button>
+        <TableContainer
+          headers={columns.map((col) => col.label)}
+          rows={
+            currentItems.length > 0
+              ? currentItems.map((item) => ({ id: item["S.No"], data: item }))
+              : [
+                  {
+                    id: "no-data",
+                    data: { message: "No data available" },
+                    colSpan: columns.length,
+                  },
+                ]
+          }
+        />
+        {currentItems.length > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(data.length / itemsPerPage)}
+            onPageChange={setPage}
+          />
+        )}
       </div>
     );
   };
 
   return (
     <div className="specific-route-container">
-      <header className="specific-route-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="specific-route-back-icon"
-          onClick={onBack}
-        />
-        <h2>Route {routeData?.route || "1"} Scheduled Passengers</h2>
-      </header>
-
+      <TopBar
+        title={`Route ${routeData?.route || "1"} Scheduled Passengers`}
+        backButton
+        onBack={onBack}
+      />
       <main className="specific-route-main-content">
         <div className="specific-route-actions">
-          <div className="specific-route-search-container">
-            <div className="specific-route-search-input-wrapper">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="specific-route-search-icon"
-              />
-              <input
-                type="text"
-                className="specific-route-search-bar"
-                placeholder="Search by Route No or Passenger Name"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
+          <SearchBar
+            placeholder="Search by Route No or Passenger Name"
+            onSearch={setSearchTerm}
+          />
           <div className="specific-route-action-button-container">
             <Button
               label={
@@ -433,84 +392,26 @@ const SpecificRouteGeneratedPlan = ({ onBack, routeData }) => {
         </div>
 
         {showFilters && (
-          <div className="specific-route-filters">
-            {[
-              "year",
-              "department",
-              "section",
-              "instituteName",
-              "designation",
-            ].map((filter) => (
-              <select
-                key={filter}
-                name={filter}
-                value={filters[filter]}
-                onChange={handleFilterChange}
-              >
-                <option value="">
-                  {filter.charAt(0).toUpperCase() + filter.slice(1)}
-                </option>
-                {getUniqueValues(
-                  filter === "designation"
-                    ? specificRouteStaffData
-                    : specificRouteData,
-                  filter
-                ).map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
-            ))}
-          </div>
+          <div className="specific-route-filters">{renderFilterOptions()}</div>
         )}
 
         <div className="specific-route-tables-container">
-          <div className="specific-route-table-section">
-            <div className="specific-route-table-sub-section">
-              <h3>
-                <FontAwesomeIcon
-                  icon={faUserGraduate}
-                  className="students-schedule-icon"
-                />
-                Students Scheduled
-              </h3>
-              <p className="total-count">
-                Total of {filteredStudentData.length}
-              </p>
-            </div>
-            {renderTable(
-              filteredStudentData,
-              studentColumns,
-              currentPageStudent
-            )}
-            {filteredStudentData.length > 0 &&
-              renderPagination(
-                currentPageStudent,
-                filteredStudentData.length,
-                setCurrentPageStudent
-              )}
-          </div>
-
-          <div className="specific-route-table-section">
-            <div className="specific-route-table-sub-section">
-              <h3>
-                <FontAwesomeIcon
-                  icon={faUserTie}
-                  className="staff-schedule-icon"
-                />
-                Staff Scheduled
-              </h3>
-              <p className="total-count">Total of {filteredStaffData.length}</p>
-            </div>
-            {renderTable(filteredStaffData, staffColumns, currentPageStaff)}
-            {filteredStaffData.length > 0 &&
-              renderPagination(
-                currentPageStaff,
-                filteredStaffData.length,
-                setCurrentPageStaff
-              )}
-          </div>
+          {renderTableSection(
+            "Students Scheduled",
+            faUserGraduate,
+            filteredStudentData,
+            columns.student,
+            currentPageStudent,
+            setCurrentPageStudent
+          )}
+          {renderTableSection(
+            "Staff Scheduled",
+            faUserTie,
+            filteredStaffData,
+            columns.staff,
+            currentPageStaff,
+            setCurrentPageStaff
+          )}
         </div>
       </main>
     </div>

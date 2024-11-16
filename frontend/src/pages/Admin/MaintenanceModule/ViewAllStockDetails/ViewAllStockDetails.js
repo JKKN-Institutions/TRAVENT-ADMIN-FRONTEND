@@ -1,17 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faArrowLeft,
-  faChevronLeft,
-  faChevronRight,
-  faEye,
-  faEdit,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import "./ViewAllStockDetails.css";
 import { format } from "date-fns";
 import Button from "../../../../components/Shared/Button/Button";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
+import ConfirmationModal from "../../../../components/Shared/ConfirmationModal/ConfirmationModal";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
+
 import SpecificStockDetails from "../SpecificStockDetails/SpecificStockDetails";
 import AddNewStock from "../AddNewStock/AddNewStock";
 
@@ -79,6 +80,7 @@ const ViewAllStockDetails = ({ onBack }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedStocks, setSelectedStocks] = useState([]);
   const [selectedStock, setSelectedStock] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [viewingStock, setViewingStock] = useState(null);
@@ -102,7 +104,6 @@ const ViewAllStockDetails = ({ onBack }) => {
 
   const handleEdit = () => {
     if (selectedStock) {
-      // Create a complete stock object with all fields for editing
       const stockForEdit = {
         ...selectedStock,
         itemCategory: selectedStock.itemCategory || "",
@@ -123,32 +124,28 @@ const ViewAllStockDetails = ({ onBack }) => {
 
   const handleAddOrEditComplete = async (stockData) => {
     try {
-      // Simulate API call with a delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (editingStock) {
-        // Handle edit save
         setStockData((prevStockData) =>
           prevStockData.map((stock) =>
             stock.id === editingStock.id ? stockData : stock
           )
         );
-        console.log("Updating stock:", stockData);
+        showToast("success", "Stock updated successfully.");
       } else {
-        // Handle new stock save
         setStockData((prevStockData) => [...prevStockData, stockData]);
-        console.log("Adding new stock:", stockData);
+        showToast("success", "New stock added successfully.");
       }
 
-      // Reset form state
       setShowAddNewStock(false);
       setEditingStock(null);
-      setSelectedStock(null);
+      setSelectedStocks([]);
 
-      return stockData; // Return the saved or updated data to trigger success toast
+      return stockData;
     } catch (error) {
       console.error("Error saving stock data:", error);
-      throw error; // Throw error to trigger error toast
+      showToast("error", "Failed to save stock data. Please try again.");
     }
   };
 
@@ -166,15 +163,21 @@ const ViewAllStockDetails = ({ onBack }) => {
   }
 
   const handleDelete = () => {
-    if (selectedStock) {
+    if (selectedStocks.length > 0) {
       setShowDeleteConfirmation(true);
+    } else {
+      showToast("warn", "Please select at least one stock to delete.");
     }
   };
 
   const confirmDelete = () => {
-    setStockData(stockData.filter((stock) => stock.id !== selectedStock.id));
+    const remainingStocks = stockData.filter(
+      (stock) => !selectedStocks.includes(stock.id)
+    );
+    setStockData(remainingStocks);
+    setSelectedStocks([]);
     setShowDeleteConfirmation(false);
-    setSelectedStock(null);
+    showToast("success", "Selected stock(s) deleted successfully.");
   };
 
   const handleViewStock = (stock) => {
@@ -184,126 +187,58 @@ const ViewAllStockDetails = ({ onBack }) => {
   const filteredStocks = stockData.filter(
     (stock) =>
       stock.itemName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      stock.id.toLowerCase().includes(searchTerm.toLowerCase())
+      stock.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (stock.lastUpdated &&
+        format(new Date(stock.lastUpdated), "yyyy-MM") ===
+          format(selectedDate, "yyyy-MM"))
   );
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredStocks.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const handleRowClick = (stock) => {
-    setSelectedStock(selectedStock === stock ? null : stock);
-  };
-
-  const StockDetailsTable = ({ currentItems }) => (
-    <div className="stock-details-table-container">
-      <div className="stock-details-table-wrapper">
-        <table className="stock-details-table">
-          <thead>
-            <tr>
-              <th>Inventory ID</th>
-              <th>Item Name</th>
-              <th>Quantity In Stock</th>
-              <th>Reorder Level</th>
-              <th>View</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.map((stock) => (
-              <tr
-                key={stock.id}
-                onClick={() => handleRowClick(stock)}
-                className={selectedStock === stock ? "selected" : ""}
-              >
-                <td>{stock.id}</td>
-                <td>{stock.itemName}</td>
-                <td>{stock.quantityInStock}</td>
-                <td>{stock.reorderLevel}</td>
-                <td>
-                  <FontAwesomeIcon
-                    icon={faEye}
-                    className="view-icon"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleViewStock(stock);
-                    }}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-
-  const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
-      pageNumbers.push(i);
+  const handleSelectAll = () => {
+    if (selectedStocks.length === currentItems.length) {
+      setSelectedStocks([]); // Deselect all
+    } else {
+      setSelectedStocks(currentItems.map((stock) => stock.id)); // Select all
     }
-
-    return (
-      <div className="stock-details-pagination">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="stock-details-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-        {pageNumbers.map((number) => (
-          <button
-            key={number}
-            onClick={() => paginate(number)}
-            className={`stock-details-pagination-button ${
-              currentPage === number ? "active" : ""
-            }`}
-          >
-            {number}
-          </button>
-        ))}
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === pageNumbers.length}
-          className="stock-details-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </button>
-      </div>
-    );
   };
+
+  const handleRowClick = (stockId) => {
+    setSelectedStocks((prevSelected) => {
+      const updatedSelection = prevSelected.includes(stockId)
+        ? prevSelected.filter((id) => id !== stockId)
+        : [...prevSelected, stockId];
+
+      // Update the selectedStock state when only one stock is selected
+      if (updatedSelection.length === 1) {
+        const stock = stockData.find((s) => s.id === updatedSelection[0]);
+        setSelectedStock(stock);
+      } else {
+        setSelectedStock(null); // Clear selectedStock if multiple or no rows are selected
+      }
+
+      return updatedSelection;
+    });
+  };
+
+  const isSelectAllChecked = selectedStocks.length === currentItems.length;
+  const isSelectAllIndeterminate =
+    selectedStocks.length > 0 && selectedStocks.length < currentItems.length;
 
   return (
-    <div className="stock-details-container" ref={containerRef}>
-      <header className="stock-details-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="stock-details-back-icon"
-          onClick={onBack}
-        />
-        <h2>Stock Details</h2>
-      </header>
+    <div className="stock-details-container">
+      <ToastNotification />
+      <TopBar title="Stock Details" onBack={onBack} backButton={true} />
 
       <main className="stock-details-main-content">
         <div className="stock-details-controls">
-          <div className="stock-details-search-bar-container">
-            <div className="stock-details-search-input-wrapper">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="stock-details-search-icon"
-              />
-              <input
-                type="text"
-                className="stock-details-search-bar"
-                placeholder="Search by Inventory Id or Item Name"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
+          <SearchBar
+            placeholder="Search by Inventory Id or Item Name"
+            onSearch={setSearchTerm}
+          />
+
           <div className="stock-details-action-buttons">
             <Button
               label={
@@ -312,7 +247,7 @@ const ViewAllStockDetails = ({ onBack }) => {
                 </>
               }
               onClick={handleEdit}
-              disabled={!selectedStock}
+              disabled={selectedStocks.length !== 1}
             />
             <Button
               label={
@@ -321,7 +256,7 @@ const ViewAllStockDetails = ({ onBack }) => {
                 </>
               }
               onClick={handleDelete}
-              disabled={!selectedStock}
+              disabled={selectedStocks.length === 0}
             />
           </div>
           <div className="stock-details-date">
@@ -333,42 +268,93 @@ const ViewAllStockDetails = ({ onBack }) => {
           </div>
         </div>
 
-        <StockDetailsTable currentItems={currentItems} />
+        <TableContainer
+          headers={[
+            <label className="custom-checkbox">
+              <input
+                type="checkbox"
+                checked={isSelectAllChecked}
+                ref={(el) =>
+                  el && (el.indeterminate = isSelectAllIndeterminate)
+                }
+                onChange={handleSelectAll}
+              />
+              <span className="checkbox-checkmark"></span>
+            </label>,
+            "Inventory ID",
+            "Item Name",
+            "Quantity In Stock",
+            "Reorder Level",
+            "Last Updated",
+            "View",
+          ]}
+          rows={currentItems.map((stock) => ({
+            id: stock.id,
+            data: {
+              select: (
+                <label className="custom-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={selectedStocks.includes(stock.id)}
+                    onChange={() => handleRowClick(stock.id)}
+                  />
+                  <span className="checkbox-checkmark"></span>
+                </label>
+              ),
+              "Inventory ID": stock.id,
+              "Item Name": stock.itemName,
+              "Quantity In Stock": stock.quantityInStock,
+              "Reorder Level": stock.reorderLevel,
+              "Last Updated": stock.lastUpdated
+                ? format(new Date(stock.lastUpdated), "yyyy-MM-dd")
+                : "N/A", // Fallback for invalid or missing dates
+              View: (
+                <FontAwesomeIcon
+                  icon={faEye}
+                  className="view-icon"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleViewStock(stock);
+                  }}
+                />
+              ),
+            },
+          }))}
+          onRowClick={(row) => handleRowClick(row.id)}
+          selectedRowId={selectedStocks}
+        />
 
         <Pagination
-          itemsPerPage={itemsPerPage}
-          totalItems={filteredStocks.length}
-          paginate={paginate}
           currentPage={currentPage}
+          totalPages={Math.ceil(filteredStocks.length / itemsPerPage)}
+          onPageChange={setCurrentPage}
         />
       </main>
+
       {showDeleteConfirmation && (
-        <div className="stock-details-delete-confirmation-modal">
-          <div className="stock-details-delete-confirmation-content">
-            <h3>Confirm Deletion</h3>
-            <p>Are you sure you want to delete this stock record?</p>
-            <div className="stock-details-delete-confirmation-buttons">
-              <button
-                onClick={() => setShowDeleteConfirmation(false)}
-                className="stock-details-cancel-delete"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDelete}
-                className="stock-details-confirm-delete"
-              >
-                Yes, Delete
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmationModal
+          title="Confirm Deletion"
+          message="Are you sure you want to delete the selected stock record(s)?"
+          onCancel={() => setShowDeleteConfirmation(false)}
+          onConfirm={confirmDelete}
+        />
       )}
 
       {viewingStock && (
         <SpecificStockDetails
           stock={viewingStock}
           onClose={() => setViewingStock(null)}
+        />
+      )}
+
+      {showAddNewStock && (
+        <AddNewStock
+          stock={editingStock}
+          onBack={() => {
+            setShowAddNewStock(false);
+            setEditingStock(null);
+          }}
+          onSave={handleAddOrEditComplete}
         />
       )}
     </div>

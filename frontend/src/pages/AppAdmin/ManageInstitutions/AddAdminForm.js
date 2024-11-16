@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./AddAdminForm.css";
+import FormInput from "../../../components/Shared/FormInput/FormInput";
+import ActionButtons from "../../../components/Shared/ActionButtons/ActionButtons";
 
 const AddAdminForm = ({ onSave, onBack }) => {
   const [adminData, setAdminData] = useState({
@@ -18,15 +20,33 @@ const AddAdminForm = ({ onSave, onBack }) => {
   };
 
   const validateForm = () => {
-    let formErrors = {};
-    if (!adminData.adminName) formErrors.adminName = "Admin Name is required";
-    if (!adminData.email) formErrors.email = "Email is required";
-    if (!adminData.contactNumber)
-      formErrors.contactNumber = "Contact Number is required";
-    if (!adminData.password) formErrors.password = "Password is required";
+    const formErrors = {};
+    if (!adminData.adminName || adminData.adminName.length < 3) {
+      formErrors.adminName =
+        "Admin Name is required and should be at least 3 characters";
+    }
+
+    if (
+      !adminData.email ||
+      !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(adminData.email)
+    ) {
+      formErrors.email = "Valid email is required";
+    }
+
+    if (!adminData.contactNumber || !/^\d{10}$/.test(adminData.contactNumber)) {
+      formErrors.contactNumber =
+        "Contact Number is required and should be 10 digits";
+    }
+
+    if (!adminData.password || adminData.password.length < 6) {
+      formErrors.password =
+        "Password is required and should be at least 6 characters";
+    }
+
     if (adminData.password !== adminData.confirmPassword) {
       formErrors.confirmPassword = "Passwords do not match";
     }
+
     return formErrors;
   };
 
@@ -41,91 +61,60 @@ const AddAdminForm = ({ onSave, onBack }) => {
     }
   };
 
-  const handleBack = () => {
-    onBack();
-  };
-
   return (
     <div className="add-admin-form-container">
       <div className="add-admin-form-header">
         <h2>Add Admin Details</h2>
       </div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="add-admin-form-grid">
-          <div className="add-admin-form-group">
-            <input
-              name="adminName"
-              placeholder="Admin Name"
-              value={adminData.adminName}
-              onChange={handleInputChange}
-              className={errors.adminName ? "input-error" : ""}
-            />
-            {errors.adminName && <p className="error">{errors.adminName}</p>}
-          </div>
-          <div className="add-admin-form-group">
-            <input
-              name="email"
-              type="email"
-              placeholder="Email"
-              value={adminData.email}
-              onChange={handleInputChange}
-              className={errors.email ? "input-error" : ""}
-            />
-            {errors.email && <p className="error">{errors.email}</p>}
-          </div>
-          <div className="add-admin-form-group">
-            <input
-              name="contactNumber"
-              placeholder="Contact Number"
-              value={adminData.contactNumber}
-              onChange={handleInputChange}
-              className={errors.contactNumber ? "input-error" : ""}
-            />
-            {errors.contactNumber && (
-              <p className="error">{errors.contactNumber}</p>
-            )}
-          </div>
-          <div className="add-admin-form-group">
-            <input
-              name="password"
-              type="password"
-              placeholder="Create Password"
-              value={adminData.password}
-              onChange={handleInputChange}
-              className={errors.password ? "input-error" : ""}
-            />
-            {errors.password && <p className="error">{errors.password}</p>}
-          </div>
-          <div className="add-admin-form-group">
-            <input
-              name="confirmPassword"
-              type="password"
-              placeholder="Confirm Password"
-              value={adminData.confirmPassword}
-              onChange={handleInputChange}
-              className={errors.confirmPassword ? "input-error" : ""}
-            />
-            {errors.confirmPassword && (
-              <p className="error">{errors.confirmPassword}</p>
-            )}
-          </div>
+          <FormInput
+            name="adminName"
+            type="text"
+            placeholder="Admin Name"
+            value={adminData.adminName}
+            onChange={handleInputChange}
+            error={errors.adminName}
+          />
+          <FormInput
+            name="email"
+            type="email"
+            placeholder="Email"
+            value={adminData.email}
+            onChange={handleInputChange}
+            error={errors.email}
+          />
+          <FormInput
+            name="contactNumber"
+            type="tel"
+            placeholder="Contact Number"
+            value={adminData.contactNumber}
+            onChange={handleInputChange}
+            error={errors.contactNumber}
+          />
+          <FormInput
+            name="password"
+            type="password"
+            placeholder="Create Password"
+            value={adminData.password}
+            onChange={handleInputChange}
+            error={errors.password}
+          />
+          <FormInput
+            name="confirmPassword"
+            type="password"
+            placeholder="Confirm Password"
+            value={adminData.confirmPassword}
+            onChange={handleInputChange}
+            error={errors.confirmPassword}
+          />
         </div>
-        <div className="add-admin-form-buttons-container">
-          <button
-            type="button"
-            className="add-admin-form-submit-button"
-            onClick={handleBack}
-          >
-            Back
-          </button>
-          <button
-            type="submit"
-            className="add-admin-form-submit-button"
-            onClick={handleSubmit}
-          >
-            Save Admin Details
-          </button>
-        </div>
+        <ActionButtons
+          onCancel={onBack}
+          onSubmit={handleSubmit}
+          submitText="Save Admin Details"
+          cancelText="Previous"
+        />
       </form>
     </div>
   );

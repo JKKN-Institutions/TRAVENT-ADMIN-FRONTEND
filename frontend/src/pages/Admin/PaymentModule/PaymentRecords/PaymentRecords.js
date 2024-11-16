@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faSearch,
-  faFilter,
-  faChevronLeft,
-  faChevronRight,
-  faEye,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faEye } from "@fortawesome/free-solid-svg-icons";
 import "./PaymentRecords.css";
 import PaymentHistory from "../PaymentHistory/PaymentHistory";
 import Button from "../../../../components/Shared/Button/Button";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
 
 const paymentRecordsData = [
   {
@@ -344,7 +341,6 @@ const PaymentRecords = ({ onBack }) => {
   const [itemsPerPage] = useState(10);
   const [filteredRecords, setFilteredRecords] = useState(paymentRecordsData);
   const [selectedStudent, setSelectedStudent] = useState(null);
-
   const [filters, setFilters] = useState({
     route: "",
     year: "",
@@ -353,49 +349,78 @@ const PaymentRecords = ({ onBack }) => {
   });
 
   useEffect(() => {
-    const results = paymentRecordsData.filter(
-      (record) =>
-        record.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        record.regNo.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredRecords(results);
-    setCurrentPage(1);
-  }, [searchTerm]);
+    const filterRecords = () => {
+      const filteredBySearch = paymentRecordsData.filter(
+        (record) =>
+          record.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          record.regNo.toLowerCase().includes(searchTerm.toLowerCase())
+      );
 
-  useEffect(() => {
-    const results = paymentRecordsData.filter((record) => {
-      return Object.entries(filters).every(([key, value]) => {
-        if (!value) return true;
-        return (
-          record[key] && record[key].toLowerCase().includes(value.toLowerCase())
-        );
-      });
-    });
-    setFilteredRecords(results);
-    setCurrentPage(1);
-  }, [filters]);
+      const filteredByFilters = filteredBySearch.filter((record) =>
+        Object.entries(filters).every(([key, value]) =>
+          !value
+            ? true
+            : record[key]?.toLowerCase().includes(value.toLowerCase())
+        )
+      );
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: value,
-    }));
-  };
+      setFilteredRecords(filteredByFilters);
+      setCurrentPage(1);
+    };
+
+    filterRecords();
+  }, [searchTerm, filters]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredRecords.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredRecords.slice(
+    indexOfLastItem - itemsPerPage,
+    indexOfLastItem
+  );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const getUniqueValues = (key) => {
-    return [...new Set(paymentRecordsData.map((record) => record[key]))];
-  };
+  const getUniqueValues = (key) =>
+    [...new Set(paymentRecordsData.map((record) => record[key]))].filter(
+      (val) => val
+    );
 
-  const handleViewHistory = (student) => {
-    setSelectedStudent(student);
-  };
+  const handleFilterChange = ({ target: { name, value } }) =>
+    setFilters((prev) => ({ ...prev, [name]: value }));
+
+  const columns = [
+    { key: "S.No", label: "S.No" },
+    { key: "studentName", label: "Student Name" },
+    { key: "regNo", label: "Reg No" },
+    { key: "rollNo", label: "Roll No" },
+    { key: "year", label: "Year" },
+    { key: "department", label: "Department" },
+    { key: "section", label: "Section" },
+    { key: "instituteName", label: "Institute Name" },
+    { key: "routeNo", label: "Route No" },
+    { key: "stopName", label: "Stop Name" },
+    { key: "academicYear", label: "Academic Year" },
+    { key: "actualFee", label: "Actual Fee" },
+    { key: "amuletsFee", label: "Amulets Fee" },
+    { key: "added", label: "Added" },
+    { key: "term1", label: "Term 1" },
+    { key: "term2", label: "Term 2" },
+    { key: "term3", label: "Term 3" },
+    { key: "amulets", label: "Amulets" },
+    { key: "total", label: "Total" },
+    { key: "pendingFee", label: "Pending Fee" },
+    { key: "status", label: "Status" },
+    {
+      key: "view",
+      label: "View History",
+      render: (record) => (
+        <FontAwesomeIcon
+          icon={faEye}
+          className="view-history-link"
+          onClick={() => setSelectedStudent(record)}
+        />
+      ),
+    },
+  ];
 
   if (selectedStudent) {
     return (
@@ -408,32 +433,14 @@ const PaymentRecords = ({ onBack }) => {
 
   return (
     <div className="payment-records-container">
-      <header className="payment-records-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="payment-records-back-icon"
-          onClick={onBack}
-        />
-        <h2>Payment Records</h2>
-      </header>
+      <TopBar title="Payment Records" onBack={onBack} backButton />
 
       <main className="payment-records-main-content">
         <div className="payment-records-actions">
-          <div className="payment-records-search-container">
-            <div className="payment-records-search-input-wrapper">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="payment-records-search-icon"
-              />
-              <input
-                type="text"
-                className="payment-records-search-bar"
-                placeholder="Search by Name or Reg No"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
+          <SearchBar
+            placeholder="Search by Name or Reg No"
+            onSearch={setSearchTerm}
+          />
           <div className="payment-records-action-buttons">
             <Button
               label={
@@ -441,7 +448,7 @@ const PaymentRecords = ({ onBack }) => {
                   <FontAwesomeIcon icon={faFilter} /> Filter by
                 </>
               }
-              onClick={() => setShowFilters(!showFilters)}
+              onClick={() => setShowFilters((prev) => !prev)}
               className="payment-records-filter-button"
             />
           </div>
@@ -449,156 +456,44 @@ const PaymentRecords = ({ onBack }) => {
 
         {showFilters && (
           <div className="payment-records-filters">
-            <select
-              name="route"
-              value={filters.route}
-              onChange={handleFilterChange}
-            >
-              <option value="">Route</option>
-              {getUniqueValues("routeNo").map((route) => (
-                <option key={route} value={route}>
-                  {route}
+            {["route", "year", "department", "status"].map((filterKey) => (
+              <select
+                key={filterKey}
+                name={filterKey}
+                value={filters[filterKey]}
+                onChange={handleFilterChange}
+              >
+                <option value="">
+                  {filterKey.charAt(0).toUpperCase() + filterKey.slice(1)}
                 </option>
-              ))}
-            </select>
-            <select
-              name="year"
-              value={filters.year}
-              onChange={handleFilterChange}
-            >
-              <option value="">Year</option>
-              {getUniqueValues("year").map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-            <select
-              name="department"
-              value={filters.department}
-              onChange={handleFilterChange}
-            >
-              <option value="">Department</option>
-              {getUniqueValues("department").map((dept) => (
-                <option key={dept} value={dept}>
-                  {dept}
-                </option>
-              ))}
-            </select>
-            <select
-              name="status"
-              value={filters.status}
-              onChange={handleFilterChange}
-            >
-              <option value="">Status</option>
-              {getUniqueValues("status").map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
+                {getUniqueValues(filterKey).map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            ))}
           </div>
         )}
 
-        <div className="payment-records-table-container">
-          <div className="payment-records-table-wrapper">
-            <table className="payment-records-table">
-              <thead>
-                <tr>
-                  <th>S.No</th>
-                  <th>Student Name</th>
-                  <th>Reg No</th>
-                  <th>Roll No</th>
-                  <th>Year</th>
-                  <th>Department</th>
-                  <th>Section</th>
-                  <th>Institute Name</th>
-                  <th>Route No</th>
-                  <th>Stop Name</th>
-                  <th>Academic Year</th>
-                  <th>Actual Fee</th>
-                  <th>Amulets Fee</th>
-                  <th>Added</th>
-                  <th>Term 1</th>
-                  <th>Term 2</th>
-                  <th>Term 3</th>
-                  <th>Amulets</th>
-                  <th>Total</th>
-                  <th>Pending Fee</th>
-                  <th>Status</th>
-                  <th>View History</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((record, index) => (
-                  <tr key={record["S.No"]}>
-                    <td>{indexOfFirstItem + index + 1}</td>
-                    <td>{record.studentName}</td>
-                    <td>{record.regNo}</td>
-                    <td>{record.rollNo}</td>
-                    <td>{record.year}</td>
-                    <td>{record.department}</td>
-                    <td>{record.section}</td>
-                    <td>{record.instituteName}</td>
-                    <td>{record.routeNo}</td>
-                    <td>{record.stopName}</td>
-                    <td>{record.academicYear}</td>
-                    <td>{record.actualFee}</td>
-                    <td>{record.amuletsFee}</td>
-                    <td>{record.added}</td>
-                    <td>{record.term1}</td>
-                    <td>{record.term2}</td>
-                    <td>{record.term3}</td>
-                    <td>{record.amulets}</td>
-                    <td>{record.total}</td>
-                    <td>{record.pendingFee}</td>
-                    <td>{record.status}</td>
-                    <td>
-                      <span
-                        className="view-history-link"
-                        onClick={() => handleViewHistory(record)}
-                      >
-                        <FontAwesomeIcon icon={faEye} /> View
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <TableContainer
+          headers={columns.map((col) => col.label)}
+          rows={currentItems.map((record) => ({
+            id: record["S.No"],
+            data: columns.reduce((data, col) => {
+              data[col.label] = col.render
+                ? col.render(record)
+                : record[col.key];
+              return data;
+            }, {}),
+          }))}
+        />
 
-        <div className="payment-records-pagination">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="payment-records-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronLeft} />
-          </button>
-          {Array.from({
-            length: Math.ceil(filteredRecords.length / itemsPerPage),
-          }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => paginate(index + 1)}
-              className={`payment-records-pagination-button ${
-                currentPage === index + 1 ? "active" : ""
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={
-              currentPage === Math.ceil(filteredRecords.length / itemsPerPage)
-            }
-            className="payment-records-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronRight} />
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(filteredRecords.length / itemsPerPage)}
+          onPageChange={paginate}
+        />
       </main>
     </div>
   );

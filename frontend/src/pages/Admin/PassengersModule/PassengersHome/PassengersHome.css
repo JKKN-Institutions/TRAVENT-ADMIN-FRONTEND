@@ -6,31 +6,6 @@
   flex-direction: column;
 }
 
-.passengers-home-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  border-radius: 10px;
-}
-
-.passengers-home-menu-icon {
-  font-size: 1rem;
-  cursor: pointer;
-  margin-right: 1rem;
-}
-
-.passengers-home-top-bar h1 {
-  margin: 0;
-  font-size: 1.3rem;
-}
-
 .passengers-home-main-content {
   flex: 1;
   padding: 0 0.5rem;
@@ -92,115 +67,40 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .doughnut-chart-container {
   position: relative;
-  width: 100%;
-  max-width: 200px;
-  margin: 0 auto;
 }
 
 .doughnut-chart-percentage {
   position: absolute;
-  top: 50%;
+  top: 35%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 1.5rem;
   font-weight: bold;
 }
 
-.doughnut-stat-details {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  margin-top: 1rem;
-}
-
-.doughnut-stat-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-  width: 100%;
-}
-
-.doughnut-stat-label {
-  margin-right: auto;
-  margin-left: 0.5rem;
-}
-
-.doughnut-stat-value {
-  font-weight: bold;
-}
-
-.doughnut-active-dot,
-.doughnut-blocked-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.doughnut-active-dot {
-  background-color: #3498db;
-}
-
-.doughnut-blocked-dot {
-  background-color: #e74c3c;
-}
-
 .paid-fees {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0.5rem;
 }
 
-.passengers-pie-chart-stat-container {
+.passengers-pie-chart-stat-container,
+.passengers-doughnut-chart-stat-container {
   display: flex;
   flex-direction: row;
-  width: 100%;
   align-items: center;
   justify-content: space-between;
+  height: 100%;
 }
 
 .passengers-pie-chart-container {
   position: relative;
-  width: 100%;
-  max-width: 220px;
-  /* margin-bottom: 15px; */
-}
-
-.passengers-pie-stat-details {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-}
-
-.passengers-pie-stat-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  margin-bottom: 5px;
-}
-
-.passengers-pie-stat-label {
-  margin-left: 0.5rem;
-  flex: 1;
-}
-
-.passengers-pie-stat-value {
-  font-weight: bold;
-}
-
-.passengers-pie-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 0.5rem;
 }
 
 .passengers-actions-column {
@@ -285,49 +185,6 @@
 
 .amulet-chart-container {
   margin-bottom: 20px;
-}
-
-.amulet-legend {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-
-.amulet-legend-item {
-  display: flex;
-  align-items: center;
-}
-
-.amulet-legend-color {
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
-  margin-right: 8px;
-}
-
-.amulet-legend-range {
-  font-size: 0.9rem;
-  color: #cccccc;
-  margin-right: 8px;
-}
-
-.amulet-legend-count {
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: #ffffff;
-}
-
-.custom-tooltip {
-  background-color: #333333;
-  border: 1px solid #444444;
-  padding: 10px;
-  border-radius: 4px;
-}
-
-.custom-tooltip .label {
-  color: #ffffff;
-  font-size: 0.9rem;
-  margin: 0;
 }
 
 .institution-wise-passengers {
@@ -424,10 +281,6 @@
 
 /* Small Tablet Responsiveness */
 @media (max-width: 767px) and (min-width: 576px) {
-  .passengers-home-top-bar h1 {
-    font-size: 1.2rem;
-  }
-
   .passengers-stats-row {
     flex-direction: column;
   }
@@ -465,10 +318,6 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 575px) {
-  .passengers-home-top-bar h1 {
-    font-size: 1.2rem;
-  }
-
   .passengers-stats-row {
     flex-direction: column;
   }
@@ -493,10 +342,6 @@
   .passengers-pie-chart-stat-container {
     flex-direction: column;
     align-items: center;
-  }
-
-  .passengers-pie-stat-details {
-    width: 100%;
   }
 
   .doughnut-chart-container {
@@ -525,11 +370,5 @@
 
   .action-count {
     font-size: 1rem;
-  }
-
-  .amulet-legend {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
   }
 }

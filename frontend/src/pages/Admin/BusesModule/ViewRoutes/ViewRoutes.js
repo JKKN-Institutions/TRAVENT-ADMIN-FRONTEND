@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./ViewRoutes.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSearch,
-  faArrowLeft,
   faCheck,
   faEye,
   faTrash,
@@ -14,9 +11,14 @@ import axios from "axios";
 import RouteDetails from "../RouteDetails/RouteDetails";
 import AddNewRoute from "../AddNewRoute/AddNewRoute";
 import Button from "../../../../components/Shared/Button/Button";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import ConfirmationModal from "../../../../components/Shared/ConfirmationModal/ConfirmationModal";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
 
 const ViewRoutes = ({ onBack }) => {
-  const navigate = useNavigate();
   const institutionDetails = JSON.parse(
     localStorage.getItem("institutionDetails")
   );
@@ -32,7 +34,7 @@ const ViewRoutes = ({ onBack }) => {
   useEffect(() => {
     const fetchRoutes = async () => {
       if (!institutionDetails || !institutionDetails.institutionId) {
-        console.error("No institutionId found in localStorage");
+        showToast("error", "Institution details not found.");
         return;
       }
 
@@ -41,8 +43,10 @@ const ViewRoutes = ({ onBack }) => {
           `https://travent-admin-server.vercel.app/api/bus/view-routes/${institutionDetails.institutionId}`
         );
         setRoutesDetails(response.data.institutionRoutes);
+        showToast("success", "Routes loaded successfully.");
       } catch (error) {
         console.error("Error fetching routes:", error);
+        showToast("error", "Failed to load routes.");
       }
     };
 
@@ -59,11 +63,10 @@ const ViewRoutes = ({ onBack }) => {
 
   const handleRouteClick = (route) => {
     setSelectedRoutes((prevSelected) => {
-      if (prevSelected.some((r) => r._id === route._id)) {
-        return prevSelected.filter((r) => r._id !== route._id);
-      } else {
-        return [route];
-      }
+      const isSelected = prevSelected.some((r) => r._id === route._id);
+      return isSelected
+        ? prevSelected.filter((r) => r._id !== route._id)
+        : [...prevSelected, route];
     });
   };
 
@@ -76,25 +79,40 @@ const ViewRoutes = ({ onBack }) => {
 
   const handleDeleteRoutes = async () => {
     try {
-      for (const route of selectedRoutes) {
-        await axios.delete(
-          `https://travent-admin-server.vercel.app/api/bus/delete-route/${route._id}`
-        );
-      }
+      await Promise.all(
+        selectedRoutes.map((route) =>
+          axios.delete(
+            `https://travent-admin-server.vercel.app/api/bus/delete-route/${route._id}`
+          )
+        )
+      );
+
       const response = await axios.get(
         `https://travent-admin-server.vercel.app/api/bus/view-routes/${institutionDetails.institutionId}`
       );
       setRoutesDetails(response.data.institutionRoutes);
+
       setSelectedRoutes([]);
       setShowDeleteConfirmation(false);
+      showToast("success", "Selected routes deleted successfully.");
     } catch (error) {
       console.error("Error deleting routes:", error);
+      showToast("error", "Failed to delete selected routes.");
     }
   };
 
   useEffect(() => {
     if (routeDetails) {
-      setFilteredRoutes(routeDetails.routes);
+      const filtered = searchTerm
+        ? routeDetails.routes.filter(
+            (route) =>
+              route.routeNumber
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              route.routeName.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        : routeDetails.routes;
+      setFilteredRoutes(filtered);
     }
   }, [routeDetails, searchTerm]);
 
@@ -104,33 +122,16 @@ const ViewRoutes = ({ onBack }) => {
 
   return (
     <>
+      <ToastNotification />
       {!showRouteDetails && (
         <div className="show-routes-container">
-          <header className="show-routes-top-bar">
-            <div className="show-routes-menu-icon" onClick={onBack}>
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </div>
-            <h1>View Routes</h1>
-          </header>
-
+          <TopBar title="View Routes" onBack={onBack} backButton={true} />
           <main className="show-routes-main-content">
             <div className="show-routes-controls">
-              <div className="show-routes-search-bar-container">
-                <div className="show-routes-search-input-wrapper">
-                  <FontAwesomeIcon
-                    icon={faSearch}
-                    className="show-routes-search-icon"
-                  />
-                  <input
-                    type="text"
-                    className="show-routes-search-bar"
-                    placeholder="Search by Route No or Name"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-              </div>
-
+              <SearchBar
+                placeholder="Search by Route No or Name"
+                onSearch={setSearchTerm}
+              />
               <div className="show-routes-action-buttons">
                 <Button
                   label={
@@ -140,7 +141,6 @@ const ViewRoutes = ({ onBack }) => {
                   }
                   onClick={handleAddNewRoute}
                 />
-
                 <Button
                   label={
                     <>
@@ -148,9 +148,8 @@ const ViewRoutes = ({ onBack }) => {
                     </>
                   }
                   onClick={handleViewRouteDetails}
-                  disabled={selectedRoutes.length !== 1} // Disable if not exactly one route selected
+                  disabled={selectedRoutes.length !== 1}
                 />
-
                 <Button
                   label={
                     <>
@@ -158,7 +157,7 @@ const ViewRoutes = ({ onBack }) => {
                     </>
                   }
                   onClick={() => setShowDeleteConfirmation(true)}
-                  disabled={selectedRoutes.length === 0} // Disable if no routes selected
+                  disabled={selectedRoutes.length === 0}
                 />
               </div>
             </div>
@@ -167,9 +166,9 @@ const ViewRoutes = ({ onBack }) => {
               {routeDetails && (
                 <>
                   {filteredRoutes.length > 0 ? (
-                    filteredRoutes.map((route, index) => (
+                    filteredRoutes.map((route) => (
                       <div
-                        key={index}
+                        key={route._id}
                         className={`show-routes-card ${
                           selectedRoutes.some((r) => r._id === route._id)
                             ? "selected"
@@ -207,29 +206,18 @@ const ViewRoutes = ({ onBack }) => {
           </main>
 
           {showDeleteConfirmation && (
-            <div className="view-routes-delete-confirmation-modal">
-              <div className="view-routes-delete-confirmation-content">
-                <h3>Confirm Deletion</h3>
-                <p>Are you sure you want to delete this route?</p>
-                <div className="view-routes-delete-confirmation-buttons">
-                  <button
-                    onClick={() => setShowDeleteConfirmation(false)}
-                    className="view-routes-cancel-delete"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleDeleteRoutes}
-                    className="view-routes-confirm-delete"
-                  >
-                    Yes, Delete
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ConfirmationModal
+              title="Confirm Deletion"
+              message="Are you sure you want to delete the selected route(s)?"
+              confirmText="Yes, Delete"
+              cancelText="Cancel"
+              onConfirm={handleDeleteRoutes}
+              onCancel={() => setShowDeleteConfirmation(false)}
+            />
           )}
         </div>
       )}
+
       {showRouteDetails && selectedRoute && (
         <RouteDetails
           route={selectedRoute}

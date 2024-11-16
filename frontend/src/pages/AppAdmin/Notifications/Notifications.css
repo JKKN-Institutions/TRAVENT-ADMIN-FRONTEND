@@ -7,75 +7,18 @@
   flex-direction: column;
 }
 
-.app-admin-notifications-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
 .app-admin-notifications-main-content {
   flex: 1;
   overflow-y: auto;
+  padding: 0 0.5rem;
   background-color: #1e1e1e;
   scrollbar-width: thin;
   scrollbar-color: #4a4a4a #2c2c2c;
 }
 
-.app-admin-notifications-menu-icon .app-admin-menu-icon {
-  font-size: 1rem;
-  cursor: pointer;
-  margin-right: 1rem;
-}
-
-.app-admin-notifications-top-bar h2 {
-  margin: 0;
-  font-size: 1.3rem;
-}
-
-.app-admin-notifications-search-bar-container {
-  margin-bottom: 0.7rem;
-}
-
-.app-admin-notifications-search-input-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-.app-admin-notifications-search-input-wrapper .app-admin-search-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #888;
-  font-size: 1rem;
-}
-
-.app-admin-notifications-search-bar {
-  width: 100%;
-  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-  border: none;
-  border-radius: 20px;
-  background-color: #323232;
-  color: #fff;
-  font-size: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.app-admin-notifications-search-bar:focus {
-  outline: none;
-}
-
 .app-admin-filter-container {
   display: flex;
-  margin-bottom: 1rem;
+  margin: 0.8rem 0;
 }
 
 .app-admin-filter-button {
@@ -179,10 +122,6 @@
 
 /* Responsive styles */
 @media (max-width: 1024px) {
-  .app-admin-notifications-top-bar h2 {
-    font-size: 1.3rem;
-  }
-
   .app-admin-notification-content h3 {
     font-size: 0.9rem;
   }
@@ -193,18 +132,6 @@
 }
 
 @media (max-width: 768px) {
-  .app-admin-notifications-top-bar h2 {
-    font-size: 1.2rem;
-  }
-
-  .app-admin-notifications-menu-icon {
-    font-size: 1.3rem;
-  }
-
-  .app-admin-notifications-search-bar {
-    font-size: 0.9rem;
-  }
-
   .app-admin-filter-button {
     font-size: 0.8;
     padding: 6px 12px;

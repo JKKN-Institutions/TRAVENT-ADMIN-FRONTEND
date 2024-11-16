@@ -7,32 +7,6 @@
   overflow: hidden;
 }
 
-.stoppings-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  margin-bottom: 10px;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
-.stoppings-menu-icon {
-  font-size: 1rem;
-  cursor: pointer;
-  color: #ffffff;
-  margin-right: 1rem;
-}
-
-.stoppings-top-bar h2 {
-  color: #ffffff;
-  margin: 0;
-  font-size: 1.3rem;
-}
-
 .stoppings-main-content {
   flex: 1;
   overflow-y: auto;
@@ -50,41 +24,6 @@
   gap: 0.5rem;
 }
 
-.stoppings-search-bar-container {
-  max-width: 600px;
-  width: 100%;
-}
-
-.stoppings-search-input-wrapper {
-  position: relative;
-  width: 100%;
-}
-
-.stoppings-search-input-wrapper .stoppings-search-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #888;
-  font-size: 1rem;
-}
-
-.stoppings-search-bar {
-  width: 100%;
-  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-  border: none;
-  border-radius: 20px;
-  background-color: #2c2c2c;
-  border: 1px solid #333;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: #fff;
-  font-size: 0.9rem;
-}
-
-.stoppings-search-bar:focus {
-  outline: none;
-}
-
 .stoppings-action-buttons-container {
   display: flex;
   justify-content: flex-end;
@@ -92,236 +31,19 @@
   flex-wrap: wrap;
 }
 
-.stoppings-action-button {
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.stoppings-add-button,
-.stoppings-edit-button,
-.stoppings-delete-button {
-  background-color: rgba(215, 215, 215, 0.05);
-  border: 1px solid #333;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: #fff;
-}
-
-.stoppings-action-button:hover {
-  opacity: 0.9;
-}
-
-.stoppings-action-button.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.stoppings-table-container {
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.stoppings-table-wrapper {
-  overflow-x: auto;
-  max-height: calc(100vh - 300px);
-  scrollbar-width: thin;
-  scrollbar-color: #4a4a4a #2c2c2c;
-}
-
-.stoppings-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.stoppings-table th,
-.stoppings-table td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid #666;
-}
-
-.stoppings-table th {
-  background-color: #1e1e1e;
-  color: #fff;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.stoppings-table td {
-  background-color: #2c2c2c;
-  color: #fff;
-  font-size: 0.8rem;
-}
-
-.stoppings-table tbody tr {
-  transition: background-color 0.3s ease;
-}
-
-.stoppings-table tbody tr:hover {
-  background-color: #444;
-  cursor: pointer;
-}
-
-.stoppings-table tbody tr.selected {
-  background-color: rgba(33, 150, 243, 0.3);
-  box-shadow: 0 0 10px rgba(33, 150, 243, 0.2);
-  z-index: 5;
-  position: relative;
-}
-
-.stoppings-table tbody tr.selected td {
-  border-top: 2px solid #2196f3;
-  border-bottom: 2px solid #2196f3;
-}
-
-.stoppings-table tbody tr.selected td:first-child {
-  border-left: 2px solid #2196f3;
-}
-
-.stoppings-table tbody tr.selected td:last-child {
-  border-right: 2px solid #2196f3;
-}
-
-.stoppings-delete-confirmation-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.stoppings-delete-confirmation-content {
-  background-color: #2c2c2c;
-  padding: 2rem;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 90%;
-  width: 400px;
-}
-
-.stoppings-delete-confirmation-content h3 {
-  margin-bottom: 1rem;
-  color: #ffffff;
-}
-
-.stoppings-delete-confirmation-content p {
-  margin-bottom: 1.5rem;
-  color: #cccccc;
-}
-
-.stoppings-delete-confirmation-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.stoppings-confirm-delete,
-.stoppings-cancel-delete {
-  padding: 0.5rem 2rem;
-  border-radius: 30px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-weight: 600;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.stoppings-confirm-delete {
-  background-color: #11a8fd;
-  color: #ffffff;
-  border: none;
-}
-
-.stoppings-cancel-delete {
-  background-color: transparent;
-  color: #11a8fd;
-  border: 1px solid #11a8fd;
-}
-
-.stoppings-confirm-delete:hover,
-.stoppings-cancel-delete:hover {
-  opacity: 0.9;
-}
-
-.stoppings-pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  gap: 10px;
-}
-
-.stoppings-pagination-button {
-  background-color: #2c2c2c;
-  color: #fff;
-  border: 1px solid #444;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.stoppings-pagination-button:hover {
-  background-color: #444;
-}
-
-.stoppings-pagination-button.active {
-  background-color: #11a8fd;
-  transform: scale(1.2s);
-  border-color: #11a8fd;
-}
-
-.stoppings-pagination-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 .view-passengers-link {
   color: #11a8fd;
   cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  transition: color 0.3s ease;
 }
 
 .view-passengers-link:hover {
   color: #0e86c9;
-  text-decoration: underline;
 }
 
 @media (max-width: 1024px) {
   .stoppings-controls {
     flex-direction: column;
     align-items: stretch;
-    gap: 0;
-  }
-
-  .stoppings-search-bar-container {
-    max-width: 100%;
-    margin-bottom: 0.7rem;
   }
 
   .stoppings-action-buttons-container {
@@ -333,33 +55,5 @@
   .stoppings-action-buttons-container {
     flex-direction: row;
     flex-wrap: wrap;
-  }
-
-  .stoppings-action-button {
-    margin-bottom: 0.5rem;
-  }
-
-  .stoppings-table {
-    font-size: 0.9rem;
-  }
-
-  .stoppings-table th,
-  .stoppings-table td {
-    padding: 0.7rem;
-    font-size: 0.8rem;
-  }
-
-  .stoppings-delete-confirmation-content {
-    width: 90%;
-  }
-
-  .stoppings-pagination {
-    flex-wrap: wrap;
-  }
-}
-
-@media (max-width: 480px) {
-  .stoppings-top-bar h2 {
-    font-size: 1.2rem;
   }
 }

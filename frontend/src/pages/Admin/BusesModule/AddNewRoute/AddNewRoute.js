@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
 import axios from "axios";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import FormInput from "../../../../components/Shared/FormInput/FormInput";
+import ActionButtons from "../../../../components/Shared/ActionButtons/ActionButtons";
 import "./AddNewRoute.css";
 
 const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
@@ -31,95 +33,50 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
     }
   }, [route]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setRouteData({ ...routeData, [name]: value });
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: null });
-    }
+  const handleChange = ({ target: { name, value } }) => {
+    setRouteData((prevState) => ({ ...prevState, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: value ? null : prev[name] }));
   };
 
-  const validateForm = () => {
-    let formErrors = {};
-    Object.keys(routeData).forEach((key) => {
+  const validateForm = () =>
+    Object.keys(routeData).reduce((acc, key) => {
       if (!routeData[key] && key !== "standingCapacity") {
-        formErrors[key] = `${
-          key.charAt(0).toUpperCase() +
-          key
-            .slice(1)
-            .replace(/([A-Z])/g, " $1")
-            .trim()
-        } is required`;
+        acc[key] = `${key.replace(/([A-Z])/g, " $1")} is required`;
       }
-    });
-    return formErrors;
-  };
+      return acc;
+    }, {});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
-      toast.error("Please fill in all required fields", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      showToast("error", "Please fill in all required fields");
     } else {
-      // Show loading toast
-      const loadingToastId = toast.loading(
-        route ? "Updating route..." : "Adding new route...",
-        {
-          position: "top-right",
-        }
+      const loadingToastId = showToast(
+        "loading",
+        route ? "Updating route..." : "Adding new route..."
       );
-      try {
-        const url = route
-          ? "https://travent-admin-server.vercel.app/api/bus/update-route"
-          : "https://travent-admin-server.vercel.app/api/bus/add-route";
-        const response = await axios.post(url, {
-          ...routeData,
-          institutionId: institutionId,
-        });
-        if (response.data.success) {
-          toast.dismiss(loadingToastId);
-          setTimeout(() => {
-            toast.success(
-              <div>
-                Successfully {route ? "updated" : "added"} route.
-                <br />
-                <small>Route details have been saved.</small>
-              </div>,
-              {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-              }
-            );
-          }, 100);
+      const url = route
+        ? "https://travent-admin-server.vercel.app/api/bus/update-route"
+        : "https://travent-admin-server.vercel.app/api/bus/add-route";
 
-          onSave(response.data.route);
-        } else {
-          toast.dismiss(loadingToastId);
-          toast.error(response.data.message, {
-            position: "top-right",
-            autoClose: 3000,
-          });
-        }
+      try {
+        const response = await axios.post(url, { ...routeData, institutionId });
+        const { success, message, route: updatedRoute } = response.data;
+        showToast(
+          success ? "success" : "error",
+          success
+            ? `Successfully ${route ? "updated" : "added"} route.`
+            : message,
+          loadingToastId
+        );
+        if (success) onSave(updatedRoute);
       } catch (error) {
-        toast.dismiss(loadingToastId);
-        toast.error(
+        showToast(
+          "error",
           `Failed to ${route ? "update" : "add"} route. Please try again.`,
-          {
-            position: "top-right",
-            autoClose: 3000,
-          }
+          loadingToastId
         );
         console.error("Error saving route:", error);
       }
@@ -128,63 +85,37 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
 
   return (
     <div className="add-new-route-container">
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        limit={3}
+      <ToastNotification />
+      <TopBar
+        title={route ? "Edit Route" : "Add New Route"}
+        onBack={onBack}
+        backButton={true}
       />
-      <header className="add-new-route-top-bar">
-        <button className="add-new-route-back-button" onClick={onBack}>
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
-        <div className="add-new-route-header">
-          <h2>{route ? "Edit Route" : "Add New Route"}</h2>
-        </div>
-      </header>
       <main className="add-new-route-main-content">
         <form onSubmit={handleSubmit}>
           <div className="add-new-route-form-grid">
             {Object.keys(routeData).map((key) => (
               <div key={key} className="add-new-route-form-group">
-                <input
-                  type={key.includes("Capacity") ? "number" : "text"}
+                <FormInput
                   id={key}
                   name={key}
+                  type={key.includes("Capacity") ? "number" : "text"}
                   value={routeData[key]}
-                  onChange={handleChange}
                   placeholder={
                     key.charAt(0).toUpperCase() +
-                    key
-                      .slice(1)
-                      .replace(/([A-Z])/g, " $1")
-                      .trim()
+                    key.slice(1).replace(/([A-Z])/g, " $1")
                   }
-                  className={errors[key] ? "input-error" : ""}
+                  error={errors[key]}
+                  onChange={handleChange}
                 />
-                {errors[key] && <p className="error">{errors[key]}</p>}
               </div>
             ))}
           </div>
-          <div className="add-new-route-buttons-container">
-            <button
-              type="button"
-              className="add-new-route-cancel-button"
-              onClick={onBack}
-            >
-              Cancel
-            </button>
-            <button type="submit" className="add-new-route-save-button">
-              {route ? "Update Route" : "Add Route"}
-            </button>
-          </div>
+          <ActionButtons
+            onCancel={onBack}
+            onSubmit={handleSubmit}
+            submitText={route ? "Update Route" : "Add Route"}
+          />
         </form>
       </main>
     </div>

@@ -1,19 +1,23 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSearch,
-  faArrowLeft,
-  faPlus,
-  faTrash,
-  faPencil,
-  faChevronRight,
-  faChevronLeft,
   faEye,
+  faEdit,
+  faTrash,
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import "./ViewAllBusConditions.css";
 import Button from "../../../../components/Shared/Button/Button";
 import AddBusCondition from "../AddBusCondition/AddBusCondition";
 import SpecificBusCondition from "../SpecificBusCondition/SpecificBusCondition";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
+import ConfirmationModal from "../../../../components/Shared/ConfirmationModal/ConfirmationModal";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
 
 const busConditionsData = [
   {
@@ -37,103 +41,170 @@ const busConditionsData = [
   {
     route: "4",
     number: "TN34 AZ789",
-    status: "Completed",
+    status: "Good",
     problem: "Battery Expired",
   },
   {
     route: "5",
     number: "TN34 AZ789",
-    status: "Completed",
+    status: "Good",
     problem: "Battery Expired",
   },
   {
     route: "6",
     number: "TN34 AZ789",
-    status: "Completed",
+    status: "Good",
     problem: "Battery Expired",
   },
   {
     route: "7",
     number: "TN34 AZ789",
-    status: "Completed",
+    status: "Good",
     problem: "Battery Expired",
   },
   {
     route: "8",
     number: "TN34 AZ789",
-    status: "Completed",
+    status: "Good",
     problem: "Battery Expired",
   },
   {
     route: "9",
     number: "TN34 AZ789",
-    status: "Completed",
+    status: "Good",
     problem: "Battery Expired",
   },
   {
     route: "10",
     number: "TN34 AZ789",
-    status: "Completed",
+    status: "Good",
     problem: "Battery Expired",
   },
 ];
 
+// Function to get a colored dot based on status
+const getStatusDot = (status) => {
+  const statusColors = {
+    Good: "#4caf50", // Green
+    Satisfactory: "#ff9800", // Orange
+    Critical: "#f44336", // Red
+  };
+  return (
+    <span
+      className="status-dot"
+      style={{
+        backgroundColor: statusColors[status] || "#000",
+        marginRight: "8px",
+      }}
+    ></span>
+  );
+};
+
 const ViewAllBusConditions = ({ onBack }) => {
+  const [buses, setBuses] = useState(busConditionsData);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
-  const [selectedBus, setSelectedBus] = useState(null);
+  const [selectedBuses, setSelectedBuses] = useState([]);
+  const [viewingBus, setViewingBus] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingBus, setEditingBus] = useState(null);
-  const [viewingBus, setViewingBus] = useState(null);
 
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
+  const handleOutsideClick = (event) => {
+    if (containerRef.current && !containerRef.current.contains(event.target)) {
+      setSelectedBuses([]);
+    }
+  };
+
+  const handleDelete = () => {
+    if (selectedBuses.length > 0) {
+      setShowDeleteConfirmation(true);
+    } else {
+      showToast("warn", "Please select at least one bus to delete.");
+    }
+  };
+
+  const confirmDelete = () => {
+    const remainingBuses = buses.filter(
+      (bus) => !selectedBuses.includes(bus.route)
+    );
+    setBuses(remainingBuses);
+    setSelectedBuses([]);
+    setShowDeleteConfirmation(false);
+    showToast("success", "Selected bus record(s) deleted successfully.");
+  };
+
+  const handleEdit = () => {
+    if (selectedBuses.length === 1) {
+      const busToEdit = buses.find((bus) => bus.route === selectedBuses[0]);
+      setEditingBus(busToEdit);
+      setShowAddForm(true);
+    } else {
+      showToast("warn", "Please select a single bus to edit.");
+    }
+  };
+
+  const handleAddClick = () => {
+    setShowAddForm(true);
+    setEditingBus(null);
+  };
+
+  const handleAddOrEditComplete = async (busData) => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      if (editingBus) {
+        setBuses((prevBuses) =>
+          prevBuses.map((bus) =>
+            bus.route === editingBus.route ? busData : bus
+          )
+        );
+        showToast("success", "Bus updated successfully.");
+      } else {
+        setBuses((prevBuses) => [...prevBuses, busData]);
+        showToast("success", "New bus added successfully.");
+      }
+
+      setShowAddForm(false);
+      setEditingBus(null);
+      setSelectedBuses([]);
+    } catch (error) {
+      console.error("Error saving bus condition:", error);
+      showToast("error", "Failed to save bus condition. Please try again.");
+    }
+  };
+
+  const handleRowClick = (busId) => {
+    setSelectedBuses((prevSelected) =>
+      prevSelected.includes(busId)
+        ? prevSelected.filter((id) => id !== busId)
+        : [...prevSelected, busId]
+    );
+  };
 
   const handleViewBus = (bus) => {
     setViewingBus(bus);
   };
 
-  const handleDelete = () => {
-    if (selectedBus) {
-      setShowDeleteConfirmation(true);
+  const handleSelectAll = () => {
+    if (selectedBuses.length === currentItems.length) {
+      setSelectedBuses([]); // Deselect all
+    } else {
+      setSelectedBuses(currentItems.map((bus) => bus.route)); // Select all
     }
   };
 
-  const handleEdit = () => {
-    if (selectedBus) {
-      setEditingBus(selectedBus);
-      setShowAddForm(true);
-    }
-  };
-
-  const handleAddOrEditComplete = async (busData) => {
-    try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Update the bus data
-      console.log(editingBus ? "Updating bus:" : "Adding new bus:", busData);
-
-      setShowAddForm(false);
-      setEditingBus(null);
-      setSelectedBus(null);
-    } catch (error) {
-      console.error("Error saving bus condition:", error);
-    }
-  };
-
-  const confirmDelete = () => {
-    console.log("Deleting bus:", selectedBus);
-    setShowDeleteConfirmation(false);
-    setSelectedBus(null);
-  };
-
-  const handleRowClick = (bus) => {
-    setSelectedBus(selectedBus === bus ? null : bus);
-  };
-
-  const filteredBuses = busConditionsData.filter(
+  const filteredBuses = buses.filter(
     (bus) =>
       bus.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
       bus.problem.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -144,32 +215,60 @@ const ViewAllBusConditions = ({ onBack }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredBuses.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const isSelectAllChecked = selectedBuses.length === currentItems.length;
+  const isSelectAllIndeterminate =
+    selectedBuses.length > 0 && selectedBuses.length < currentItems.length;
 
-  const getStatusDot = (status) => {
-    const statusColors = {
-      Completed: "#4caf50",
-      Satisfactory: "#ff9800",
-      Critical: "#f44336",
-    };
-    return (
-      <span
-        className="status-dot"
-        style={{ backgroundColor: statusColors[status] }}
-      ></span>
-    );
-  };
+  const headers = [
+    <label className="custom-checkbox">
+      <input
+        type="checkbox"
+        checked={isSelectAllChecked}
+        ref={(el) => el && (el.indeterminate = isSelectAllIndeterminate)}
+        onChange={handleSelectAll}
+      />
+      <span className="checkbox-checkmark"></span>
+    </label>,
+    "Route",
+    "Number",
+    "Status",
+    "Problem",
+    "View",
+  ];
 
-  const handleAddClick = () => {
-    setShowAddForm(true);
-    setEditingBus(null);
-  };
-
-  const handleAddSave = (data) => {
-    console.log("New bus condition:", data);
-    setShowAddForm(false);
-    // Add logic to save the data
-  };
+  const rows = currentItems.map((bus) => ({
+    id: bus.route,
+    data: {
+      select: (
+        <label className="custom-checkbox">
+          <input
+            type="checkbox"
+            checked={selectedBuses.includes(bus.route)}
+            onChange={() => handleRowClick(bus.route)}
+          />
+          <span className="checkbox-checkmark"></span>
+        </label>
+      ),
+      route: bus.route,
+      number: bus.number,
+      status: (
+        <>
+          {getStatusDot(bus.status)} {bus.status}
+        </>
+      ),
+      problem: bus.problem,
+      view: (
+        <FontAwesomeIcon
+          icon={faEye}
+          className="view-icon"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleViewBus(bus);
+          }}
+        />
+      ),
+    },
+  }));
 
   if (showAddForm) {
     return (
@@ -186,32 +285,15 @@ const ViewAllBusConditions = ({ onBack }) => {
 
   return (
     <div className="bus-conditions-container" ref={containerRef}>
-      <header className="bus-conditions-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="bus-conditions-back-icon"
-          onClick={onBack}
-        />
-        <h2>All Bus Conditions</h2>
-      </header>
+      <ToastNotification />
+      <TopBar title="All Bus Conditions" onBack={onBack} backButton={true} />
 
       <main className="bus-conditions-main-content">
         <div className="bus-conditions-controls">
-          <div className="bus-conditions-search-bar-container">
-            <div className="bus-conditions-search-input-wrapper">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="bus-conditions-search-icon"
-              />
-              <input
-                type="text"
-                className="bus-conditions-search-bar"
-                placeholder="Search by Bus Number, Status or Problem"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
+          <SearchBar
+            placeholder="Search by Bus Number, Status or Problem"
+            onSearch={setSearchTerm}
+          />
           <div className="bus-conditions-action-buttons">
             <Button
               label={
@@ -224,11 +306,11 @@ const ViewAllBusConditions = ({ onBack }) => {
             <Button
               label={
                 <>
-                  <FontAwesomeIcon icon={faPencil} /> Edit
+                  <FontAwesomeIcon icon={faEdit} /> Edit
                 </>
               }
               onClick={handleEdit}
-              disabled={!selectedBus}
+              disabled={selectedBuses.length !== 1}
             />
             <Button
               label={
@@ -237,108 +319,34 @@ const ViewAllBusConditions = ({ onBack }) => {
                 </>
               }
               onClick={handleDelete}
-              disabled={!selectedBus}
+              disabled={selectedBuses.length === 0}
             />
           </div>
         </div>
 
-        <div className="bus-conditions-table-container">
-          <div className="bus-conditions-table-wrapper">
-            <table className="bus-conditions-table">
-              <thead>
-                <tr>
-                  <th>Route</th>
-                  <th>Number</th>
-                  <th>Status</th>
-                  <th>Problem</th>
-                  <th>View</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((bus, index) => (
-                  <tr
-                    key={index}
-                    onClick={() => handleRowClick(bus)}
-                    className={selectedBus === bus ? "selected" : ""}
-                  >
-                    <td>{bus.route}</td>
-                    <td>{bus.number}</td>
-                    <td>
-                      {getStatusDot(bus.status)} {bus.status}
-                    </td>
-                    <td>{bus.problem}</td>
-                    <td>
-                      <FontAwesomeIcon
-                        icon={faEye}
-                        className="view-icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleViewBus(bus);
-                        }}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <TableContainer
+          headers={headers}
+          rows={rows}
+          onRowClick={(row) => handleRowClick(row.id)}
+          selectedRowId={selectedBuses}
+        />
 
-        <div className="bus-conditions-pagination">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="bus-conditions-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronLeft} />
-          </button>
-          {Array.from({
-            length: Math.ceil(filteredBuses.length / itemsPerPage),
-          }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => paginate(index + 1)}
-              className={`bus-conditions-pagination-button ${
-                currentPage === index + 1 ? "active" : ""
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={
-              currentPage === Math.ceil(filteredBuses.length / itemsPerPage)
-            }
-            className="bus-conditions-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronRight} />
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(filteredBuses.length / itemsPerPage)}
+          onPageChange={setCurrentPage}
+        />
       </main>
 
       {showDeleteConfirmation && (
-        <div className="bus-conditions-delete-confirmation-modal">
-          <div className="bus-conditions-delete-confirmation-content">
-            <h3>Confirm Deletion</h3>
-            <p>Are you sure you want to delete this bus record?</p>
-            <div className="bus-conditions-delete-confirmation-buttons">
-              <button
-                onClick={() => setShowDeleteConfirmation(false)}
-                className="bus-conditions-cancel-delete"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDelete}
-                className="bus-conditions-confirm-delete"
-              >
-                Yes, Delete
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmationModal
+          title="Confirm Deletion"
+          message="Are you sure you want to delete the selected bus record(s)?"
+          onCancel={() => setShowDeleteConfirmation(false)}
+          onConfirm={confirmDelete}
+        />
       )}
+
       {viewingBus && (
         <SpecificBusCondition
           bus={viewingBus}

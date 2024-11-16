@@ -125,8 +125,6 @@ const AboutApp = () => {
     () => ({
       appadmin: "/app-admin",
       admin: "/admin",
-      student: "/student/dashboard",
-      staff: "/staff/dashboard",
     }),
     []
   );

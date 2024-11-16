@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowLeft,
-  faSearch,
   faFilter,
-  faChevronLeft,
-  faChevronRight,
   faUserGraduate,
   faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import "./ScheduledPassengers.css";
 import Button from "../../../../components/Shared/Button/Button";
-
-// Add this to the top of your ScheduledPassengers.jsx file
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
 
 const studentsScheduledData = [
   {
@@ -777,14 +775,11 @@ const staffScheduledData = [
 const ScheduledPassengers = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const [currentPageStudent, setCurrentPageStudent] = useState(1);
-  const [currentPageStaff, setCurrentPageStaff] = useState(1);
-  const [itemsPerPage] = useState(10);
-  const [filteredStudents, setFilteredStudents] = useState(
-    studentsScheduledData
-  );
-  const [filteredStaff, setFilteredStaff] = useState(staffScheduledData);
-
+  const [currentPage, setCurrentPage] = useState({ student: 1, staff: 1 });
+  const [filteredData, setFilteredData] = useState({
+    students: studentsScheduledData,
+    staff: staffScheduledData,
+  });
   const [filters, setFilters] = useState({
     scheduledFor: "",
     year: "",
@@ -796,217 +791,88 @@ const ScheduledPassengers = ({ onBack }) => {
     designation: "",
   });
 
-  useEffect(() => {
-    const results = studentsScheduledData.filter((student) =>
-      Object.values(student).some(
-        (value) =>
-          typeof value === "string" &&
-          value.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-    setFilteredStudents(results);
-    setCurrentPageStudent(1);
+  const itemsPerPage = 5;
 
-    const staffResults = staffScheduledData.filter((staff) =>
-      Object.values(staff).some(
-        (value) =>
-          typeof value === "string" &&
-          value.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-    setFilteredStaff(staffResults);
-    setCurrentPageStaff(1);
-  }, [searchTerm]);
+  // Filter and search combined function
+  const applyFiltersAndSearch = () => {
+    const filterData = (data) =>
+      data.filter((entry) =>
+        Object.entries({ ...filters, searchTerm }).every(([key, value]) => {
+          if (!value) return true;
+          return entry[key]
+            ?.toString()
+            .toLowerCase()
+            .includes(value.toString().toLowerCase());
+        })
+      );
 
-  useEffect(() => {
-    const results = studentsScheduledData.filter((student) => {
-      return Object.entries(filters).every(([key, value]) => {
-        if (!value) return true;
-        return (
-          student[key] &&
-          student[key].toLowerCase().includes(value.toLowerCase())
-        );
-      });
+    setFilteredData({
+      students: filterData(studentsScheduledData),
+      staff: filterData(staffScheduledData),
     });
-    setFilteredStudents(results);
-    setCurrentPageStudent(1);
+    setCurrentPage({ student: 1, staff: 1 });
+  };
 
-    const staffResults = staffScheduledData.filter((staff) => {
-      return Object.entries(filters).every(([key, value]) => {
-        if (!value) return true;
-        return (
-          staff[key] && staff[key].toLowerCase().includes(value.toLowerCase())
-        );
-      });
-    });
-    setFilteredStaff(staffResults);
-    setCurrentPageStaff(1);
-  }, [filters]);
+  useEffect(applyFiltersAndSearch, [filters, searchTerm]);
 
   const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: value,
-    }));
+    setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 
-  const getUniqueValues = (data, key) => {
-    return [...new Set(data.map((item) => item[key]))];
-  };
-
-  const renderTable = (data, columns, currentPage, itemsPerPage) => {
-    if (data.length === 0) {
-      return (
-        <div className="scheduled-passengers-table-container">
-          <div className="scheduled-passengers-table-wrapper">
-            <table className="scheduled-passengers-table">
-              <thead>
-                <tr>
-                  {columns.map((column) => (
-                    <th key={column.key}>{column.label}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colSpan={columns.length} className="no-data-message">
-                    No data available
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      );
-    }
-
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-
-    return (
-      <div className="scheduled-passengers-table-container">
-        <div className="scheduled-passengers-table-wrapper">
-          <table className="scheduled-passengers-table">
-            <thead>
-              <tr>
-                {columns.map((column) => (
-                  <th key={column.key}>{column.label}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((item) => (
-                <tr key={item.id || item["S.No"]}>
-                  {columns.map((column) => (
-                    <td key={column.key}>{item[column.key]}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    );
-  };
-
-  const renderPagination = (currentPage, totalItems, paginate) => {
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
-      pageNumbers.push(i);
-    }
-
-    return (
-      <div className="scheduled-passengers-pagination">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="scheduled-passengers-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-        {pageNumbers.map((number) => (
-          <button
-            key={number}
-            onClick={() => paginate(number)}
-            className={`scheduled-passengers-pagination-button ${
-              currentPage === number ? "active" : ""
-            }`}
-          >
-            {number}
-          </button>
-        ))}
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === pageNumbers.length}
-          className="scheduled-passengers-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </button>
-      </div>
-    );
-  };
-
-  const studentColumns = [
-    { key: "S.No", label: "S.No" },
-    { key: "studentName", label: "Student Name" },
-    { key: "regNo", label: "Reg No" },
-    { key: "scheduledFor", label: "Scheduled For" },
-    { key: "rollNo", label: "Roll No" },
-    { key: "year", label: "Year" },
-    { key: "department", label: "Department" },
-    { key: "section", label: "Section" },
-    { key: "instituteName", label: "Institute Name" },
-    { key: "routeNo", label: "Route No" },
-    { key: "stopName", label: "Stop Name" },
-    { key: "pendingFee", label: "Pending Fee" },
-    { key: "remainingAmulets", label: "Remaining Amulets" },
-    { key: "refilledAmulets", label: "Refilled Amulets" },
-    { key: "status", label: "Status" },
-  ];
-
-  const staffColumns = [
-    { key: "S.No", label: "S.No" },
-    { key: "staffName", label: "Staff Name" },
-    { key: "staffID", label: "Staff ID" },
-    { key: "scheduledFor", label: "Scheduled For" },
-    { key: "department", label: "Department" },
-    { key: "designation", label: "Designation" },
-    { key: "instituteName", label: "Institute Name" },
-    { key: "boardingPoint", label: "Boarding Point" },
-    { key: "scannedTime", label: "Scanned Time" },
-    { key: "status", label: "Status" },
+  const tableData = [
+    {
+      label: "Students Scheduled",
+      icon: faUserGraduate,
+      data: filteredData.students,
+      columns: [
+        "S.No",
+        "studentName",
+        "regNo",
+        "scheduledFor",
+        "rollNo",
+        "year",
+        "department",
+        "section",
+        "instituteName",
+        "routeNo",
+        "stopName",
+        "pendingFee",
+        "remainingAmulets",
+        "refilledAmulets",
+        "status",
+      ],
+      pageKey: "student",
+    },
+    {
+      label: "Staff Scheduled",
+      icon: faUserTie,
+      data: filteredData.staff,
+      columns: [
+        "S.No",
+        "staffName",
+        "staffID",
+        "scheduledFor",
+        "department",
+        "designation",
+        "instituteName",
+        "boardingPoint",
+        "scannedTime",
+        "status",
+      ],
+      pageKey: "staff",
+    },
   ];
 
   return (
     <div className="scheduled-passengers-container">
-      <header className="scheduled-passengers-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="scheduled-passengers-back-icon"
-          onClick={onBack}
-        />
-        <h2>Scheduled Passengers</h2>
-      </header>
+      <TopBar title="Scheduled Passengers" backButton onBack={onBack} />
 
       <main className="scheduled-passengers-main-content">
         <div className="scheduled-passengers-actions">
-          <div className="scheduled-passengers-search-container">
-            <div className="scheduled-passengers-search-input-wrapper">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="scheduled-passengers-search-icon"
-              />
-              <input
-                type="text"
-                className="scheduled-passengers-search-bar"
-                placeholder="Search by Route No or Passenger Name"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
+          <SearchBar
+            placeholder="Search by Route No or Passenger Name"
+            onSearch={setSearchTerm}
+          />
           <div className="scheduled-passengers-action-button-container">
             <Button
               label={
@@ -1014,172 +880,78 @@ const ScheduledPassengers = ({ onBack }) => {
                   <FontAwesomeIcon icon={faFilter} /> Filter by
                 </>
               }
-              onClick={() => setShowFilters(!showFilters)}
+              onClick={() => setShowFilters((prev) => !prev)}
             />
           </div>
         </div>
 
         {showFilters && (
           <div className="scheduled-passengers-filters">
-            <select
-              name="scheduledFor"
-              value={filters.scheduledFor}
-              onChange={handleFilterChange}
-            >
-              <option value="">Scheduled For</option>
-              {getUniqueValues(studentsScheduledData, "scheduledFor").map(
-                (value) => (
+            {Object.keys(filters).map((filterKey) => (
+              <select
+                key={filterKey}
+                name={filterKey}
+                value={filters[filterKey]}
+                onChange={handleFilterChange}
+              >
+                <option value="">{filterKey.replace(/([A-Z])/g, " $1")}</option>
+                {Array.from(
+                  new Set(
+                    [...studentsScheduledData, ...staffScheduledData]
+                      .map((item) => item[filterKey])
+                      .filter(Boolean)
+                  )
+                ).map((value) => (
                   <option key={value} value={value}>
                     {value}
                   </option>
-                )
-              )}
-            </select>
-            <select
-              name="year"
-              value={filters.year}
-              onChange={handleFilterChange}
-            >
-              <option value="">Year</option>
-              {getUniqueValues(studentsScheduledData, "year").map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-            <select
-              name="department"
-              value={filters.department}
-              onChange={handleFilterChange}
-            >
-              <option value="">Department</option>
-              {getUniqueValues(studentsScheduledData, "department").map(
-                (value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                )
-              )}
-            </select>
-            <select
-              name="section"
-              value={filters.section}
-              onChange={handleFilterChange}
-            >
-              <option value="">Section</option>
-              {getUniqueValues(studentsScheduledData, "section").map(
-                (value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                )
-              )}
-            </select>
-            <select
-              name="instituteName"
-              value={filters.instituteName}
-              onChange={handleFilterChange}
-            >
-              <option value="">Institute Name</option>
-              {getUniqueValues(studentsScheduledData, "instituteName").map(
-                (value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                )
-              )}
-            </select>
-            <select
-              name="routeNo"
-              value={filters.routeNo}
-              onChange={handleFilterChange}
-            >
-              <option value="">Route No</option>
-              {getUniqueValues(studentsScheduledData, "routeNo").map(
-                (value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                )
-              )}
-            </select>
-            <select
-              name="status"
-              value={filters.status}
-              onChange={handleFilterChange}
-            >
-              <option value="">Status</option>
-              {getUniqueValues(studentsScheduledData, "status").map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-            <select
-              name="designation"
-              value={filters.designation}
-              onChange={handleFilterChange}
-            >
-              <option value="">Designation</option>
-              {getUniqueValues(staffScheduledData, "designation").map(
-                (value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                )
-              )}
-            </select>
+                ))}
+              </select>
+            ))}
           </div>
         )}
 
         <div className="scheduled-passengers-tables-container">
-          <div className="scheduled-passengers-table-section">
-            <div className="scheduled-passengers-table-sub-section">
-              <h3 className="students-schedule-title">
-                {" "}
-                <FontAwesomeIcon
-                  icon={faUserGraduate}
-                  className="students-schedule-icon"
-                />
-                Students Scheduled{" "}
-              </h3>
-              <p className="total-count">Total of {filteredStudents.length}</p>
+          {tableData.map(({ label, icon, data, columns, pageKey }) => (
+            <div key={label} className="scheduled-passengers-table-section">
+              <div className="scheduled-passengers-table-sub-section">
+                <h3>
+                  <FontAwesomeIcon
+                    icon={icon}
+                    className={`${pageKey}-schedule-icon`}
+                  />{" "}
+                  {label}
+                </h3>
+                <p className="total-count">Total of {data.length}</p>
+              </div>
+              <TableContainer
+                headers={columns.map((col) => col)}
+                rows={
+                  data.length > 0
+                    ? data
+                        .slice(
+                          (currentPage[pageKey] - 1) * itemsPerPage,
+                          currentPage[pageKey] * itemsPerPage
+                        )
+                        .map((item) => ({ id: item["S.No"], data: item }))
+                    : [
+                        {
+                          id: "no-data",
+                          data: { message: "No data available" },
+                        },
+                      ]
+                }
+              />
+
+              <Pagination
+                currentPage={currentPage[pageKey]}
+                totalPages={Math.ceil(data.length / itemsPerPage)}
+                onPageChange={(page) =>
+                  setCurrentPage((prev) => ({ ...prev, [pageKey]: page }))
+                }
+              />
             </div>
-            {renderTable(
-              filteredStudents,
-              studentColumns,
-              currentPageStudent,
-              itemsPerPage
-            )}
-            {renderPagination(
-              currentPageStudent,
-              filteredStudents.length,
-              setCurrentPageStudent
-            )}
-          </div>
-          <div className="scheduled-passengers-table-section">
-            <div className="scheduled-passengers-table-sub-section">
-              <h3 className="staff-schedule-title">
-                <FontAwesomeIcon
-                  icon={faUserTie}
-                  className="staff-schedule-icon"
-                />
-                Staffs Scheduled{" "}
-              </h3>
-              <p className="total-count">Total of {filteredStaff.length}</p>
-            </div>
-            {renderTable(
-              filteredStaff,
-              staffColumns,
-              currentPageStaff,
-              itemsPerPage
-            )}
-            {renderPagination(
-              currentPageStaff,
-              filteredStaff.length,
-              setCurrentPageStaff
-            )}
-          </div>
+          ))}
         </div>
       </main>
     </div>

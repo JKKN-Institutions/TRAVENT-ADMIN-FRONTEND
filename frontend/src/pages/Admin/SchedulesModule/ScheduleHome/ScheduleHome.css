@@ -6,31 +6,6 @@
   flex-direction: column;
 }
 
-.schedules-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  margin-bottom: 10px;
-  top: 0;
-  z-index: 999;
-  border-radius: 10px;
-}
-
-.schedules-menu-icon {
-  font-size: 1rem;
-  cursor: pointer;
-  margin-right: 1rem;
-}
-
-.schedules-top-bar h1 {
-  margin: 0;
-  font-size: 1.3rem;
-}
-
 .schedules-main-content {
   flex: 1;
   padding: 0 0.5rem;
@@ -311,41 +286,6 @@ input:checked + .schedules-slider:before {
   background-color: #0e86c9;
 }
 
-/* Ensure the loading container is confined to the content area */
-
-.schedules-loading-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #1e1e1e;
-  height: 100vh;
-  color: #ffffff;
-}
-
-.loading-spinner {
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top: 4px solid #ffffff;
-  width: 40px;
-  height: 40px;
-  margin-bottom: 10px;
-  animation: spin 1s linear infinite;
-}
-
-.loading-container p {
-  font-weight: 600;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 /* Responsive styles */
 @media (max-width: 1200px) {
   .schedules-stats-row {
@@ -384,10 +324,6 @@ input:checked + .schedules-slider:before {
 }
 
 @media (max-width: 576px) {
-  .schedules-top-bar h1 {
-    font-size: 1.2rem;
-  }
-
   .schedules-stat-card h2,
   .schedules-settings h2 {
     font-size: 1rem;

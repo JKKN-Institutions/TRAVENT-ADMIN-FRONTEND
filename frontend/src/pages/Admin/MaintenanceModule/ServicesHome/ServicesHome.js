@@ -1,7 +1,18 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faEye } from "@fortawesome/free-solid-svg-icons";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+} from "chart.js";
+import { Doughnut } from "react-chartjs-2";
 import "./ServicesHome.css";
+
+ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale);
 
 const busesCondition = [
   { label: "Good", value: 24, percentage: 68, color: "#4caf50" },
@@ -108,6 +119,72 @@ const goodBusesData = [
   },
 ];
 
+const BusesConditionChart = ({ condition }) => {
+  const totalBuses = condition.reduce((acc, curr) => acc + curr.value, 0);
+
+  const chartData = {
+    labels: condition.map((item) => item.label),
+    datasets: [
+      {
+        data: condition.map((item) => item.value),
+        backgroundColor: condition.map((item) => item.color),
+        borderColor: ["rgba(255, 255, 255, 1)"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: "70%",
+    plugins: {
+      legend: {
+        position: "bottom",
+        labels: {
+          color: "#fff",
+          padding: 10,
+          font: {
+            size: 12,
+          },
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            const condition = busesCondition[context.dataIndex];
+            return `${condition.value} buses`;
+          },
+        },
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        padding: 10,
+        displayColors: false,
+      },
+    },
+  };
+
+  return (
+    <div style={{ width: "100%", height: "200px", position: "relative" }}>
+      <Doughnut data={chartData} options={options} />
+      <div
+        style={{
+          position: "absolute",
+          top: "40%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          textAlign: "center",
+        }}
+      >
+        <div style={{ fontSize: "24px", fontWeight: "bold", color: "#fff" }}>
+          {totalBuses}
+        </div>
+        <div style={{ fontSize: "14px", color: "#ccc" }}>Total Buses</div>
+      </div>
+    </div>
+  );
+};
+
 const ServicesHome = ({
   setShowViewAllBusConditions,
   setShowViewGoodConditionBuses,
@@ -153,33 +230,7 @@ const ServicesHome = ({
           </div>
           <h2></h2>
           <div className="services-buses-condition-grid">
-            {busesCondition.map((condition, index) => (
-              <div key={index} className="services-buses-condition-item">
-                <div className="services-buses-condition-chart">
-                  <svg viewBox="0 0 36 36" className="services-circular-chart">
-                    <path
-                      className="services-circle-bg"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                    <path
-                      className="services-circle"
-                      strokeDasharray={`${condition.percentage}, 100`}
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      style={{ stroke: condition.color }}
-                    />
-                    <text x="18" y="20.35" className="services-percentage">
-                      {condition.percentage}%
-                    </text>
-                  </svg>
-                </div>
-                <div className="services-buses-condition-percentage">
-                  {condition.value}
-                </div>
-                <div className="services-buses-condition-label">
-                  {condition.label}
-                </div>
-              </div>
-            ))}
+            <BusesConditionChart condition={busesCondition} />
           </div>
         </div>
         <div className="services-table-container good-buses">

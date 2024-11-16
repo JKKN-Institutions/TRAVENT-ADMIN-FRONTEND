@@ -321,7 +321,7 @@
     max-height: calc(100vh - 230px);
   }
   .buses-condition-container,
-  .table-container {
+  .services-table-container {
     padding: 1rem;
   }
 

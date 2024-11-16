@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import FormInput from "../../../../components/Shared/FormInput/FormInput";
+import ActionButtons from "../../../../components/Shared/ActionButtons/ActionButtons";
 import "./AddNewOrder.css";
 
 const AddNewOrder = ({ order, onBack, onSave }) => {
@@ -66,60 +68,30 @@ const AddNewOrder = ({ order, onBack, onSave }) => {
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
-      toast.error("Please fill in all required fields", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      showToast("error", "Please fill in all required fields");
     } else {
-      try {
-        const loadingToastId = toast.loading(
-          order ? "Updating order..." : "Adding new order...",
-          {
-            position: "top-right",
-          }
-        );
+      const loadingToastId = showToast(
+        "loading",
+        order ? "Updating order..." : "Adding new order..."
+      );
 
+      try {
         // Simulate API call delay
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        // First dismiss the loading toast
-        toast.dismiss(loadingToastId);
+        // Show success toast with a delay to ensure visibility
+        showToast(
+          "success",
+          `Successfully ${order ? "updated" : "added"} order.`,
+          loadingToastId
+        );
 
-        // Show success toast with a delay to ensure it's visible
-        setTimeout(() => {
-          toast.success(
-            <div>
-              Successfully {order ? "updated" : "added"} order.
-              <br />
-              <small>Order details have been saved.</small>
-            </div>,
-            {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-            }
-          );
-        }, 100);
-
-        // Delay the onSave and onBack calls to ensure toast is visible
-        setTimeout(() => {
-          onSave(orderData);
-        }, 3100);
+        setTimeout(() => onSave(orderData), 3100);
       } catch (error) {
-        toast.dismiss();
-        toast.error(
+        showToast(
+          "error",
           `Failed to ${order ? "update" : "add"} order. Please try again.`,
-          {
-            position: "top-right",
-            autoClose: 3000,
-          }
+          loadingToastId
         );
         console.error("Error saving order:", error);
       }
@@ -128,35 +100,20 @@ const AddNewOrder = ({ order, onBack, onSave }) => {
 
   return (
     <div className="add-new-order-container">
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        limit={3}
+      <ToastNotification />
+      <TopBar
+        title={order ? "Edit Order" : "Add New Order"}
+        onBack={onBack}
+        backButton={true}
       />
-
-      <header className="add-new-order-top-bar">
-        <button className="add-new-order-back-button" onClick={onBack}>
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
-        <div className="add-new-order-header">
-          <h2>{order ? "Edit Order" : "Add New Order"}</h2>
-        </div>
-      </header>
-
       <main className="add-new-order-main-content">
         <form onSubmit={handleSubmit}>
           <div className="add-new-order-form-grid">
             {Object.keys(orderData).map((key) => (
               <div key={key} className="add-new-order-form-group">
-                <input
+                <FormInput
+                  id={key}
+                  name={key}
                   type={
                     key.includes("quantity")
                       ? "number"
@@ -166,10 +123,7 @@ const AddNewOrder = ({ order, onBack, onSave }) => {
                       ? "time"
                       : "text"
                   }
-                  id={key}
-                  name={key}
                   value={orderData[key]}
-                  onChange={handleChange}
                   placeholder={
                     key.charAt(0).toUpperCase() +
                     key
@@ -177,24 +131,17 @@ const AddNewOrder = ({ order, onBack, onSave }) => {
                       .replace(/([A-Z])/g, " $1")
                       .trim()
                   }
-                  className={errors[key] ? "input-error" : ""}
+                  error={errors[key]}
+                  onChange={handleChange}
                 />
-                {errors[key] && <p className="error">{errors[key]}</p>}
               </div>
             ))}
           </div>
-          <div className="add-new-order-buttons-container">
-            <button
-              type="button"
-              className="add-new-order-cancel-button"
-              onClick={onBack}
-            >
-              Cancel
-            </button>
-            <button type="submit" className="add-new-order-save-button">
-              {order ? "Update Order" : "Add Order"}
-            </button>
-          </div>
+          <ActionButtons
+            onCancel={onBack}
+            onSubmit={handleSubmit}
+            submitText={order ? "Update Order" : "Add Order"}
+          />
         </form>
       </main>
     </div>

@@ -15,7 +15,7 @@ import {
   faSchool,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
-import Logout from "../../../pages/AppAdmin/Logout/Logout";
+import Logout from "../Logout/Logout";
 
 const UnifiedSidebar = React.memo(
   ({ isOpen, toggleSidebar, setActiveComponent, userRole }) => {

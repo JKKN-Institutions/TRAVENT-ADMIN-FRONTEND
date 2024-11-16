@@ -1,17 +1,31 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faSearch, faEye } from "@fortawesome/free-solid-svg-icons";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { format } from "date-fns";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
 import "./InventoryHome.css";
 import Button from "../../../../components/Shared/Button/Button";
+
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const stockData = [
   { week: "Week 1", stocks: 2500 },
@@ -159,15 +173,71 @@ const InventoryHome = ({
     setSelectedDate(new Date(year, month - 1));
   };
 
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip">
-          <p className="label">{`${label} : ${payload[0].value}`}</p>
-        </div>
-      );
-    }
-    return null;
+  // Chart.js configuration
+  const chartData = {
+    labels: stockData.map((data) => data.week),
+    datasets: [
+      {
+        data: stockData.map((data) => data.stocks),
+        borderColor: "#11a8fd",
+        backgroundColor: "rgba(17, 168, 253, 0.1)",
+        borderWidth: 2,
+        tension: 0.4,
+        pointRadius: 4,
+        pointBackgroundColor: "#11a8fd",
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        padding: 12,
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        bodyFont: {
+          size: 14,
+        },
+        callbacks: {
+          label: function (context) {
+            return `${context.parsed.y}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: true,
+          color: "rgba(255, 255, 255, 0.1)",
+        },
+        ticks: {
+          color: "#fff",
+          font: {
+            size: 14,
+          },
+        },
+      },
+      y: {
+        grid: {
+          display: true,
+          color: "rgba(255, 255, 255, 0.1)",
+        },
+        ticks: {
+          stepSize: 300,
+          color: "#fff",
+          font: {
+            size: 14,
+          },
+        },
+      },
+    },
   };
 
   const filteredInventory = inventoryData.filter(
@@ -205,23 +275,13 @@ const InventoryHome = ({
             </div>
           </div>
           <div className="inventory-chart-responsive-container">
-            <ResponsiveContainer width="100%" height={275}>
-              <LineChart data={stockData}>
-                <XAxis dataKey="week" fontSize={14} />
-                <YAxis fontSize={14} />
-                <Tooltip content={<CustomTooltip />} />
-                <Line
-                  type="monotone"
-                  dataKey="stocks"
-                  stroke="#11a8fd"
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <div style={{ height: "275px", width: "100%" }}>
+              <Line data={chartData} options={chartOptions} />
+            </div>
           </div>
         </div>
-        <div className="table-container stock-details">
-          <div className="table-header">
+        <div className="inventory-table-container stock-details">
+          <div className="inventory-table-header">
             <h2>Stock Details</h2>
             <a
               href="#"
@@ -258,7 +318,7 @@ const InventoryHome = ({
               />
             </div>
           </div>
-          <div className="table-wrapper">
+          <div className="inventory-table-wrapper">
             <table className="inventory-table">
               <thead>
                 <tr>
@@ -289,8 +349,8 @@ const InventoryHome = ({
             </table>
           </div>
         </div>
-        <div className="table-container order-details">
-          <div className="table-header">
+        <div className="inventory-table-container order-details">
+          <div className="inventory-table-header">
             <h2>Order Details</h2>
             <a
               href="#"
@@ -327,7 +387,7 @@ const InventoryHome = ({
               />
             </div>
           </div>
-          <div className="table-wrapper">
+          <div className="inventory-table-wrapper">
             <table className="inventory-table">
               <thead>
                 <tr>
@@ -358,8 +418,8 @@ const InventoryHome = ({
             </table>
           </div>
         </div>
-        <div className="table-container usage-details">
-          <div className="table-header">
+        <div className="inventory-table-container usage-details">
+          <div className="inventory-table-header">
             <h2>Used Spares</h2>
             <a
               href="#"
@@ -386,7 +446,7 @@ const InventoryHome = ({
               </div>
             </div>
           </div>
-          <div className="table-wrapper">
+          <div className="inventory-table-wrapper">
             <table className="inventory-table">
               <thead>
                 <tr>

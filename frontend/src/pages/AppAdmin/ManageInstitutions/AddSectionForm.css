@@ -20,12 +20,7 @@
   gap: 1rem;
 }
 
-.section-form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.section-form-group.full-width {
+.full-width {
   grid-column: 1 / -1;
 }
 
@@ -92,80 +87,6 @@
   font-size: 1.3rem;
 }
 
-.section-form-container label {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  display: block;
-  color: #ffffff;
-}
-
-.section-form-container .form-group {
-  margin-bottom: 1.5rem;
-}
-
-.section-form-container .form-select {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 0.5rem;
-  border-radius: 10px;
-  font-size: 1em;
-  background-color: #2c2c2c;
-  color: white;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  border: none;
-  border-bottom: 2px solid #666;
-}
-
-.section-form-container .form-select:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px #11a8fd;
-}
-
-.section-button-group {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-  flex-wrap: wrap;
-}
-
-.section-form-container .form-button {
-  width: 100%;
-  max-width: 220px;
-  padding: 0.6rem;
-  font-size: 1rem;
-  background-color: #11a8fd;
-  color: #ffffff;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 1rem;
-  font-weight: 600;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.section-form-container .form-button.primary {
-  background-color: #11a8fd;
-}
-
-.section-form-container .form-button.secondary {
-  background-color: #3a4654;
-}
-
-.section-form-container .form-button:hover {
-  opacity: 0.9;
-}
-
-.input-error {
-  border: 1px solid #fff;
-}
-
-.error-message {
-  color: #fff;
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
-}
-
 @media (max-width: 768px) {
   .section-form-container {
     padding: 1.5rem;
@@ -180,12 +101,6 @@
 
   .section-form-container h2 {
     font-size: 1.2rem;
-  }
-
-  .section-form-container .form-select,
-  .section-form-container .form-button {
-    font-size: 0.875rem;
-    padding: 10px;
   }
 
   .section-form-content {
@@ -207,10 +122,6 @@
   .section-left-side li span {
     flex-basis: 50%;
     text-align: left;
-  }
-
-  .section-button-group {
-    margin-top: 0;
   }
 }
 
@@ -243,10 +154,5 @@
   .section-left-side li span {
     flex-basis: 100%;
     text-align: left;
-  }
-
-  .section-button-group {
-    justify-content: center;
-    margin-top: 0;
   }
 }

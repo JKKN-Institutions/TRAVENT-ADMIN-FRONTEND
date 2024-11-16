@@ -1,15 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faArrowLeft,
-  faChevronLeft,
-  faChevronRight,
-  faEye,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import "./ViewAllUsedSpares.css";
 import { format } from "date-fns";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
 import SpecificUsedSpareDetails from "../SpecificUsedSpareDetails/SpecificUsedSpareDetails";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
+import Button from "../../../../components/Shared/Button/Button";
+import ConfirmationModal from "../../../../components/Shared/ConfirmationModal/ConfirmationModal";
 
 const usedSparesData = [
   {
@@ -125,19 +128,64 @@ const usedSparesData = [
 ];
 
 const ViewAllUsedSpares = ({ onBack }) => {
+  const [usedSpares, setUsedSpares] = useState(usedSparesData);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedSpares, setSelectedSpares] = useState([]);
   const [viewingSpare, setViewingSpare] = useState(null);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
+  const handleOutsideClick = (event) => {
+    if (containerRef.current && !containerRef.current.contains(event.target)) {
+      setSelectedSpares([]);
+    }
+  };
 
   const handleViewSpare = (spare) => {
     setViewingSpare(spare);
   };
 
-  const filteredSpares = usedSparesData.filter(
+  const handleDelete = () => {
+    if (selectedSpares.length > 0) {
+      setShowDeleteConfirmation(true);
+    } else {
+      showToast("warn", "Please select at least one spare to delete.");
+    }
+  };
+
+  const confirmDelete = () => {
+    const remainingSpares = usedSpares.filter(
+      (spare) => !selectedSpares.includes(spare.orderId)
+    );
+    setUsedSpares(remainingSpares);
+    setSelectedSpares([]);
+    setShowDeleteConfirmation(false);
+    showToast("success", "Selected spare(s) deleted successfully.");
+  };
+
+  const handleEdit = () => {
+    if (selectedSpares.length === 1) {
+      showToast(
+        "info",
+        "Edit functionality can be added or linked as required."
+      );
+    } else {
+      showToast("warn", "Please select exactly one spare to edit.");
+    }
+  };
+
+  const filteredSpares = usedSpares.filter(
     (spare) =>
       spare.itemName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       spare.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -150,113 +198,107 @@ const ViewAllUsedSpares = ({ onBack }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredSpares.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const UsedSparesTable = ({ currentItems }) => (
-    <div className="used-spares-table-container">
-      <div className="used-spares-table-wrapper">
-        <table className="used-spares-table">
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Inventory ID</th>
-              <th>Item Name</th>
-              <th>Quantity</th>
-              <th>Used On</th>
-              <th>Vehicle No</th>
-              <th>Driver Name</th>
-              <th>View</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.map((spare) => (
-              <tr key={spare.orderId}>
-                <td>{spare.orderId}</td>
-                <td>{spare.inventoryId}</td>
-                <td>{spare.itemName}</td>
-                <td>{spare.quantity}</td>
-                <td>{spare.usedOn}</td>
-                <td>{spare.vehicleNo}</td>
-                <td>{spare.driverName}</td>
-                <td>
-                  <FontAwesomeIcon
-                    icon={faEye}
-                    className="view-icon"
-                    onClick={() => handleViewSpare(spare)}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-
-  const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
-      pageNumbers.push(i);
+  const handleSelectAll = () => {
+    if (selectedSpares.length === currentItems.length) {
+      setSelectedSpares([]); // Deselect all
+    } else {
+      setSelectedSpares(currentItems.map((spare) => spare.orderId)); // Select all
     }
+  };
 
-    return (
-      <div className="used-spares-pagination">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="used-spares-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-        {pageNumbers.map((number) => (
-          <button
-            key={number}
-            onClick={() => paginate(number)}
-            className={`used-spares-pagination-button ${
-              currentPage === number ? "active" : ""
-            }`}
-          >
-            {number}
-          </button>
-        ))}
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === pageNumbers.length}
-          className="used-spares-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </button>
-      </div>
+  const handleRowClick = (spareId) => {
+    setSelectedSpares((prevSelected) =>
+      prevSelected.includes(spareId)
+        ? prevSelected.filter((id) => id !== spareId)
+        : [...prevSelected, spareId]
     );
   };
 
+  const isSelectAllChecked = selectedSpares.length === currentItems.length;
+  const isSelectAllIndeterminate =
+    selectedSpares.length > 0 && selectedSpares.length < currentItems.length;
+
+  const headers = [
+    <label className="custom-checkbox">
+      <input
+        type="checkbox"
+        checked={isSelectAllChecked}
+        ref={(el) => el && (el.indeterminate = isSelectAllIndeterminate)}
+        onChange={handleSelectAll}
+      />
+      <span className="checkbox-checkmark"></span>
+    </label>,
+    "Order ID",
+    "Inventory ID",
+    "Item Name",
+    "Quantity",
+    "Used On",
+    "Vehicle No",
+    "Driver Name",
+    "View",
+  ];
+
+  const rows = currentItems.map((spare) => ({
+    id: spare.orderId,
+    data: {
+      select: (
+        <label className="custom-checkbox">
+          <input
+            type="checkbox"
+            checked={selectedSpares.includes(spare.orderId)}
+            onChange={() => handleRowClick(spare.orderId)}
+          />
+          <span className="checkbox-checkmark"></span>
+        </label>
+      ),
+      orderId: spare.orderId,
+      inventoryId: spare.inventoryId,
+      itemName: spare.itemName,
+      quantity: spare.quantity,
+      usedOn: spare.usedOn,
+      vehicleNo: spare.vehicleNo,
+      driverName: spare.driverName,
+      view: (
+        <FontAwesomeIcon
+          icon={faEye}
+          className="view-icon"
+          onClick={() => handleViewSpare(spare)}
+        />
+      ),
+    },
+  }));
+
   return (
     <div className="used-spares-container" ref={containerRef}>
-      <header className="used-spares-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="used-spares-back-icon"
-          onClick={onBack}
-        />
-        <h2>Used Spares Details</h2>
-      </header>
+      <ToastNotification />
+      <TopBar title="Used Spares Details" onBack={onBack} backButton={true} />
 
       <main className="used-spares-main-content">
         <div className="used-spares-controls">
-          <div className="used-spares-search-bar-container">
-            <div className="used-spares-search-input-wrapper">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="used-spares-search-icon"
-              />
-              <input
-                type="text"
-                className="used-spares-search-bar"
-                placeholder="Search by Order ID, Item Name, Vehicle No, or Driver Name"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
+          <SearchBar
+            placeholder="Search by Order ID, Item Name, Vehicle No, or Driver Name"
+            onSearch={setSearchTerm}
+          />
+
+          <div className="used-spares-action-buttons">
+            <Button
+              label={
+                <>
+                  <FontAwesomeIcon icon={faEdit} /> Edit
+                </>
+              }
+              onClick={handleEdit}
+              disabled={selectedSpares.length !== 1}
+            />
+            <Button
+              label={
+                <>
+                  <FontAwesomeIcon icon={faTrash} /> Delete
+                </>
+              }
+              onClick={handleDelete}
+              disabled={selectedSpares.length === 0}
+            />
           </div>
           <div className="used-spares-date">
             <input
@@ -267,15 +309,28 @@ const ViewAllUsedSpares = ({ onBack }) => {
           </div>
         </div>
 
-        <UsedSparesTable currentItems={currentItems} />
+        <TableContainer
+          headers={headers}
+          rows={rows}
+          onRowClick={(row) => handleRowClick(row.id)}
+          selectedRowId={selectedSpares}
+        />
 
         <Pagination
-          itemsPerPage={itemsPerPage}
-          totalItems={filteredSpares.length}
-          paginate={paginate}
           currentPage={currentPage}
+          totalPages={Math.ceil(filteredSpares.length / itemsPerPage)}
+          onPageChange={setCurrentPage}
         />
       </main>
+
+      {showDeleteConfirmation && (
+        <ConfirmationModal
+          title="Confirm Deletion"
+          message="Are you sure you want to delete the selected spare record(s)?"
+          onCancel={() => setShowDeleteConfirmation(false)}
+          onConfirm={confirmDelete}
+        />
+      )}
 
       {viewingSpare && (
         <SpecificUsedSpareDetails

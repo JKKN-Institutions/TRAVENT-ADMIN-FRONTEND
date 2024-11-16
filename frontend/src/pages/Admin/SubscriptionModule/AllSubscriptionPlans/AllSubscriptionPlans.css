@@ -7,32 +7,6 @@
   overflow: hidden;
 }
 
-.all-subscription-plans-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  margin-bottom: 10px;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
-.all-subscription-back-icon {
-  font-size: 1rem;
-  cursor: pointer;
-  color: #ffffff;
-  margin-right: 1rem;
-}
-
-.all-subscription-plans-top-bar h2 {
-  color: #ffffff;
-  margin: 0;
-  font-size: 1.3rem;
-}
-
 .all-subscription-plans-main-content {
   flex: 1;
   overflow-y: auto;
@@ -127,9 +101,6 @@
 }
 
 @media (max-width: 768px) {
-  .all-subscription-plans-top-bar h2 {
-    font-size: 1.2rem;
-  }
   .all-subscription-plans-grid {
     grid-template-columns: 1fr;
   }

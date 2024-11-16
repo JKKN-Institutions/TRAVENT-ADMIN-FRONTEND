@@ -10,6 +10,7 @@ import {
   faSearchMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import "./SpecificRouteLiveTracking.css";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
 
 mapboxgl.accessToken =
   "pk.eyJ1Ijoic3VyeWFwcmFiYWppY2F0ZSIsImEiOiJjbTJ0eTZobWowN3FvMmxzYnZ3d2U0ano3In0.Y8a_7KBrgntn93LRZSkn8A";
@@ -275,15 +276,11 @@ const SpecificRouteLiveTracking = ({ routeData, initialZoom, onBack }) => {
 
   return (
     <div className="specific-route-container">
-      <header className="specific-route-live-tracking-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="specific-route-live-tracking-back-icon"
-          onClick={onBack}
-        />
-        <h2>Route {routeId} - Live</h2>
-      </header>
-
+      <TopBar
+        title={`Route ${routeId} - Live`}
+        onBack={onBack}
+        backButton={true}
+      />
       <div className="map-container" ref={mapContainer}>
         <div className="map-controls">
           <button onClick={handleZoomIn} className="map-control-button">

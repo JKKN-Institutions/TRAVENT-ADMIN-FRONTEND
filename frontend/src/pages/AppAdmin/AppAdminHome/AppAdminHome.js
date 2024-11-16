@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
 import "./AppAdminHome.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell, faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
 import AnalyticsCard from "./AnalyticsCard";
 import Chart from "./Chart";
+import TopBar from "../../../components/Shared/TopBar/TopBar";
+import Loading from "../../../components/Shared/Loading/Loading";
 import Notifications from "../Notifications/Notifications";
 
 const AppAdminHome = ({ toggleSidebar, resetState }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleBellClick = () => {
     setShowNotifications(true); // Show the Notifications component
@@ -15,9 +22,13 @@ const AppAdminHome = ({ toggleSidebar, resetState }) => {
 
   useEffect(() => {
     if (resetState) {
-      setShowNotifications(false); // Reset notifications when `resetState` is true
+      setShowNotifications(false);
+      setIsLoading(true); // Set loading to true when reset
+      setTimeout(() => setIsLoading(false), 1500);
     }
   }, [resetState]);
+
+  const additionalIcons = [{ icon: faBell, onClick: handleBellClick }];
 
   const institutionGrowthData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
@@ -72,45 +83,43 @@ const AppAdminHome = ({ toggleSidebar, resetState }) => {
   }
 
   return (
-    <div className="app-admin-home-container">
-      <header className="app-admin-top-bar">
-        <div className="app-admin-search-container">
-          <FontAwesomeIcon
-            icon={faBars}
-            className="menu-icon"
-            onClick={toggleSidebar} // This toggles the sidebar on click
+    <>
+      {isLoading ? (
+        <Loading message="Loading App Admin Home..." />
+      ) : (
+        <div className="app-admin-home-container">
+          <TopBar
+            title="App Admin Home"
+            toggleSidebar={toggleSidebar}
+            additionalIcons={additionalIcons}
           />
+          <main className="app-admin-main-content">
+            <div className="app-admin-analytics-cards">
+              <AnalyticsCard title="Total Institutions" value="25" />
+              <AnalyticsCard
+                title="Avg Schedules / Institution"
+                value="56000"
+              />
+              <AnalyticsCard title="Avg Buses / Institution" value="40" />
+              <AnalyticsCard title="Active Users" value="1200000" />
+            </div>
+            <div className="app-admin-charts">
+              <Chart
+                title="Institution Growth"
+                type="line"
+                data={institutionGrowthData}
+              />
+              <Chart
+                title="Bus Utilization"
+                type="bar"
+                data={busUtilizationData}
+              />
+              <Chart title="User Activity" type="pie" data={userActivityData} />
+            </div>
+          </main>
         </div>
-        <div className="app-admin-header">
-          <h2>App Admin Home</h2>
-        </div>
-        <div className="app-admin-top-bar-right">
-          <FontAwesomeIcon
-            icon={faBell}
-            className="icon"
-            onClick={handleBellClick}
-          />
-        </div>
-      </header>
-
-      <main className="app-admin-main-content">
-        <div className="app-admin-analytics-cards">
-          <AnalyticsCard title="Total Institutions" value="25" />
-          <AnalyticsCard title="Avg Schedules / Institution" value="56000" />
-          <AnalyticsCard title="Avg Buses / Institution" value="40" />
-          <AnalyticsCard title="Active Users" value="1200000" />
-        </div>
-        <div className="app-admin-charts">
-          <Chart
-            title="Institution Growth"
-            type="line"
-            data={institutionGrowthData}
-          />
-          <Chart title="Bus Utilization" type="bar" data={busUtilizationData} />
-          <Chart title="User Activity" type="pie" data={userActivityData} />
-        </div>
-      </main>
-    </div>
+      )}
+    </>
   );
 };
 

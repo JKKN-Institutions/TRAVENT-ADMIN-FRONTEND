@@ -1,58 +1,53 @@
 import React, { useState, useEffect } from "react";
 import "./AddSectionForm.css";
+import FormInput from "../../../components/Shared/FormInput/FormInput";
+import ActionButtons from "../../../components/Shared/ActionButtons/ActionButtons";
 
 const AddSectionForm = ({ year, onSave, onBack, initialData, yearData }) => {
-  const sectionOptions = ["A", "B", "C", "D", "E", "F"]; // Available sections
-  const [selectedSection, setSelectedSection] = useState(""); // Default to no selection
-  const [errors, setErrors] = useState({}); // Track validation errors
+  const sectionOptions = ["A", "B", "C", "D", "E", "F"];
+  const [selectedSection, setSelectedSection] = useState("");
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    // Reset the selected section when the year changes or on initial render
+    // Load saved section data for this year if available, otherwise reset
     if (initialData) {
       const savedSection = initialData.find(
         (data) => data.year === year
       )?.sections;
       if (savedSection) {
-        setSelectedSection(savedSection[savedSection.length - 1]); // Set the last section from the saved list
+        setSelectedSection(savedSection[savedSection.length - 1]);
       } else {
-        setSelectedSection(""); // No saved section for this year
+        setSelectedSection("");
       }
     } else {
-      setSelectedSection(""); // Reset to default when switching years
+      setSelectedSection("");
     }
   }, [year, initialData]);
 
   const validateForm = () => {
-    let formErrors = {};
+    const formErrors = {};
     if (!selectedSection) {
-      formErrors.section = "Please select a section."; // Validation error if no section is selected
+      formErrors.section = "Please select a section.";
     }
     return formErrors;
+  };
+
+  const handleSectionChange = (e) => {
+    setSelectedSection(e.target.value);
+    setErrors({}); // Clear errors on change
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
-      setErrors(formErrors); // Display errors if validation fails
+      setErrors(formErrors);
     } else {
-      // Generate sections up to the selected one
       const selectedSections = sectionOptions.slice(
         0,
         sectionOptions.indexOf(selectedSection) + 1
       );
-      onSave(selectedSections); // Save the selected sections as an array
-    }
-  };
-
-  const handleSectionChange = (e) => {
-    setSelectedSection(e.target.value);
-    setErrors({}); // Clear any previous errors when user changes selection
-  };
-
-  const handleBackToPreviousYear = () => {
-    if (year > 1) {
-      onBack(year - 1); // Call onBack with the previous year
+      onSave(selectedSections);
     }
   };
 
@@ -81,57 +76,30 @@ const AddSectionForm = ({ year, onSave, onBack, initialData, yearData }) => {
           </div>
           <form onSubmit={handleSubmit}>
             <div className="section-form-grid">
-              <div className="section-form-group full-width">
-                <label>Select Section:</label>
-                <select
+              <div className="full-width">
+                <FormInput
+                  id="sectionSelect"
+                  name="section"
+                  type="select"
+                  placeholder="Select Section"
                   value={selectedSection}
                   onChange={handleSectionChange}
-                  className={`form-select ${
-                    errors.section ? "input-error" : ""
-                  }`} // Add error class if validation fails
-                >
-                  <option value="">Select Section</option>{" "}
-                  {/* Default option */}
-                  {sectionOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-                {errors.section && (
-                  <p className="error-message">{errors.section}</p>
-                )}{" "}
-                {/* Display error message */}
+                  error={errors.section}
+                  options={sectionOptions.map((option) => ({
+                    value: option,
+                    label: option,
+                  }))}
+                />
               </div>
             </div>
+            <ActionButtons
+              onCancel={onBack}
+              onSubmit={handleSubmit}
+              submitText={`Save Section for Year ${year}`}
+              cancelText="Previous"
+            />
           </form>
         </div>
-      </div>
-      <div className="section-button-group">
-        {/* Existing "Previous" button */}
-        <button type="button" onClick={onBack} className="form-button">
-          Previous
-        </button>
-
-        {/* "Select Section for Previous Year" button with dynamic label */}
-        {year > 1 && (
-          <button
-            type="button"
-            onClick={handleBackToPreviousYear}
-            className="form-button"
-          >
-            Select Section for Year {year - 1}
-          </button>
-        )}
-
-        {/* Submit button */}
-        <button
-          type="submit"
-          className="form-button primary"
-          onClick={handleSubmit}
-        >
-          Save Section for Year {year}
-        </button>
       </div>
     </div>
   );

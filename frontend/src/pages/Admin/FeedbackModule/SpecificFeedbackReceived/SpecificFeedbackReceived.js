@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faStar as faStarSolid,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faStarRegular } from "@fortawesome/free-regular-svg-icons";
+import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
 import "./SpecificFeedbackReceived.css";
 
 const SpecificFeedbackReceived = ({ feedback, onClose }) => {
@@ -12,20 +10,30 @@ const SpecificFeedbackReceived = ({ feedback, onClose }) => {
 
   const handleClose = () => {
     setIsClosing(true);
-    setTimeout(() => {
-      onClose();
-    }, 300);
+    setTimeout(onClose, 300);
   };
 
-  const renderStars = (rating) => {
-    return [...Array(5)].map((_, index) => (
+  const renderStars = (rating) =>
+    [...Array(5)].map((_, index) => (
       <FontAwesomeIcon
         key={index}
         icon={index < rating ? faStarSolid : faStarRegular}
         className={index < rating ? "star-filled" : "star-empty"}
       />
     ));
-  };
+
+  const renderFeedbackSection = (title, items) => (
+    <div className="feedback-section">
+      <h3>{title}</h3>
+      <div className="tags-container">
+        {items.map((item, index) => (
+          <span key={index} className="tag">
+            {item}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
 
   const ratings = [
     { label: "Overall Satisfaction", value: 4 },
@@ -42,7 +50,6 @@ const SpecificFeedbackReceived = ({ feedback, onClose }) => {
     "CONVENIENT",
     "GOOD MUSIC SYSTEM",
   ];
-
   const improvements = [
     "CLEANLINESS",
     "SEATING",
@@ -72,27 +79,8 @@ const SpecificFeedbackReceived = ({ feedback, onClose }) => {
             ))}
           </div>
 
-          <div className="feedback-section">
-            <h3>What did you like about it?</h3>
-            <div className="tags-container">
-              {likes.map((like, index) => (
-                <span key={index} className="tag">
-                  {like}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="feedback-section">
-            <h3>What could be improved?</h3>
-            <div className="tags-container">
-              {improvements.map((improvement, index) => (
-                <span key={index} className="tag">
-                  {improvement}
-                </span>
-              ))}
-            </div>
-          </div>
+          {renderFeedbackSection("What did you like about it?", likes)}
+          {renderFeedbackSection("What could be improved?", improvements)}
 
           <div className="feedback-section">
             <h3>Anything else?</h3>

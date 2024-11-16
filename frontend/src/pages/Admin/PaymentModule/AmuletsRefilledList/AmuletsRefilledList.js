@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faSearch,
-  faFilter,
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import "./AmuletsRefilledList.css";
 import Button from "../../../../components/Shared/Button/Button";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
 
 const amuletsRefilledData = [
   {
@@ -43,10 +41,15 @@ const amuletsRefilledData = [
     refilledCount: 1,
     refilledAmulets: 100,
   },
-  // ... Add the rest of the student data here
+  // Add more student data as required...
 ];
 
-const AmuletsRefilledFilters = ({ filters, setFilters, data }) => {
+const AmuletsRefilledFilters = ({
+  filters,
+  setFilters,
+  data,
+  filterFields,
+}) => {
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({
@@ -56,159 +59,27 @@ const AmuletsRefilledFilters = ({ filters, setFilters, data }) => {
   };
 
   const getUniqueValues = (key) => {
-    return [...new Set(data.map((student) => student[key]))];
+    return [...new Set(data.map((item) => item[key]))].filter(Boolean);
   };
 
   return (
     <div className="amulets-refilled-filters">
-      <select name="route" value={filters.route} onChange={handleFilterChange}>
-        <option value="">Route</option>
-        {getUniqueValues("routeNo").map((route) => (
-          <option key={route} value={route}>
-            {route}
-          </option>
-        ))}
-      </select>
-
-      <select name="year" value={filters.year} onChange={handleFilterChange}>
-        <option value="">Year</option>
-        {getUniqueValues("year").map((year) => (
-          <option key={year} value={year}>
-            {year}
-          </option>
-        ))}
-      </select>
-
-      <select
-        name="department"
-        value={filters.department}
-        onChange={handleFilterChange}
-      >
-        <option value="">Department</option>
-        {getUniqueValues("department").map((dept) => (
-          <option key={dept} value={dept}>
-            {dept}
-          </option>
-        ))}
-      </select>
-
-      <select
-        name="section"
-        value={filters.section}
-        onChange={handleFilterChange}
-      >
-        <option value="">Section</option>
-        {getUniqueValues("section").map((section) => (
-          <option key={section} value={section}>
-            {section}
-          </option>
-        ))}
-      </select>
-
-      <select
-        name="instituteName"
-        value={filters.instituteName}
-        onChange={handleFilterChange}
-      >
-        <option value="">Institute Name</option>
-        {getUniqueValues("instituteName").map((institute) => (
-          <option key={institute} value={institute}>
-            {institute}
-          </option>
-        ))}
-      </select>
+      {filterFields.map((field) => (
+        <select
+          key={field.key}
+          name={field.key}
+          value={filters[field.key] || ""}
+          onChange={handleFilterChange}
+        >
+          <option value="">{field.label}</option>
+          {getUniqueValues(field.key).map((value) => (
+            <option key={value} value={value}>
+              {value}
+            </option>
+          ))}
+        </select>
+      ))}
     </div>
-  );
-};
-
-const AmuletsRefilledTable = ({
-  currentItems,
-  filteredStudents,
-  itemsPerPage,
-  paginate,
-  currentPage,
-}) => {
-  return (
-    <>
-      <div className="amulets-refilled-table-container">
-        <div className="amulets-refilled-table-wrapper">
-          <table className="amulets-refilled-table">
-            <thead>
-              <tr>
-                <th>S.No</th>
-                <th>Student Name</th>
-                <th>Reg No</th>
-                <th>Roll No</th>
-                <th>Year</th>
-                <th>Department</th>
-                <th>Section</th>
-                <th>Institute Name</th>
-                <th>Route No</th>
-                <th>Stop Name</th>
-                <th>Academic Year</th>
-                <th>Amulets Fee</th>
-                <th>Refilled Count</th>
-                <th>Refilled Amulets</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((student) => (
-                <tr key={student.regNo}>
-                  <td>{student.sNo}</td>
-                  <td>{student.studentName}</td>
-                  <td>{student.regNo}</td>
-                  <td>{student.rollNo}</td>
-                  <td>{student.year}</td>
-                  <td>{student.department}</td>
-                  <td>{student.section}</td>
-                  <td>{student.instituteName}</td>
-                  <td>{student.routeNo}</td>
-                  <td>{student.stopName}</td>
-                  <td>{student.academicYear}</td>
-                  <td>{student.amuletsFee}</td>
-                  <td>{student.refilledCount}</td>
-                  <td>{student.refilledAmulets}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div className="amulets-refilled-pagination">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="amulets-refilled-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-
-        {Array.from({
-          length: Math.ceil(filteredStudents.length / itemsPerPage),
-        }).map((_, index) => (
-          <button
-            key={index}
-            onClick={() => paginate(index + 1)}
-            className={`amulets-refilled-pagination-button ${
-              currentPage === index + 1 ? "active" : ""
-            }`}
-          >
-            {index + 1}
-          </button>
-        ))}
-
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={
-            currentPage === Math.ceil(filteredStudents.length / itemsPerPage)
-          }
-          className="amulets-refilled-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </button>
-      </div>
-    </>
   );
 };
 
@@ -217,40 +88,33 @@ const AmuletsRefilledList = ({ onBack }) => {
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [filters, setFilters] = useState({});
   const [filteredStudents, setFilteredStudents] = useState(amuletsRefilledData);
-  const [filters, setFilters] = useState({
-    route: "",
-    year: "",
-    department: "",
-    section: "",
-    instituteName: "",
-  });
 
   useEffect(() => {
-    const results = amuletsRefilledData.filter((student) =>
-      Object.values(student).some(
-        (value) =>
-          typeof value === "string" &&
-          value.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-    setFilteredStudents(results);
-    setCurrentPage(1);
-  }, [searchTerm]);
+    const filteredData = amuletsRefilledData.filter((student) => {
+      const matchesSearch =
+        searchTerm === "" ||
+        Object.values(student).some(
+          (value) =>
+            typeof value === "string" &&
+            value.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
-  useEffect(() => {
-    const results = amuletsRefilledData.filter((student) => {
-      return Object.entries(filters).every(([key, value]) => {
+      const matchesFilters = Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
         return (
           student[key] &&
-          student[key].toLowerCase().includes(value.toLowerCase())
+          student[key].toString().toLowerCase().includes(value.toLowerCase())
         );
       });
+
+      return matchesSearch && matchesFilters;
     });
-    setFilteredStudents(results);
+
+    setFilteredStudents(filteredData);
     setCurrentPage(1);
-  }, [filters]);
+  }, [searchTerm, filters]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -261,37 +125,63 @@ const AmuletsRefilledList = ({ onBack }) => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const headers = [
+    "S.No",
+    "Student Name",
+    "Reg No",
+    "Roll No",
+    "Year",
+    "Department",
+    "Section",
+    "Institute Name",
+    "Route No",
+    "Stop Name",
+    "Academic Year",
+    "Amulets Fee",
+    "Refilled Count",
+    "Refilled Amulets",
+  ];
+
+  const rows = currentItems.map((student, index) => ({
+    id: student.regNo,
+    data: {
+      "S.No": indexOfFirstItem + index + 1,
+      "Student Name": student.studentName,
+      "Reg No": student.regNo,
+      "Roll No": student.rollNo,
+      Year: student.year,
+      Department: student.department,
+      Section: student.section,
+      "Institute Name": student.instituteName,
+      "Route No": student.routeNo,
+      "Stop Name": student.stopName,
+      "Academic Year": student.academicYear,
+      "Amulets Fee": `₹${student.amuletsFee}`,
+      "Refilled Count": student.refilledCount,
+      "Refilled Amulets": student.refilledAmulets,
+    },
+  }));
+
+  const filterFields = [
+    { key: "routeNo", label: "Route" },
+    { key: "year", label: "Year" },
+    { key: "department", label: "Department" },
+  ];
+
   return (
     <div className="amulets-refilled-container">
-      <header className="amulets-refilled-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="amulets-refilled-back-icon"
-          onClick={onBack}
-        />
-        <h2>Amulets Refilled List</h2>
-      </header>
-
+      <TopBar title="Amulets Refilled List" onBack={onBack} backButton={true} />
       <main className="amulets-refilled-main-content">
         <div className="amulets-refilled-search-filter">
-          <div className="amulets-refilled-search-input-wrapper">
-            <FontAwesomeIcon
-              icon={faSearch}
-              className="amulets-refilled-search-icon"
-            />
-            <input
-              type="text"
-              className="amulets-refilled-search-bar"
-              placeholder="Search by Name or Reg No"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+          <SearchBar
+            placeholder="Search by Name or Reg No"
+            onSearch={setSearchTerm}
+          />
           <div className="amulets-refilled-action-button-container">
             <Button
               label={
                 <>
-                  <FontAwesomeIcon icon={faFilter} /> Filter by
+                  <FontAwesomeIcon icon={faFilter} /> Filter
                 </>
               }
               onClick={() => setShowFilters(!showFilters)}
@@ -304,15 +194,16 @@ const AmuletsRefilledList = ({ onBack }) => {
             filters={filters}
             setFilters={setFilters}
             data={amuletsRefilledData}
+            filterFields={filterFields}
           />
         )}
 
-        <AmuletsRefilledTable
-          currentItems={currentItems}
-          filteredStudents={filteredStudents}
-          itemsPerPage={itemsPerPage}
-          paginate={paginate}
+        <TableContainer headers={headers} rows={rows} />
+
+        <Pagination
           currentPage={currentPage}
+          totalPages={Math.ceil(filteredStudents.length / itemsPerPage)}
+          onPageChange={paginate}
         />
       </main>
     </div>

@@ -1,78 +1,58 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faBars } from "@fortawesome/free-solid-svg-icons";
 import "./AdminNotifications.css";
 import AdminNotificationChatItem from "./AdminNotificationChatItem";
 import Loading from "../../../components/Shared/Loading/Loading";
+import TopBar from "../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../components/Shared/SearchBar/SearchBar";
 
 const AdminNotifications = ({ toggleSidebar }) => {
-  const [systemNotifications, setSystemNotifications] = useState([
-    {
-      id: 1,
-      title: "Schedule Bot",
-      message: "Here's the Schedule for 29-07-2024",
-      count: 9,
-      unread: true,
-    },
-    {
-      id: 2,
-      title: "Inventory Keeper",
-      message: "Inventory alert! Engine oil is running low.",
-      count: 2,
-      unread: true,
-    },
-    {
-      id: 3,
-      title: "Service Schedule Reminder",
-      message: "Reminder! Bus 5 is scheduled for mainten...",
-      count: 2,
-      unread: false,
-    },
-    {
-      id: 4,
-      title: "Fuel Monitor",
-      message: "Alert! Bus 4 fuel level is below 25%. Please...",
-      count: 2,
-      unread: true,
-    },
-    {
-      id: 5,
-      title: "Payment Reminder",
-      message: "Term 1 ends on September 1. Ensure all St...",
-      count: 2,
-      unread: false,
-    },
-    {
-      id: 6,
-      title: "Live Tracking Monitor",
-      message: "Alert! Bus 7 has deviated from its designate...",
-      count: 2,
-      unread: true,
-    },
-  ]);
-
-  const [userNotifications, setUserNotifications] = useState([
-    {
-      id: 1,
-      title: "Student - Nisha S",
-      message: "Admin, I am requesting to change my route...",
-      count: 9,
-      unread: true,
-    },
-    {
-      id: 2,
-      title: "Staff - Usha K",
-      message: "Admin, I am requesting to remove my acco...",
-      count: 2,
-      unread: false,
-    },
-  ]);
+  const [notifications, setNotifications] = useState({
+    system: [
+      {
+        id: 1,
+        title: "Schedule Bot",
+        message: "Here's the Schedule for 29-07-2024",
+        count: 9,
+        unread: true,
+      },
+      {
+        id: 2,
+        title: "Inventory Keeper",
+        message: "Inventory alert! Engine oil is running low.",
+        count: 2,
+        unread: true,
+      },
+      {
+        id: 3,
+        title: "Service Schedule Reminder",
+        message: "Reminder! Bus 5 is scheduled for mainten...",
+        count: 2,
+        unread: false,
+      },
+    ],
+    user: [
+      {
+        id: 1,
+        title: "Student - Nisha S",
+        message: "Admin, I am requesting to change my route...",
+        count: 9,
+        unread: true,
+      },
+      {
+        id: 2,
+        title: "Staff - Usha K",
+        message: "Admin, I am requesting to remove my acco...",
+        count: 2,
+        unread: false,
+      },
+    ],
+  });
 
   const [activeTab, setActiveTab] = useState("system");
   const [showUnreadOnly, setShowUnreadOnly] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [searchTerm, setSearchTerm] = useState("");
   const notificationListRef = useRef(null);
 
   useEffect(() => {
@@ -89,68 +69,55 @@ const AdminNotifications = ({ toggleSidebar }) => {
         setSelectedNotification(null);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleUnreadFilterClick = () => {
-    setShowUnreadOnly(!showUnreadOnly);
+  const handleUnreadFilterClick = () => setShowUnreadOnly((prev) => !prev);
+
+  const filteredNotifications = (type) => {
+    return notifications[type].filter(
+      (n) =>
+        (!showUnreadOnly || n.unread) &&
+        n.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   };
 
-  const filterNotifications = (notifications) => {
-    return showUnreadOnly
-      ? notifications.filter((notification) => notification.unread)
-      : notifications;
+  const getUnreadCount = (type) =>
+    notifications[type].filter((n) => n.unread).length;
+
+  const markNotificationAsRead = (notificationId) => {
+    setNotifications((prev) => ({
+      ...prev,
+      [activeTab]: prev[activeTab].map((n) =>
+        n.id === notificationId ? { ...n, unread: false } : n
+      ),
+    }));
   };
-
-  const filteredSystemNotifications = filterNotifications(systemNotifications);
-  const filteredUserNotifications = filterNotifications(userNotifications);
-
-  const getUnreadCount = (notifications) => {
-    return notifications.filter((n) => n.unread).length;
-  };
-
-  const systemUnreadCount = getUnreadCount(systemNotifications);
-  const userUnreadCount = getUnreadCount(userNotifications);
-  const totalUnreadCount = systemUnreadCount + userUnreadCount;
 
   const handleNotificationClick = (event, notification) => {
     event.stopPropagation();
     setSelectedNotification(notification);
-    markNotificationAsRead(notification);
+    markNotificationAsRead(notification.id);
   };
 
-  const markNotificationAsRead = (notification) => {
-    const updateNotifications = (notifications) =>
-      notifications.map((n) =>
-        n.id === notification.id ? { ...n, unread: false } : n
-      );
-
-    if (activeTab === "system") {
-      setSystemNotifications(updateNotifications(systemNotifications));
-    } else {
-      setUserNotifications(updateNotifications(userNotifications));
-    }
-  };
-
-  const handleCloseChat = () => {
-    setSelectedNotification(null);
-  };
-
-  const renderUnreadCount = (count) => {
-    return count > 0 ? (
-      <span className="admin-unread-count">{count}</span>
-    ) : null;
-  };
+  const renderTabButton = (type, label) => (
+    <button
+      className={`tab ${activeTab === type ? "active" : ""}`}
+      onClick={() => setActiveTab(type)}
+    >
+      {label}
+      {getUnreadCount(type) > 0 && (
+        <span className="admin-unread-count">{getUnreadCount(type)}</span>
+      )}
+    </button>
+  );
 
   if (selectedNotification) {
     return (
       <AdminNotificationChatItem
         notification={selectedNotification}
-        onClose={handleCloseChat}
+        onClose={() => setSelectedNotification(null)}
       />
     );
   }
@@ -161,33 +128,14 @@ const AdminNotifications = ({ toggleSidebar }) => {
         <Loading message="Loading Notifications..." />
       ) : (
         <div className="admin-notifications-container">
-          <header className="admin-notifications-top-bar">
-            <div
-              className="admin-notifications-menu-icon"
-              onClick={toggleSidebar}
-            >
-              <FontAwesomeIcon icon={faBars} className="admin-menu-icon" />
-            </div>
-            <div className="admin-notifications-header">
-              <h2>Notifications</h2>
-            </div>
-          </header>
-
+          <TopBar title="Notifications" toggleSidebar={toggleSidebar} />
           <main className="admin-notifications-main-content">
             <div className="admin-notifications-search-bar-container">
-              <div className="admin-notifications-search-input-wrapper">
-                <FontAwesomeIcon
-                  icon={faSearch}
-                  className="admin-search-icon"
-                />
-                <input
-                  type="text"
-                  className="admin-notifications-search-bar"
-                  placeholder="Search notifications..."
-                />
-              </div>
+              <SearchBar
+                placeholder="Search notifications..."
+                onSearch={setSearchTerm}
+              />
             </div>
-
             <div className="admin-filter-container">
               <span
                 className={`admin-filter-button ${
@@ -196,32 +144,19 @@ const AdminNotifications = ({ toggleSidebar }) => {
                 onClick={handleUnreadFilterClick}
               >
                 Unread
-                {renderUnreadCount(totalUnreadCount)}
+                {getUnreadCount("system") + getUnreadCount("user") > 0 && (
+                  <span className="admin-unread-count">
+                    {getUnreadCount("system") + getUnreadCount("user")}
+                  </span>
+                )}
               </span>
             </div>
-
             <div className="admin-notifications-tabs">
-              <button
-                className={`tab ${activeTab === "system" ? "active" : ""}`}
-                onClick={() => setActiveTab("system")}
-              >
-                System Notifications
-                {renderUnreadCount(systemUnreadCount)}
-              </button>
-              <button
-                className={`tab ${activeTab === "user" ? "active" : ""}`}
-                onClick={() => setActiveTab("user")}
-              >
-                User Notifications
-                {renderUnreadCount(userUnreadCount)}
-              </button>
+              {renderTabButton("system", "System Notifications")}
+              {renderTabButton("user", "User Notifications")}
             </div>
-
             <div className="admin-notifications-list" ref={notificationListRef}>
-              {(activeTab === "system"
-                ? filteredSystemNotifications
-                : filteredUserNotifications
-              ).map((notification) => (
+              {filteredNotifications(activeTab).map((notification) => (
                 <div
                   key={notification.id}
                   className={`admin-notification-item ${
@@ -238,13 +173,11 @@ const AdminNotifications = ({ toggleSidebar }) => {
                     <h3>{notification.title}</h3>
                     <p>{notification.message}</p>
                   </div>
-                  <div className="admin-notification-meta">
-                    {notification.unread && notification.count > 0 && (
-                      <div className="admin-notification-count">
-                        {notification.count}
-                      </div>
-                    )}
-                  </div>
+                  {notification.unread && notification.count > 0 && (
+                    <div className="admin-notification-count">
+                      {notification.count}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

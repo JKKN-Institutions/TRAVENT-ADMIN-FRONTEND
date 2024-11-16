@@ -1,30 +1,31 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSearch,
-  faArrowLeft,
-  faPlus,
-  faEdit,
   faTrash,
-  faChevronLeft,
-  faChevronRight,
   faUserGraduate,
   faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
-import "./Passengers.css";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
+import ConfirmationModal from "../../../../components/Shared/ConfirmationModal/ConfirmationModal";
 import Button from "../../../../components/Shared/Button/Button";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
+import "./Passengers.css";
 
 const Passengers = ({ route, onBack }) => {
-  const [searchTermStudent, setSearchTermStudent] = useState("");
-  const [searchTermStaff, setSearchTermStaff] = useState("");
-  const [selectedPassenger, setSelectedPassenger] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedPassengers, setSelectedPassengers] = useState([]);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [currentPageStudent, setCurrentPageStudent] = useState(1);
   const [currentPageStaff, setCurrentPageStaff] = useState(1);
-  const [itemsPerPage] = useState(10);
-  const containerRef = useRef(null);
 
-  const studentsData = [
+  // State data
+  // Define the state variables and their setter functions
+  const [studentsData, setStudentsData] = useState([
     {
       id: 1,
 
@@ -416,9 +417,8 @@ const Passengers = ({ route, onBack }) => {
 
       status: "Active",
     },
-  ];
-
-  const staffData = [
+  ]);
+  const [staffData, setStaffData] = useState([
     {
       id: 1,
 
@@ -754,53 +754,93 @@ const Passengers = ({ route, onBack }) => {
 
       status: "Active",
     },
-  ];
+  ]);
+
+  const itemsPerPage = 5;
+  const containerRef = useRef(null);
+
+  const handleOutsideClick = (event) => {
+    if (containerRef.current && !containerRef.current.contains(event.target)) {
+      setSelectedPassengers([]);
+    }
+  };
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
-  const handleOutsideClick = (event) => {
-    if (containerRef.current && !containerRef.current.contains(event.target)) {
-      setSelectedPassenger(null);
-    }
-  };
-
-  const handlePassengerClick = (passenger, type) => {
-    setSelectedPassenger(
-      selectedPassenger?.id === passenger.id && selectedPassenger?.type === type
-        ? null
-        : { ...passenger, type }
+  const handlePassengerClick = (passenger) => {
+    setSelectedPassengers((prev) =>
+      prev.includes(passenger.id)
+        ? prev.filter((id) => id !== passenger.id)
+        : [...prev, passenger.id]
     );
   };
 
+  const handleSelectAll = (type) => {
+    const filteredPassengers = type === "student" ? studentsData : staffData;
+    const allSelected = filteredPassengers.every((passenger) =>
+      selectedPassengers.includes(passenger.id)
+    );
+    if (allSelected) {
+      setSelectedPassengers([]); // Deselect all
+    } else {
+      setSelectedPassengers(
+        filteredPassengers.map((passenger) => passenger.id) // Select all
+      );
+    }
+  };
+
   const handleDeletePassenger = () => {
-    // Implement delete logic here
-    setShowDeleteConfirmation(false);
-    setSelectedPassenger(null);
-  };
+    try {
+      // Separate delete logic for students and staff
+      const updatedStudents = studentsData.filter(
+        (student) => !selectedPassengers.includes(student.id)
+      );
+      const updatedStaff = staffData.filter(
+        (staff) => !selectedPassengers.includes(staff.id)
+      );
 
-  const handleEditPassenger = () => {
-    // Implement edit logic here
-  };
+      // Update the state with the filtered data
+      setStudentsData(updatedStudents);
+      setStaffData(updatedStaff);
 
-  const handleAddNewPassenger = () => {
-    // Implement add new passenger logic here
+      // Recalculate S.No for both students and staff after deletion
+      const updatedStudentRows = updatedStudents.map((student, index) => ({
+        ...student,
+        sNo: index + 1, // Adjust S.No based on index
+      }));
+      const updatedStaffRows = updatedStaff.map((staff, index) => ({
+        ...staff,
+        sNo: index + 1, // Adjust S.No based on index
+      }));
+
+      // Set the recalculated S.No values
+      setStudentsData(updatedStudentRows);
+      setStaffData(updatedStaffRows);
+
+      // Display success message
+      showToast("success", "Selected passengers deleted successfully!");
+
+      // Clear selections and close confirmation modal
+      setSelectedPassengers([]);
+      setShowDeleteConfirmation(false);
+    } catch (error) {
+      showToast("error", "Failed to delete passengers.");
+    }
   };
 
   const filteredStudents = studentsData.filter(
     (student) =>
-      student.studentName
-        ?.toLowerCase()
-        .includes(searchTermStudent.toLowerCase()) ||
-      student.regNo?.toLowerCase().includes(searchTermStudent.toLowerCase())
+      student.studentName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.regNo?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredStaff = staffData.filter(
     (staff) =>
-      staff.staffName?.toLowerCase().includes(searchTermStaff.toLowerCase()) ||
-      staff.staffID?.toLowerCase().includes(searchTermStaff.toLowerCase())
+      staff.staffName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      staff.staffID?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastItemStudent = currentPageStudent * itemsPerPage;
@@ -820,93 +860,29 @@ const Passengers = ({ route, onBack }) => {
   const paginateStudent = (pageNumber) => setCurrentPageStudent(pageNumber);
   const paginateStaff = (pageNumber) => setCurrentPageStaff(pageNumber);
 
-  const renderPagination = (currentPage, totalItems, paginate) => {
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
-      pageNumbers.push(i);
-    }
-
-    return (
-      <div className="bus-passengers-pagination">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="bus-passengers-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-        {pageNumbers.map((number) => (
-          <button
-            key={number}
-            onClick={() => paginate(number)}
-            className={`bus-passengers-pagination-button ${
-              currentPage === number ? "active" : ""
-            }`}
-          >
-            {number}
-          </button>
-        ))}
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === pageNumbers.length}
-          className="bus-passengers-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </button>
-      </div>
-    );
-  };
-
-  const renderTable = (data, columns, currentPage, itemsPerPage, type) => {
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-
-    return (
-      <div className="bus-passengers-table-container">
-        <div className="bus-passengers-table-wrapper">
-          <table className="bus-passengers-table">
-            <thead>
-              <tr>
-                {columns.map((column) => (
-                  <th key={column.key}>{column.label}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((item, index) => (
-                <tr
-                  key={item.id}
-                  onClick={() => handlePassengerClick(item, type)}
-                  className={
-                    selectedPassenger?.id === item.id &&
-                    selectedPassenger?.type === type
-                      ? "selected"
-                      : ""
-                  }
-                >
-                  {columns.map((column) => (
-                    <td key={column.key} data-label={column.label}>
-                      {column.key === "serialNumber"
-                        ? indexOfFirstItem + index + 1
-                        : item[column.key]}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    );
-  };
-
   const studentColumns = [
+    {
+      key: "selectAll",
+      label: (
+        <label className="custom-checkbox">
+          <input
+            type="checkbox"
+            checked={filteredStudents.every((student) =>
+              selectedPassengers.includes(student.id)
+            )}
+            onChange={() => handleSelectAll("student")}
+          />
+          <span className="checkbox-checkmark"></span>
+        </label>
+      ),
+    },
     { key: "serialNumber", label: "S No" },
     { key: "studentName", label: "Student Name" },
     { key: "regNo", label: "Reg No" },
     { key: "rollNo", label: "Roll No" },
+    { key: "year", label: "Year" },
     { key: "department", label: "Department" },
+    { key: "section", label: "Section" },
     { key: "instituteName", label: "Institute Name" },
     { key: "stopping", label: "Stopping" },
     { key: "pendingFee", label: "Pending Fee" },
@@ -916,12 +892,27 @@ const Passengers = ({ route, onBack }) => {
   ];
 
   const staffColumns = [
+    {
+      key: "selectAll",
+      label: (
+        <label className="custom-checkbox">
+          <input
+            type="checkbox"
+            checked={filteredStaff.every((staff) =>
+              selectedPassengers.includes(staff.id)
+            )}
+            onChange={() => handleSelectAll("staff")}
+          />
+          <span className="checkbox-checkmark"></span>
+        </label>
+      ),
+    },
     { key: "serialNumber", label: "S No" },
     { key: "staffName", label: "Staff Name" },
     { key: "staffID", label: "Staff ID" },
     { key: "department", label: "Department" },
-    { key: "instituteName", label: "Institute Name" },
     { key: "designation", label: "Designation" },
+    { key: "instituteName", label: "Institute Name" },
     { key: "boardingPoint", label: "Boarding Point" },
     { key: "pendingFee", label: "Pending Fee" },
     { key: "remainingAmulets", label: "Remaining Amulets" },
@@ -929,39 +920,28 @@ const Passengers = ({ route, onBack }) => {
     { key: "status", label: "Status" },
   ];
 
+  const renderNoDataRow = (colSpan) => ({
+    id: "no-data",
+    data: { message: "No data available" },
+    colSpan,
+  });
+
   return (
     <div className="bus-passengers-container" ref={containerRef}>
-      <header className="bus-passengers-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="bus-passengers-menu-icon"
-          onClick={onBack}
-        />
-        <h2>Passengers for Route {route.routeNumber}</h2>
-      </header>
+      <ToastNotification />
+      <TopBar
+        title={`Passengers for Route ${route.routeNumber}`}
+        onBack={onBack}
+        backButton={true}
+      />
 
       <main className="bus-passengers-main-content">
         <div className="bus-passengers-actions">
-          <div className="bus-passengers-search-container">
-            <div className="bus-passengers-search-input-wrapper">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="bus-passengers-search-icon"
-              />
-              <input
-                type="text"
-                className="bus-passengers-search-bar"
-                placeholder="Search passengers..."
-                value={searchTermStudent}
-                onChange={(e) => {
-                  setSearchTermStudent(e.target.value);
-                  setSearchTermStaff(e.target.value);
-                }}
-              />
-            </div>
-          </div>
+          <SearchBar
+            placeholder="Search passengers..."
+            onSearch={setSearchTerm}
+          />
           <div className="bus-passengers-action-buttons-container">
-            {/* Delete Button */}
             <Button
               label={
                 <>
@@ -969,18 +949,7 @@ const Passengers = ({ route, onBack }) => {
                 </>
               }
               onClick={() => setShowDeleteConfirmation(true)}
-              disabled={!selectedPassenger} // Disable button if no passenger is selected
-            />
-
-            {/* Edit Button */}
-            <Button
-              label={
-                <>
-                  <FontAwesomeIcon icon={faEdit} /> Edit
-                </>
-              }
-              onClick={handleEditPassenger}
-              disabled={!selectedPassenger} // Disable button if no passenger is selected
+              disabled={selectedPassengers.length === 0}
             />
           </div>
         </div>
@@ -990,60 +959,85 @@ const Passengers = ({ route, onBack }) => {
             <h3>
               <FontAwesomeIcon icon={faUserGraduate} /> Students
             </h3>
-            {renderTable(
-              filteredStudents,
-              studentColumns,
-              currentPageStudent,
-              itemsPerPage,
-              "student"
-            )}
-            {renderPagination(
-              currentPageStudent,
-              filteredStudents.length,
-              paginateStudent
-            )}
+            <TableContainer
+              headers={studentColumns.map((col) => col.label)}
+              rows={
+                currentStudents.length > 0
+                  ? currentStudents.map((student, index) => ({
+                      id: student.id,
+                      data: {
+                        select: (
+                          <label className="custom-checkbox">
+                            <input
+                              type="checkbox"
+                              checked={selectedPassengers.includes(student.id)}
+                              onChange={() => handlePassengerClick(student)}
+                            />
+                            <span className="checkbox-checkmark"></span>
+                          </label>
+                        ),
+                        ...student,
+                      },
+                    }))
+                  : [renderNoDataRow(studentColumns.length)]
+              }
+              onRowClick={(row) => handlePassengerClick(row)}
+              selectedRowId={selectedPassengers}
+            />
+            <Pagination
+              currentPage={currentPageStudent}
+              totalPages={Math.ceil(filteredStudents.length / itemsPerPage)}
+              onPageChange={paginateStudent}
+            />
           </div>
+
           <div className="bus-passengers-table-section">
             <h3>
               <FontAwesomeIcon icon={faUserTie} /> Staff
             </h3>
-            {renderTable(
-              filteredStaff,
-              staffColumns,
-              currentPageStaff,
-              itemsPerPage,
-              "staff"
-            )}
-            {renderPagination(
-              currentPageStaff,
-              filteredStaff.length,
-              paginateStaff
-            )}
+            <TableContainer
+              headers={staffColumns.map((col) => col.label)}
+              rows={
+                currentStaff.length > 0
+                  ? currentStaff.map((staff, index) => ({
+                      id: staff.id,
+                      data: {
+                        select: (
+                          <label className="custom-checkbox">
+                            <input
+                              type="checkbox"
+                              checked={selectedPassengers.includes(staff.id)}
+                              onChange={() => handlePassengerClick(staff)}
+                            />
+                            <span className="checkbox-checkmark"></span>
+                          </label>
+                        ),
+                        ...staff,
+                      },
+                    }))
+                  : [renderNoDataRow(staffColumns.length)]
+              }
+              onRowClick={(row) => handlePassengerClick(row)}
+              selectedRowId={selectedPassengers}
+            />
+            <Pagination
+              currentPage={currentPageStaff}
+              totalPages={Math.ceil(filteredStaff.length / itemsPerPage)}
+              onPageChange={paginateStaff}
+            />
           </div>
         </div>
       </main>
 
       {showDeleteConfirmation && (
-        <div className="bus-passengers-delete-confirmation-modal">
-          <div className="bus-passengers-delete-confirmation-content">
-            <h3>Confirm Deletion</h3>
-            <p>Are you sure you want to delete this passenger?</p>
-            <div className="bus-passengers-delete-confirmation-buttons">
-              <button
-                onClick={() => setShowDeleteConfirmation(false)}
-                className="bus-passengers-cancel-delete"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeletePassenger}
-                className="bus-passengers-confirm-delete"
-              >
-                Yes, Delete
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmationModal
+          title="Confirm Deletion"
+          message="Are you sure you want to delete this passenger?"
+          confirmText="Yes, Delete"
+          cancelText="Cancel"
+          onConfirm={handleDeletePassenger}
+          onCancel={() => setShowDeleteConfirmation(false)}
+        />
       )}
     </div>
   );

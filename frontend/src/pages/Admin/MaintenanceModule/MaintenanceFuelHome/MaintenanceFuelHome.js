@@ -22,6 +22,7 @@ import ViewSatisfactoryConditionBuses from "../ViewSatisfactoryConditionBuses/Vi
 import ViewCriticalConditionBuses from "../ViewCriticalConditionBuses/ViewCriticalConditionBuses";
 import SpecificBusCondition from "../SpecificBusCondition/SpecificBusCondition";
 import Loading from "../../../../components/Shared/Loading/Loading";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
 
 const MaintenanceFuelHome = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -181,13 +182,7 @@ const MaintenanceFuelHome = ({ toggleSidebar }) => {
         <Loading message="Loading Maintenance..." />
       ) : (
         <div className="maintenance-fuel-container">
-          <header className="maintenance-fuel-top-bar">
-            <div className="maintenance-fuel-menu-icon" onClick={toggleSidebar}>
-              <FontAwesomeIcon icon={faBars} />
-            </div>
-            <h1>Maintenance </h1>
-          </header>
-
+          <TopBar title="Maintenance" toggleSidebar={toggleSidebar} />
           <main className="maintenance-fuel-main-content">
             <div className="maintenance-fuel-tabs">
               <button

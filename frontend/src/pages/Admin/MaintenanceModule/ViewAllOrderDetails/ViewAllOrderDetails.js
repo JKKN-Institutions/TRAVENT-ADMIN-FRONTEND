@@ -1,23 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faArrowLeft,
-  faChevronLeft,
-  faChevronRight,
-  faEye,
-  faEdit,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { faEdit, faTrash, faEye } from "@fortawesome/free-solid-svg-icons";
 import "./ViewAllOrderDetails.css";
 import { format } from "date-fns";
 import Button from "../../../../components/Shared/Button/Button";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
+import ConfirmationModal from "../../../../components/Shared/ConfirmationModal/ConfirmationModal";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
 import AddNewOrder from "../AddNewOrder/AddNewOrder";
 import SpecificOrderDetails from "../SpecificOrderDetails/SpecificOrderDetails";
 
-const orderData = [
+const initialOrderData = [
   {
     orderId: "ORD-001",
     inventoryId: "INV-001",
@@ -81,13 +79,15 @@ const orderData = [
 ];
 
 const ViewAllOrderDetails = ({ onBack }) => {
+  const [orderData, setOrderData] = useState(initialOrderData);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedOrders, setSelectedOrders] = useState([]);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showEditOrder, setShowEditOrder] = useState(false);
+  const [editingOrder, setEditingOrder] = useState(null);
   const [viewingOrder, setViewingOrder] = useState(null);
 
   const containerRef = useRef(null);
@@ -101,49 +101,64 @@ const ViewAllOrderDetails = ({ onBack }) => {
 
   const handleOutsideClick = (event) => {
     if (containerRef.current && !containerRef.current.contains(event.target)) {
-      setSelectedOrder(null);
+      setSelectedOrders([]);
     }
   };
 
   const handleEdit = () => {
-    if (selectedOrder) {
+    if (selectedOrders.length === 1) {
+      const orderToEdit = orderData.find(
+        (order) => order.orderId === selectedOrders[0]
+      );
+      setEditingOrder(orderToEdit);
       setShowEditOrder(true);
+    } else {
+      showToast("warn", "Please select a single order to edit.");
     }
   };
 
-  const handleEditComplete = async (orderData) => {
+  const handleEditComplete = async (updatedOrder) => {
     try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
 
-      // Update the order data
-      console.log("Updated order data:", orderData);
+      setOrderData((prevData) =>
+        prevData.map((order) =>
+          order.orderId === updatedOrder.orderId ? updatedOrder : order
+        )
+      );
 
       setShowEditOrder(false);
-      setSelectedOrder(null);
+      setEditingOrder(null);
+      showToast("success", "Order updated successfully.");
     } catch (error) {
-      console.error("Error updating order:", error);
+      showToast("error", "Failed to update the order. Please try again.");
     }
   };
 
   const handleDelete = () => {
-    if (selectedOrder) {
+    if (selectedOrders.length > 0) {
       setShowDeleteConfirmation(true);
+    } else {
+      showToast("warn", "Please select at least one order to delete.");
     }
   };
 
   const confirmDelete = () => {
-    console.log("Deleting order:", selectedOrder);
+    const remainingOrders = orderData.filter(
+      (order) => !selectedOrders.includes(order.orderId)
+    );
+    setOrderData(remainingOrders);
+    setSelectedOrders([]);
     setShowDeleteConfirmation(false);
-    setSelectedOrder(null);
+    showToast("success", "Selected order(s) deleted successfully.");
   };
 
-  const handleRowClick = (order) => {
-    setSelectedOrder(selectedOrder === order ? null : order);
-  };
-
-  const handleViewOrder = (order) => {
-    setViewingOrder(order);
+  const handleRowClick = (orderId) => {
+    setSelectedOrders((prevSelected) =>
+      prevSelected.includes(orderId)
+        ? prevSelected.filter((id) => id !== orderId)
+        : [...prevSelected, orderId]
+    );
   };
 
   const filteredOrders = orderData.filter(
@@ -156,125 +171,39 @@ const ViewAllOrderDetails = ({ onBack }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredOrders.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const handleSelectAll = () => {
+    if (selectedOrders.length === currentItems.length) {
+      setSelectedOrders([]); // Deselect all
+    } else {
+      setSelectedOrders(currentItems.map((order) => order.orderId)); // Select all
+    }
+  };
+
+  const isSelectAllChecked = selectedOrders.length === currentItems.length;
+  const isSelectAllIndeterminate =
+    selectedOrders.length > 0 && selectedOrders.length < currentItems.length;
 
   if (showEditOrder) {
     return (
       <AddNewOrder
-        order={selectedOrder}
+        order={editingOrder}
         onBack={() => setShowEditOrder(false)}
         onSave={handleEditComplete}
       />
     );
   }
 
-  const OrderDetailsTable = ({ currentItems }) => (
-    <div className="order-details-table-container">
-      <div className="order-details-table-wrapper">
-        <table className="order-details-table">
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Inventory ID</th>
-              <th>Item Name</th>
-              <th>Quantity Ordered</th>
-              <th>View</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.map((order) => (
-              <tr
-                key={order.orderId}
-                onClick={() => handleRowClick(order)}
-                className={selectedOrder === order ? "selected" : ""}
-              >
-                <td>{order.orderId}</td>
-                <td>{order.inventoryId}</td>
-                <td>{order.itemName}</td>
-                <td>{order.quantityOrdered}</td>
-                <td>
-                  <FontAwesomeIcon
-                    icon={faEye}
-                    className="view-icon"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleViewOrder(order);
-                    }}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-
-  const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
-      pageNumbers.push(i);
-    }
-
-    return (
-      <div className="order-details-pagination">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="order-details-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-        {pageNumbers.map((number) => (
-          <button
-            key={number}
-            onClick={() => paginate(number)}
-            className={`order-details-pagination-button ${
-              currentPage === number ? "active" : ""
-            }`}
-          >
-            {number}
-          </button>
-        ))}
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === pageNumbers.length}
-          className="order-details-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </button>
-      </div>
-    );
-  };
-
   return (
     <div className="order-details-container" ref={containerRef}>
-      <header className="order-details-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="order-details-back-icon"
-          onClick={onBack}
-        />
-        <h2>Order Details</h2>
-      </header>
+      <ToastNotification />
+      <TopBar title="Order Details" onBack={onBack} backButton={true} />
 
       <main className="order-details-main-content">
         <div className="order-details-controls">
-          <div className="order-details-search-bar-container">
-            <div className="order-details-search-input-wrapper">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="order-details-search-icon"
-              />
-              <input
-                type="text"
-                className="order-details-search-bar"
-                placeholder="Search by Order Id or Item Name"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
+          <SearchBar
+            placeholder="Search by Order Id or Item Name"
+            onSearch={setSearchTerm}
+          />
           <div className="order-details-action-buttons">
             <Button
               label={
@@ -283,7 +212,7 @@ const ViewAllOrderDetails = ({ onBack }) => {
                 </>
               }
               onClick={handleEdit}
-              disabled={!selectedOrder}
+              disabled={selectedOrders.length !== 1}
             />
             <Button
               label={
@@ -292,7 +221,7 @@ const ViewAllOrderDetails = ({ onBack }) => {
                 </>
               }
               onClick={handleDelete}
-              disabled={!selectedOrder}
+              disabled={selectedOrders.length === 0}
             />
           </div>
           <div className="order-details-date">
@@ -304,37 +233,72 @@ const ViewAllOrderDetails = ({ onBack }) => {
           </div>
         </div>
 
-        <OrderDetailsTable currentItems={currentItems} />
+        <TableContainer
+          headers={[
+            <label className="custom-checkbox">
+              <input
+                type="checkbox"
+                checked={isSelectAllChecked}
+                ref={(el) =>
+                  el && (el.indeterminate = isSelectAllIndeterminate)
+                }
+                onChange={handleSelectAll}
+              />
+              <span className="checkbox-checkmark"></span>
+            </label>,
+            "Order ID",
+            "Inventory ID",
+            "Item Name",
+            "Quantity Ordered",
+            "View",
+          ]}
+          rows={currentItems.map((order) => ({
+            id: order.orderId,
+            data: {
+              select: (
+                <label className="custom-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={selectedOrders.includes(order.orderId)}
+                    onChange={() => handleRowClick(order.orderId)}
+                  />
+                  <span className="checkbox-checkmark"></span>
+                </label>
+              ),
+              "Order ID": order.orderId,
+              "Inventory ID": order.inventoryId,
+              "Item Name": order.itemName,
+              "Quantity Ordered": order.quantityOrdered,
+              View: (
+                <FontAwesomeIcon
+                  icon={faEye}
+                  className="view-icon"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setViewingOrder(order);
+                  }}
+                />
+              ),
+            },
+          }))}
+          onRowClick={(row) => handleRowClick(row.id)}
+          selectedRowId={selectedOrders}
+        />
 
         <Pagination
-          itemsPerPage={itemsPerPage}
-          totalItems={filteredOrders.length}
-          paginate={paginate}
           currentPage={currentPage}
+          totalPages={Math.ceil(filteredOrders.length / itemsPerPage)}
+          onPageChange={setCurrentPage}
         />
       </main>
 
       {showDeleteConfirmation && (
-        <div className="order-details-delete-confirmation-modal">
-          <div className="order-details-delete-confirmation-content">
-            <h3>Confirm Deletion</h3>
-            <p>Are you sure you want to delete this order record?</p>
-            <div className="order-details-delete-confirmation-buttons">
-              <button
-                onClick={() => setShowDeleteConfirmation(false)}
-                className="order-details-cancel-delete"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDelete}
-                className="order-details-confirm-delete"
-              >
-                Yes, Delete
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmationModal
+          title="Confirm Deletion"
+          message="Are you sure you want to delete the selected order record(s)?"
+          onCancel={() => setShowDeleteConfirmation(false)}
+          onConfirm={confirmDelete}
+        />
       )}
 
       {viewingOrder && (

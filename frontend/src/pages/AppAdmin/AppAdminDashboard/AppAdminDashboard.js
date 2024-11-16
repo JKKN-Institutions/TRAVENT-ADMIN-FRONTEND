@@ -7,7 +7,7 @@ import Notifications from "../Notifications/Notifications";
 import UnifiedSidebar from "../../../components/Shared/Sidebar/UnifiedSidebar";
 import "./AppAdminDashboard.css";
 
-const AdminDashboard = () => {
+const AppAdminDashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
   const [activeComponent, setActiveComponent] = useState("home");
   const [resetHomeState, setResetHomeState] = useState(false);
@@ -79,4 +79,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default AppAdminDashboard;

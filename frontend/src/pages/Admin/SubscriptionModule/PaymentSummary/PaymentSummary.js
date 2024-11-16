@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import "./PaymentSummary.css";
 import PaymentMethods from "../PaymentMethods/PaymentMethods";
 import SubscriptionReceipt from "../SubscriptionReceipt/SubscriptionReceipt";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
 
 const PaymentSummary = ({ onBack, planDetails, setShowPaymentHistory }) => {
   const [activeTab, setActiveTab] = useState("summary");
@@ -11,9 +10,7 @@ const PaymentSummary = ({ onBack, planDetails, setShowPaymentHistory }) => {
   const [showReceipt, setShowReceipt] = useState(false);
   const [paymentResponse, setPaymentResponse] = useState(null);
 
-  const handleProceedToPayment = () => {
-    setActiveTab("payment");
-  };
+  const handleProceedToPayment = () => setActiveTab("payment");
 
   if (showReceipt) {
     return (
@@ -38,16 +35,20 @@ const PaymentSummary = ({ onBack, planDetails, setShowPaymentHistory }) => {
     );
   }
 
+  const summaryDetails = [
+    { label: "Payment To", value: "Travent" },
+    { label: "Payment date", value: planDetails.paymentDate },
+    { label: "Institution Name", value: planDetails.institutionName },
+    { label: "Subscription Plan", value: planDetails.name },
+    { label: "Validity", value: planDetails.validity },
+    { label: "User Range", value: planDetails.userRange },
+    { label: "Amount", value: `₹ ${planDetails.price}` },
+  ];
+
   return (
     <div className="payment-summary-container">
-      <header className="payment-summary-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="payment-summary-back-icon"
-          onClick={onBack}
-        />
-        <h2>Payment Menu</h2>
-      </header>
+      <TopBar title="Payment Menu" onBack={onBack} backButton={true} />
+
       <main className="payment-summary-main-content">
         <div className="payment-summary-tabs">
           <div className="payment-summary-progress">
@@ -74,43 +75,24 @@ const PaymentSummary = ({ onBack, planDetails, setShowPaymentHistory }) => {
             </div>
           </div>
         </div>
+
         {activeTab === "summary" ? (
           <div className="payment-summary-content">
             <h3>Summary of Payment</h3>
             <div className="payment-summary-details">
-              <div className="payment-summary-row">
-                <span>Payment To</span>
-                <span>Travent</span>
-              </div>
-              <div className="payment-summary-row">
-                <span>Payment date</span>
-                <span>{planDetails.paymentDate}</span>
-              </div>
-              <div className="payment-summary-row">
-                <span>Institution Name</span>
-                <span>{planDetails.institutionName}</span>
-              </div>
-              <div className="payment-summary-row">
-                <span>Subscription Plan</span>
-                <span>{planDetails.name}</span>
-              </div>
-              <div className="payment-summary-row">
-                <span>Validity</span>
-                <span>{planDetails.validity}</span>
-              </div>
-              <div className="payment-summary-row">
-                <span>User Range</span>
-                <span>{planDetails.userRange}</span>
-              </div>
-              <div className="payment-summary-row">
-                <span>Amount</span>
-                <span>₹ {planDetails.price}</span>
-              </div>
+              {summaryDetails.map(({ label, value }) => (
+                <div key={label} className="payment-summary-row">
+                  <span>{label}</span>
+                  <span>{value}</span>
+                </div>
+              ))}
             </div>
+
             <div className="payment-summary-total">
               <span>Total Amount</span>
               <span>₹ {planDetails.price}</span>
             </div>
+
             <div className="payment-summary-agreement">
               <label className="checkbox-container">
                 <input
@@ -121,10 +103,11 @@ const PaymentSummary = ({ onBack, planDetails, setShowPaymentHistory }) => {
                 <span className="checkmark"></span>
                 <span className="agreement-text">
                   By clicking this I am accepting to pay the amount mentioned in
-                  the above summary and I know that cannot be refunded.
+                  the above summary and I know that it cannot be refunded.
                 </span>
               </label>
             </div>
+
             <div className="payment-summary-actions">
               <button className="payment-summary-cancel" onClick={onBack}>
                 Cancel

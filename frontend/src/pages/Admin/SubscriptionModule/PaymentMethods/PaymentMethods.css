@@ -7,38 +7,6 @@
   overflow: hidden;
 }
 
-.payment-methods-top-bar {
-  background-color: #222222;
-  padding: 1.25rem;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  margin-bottom: 15px;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
-.payment-methods-back-icon {
-  font-size: 1.4rem;
-  cursor: pointer;
-  margin-right: 1.25rem;
-  color: #11a8fd;
-  transition: color 0.3s ease;
-}
-
-.payment-methods-back-icon:hover {
-  color: #0e86c9;
-}
-
-.payment-methods-top-bar h2 {
-  color: #ffffff;
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
 .payment-methods-main-content {
   flex: 1;
   overflow-y: auto;
@@ -159,14 +127,6 @@
 }
 
 @media (max-width: 768px) {
-  .payment-methods-top-bar {
-    padding: 1rem;
-  }
-
-  .payment-methods-top-bar h2 {
-    font-size: 1.3rem;
-  }
-
   .payment-methods-main-content {
     padding: 1rem;
   }

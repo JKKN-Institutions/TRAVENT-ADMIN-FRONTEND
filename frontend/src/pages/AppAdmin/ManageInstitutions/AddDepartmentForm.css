@@ -30,81 +30,6 @@
   gap: 1rem;
 }
 
-.department-form-group {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.department-form-group.full-width {
-  grid-column: 1 / -1;
-}
-
-.add-department-form-container .department-form-group input,
-.add-department-form-container .department-form-group textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 0.5rem;
-  border-radius: 10px;
-  font-size: 1em;
-  background-color: #2c2c2c;
-  color: white;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  border-bottom: 2px solid #666;
-  border-right: none;
-  max-width: 800px;
-}
-
-.add-department-form-container .department-form-group textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.add-department-form-container .department-form-group input:focus,
-.add-department-form-container .department-form-group textarea:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px #11a8fd;
-}
-
-.add-department-form-container .department-form-group input.input-error,
-.add-department-form-container .department-form-group textarea.input-error {
-  border: 1px solid #ff4d4f;
-}
-
-.add-department-form-container .error {
-  color: #ff4d4f;
-  font-size: 0.75rem;
-  margin-top: -0.25rem;
-  margin-bottom: 0.5rem;
-}
-
-.department-buttons-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.department-submit-button {
-  width: 100%;
-  max-width: 220px;
-  padding: 0.6rem;
-  font-size: 1rem;
-  background-color: #11a8fd;
-  color: #ffffff;
-  border: none;
-  border-radius: 30px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 1rem;
-  font-weight: 600;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.department-submit-button:hover {
-  background-color: #0e86c9;
-}
-
 /* Form Content with Flexbox layout */
 .department-form-content {
   display: flex;
@@ -186,16 +111,6 @@
     grid-template-columns: 1fr;
   }
 
-  .add-department-form-container .department-form-group input,
-  .add-department-form-container .department-form-group textarea {
-    font-size: 0.875rem;
-    max-width: 100%;
-  }
-
-  .department-submit-button {
-    font-size: 0.875rem;
-  }
-
   .department-form-content {
     flex-direction: column;
   }
@@ -256,9 +171,5 @@
   .department-left-side li span {
     flex-basis: 100%;
     text-align: left;
-  }
-
-  .department-buttons-container {
-    justify-content: center;
   }
 }

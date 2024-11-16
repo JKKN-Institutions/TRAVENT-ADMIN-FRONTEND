@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faBars } from "@fortawesome/free-solid-svg-icons";
+import React, { useState, useEffect } from "react";
 import NotificationItemChat from "./NotificationItemChat";
+import TopBar from "../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../components/Shared/SearchBar/SearchBar";
+import Loading from "../../../components/Shared/Loading/Loading";
 import "./Notifications.css";
 
 const Notifications = ({ toggleSidebar }) => {
+  const [isLoading, setIsLoading] = useState(true);
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -12,86 +14,75 @@ const Notifications = ({ toggleSidebar }) => {
       message: "Your subscription ends next month. Kindly...",
       unread: true,
       time: "2h ago",
+      count: 1, // Specific badge count for new messages in chat
     },
     {
       id: 2,
       sender: "System",
       message: "New feature update available. Check it out!",
-      unread: false,
+      unread: true,
       time: "1d ago",
-      count: 1,
+      count: 1, // Count for received messages to show in badge
     },
   ]);
 
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [showUnreadOnly, setShowUnreadOnly] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const totalUnread = notifications.reduce(
+      (acc, notif) => acc + (notif.unread ? 1 : 0),
+      0
+    );
+    setUnreadCount(totalUnread);
+  }, [notifications]);
 
   const handleNotificationClick = (notification) => {
     setSelectedNotification(notification);
     markAsRead(notification.id);
   };
 
-  const handleCloseChat = () => {
-    setSelectedNotification(null);
-  };
-
   const markAsRead = (id) => {
     setNotifications((prevNotifications) =>
       prevNotifications.map((notif) =>
-        notif.id === id ? { ...notif, unread: false, count: 0 } : notif
+        notif.id === id
+          ? { ...notif, unread: false, count: 0 } // Reset count for clicked notifications
+          : notif
       )
     );
   };
 
-  const handleUnreadFilterClick = () => {
-    setShowUnreadOnly(!showUnreadOnly);
-  };
+  const handleUnreadFilterClick = () => setShowUnreadOnly(!showUnreadOnly);
 
-  const filteredNotifications = showUnreadOnly
-    ? notifications.filter((notification) => notification.unread)
-    : notifications;
-
-  const getUnreadCount = () => {
-    return notifications.filter((n) => n.unread).length;
-  };
-
-  if (selectedNotification) {
-    return (
-      <NotificationItemChat
-        sender={selectedNotification.sender}
-        onClose={handleCloseChat}
-      />
+  const filteredNotifications = notifications
+    .filter((notif) => (showUnreadOnly ? notif.unread : true))
+    .filter((notif) =>
+      notif.message.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }
 
-  return (
+  return selectedNotification ? (
+    <NotificationItemChat
+      sender={selectedNotification.sender}
+      onClose={() => setSelectedNotification(null)}
+    />
+  ) : isLoading ? (
+    <Loading message="Loading Notifications..." />
+  ) : (
     <div className="app-admin-notifications-container">
-      <header className="app-admin-notifications-top-bar">
-        <div className="app-admin-notifications-menu-icon">
-          <FontAwesomeIcon
-            icon={faBars}
-            className="app-admin-menu-icon"
-            onClick={toggleSidebar}
-          />
-        </div>
-        <div className="app-admin-notifications-header">
-          <h2>Notifications</h2>
-        </div>
-      </header>
-
+      <TopBar title="Notifications" toggleSidebar={toggleSidebar} />
       <main className="app-admin-notifications-main-content">
         <div className="app-admin-notifications-search-bar-container">
-          <div className="app-admin-notifications-search-input-wrapper">
-            <FontAwesomeIcon
-              icon={faSearch}
-              className="app-admin-search-icon"
-            />
-            <input
-              type="text"
-              className="app-admin-notifications-search-bar"
-              placeholder="Search notifications..."
-            />
-          </div>
+          <SearchBar
+            placeholder="Search notifications..."
+            onSearch={setSearchQuery}
+          />
         </div>
 
         <div className="app-admin-filter-container">
@@ -102,8 +93,8 @@ const Notifications = ({ toggleSidebar }) => {
             onClick={handleUnreadFilterClick}
           >
             Unread
-            {getUnreadCount() > 0 && (
-              <span className="app-admin-unread-count">{getUnreadCount()}</span>
+            {unreadCount > 0 && (
+              <span className="app-admin-unread-count">{unreadCount}</span>
             )}
           </span>
         </div>

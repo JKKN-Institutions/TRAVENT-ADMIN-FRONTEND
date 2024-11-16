@@ -1,166 +1,134 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { showToast } from "../../../../components/Shared/ToastNotification/ToastNotification";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import ActionButtons from "../../../../components/Shared/ActionButtons/ActionButtons";
+import FormInput from "../../../../components/Shared/FormInput/FormInput";
+import ToastNotification from "../../../../components/Shared/ToastNotification/ToastNotification";
 import "./AddAmuletFees.css";
 
 const AddAmuletFees = ({ student, onBack, onAdd }) => {
-  const [feeAmount, setFeeAmount] = useState("");
-  const [amuletsToRefill, setAmuletsToRefill] = useState("");
+  const [formData, setFormData] = useState({
+    feeAmount: "",
+    amuletsToRefill: "",
+  });
+  const [errors, setErrors] = useState({});
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!feeAmount || !amuletsToRefill) {
-      toast.error("Please fill in all required fields", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+  const handleChange = (field, value) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [field]: value,
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [field]: null,
+    }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.feeAmount) newErrors.feeAmount = "Fee Amount is required";
+    if (!formData.amuletsToRefill)
+      newErrors.amuletsToRefill = "Amulets Count is required";
+
+    return newErrors;
+  };
+
+  const handleSubmit = async () => {
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      showToast("error", "Please fill in all required fields");
       return;
     }
 
     try {
-      const loadingToastId = toast.loading("Adding amulet fees...", {
-        position: "top-right",
-      });
+      const loadingToastId = showToast("loading", "Adding amulet fees...");
 
-      await onAdd({ feeAmount, amuletsToRefill });
+      await onAdd(formData);
 
-      // Dismiss the loading toast
-      toast.dismiss(loadingToastId);
+      showToast("success", "Successfully added amulet fees", loadingToastId);
 
-      // Show success toast with a delay to ensure it's visible
-      setTimeout(() => {
-        toast.success(
-          <div>
-            Successfully added amulet fees.
-            <br />
-            <small>Amulet fees have been saved.</small>
-          </div>,
-          {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          }
-        );
-      }, 100);
-
-      // Delay the onBack call to ensure toast is visible
-      setTimeout(() => onBack(), 3100);
+      onBack();
     } catch (error) {
-      toast.dismiss();
-      toast.error("Failed to add amulet fees. Please try again.", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      showToast("error", "Failed to add amulet fees. Please try again.");
       console.error("Error saving amulet fees:", error);
     }
   };
 
   return (
     <div className="add-amulet-fee-container">
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        limit={3}
-      />
-      <header className="add-amulet-fee-top-bar">
-        <button className="add-amulet-fee-back-button" onClick={onBack}>
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
-        <div className="add-amulet-fee-header">
-          <h2>Refill Amulets</h2>
-        </div>
-      </header>
+      <ToastNotification />
 
+      <TopBar title="Refill Amulets" onBack={onBack} backButton />
       <main className="add-amulet-fee-main-content">
-        <form onSubmit={handleSubmit}>
-          <div className="add-amulet-fee-form-grid">
-            <div className="add-amulet-fee-column">
-              <div className="add-amulet-fee-form-group">
-                <h3 className="text-primary-500 mb-4">Student Information</h3>
-                <div className="student-info-grid">
-                  <div className="info-item">
-                    <label>Name :</label>
-                    <span>{student.name}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Register No :</label>
-                    <span>{student.regNo}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Roll No :</label>
-                    <span>{student.rollNo}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>Year / Dept / Section :</label>
-                    <span>
-                      {student.year} / {student.department} / {student.section}
-                    </span>
-                  </div>
-                  <div className="info-item">
-                    <label>Institute Name :</label>
-                    <span>{student.instituteName}</span>
-                  </div>
+        <div className="add-amulet-fee-form-grid">
+          {/* Student Information Section */}
+          <div className="add-amulet-fee-column">
+            <div className="add-amulet-fee-form-group">
+              <h3 className="text-primary-500 mb-4">Student Information</h3>
+              <div className="student-info-grid">
+                <div className="info-item">
+                  <label>Name:</label>
+                  <span>{student.name}</span>
                 </div>
-              </div>
-            </div>
-
-            <div className="add-amulet-fee-column">
-              <div className="add-amulet-fee-form-group">
-                <h3>Fee Details</h3>
-                <div className="fee-inputs">
-                  <div>
-                    <input
-                      type="number"
-                      value={feeAmount}
-                      onChange={(e) => setFeeAmount(e.target.value)}
-                      placeholder="Fee Amount"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="number"
-                      value={amuletsToRefill}
-                      onChange={(e) => setAmuletsToRefill(e.target.value)}
-                      placeholder="Amulets Count"
-                      required
-                    />
-                  </div>
+                <div className="info-item">
+                  <label>Register No:</label>
+                  <span>{student.regNo}</span>
+                </div>
+                <div className="info-item">
+                  <label>Roll No:</label>
+                  <span>{student.rollNo}</span>
+                </div>
+                <div className="info-item">
+                  <label>Year / Dept / Section:</label>
+                  <span>
+                    {student.year} / {student.department} / {student.section}
+                  </span>
+                </div>
+                <div className="info-item">
+                  <label>Institute Name:</label>
+                  <span>{student.instituteName}</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="add-amulet-fee-buttons-container">
-            <button
-              type="button"
-              className="add-amulet-fee-cancel-button"
-              onClick={onBack}
-            >
-              Cancel
-            </button>
-            <button type="submit" className="add-amulet-fee-save-button">
-              Add
-            </button>
+          {/* Fee Details Section */}
+          <div className="add-amulet-fee-column">
+            <div className="add-amulet-fee-form-group">
+              <h3>Fee Details</h3>
+              <FormInput
+                type="number"
+                id="feeAmount"
+                name="feeAmount"
+                value={formData.feeAmount}
+                onChange={(e) => handleChange("feeAmount", e.target.value)}
+                placeholder="Fee Amount"
+                error={errors.feeAmount}
+                min={0}
+              />
+              <FormInput
+                type="number"
+                id="amuletsToRefill"
+                name="amuletsToRefill"
+                value={formData.amuletsToRefill}
+                onChange={(e) =>
+                  handleChange("amuletsToRefill", e.target.value)
+                }
+                placeholder="Amulets Count"
+                error={errors.amuletsToRefill}
+                min={0}
+              />
+            </div>
           </div>
-        </form>
+        </div>
+
+        {/* Action Buttons */}
+        <ActionButtons
+          onCancel={onBack}
+          onSubmit={handleSubmit}
+          submitText="Add"
+        />
       </main>
     </div>
   );

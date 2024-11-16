@@ -7,32 +7,6 @@
   overflow: hidden;
 }
 
-.subscription-payment-history-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  margin-bottom: 10px;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
-.subscription-payment-history-back-icon {
-  font-size: 1rem;
-  cursor: pointer;
-  color: #ffffff;
-  margin-right: 1rem;
-}
-
-.subscription-payment-history-top-bar h2 {
-  color: #ffffff;
-  margin: 0;
-  font-size: 1.3rem;
-}
-
 .subscription-payment-history-main-content {
   flex: 1;
   overflow-y: auto;
@@ -174,9 +148,6 @@
 }
 
 @media (max-width: 768px) {
-  .subscription-payment-history-top-bar h2 {
-    font-size: 1.2rem;
-  }
   .subscription-payment-history-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
@@ -196,11 +167,6 @@
   .payment-price {
     font-size: 20px;
   }
-
-  /* .admin-payment-card-row:nth-child(2) {
-    flex-direction: column;
-  } */
-
   .subscription-payment-history-view-receipt {
     font-size: 0.8rem;
   }

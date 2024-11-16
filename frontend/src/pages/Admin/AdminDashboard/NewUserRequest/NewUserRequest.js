@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faArrowLeft,
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
 import "./NewUserRequest.css";
 import ActionButton from "../../../../components/Shared/Button/Button";
 import Loading from "../../../../components/Shared/Loading/Loading";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
 
-// Dummy data
 const dummyData = [
   {
     _id: "1",
@@ -148,64 +145,54 @@ const dummyData = [
 
 function NewUserRequest({ onBack }) {
   const [pendingUsers, setPendingUsers] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const [selectAllStudents, setSelectAllStudents] = useState(false);
-  const [selectAllStaff, setSelectAllStaff] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   const [currentPageStudent, setCurrentPageStudent] = useState(1);
   const [currentPageStaff, setCurrentPageStaff] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const itemsPerPage = 5;
 
   useEffect(() => {
-    // Simulate loading for 3 seconds
-    const timer = setTimeout(() => {
+    setTimeout(() => {
       setPendingUsers(dummyData);
       setIsLoading(false);
     }, 1500);
-
-    return () => clearTimeout(timer);
   }, []);
 
-  const handleAction = async (action) => {
-    if (selectedUsers.length === 0) {
-      toast.warn("Please select at least one user.");
-      return;
-    }
+  const handleRowClick = (userId) => {
+    setSelectedUsers((prev) =>
+      prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId]
+    );
+  };
 
-    // Show loading toast
-    const loadingToastId = toast.loading(
-      `${action === "approve" ? "Approving" : "Declining"} selected users...`
+  const handleSelectAll = (type) => {
+    const filteredUsers = pendingUsers.filter((user) => user.type === type);
+    const allSelected = filteredUsers.every((user) =>
+      selectedUsers.includes(user._id)
+    );
+    setSelectedUsers((prev) =>
+      allSelected
+        ? prev.filter(
+            (id) => !filteredUsers.map((user) => user._id).includes(id)
+          )
+        : [...new Set([...prev, ...filteredUsers.map((user) => user._id)])]
+    );
+  };
+
+  const handleAction = async (action) => {
+    if (!selectedUsers.length)
+      return showToast("warn", "Please select at least one user.");
+    const loadingToastId = showToast(
+      "loading",
+      `${action}ing selected users...`
     );
 
     try {
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Get selected user details for email notification
-      const selectedUserDetails = pendingUsers.filter((user) =>
-        selectedUsers.includes(user._id)
-      );
-
-      // Simulate sending emails
-      selectedUserDetails.forEach((user) => {
-        const emailSubject = `Transport Request ${
-          action === "approve" ? "Approved" : "Declined"
-        }`;
-        const emailBody = `Dear ${
-          user.basicDetails.name
-        }, your transport request has been ${
-          action === "approve" ? "approved" : "declined"
-        }.`;
-        console.log(`Sending email to ${user.basicDetails.name}:`, {
-          subject: emailSubject,
-          body: emailBody,
-        });
-      });
-
-      // Update UI
-      setPendingUsers((prevUsers) =>
-        prevUsers.map((user) =>
+      setPendingUsers((users) =>
+        users.map((user) =>
           selectedUsers.includes(user._id)
             ? {
                 ...user,
@@ -214,348 +201,157 @@ function NewUserRequest({ onBack }) {
             : user
         )
       );
-
-      // Clear selections
       setSelectedUsers([]);
-      setSelectAllStudents(false);
-      setSelectAllStaff(false);
-
-      // Show success toast
-      toast.dismiss(loadingToastId);
-      toast.success(
-        <div>
-          Successfully {action}d {selectedUsers.length} user
-          {selectedUsers.length > 1 ? "s" : ""}.
-          <br />
-          <small>Email notifications have been sent.</small>
-        </div>
+      showToast(
+        "success",
+        `${action.charAt(0).toUpperCase() + action.slice(1)}d ${
+          selectedUsers.length
+        } user(s).`,
+        loadingToastId
       );
-    } catch (error) {
-      toast.dismiss(loadingToastId);
-      toast.error(`Failed to ${action} users. Please try again.`);
+    } catch {
+      showToast("error", `Failed to ${action} users.`, loadingToastId);
     }
   };
 
-  const handleSelectAll = (type) => {
-    const filteredUsers = pendingUsers.filter((user) => user.type === type);
-    if (type === "student") {
-      const allSelected = filteredUsers.every((user) =>
-        selectedUsers.includes(user._id)
-      );
-      setSelectAllStudents(!allSelected);
-      if (allSelected) {
-        setSelectedUsers((prev) =>
-          prev.filter((id) => !filteredUsers.some((user) => user._id === id))
-        );
-      } else {
-        setSelectedUsers((prev) => [
-          ...new Set([...prev, ...filteredUsers.map((user) => user._id)]),
-        ]);
-      }
-    } else {
-      const allSelected = filteredUsers.every((user) =>
-        selectedUsers.includes(user._id)
-      );
-      setSelectAllStaff(!allSelected);
-      if (allSelected) {
-        setSelectedUsers((prev) =>
-          prev.filter((id) => !filteredUsers.some((user) => user._id === id))
-        );
-      } else {
-        setSelectedUsers((prev) => [
-          ...new Set([...prev, ...filteredUsers.map((user) => user._id)]),
-        ]);
-      }
-    }
-  };
+  const headers = (type) => [
+    <label className="custom-checkbox">
+      <input
+        type="checkbox"
+        checked={pendingUsers
+          .filter((user) => user.type === type)
+          .every((user) => selectedUsers.includes(user._id))}
+        onChange={() => handleSelectAll(type)}
+      />
+      <span className="checkbox-checkmark"></span>
+    </label>,
+    "S.No",
+    ...(type === "student"
+      ? [
+          "Student Name",
+          "Reg No",
+          "Roll No",
+          "Year",
+          "Department",
+          "Section",
+          "Institute Name",
+          "Stop Name",
+          "Status",
+        ]
+      : [
+          "Staff Name",
+          "Staff ID",
+          "Institute Name",
+          "Department",
+          "Designation",
+          "Stop Name",
+          "Status",
+        ]),
+  ];
 
-  const handleSelectUser = (userId, type) => {
-    setSelectedUsers((prev) => {
-      const newSelection = prev.includes(userId)
-        ? prev.filter((id) => id !== userId)
-        : [...prev, userId];
-
-      // Update select all checkbox state
-      const usersOfType = pendingUsers.filter((user) => user.type === type);
-      const allOfTypeSelected = usersOfType.every((user) =>
-        newSelection.includes(user._id)
-      );
-
-      if (type === "student") {
-        setSelectAllStudents(allOfTypeSelected);
-      } else {
-        setSelectAllStaff(allOfTypeSelected);
-      }
-
-      return newSelection;
-    });
-  };
-
-  const studentUsers = pendingUsers.filter((user) => user.type === "student");
-  const staffUsers = pendingUsers.filter((user) => user.type === "staff");
-
-  const indexOfLastItemStudent = currentPageStudent * itemsPerPage;
-  const indexOfFirstItemStudent = indexOfLastItemStudent - itemsPerPage;
-  const currentStudents = studentUsers.slice(
-    indexOfFirstItemStudent,
-    indexOfLastItemStudent
-  );
-
-  const indexOfLastItemStaff = currentPageStaff * itemsPerPage;
-  const indexOfFirstItemStaff = indexOfLastItemStaff - itemsPerPage;
-  const currentStaff = staffUsers.slice(
-    indexOfFirstItemStaff,
-    indexOfLastItemStaff
-  );
-
-  const paginateStudent = (pageNumber) => setCurrentPageStudent(pageNumber);
-  const paginateStaff = (pageNumber) => setCurrentPageStaff(pageNumber);
-
-  const renderPagination = (currentPage, totalItems, paginate) => {
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
-      pageNumbers.push(i);
-    }
-
-    return (
-      <div className="new-user-requests-pagination">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="new-user-requests-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-        {pageNumbers.map((number) => (
-          <button
-            key={number}
-            onClick={() => paginate(number)}
-            className={`new-user-requests-pagination-button ${
-              currentPage === number ? "active" : ""
-            }`}
-          >
-            {number}
-          </button>
-        ))}
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === pageNumbers.length}
-          className="new-user-requests-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </button>
-      </div>
-    );
-  };
-
-  // Update the status cell in both tables
-  const renderStatus = (userId) => {
-    const user = pendingUsers.find((u) => u._id === userId);
-    return (
-      <span
-        className={`status-badge ${user.status?.toLowerCase() || "pending"}`}
-      >
-        {user.status || "Not Approved"}
-      </span>
-    );
-  };
-
-  return (
-    <>
-      {isLoading ? (
-        <Loading message="Loading New User Requests..." />
-      ) : (
-        <div className="new-user-requests">
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="dark"
+  const createRowData = (user, index) => ({
+    id: user._id,
+    data: {
+      select: (
+        <label className="custom-checkbox">
+          <input
+            type="checkbox"
+            checked={selectedUsers.includes(user._id)}
+            onChange={() => handleRowClick(user._id)}
           />
-          <header className="new-user-requests-top-bar">
-            <button className="new-user-requests-back-button" onClick={onBack}>
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </button>
-            <div className="new-user-requests-header">
-              <h2>New User Requests</h2>
-            </div>
-          </header>
+          <span className="checkbox-checkmark"></span>
+        </label>
+      ),
+      sNo: index + 1,
+      name: user.basicDetails.name,
+      regNo: user.studentDetails?.regNo || "N/A",
+      rollNo: user.studentDetails?.rollNo || "N/A",
+      year: user.studentDetails?.year || "N/A",
+      department: user.studentDetails?.department || "N/A",
+      section: user.studentDetails?.section || "N/A",
+      institute: user.studentDetails?.instituteName || "N/A",
+      stopName: user.locationDetails?.stopName || "N/A",
+      status: (
+        <span
+          className={`status-badge ${
+            user.status ? user.status.toLowerCase() : "pending"
+          }`}
+        >
+          {user.status || "Not Approved"}
+        </span>
+      ),
+    },
+    onClick: () => handleRowClick(user._id),
+  });
 
-          <main className="new-user-requests-main-content">
-            <div className="new-user-requests-controls">
-              <div className="new-user-requests-search-bar-container">
-                <div className="new-user-requests-search-input-wrapper">
-                  <FontAwesomeIcon
-                    icon={faSearch}
-                    className="new-user-requests-search-icon"
-                  />
-                  <input
-                    type="text"
-                    className="new-user-requests-search-bar"
-                    placeholder="Search by Stop Name"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-              </div>
+  const paginatedData = (type, currentPage) =>
+    pendingUsers
+      .filter((user) => user.type === type)
+      .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-              <div className="new-user-action-buttons-container">
-                <ActionButton
-                  label="Approve"
-                  onClick={() => handleAction("approve")}
-                  type="approve"
-                />
-                <ActionButton
-                  label="Decline"
-                  onClick={() => handleAction("reject")}
-                  type="decline"
-                />
-              </div>
-            </div>
-
-            {currentStudents.length > 0 && (
-              <div className="new-user-requests-table-container">
-                <h3>Student Table</h3>
-                <div className="new-user-requests-table-wrapper">
-                  <table className="new-user-requests-table">
-                    <thead>
-                      <tr>
-                        <th>
-                          <label className="new-user-requests-custom-checkbox">
-                            <input
-                              type="checkbox"
-                              checked={selectAllStudents}
-                              onChange={() => handleSelectAll("student")}
-                            />
-                            <span className="new-user-requests-checkmark"></span>
-                          </label>
-                        </th>
-                        <th>S.No</th>
-                        <th>Student Name</th>
-                        <th>Reg No</th>
-                        <th>Roll No</th>
-                        <th>Year</th>
-                        <th>Department</th>
-                        <th>Section</th>
-                        <th>Institute Name</th>
-                        <th>Stop Name</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentStudents.map((user, index) => (
-                        <tr key={user._id}>
-                          <td>
-                            <label className="new-user-requests-custom-checkbox">
-                              <input
-                                type="checkbox"
-                                checked={selectedUsers.includes(user._id)}
-                                onChange={() =>
-                                  handleSelectUser(user._id, "student")
-                                }
-                              />
-                              <span className="new-user-requests-checkmark"></span>
-                            </label>
-                          </td>
-                          <td>{indexOfFirstItemStudent + index + 1}</td>
-                          <td>{user.basicDetails.name}</td>
-                          <td>{user.studentDetails.regNo || "N/A"}</td>
-                          <td>{user.studentDetails.rollNo || "N/A"}</td>
-                          <td>{user.studentDetails.year || "N/A"}</td>
-                          <td>{user.studentDetails.department || "N/A"}</td>
-                          <td>{user.studentDetails.section || "N/A"}</td>
-                          <td>{user.studentDetails.instituteName || "N/A"}</td>
-                          <td>{user.locationDetails.stopName || "N/A"}</td>
-                          <td>{renderStatus(user._id)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                {renderPagination(
-                  currentPageStudent,
-                  studentUsers.length,
-                  paginateStudent
-                )}
-              </div>
-            )}
-
-            {currentStaff.length > 0 && (
-              <div className="new-user-requests-table-container">
-                <h3>Staff Table</h3>
-                <div className="new-user-requests-table-wrapper">
-                  <table className="new-user-requests-table">
-                    <thead>
-                      <tr>
-                        <th>
-                          <label className="new-user-requests-custom-checkbox">
-                            <input
-                              type="checkbox"
-                              checked={selectAllStaff}
-                              onChange={() => handleSelectAll("staff")}
-                            />
-                            <span className="new-user-requests-checkmark"></span>
-                          </label>
-                        </th>
-                        <th>S.No</th>
-                        <th>Staff Name</th>
-                        <th>Staff ID</th>
-                        <th>Institute Name</th>
-                        <th>Department</th>
-                        <th>Designation</th>
-                        <th>Stop Name</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentStaff.map((user, index) => (
-                        <tr key={user._id}>
-                          <td>
-                            <label className="new-user-requests-custom-checkbox">
-                              <input
-                                type="checkbox"
-                                checked={selectedUsers.includes(user._id)}
-                                onChange={() =>
-                                  handleSelectUser(user._id, "staff")
-                                }
-                              />
-                              <span className="new-user-requests-checkmark"></span>
-                            </label>
-                          </td>
-                          <td>{indexOfFirstItemStaff + index + 1}</td>
-                          <td>{user.basicDetails.name}</td>
-                          <td>{user.staffDetails.staffId || "N/A"}</td>
-                          <td>{user.staffDetails.instituteName || "N/A"}</td>
-                          <td>{user.staffDetails.department || "N/A"}</td>
-                          <td>{user.staffDetails.designation || "N/A"}</td>
-                          <td>{user.locationDetails.stopName || "N/A"}</td>
-                          <td>{renderStatus(user._id)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                {renderPagination(
-                  currentPageStaff,
-                  staffUsers.length,
-                  paginateStaff
-                )}
-              </div>
-            )}
-
-            {studentUsers.length === 0 && staffUsers.length === 0 && (
-              <p className="no-requests">No new user requests at the moment.</p>
-            )}
-          </main>
-        </div>
-      )}
+  const renderTable = (type, headers, currentPage, setCurrentPage) => (
+    <>
+      <h3>{type === "student" ? "Student Table" : "Staff Table"}</h3>
+      <TableContainer
+        headers={headers}
+        rows={paginatedData(type, currentPage).map((user, index) =>
+          createRowData(user, index)
+        )}
+        onRowClick={(row) => handleRowClick(row.id)}
+        selectedRowId={selectedUsers}
+      />
+      <Pagination
+        currentPage={currentPage}
+        totalPages={Math.ceil(
+          pendingUsers.filter((user) => user.type === type).length /
+            itemsPerPage
+        )}
+        onPageChange={setCurrentPage}
+      />
     </>
+  );
+
+  return isLoading ? (
+    <Loading message="Loading New User Requests..." />
+  ) : (
+    <div className="new-user-requests">
+      <ToastNotification />
+      <TopBar title="New User Requests" onBack={onBack} backButton />
+      <main className="new-user-requests-main-content">
+        <div className="new-user-requests-controls">
+          <SearchBar
+            placeholder="Search by Stop Name"
+            onSearch={setSearchTerm}
+          />
+          <div className="new-user-action-buttons-container">
+            <ActionButton
+              label="Approve"
+              onClick={() => handleAction("approve")}
+            />
+            <ActionButton
+              label="Decline"
+              onClick={() => handleAction("decline")}
+            />
+          </div>
+        </div>
+        <div className="new-user-requests-table-container">
+          {renderTable(
+            "student",
+            headers("student"),
+            currentPageStudent,
+            setCurrentPageStudent
+          )}
+        </div>
+        <div className="new-user-requests-table-container">
+          {renderTable(
+            "staff",
+            headers("staff"),
+            currentPageStaff,
+            setCurrentPageStaff
+          )}
+        </div>
+      </main>
+    </div>
   );
 }
 

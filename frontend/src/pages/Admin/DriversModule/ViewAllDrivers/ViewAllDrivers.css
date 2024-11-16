@@ -6,32 +6,6 @@
   height: 100vh;
   overflow: hidden;
 }
-
-.view-all-drivers-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  margin-bottom: 10px;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
-.view-all-drivers-back-icon {
-  font-size: 1rem;
-  cursor: pointer;
-  color: #ffffff;
-  margin-right: 1rem;
-}
-
-.view-all-drivers-top-bar h1 {
-  margin: 0;
-  font-size: 1.3rem;
-}
-
 .view-all-drivers-main-content {
   flex: 1;
   overflow-y: auto;
@@ -46,40 +20,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.7rem;
-  gap: 0.5rem;
-}
-
-.view-all-drivers-search-bar-container {
-  flex: 1;
-  max-width: 600px;
-}
-
-.view-all-drivers-search-input-wrapper {
-  position: relative;
-}
-
-.view-all-drivers-search-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #888;
-}
-
-.view-all-drivers-search-bar {
-  width: 100%;
-  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-  border: none;
-  border-radius: 20px;
-  background-color: #2c2c2c;
-  border: 1px solid #333;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: #fff;
-  font-size: 0.9rem;
-}
-
-.view-all-drivers-search-bar:focus {
-  outline: none;
+  gap: 0.7rem;
 }
 
 .view-all-drivers-action-buttons {
@@ -87,45 +28,9 @@
   gap: 1rem;
 }
 
-.view-all-drivers-view-button,
-.view-all-drivers-edit-button,
-.view-all-drivers-delete-button {
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  background-color: rgba(215, 215, 215, 0.05);
-  border: 1px solid #333;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: #fff;
-}
-
-.view-all-drivers-view-button .drivers-view-icon {
-  font-size: 0.8rem;
-}
-
-.view-all-drivers-view-button:hover,
-.view-all-drivers-edit-button:hover,
-.view-all-drivers-delete-button:hover {
-  opacity: 0.9;
-}
-
-.view-all-drivers-view-button:disabled,
-.view-all-drivers-edit-button:disabled,
-.view-all-drivers-delete-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 .view-all-drivers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 0.7rem;
 }
 
@@ -194,82 +99,10 @@
   margin: 0.25rem 0;
 }
 
-.view-all-drivers-delete-confirmation-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.view-all-drivers-delete-confirmation-content {
-  background-color: #2c2c2c;
-  padding: 2rem;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 90%;
-  width: 400px;
-}
-
-.view-all-drivers-delete-confirmation-content h3 {
-  margin-bottom: 1rem;
-  color: #ffffff;
-}
-
-.view-all-drivers-delete-confirmation-content p {
-  margin-bottom: 1.5rem;
-  color: #cccccc;
-}
-
-.view-all-drivers-delete-confirmation-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.view-all-drivers-confirm-delete,
-.view-all-drivers-cancel-delete {
-  padding: 0.5rem 2rem;
-  border-radius: 30px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-weight: 600;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.view-all-drivers-confirm-delete {
-  background-color: #11a8fd;
-  color: #ffffff;
-  border: none;
-}
-
-.view-all-drivers-cancel-delete {
-  background-color: transparent;
-  color: #11a8fd;
-  border: 1px solid #11a8fd;
-}
-
-.view-all-drivers-confirm-delete:hover,
-.view-all-drivers-cancel-delete:hover {
-  opacity: 0.9;
-}
-
 @media (max-width: 1024px) {
   .view-all-drivers-controls {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .view-all-drivers-search-bar-container {
-    max-width: 100%;
-    margin-bottom: 0.7rem;
   }
 
   .view-all-drivers-action-buttons {
@@ -282,10 +115,6 @@
 }
 
 @media (max-width: 768px) {
-  .view-all-drivers-top-bar h1 {
-    font-size: 1.2rem;
-  }
-
   .view-all-drivers-action-buttons {
     flex-direction: row;
     gap: 0.5rem;

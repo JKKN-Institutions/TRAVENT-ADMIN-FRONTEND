@@ -3,15 +3,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import "./AdminNotificationChatItem.css";
 
-const AdminNotificationChatItem = ({ notification, onClose }) => {
+const AdminNotificationChatItem = ({ notification = {}, onClose }) => {
   const [message, setMessage] = useState("");
   const chatBodyRef = useRef(null);
 
   useEffect(() => {
-    if (notification?.title) {
-      console.log(`Marking notification from ${notification.title} as read`);
-    }
-  }, [notification]);
+    console.log(`Marking notification from ${notification.title} as read`);
+    const handleGlobalClick = (e) => {
+      if (chatBodyRef.current && !chatBodyRef.current.contains(e.target)) {
+        console.log("Clicked outside chat body");
+      }
+    };
+    document.addEventListener("click", handleGlobalClick);
+    return () => document.removeEventListener("click", handleGlobalClick);
+  }, [notification.title]);
 
   const handleSendMessage = () => {
     if (message.trim()) {
@@ -19,23 +24,6 @@ const AdminNotificationChatItem = ({ notification, onClose }) => {
       setMessage("");
     }
   };
-
-  // Simplified event listener logic to ensure chatBodyRef exists during click handling
-  useEffect(() => {
-    const handleGlobalClick = (event) => {
-      if (chatBodyRef.current && !chatBodyRef.current.contains(event.target)) {
-        console.log("Clicked outside chat body");
-      }
-    };
-
-    // Attach event listener after component mounts
-    document.addEventListener("click", handleGlobalClick);
-
-    return () => {
-      // Clean up event listener
-      document.removeEventListener("click", handleGlobalClick);
-    };
-  }, []); // No dependency on chatBodyRef to avoid premature attachment
 
   return (
     <div className="admin-notification-item-chat" ref={chatBodyRef}>

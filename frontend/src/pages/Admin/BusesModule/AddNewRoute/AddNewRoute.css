@@ -7,36 +7,6 @@
   overflow: hidden;
 }
 
-.add-new-route-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  margin-bottom: 10px;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
-.add-new-route-back-button {
-  font-size: 1rem;
-  cursor: pointer;
-  color: #ffffff;
-  background: none;
-  margin-right: 1rem;
-  border: none;
-}
-
-.add-new-route-header h2 {
-  color: #ffffff;
-  margin: 0;
-  flex-grow: 1;
-  font-weight: 600;
-  font-size: 1.3rem;
-}
-
 .add-new-route-main-content {
   /* flex: 1; */
   overflow-y: auto;
@@ -57,119 +27,6 @@
   gap: 1rem;
 }
 
-.add-new-route-form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.add-new-route-form-group input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 0.5rem;
-  border-radius: 10px;
-  font-size: 1em;
-  background-color: #2e323b;
-  color: white;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  border-bottom: 2px solid #666;
-  border-right: none;
-}
-
-.add-new-route-form-group input:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px #11a8fd;
-}
-
-.add-new-route-form-group input.input-error {
-  border: 1px solid #ff4d4f;
-}
-
-.add-new-route-form-group .error {
-  color: #ff4d4f;
-  font-size: 0.75rem;
-  margin-top: -0.25rem;
-  margin-bottom: 0.5rem;
-}
-
-.add-new-route-buttons-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 2rem;
-  gap: 1rem;
-}
-
-.add-new-route-cancel-button,
-.add-new-route-save-button {
-  padding: 0.5rem 2rem;
-  border-radius: 30px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-weight: 600;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.add-new-route-cancel-button {
-  background-color: transparent;
-  color: #11a8fd;
-  border: 1px solid #11a8fd;
-}
-
-.add-new-route-save-button {
-  background-color: #11a8fd;
-  color: #ffffff;
-  border: none;
-}
-
-.add-new-route-cancel-button:hover {
-  background-color: rgba(17, 168, 253, 0.1);
-}
-
-.add-new-route-save-button:hover {
-  background-color: #0e86c9;
-}
-
-/* Toast Styles */
-.Toastify__toast {
-  background-color: #2c2c2c;
-  color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-}
-
-.Toastify__toast-body {
-  font-family: inherit;
-}
-
-.Toastify__progress-bar {
-  background-color: #4a4a4a;
-}
-
-.Toastify__close-button {
-  color: #ffffff;
-  opacity: 0.7;
-}
-
-.Toastify__close-button:hover {
-  opacity: 1;
-}
-
-.Toastify__progress-bar--success {
-  background-color: #4caf50;
-}
-
-.Toastify__progress-bar--error {
-  background-color: #ff5252;
-}
-
-.Toastify__progress-bar--warn {
-  background-color: #ffd740;
-}
-
-.Toastify__progress-bar--info {
-  background-color: #29b6f6;
-}
-
 /* Tablet Responsiveness */
 @media (max-width: 1024px) {
   .add-new-route-form-grid {
@@ -177,33 +34,9 @@
   }
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-  .add-new-route-form-group input {
-    font-size: 0.875rem;
-  }
-
-  .add-new-route-cancel-button,
-  .add-new-route-save-button {
-    font-size: 0.875rem;
-    padding: 0.5rem 1.5rem;
-  }
-}
-
 /* Small Mobile Responsiveness */
 @media (max-width: 480px) {
   .add-new-route-container h2 {
     font-size: 1.2rem;
-  }
-
-  .add-new-route-form-group input {
-    padding: 0.7rem;
-    font-size: 0.8rem;
-  }
-
-  .add-new-route-cancel-button,
-  .add-new-route-save-button {
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
   }
 }

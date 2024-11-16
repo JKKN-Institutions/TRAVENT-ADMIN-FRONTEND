@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import FormInput from "../../../../components/Shared/FormInput/FormInput";
+import ActionButtons from "../../../../components/Shared/ActionButtons/ActionButtons";
 import "./AddFuelRecord.css";
 
 const AddFuelRecord = ({ onBack, onSave, editingRecord }) => {
-  const [fuelData, setFuelData] = useState({
+  const initialFuelData = {
     billDateTime: "",
     billNumber: "",
     routeNumber: "",
@@ -16,29 +18,24 @@ const AddFuelRecord = ({ onBack, onSave, editingRecord }) => {
     pricePerLiter: "",
     totalAmount: "",
     fuelStationAddress: "",
-  });
+  };
 
+  const [fuelData, setFuelData] = useState(initialFuelData);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (editingRecord) {
-      setFuelData(editingRecord);
-    }
+    if (editingRecord) setFuelData(editingRecord);
   }, [editingRecord]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFuelData({ ...fuelData, [name]: value });
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: null });
-    }
+  const handleChange = ({ target: { name, value } }) => {
+    setFuelData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }));
   };
 
   const validateForm = () => {
-    let formErrors = {};
-    Object.keys(fuelData).forEach((key) => {
+    return Object.keys(fuelData).reduce((acc, key) => {
       if (!fuelData[key]) {
-        formErrors[key] = `${
+        acc[key] = `${
           key.charAt(0).toUpperCase() +
           key
             .slice(1)
@@ -46,170 +43,108 @@ const AddFuelRecord = ({ onBack, onSave, editingRecord }) => {
             .trim()
         } is required`;
       }
-    });
-    return formErrors;
+      return acc;
+    }, {});
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
-    if (Object.keys(formErrors).length > 0) {
+    if (Object.keys(formErrors).length) {
       setErrors(formErrors);
-      toast.error("Please fill in all required fields", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
-    } else {
-      const loadingToastId = toast.loading(
-        editingRecord ? "Updating fuel record..." : "Adding new fuel record...",
-        {
-          position: "top-right",
-        }
-      );
-
-      try {
-        const savedRecord = await onSave(fuelData);
-
-        // Dismiss the loading toast
-        toast.dismiss(loadingToastId);
-
-        // Show success toast with a delay to ensure it's visible
-        setTimeout(() => {
-          toast.success(
-            <div>
-              Successfully {editingRecord ? "updated" : "added"} fuel record.
-              <br />
-              <small>Fuel record details have been saved.</small>
-            </div>,
-            {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-            }
-          );
-        }, 100);
-
-        // Delay the onBack call to ensure toast is visible
-        setTimeout(() => onBack(savedRecord), 3100);
-      } catch (error) {
-        toast.dismiss(loadingToastId);
-        toast.error(
-          `Failed to ${
-            editingRecord ? "update" : "add"
-          } fuel record. Please try again.`,
-          {
-            position: "top-right",
-            autoClose: 3000,
-          }
-        );
-        console.error("Error saving fuel record:", error);
-      }
+      showToast("error", "Please fill in all required fields");
+      return;
     }
+
+    const loadingToastId = showToast(
+      "loading",
+      `${editingRecord ? "Updating" : "Adding"} fuel record...`
+    );
+    try {
+      const savedRecord = await onSave(fuelData);
+      showToast(
+        "success",
+        `Fuel record ${editingRecord ? "updated" : "added"} successfully.`,
+        loadingToastId
+      );
+      setTimeout(() => onBack(savedRecord), 3100);
+    } catch (error) {
+      showToast(
+        "error",
+        `Failed to ${
+          editingRecord ? "update" : "add"
+        } fuel record. Please try again.`,
+        loadingToastId
+      );
+      console.error("Error saving fuel record:", error);
+    }
+  };
+
+  const renderFormInput = (key) => {
+    const commonProps = {
+      id: key,
+      name: key,
+      value: fuelData[key],
+      error: errors[key],
+      onChange: handleChange,
+      placeholder:
+        key.charAt(0).toUpperCase() +
+        key
+          .slice(1)
+          .replace(/([A-Z])/g, " $1")
+          .trim(),
+    };
+
+    if (key === "fuelType") {
+      return (
+        <FormInput
+          {...commonProps}
+          type="select"
+          options={[
+            { value: "", label: "Select Fuel Type" },
+            { value: "Diesel", label: "Diesel" },
+            { value: "Petrol", label: "Petrol" },
+          ]}
+        />
+      );
+    }
+
+    if (key === "fuelStationAddress") {
+      return <FormInput {...commonProps} type="textarea" />;
+    }
+
+    const inputType =
+      key === "billDateTime"
+        ? "datetime-local"
+        : ["filledVolume", "pricePerLiter", "totalAmount"].includes(key)
+        ? "number"
+        : "text";
+
+    return <FormInput {...commonProps} type={inputType} />;
   };
 
   return (
     <div className="add-fuel-record-container">
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        limit={3}
+      <ToastNotification />
+      <TopBar
+        title={`${editingRecord ? "Edit" : "Add"} Fuel Record`}
+        onBack={onBack}
+        backButton={true}
       />
-      <header className="add-fuel-record-top-bar">
-        <button className="add-fuel-record-back-button" onClick={onBack}>
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
-        <div className="add-fuel-record-header">
-          <h2>{editingRecord ? "Edit Fuel Record" : "Add Fuel Record"}</h2>
-        </div>
-      </header>
       <main className="add-fuel-record-main-content">
         <form onSubmit={handleSubmit}>
           <div className="add-fuel-record-form-grid">
             {Object.keys(fuelData).map((key) => (
               <div key={key} className="add-fuel-record-form-group">
-                {key === "fuelType" ? (
-                  <select
-                    id={key}
-                    name={key}
-                    value={fuelData[key]}
-                    onChange={handleChange}
-                    className={errors[key] ? "input-error" : ""}
-                  >
-                    <option value="">Select Fuel Type</option>
-                    <option value="Diesel">Diesel</option>
-                    <option value="Petrol">Petrol</option>
-                  </select>
-                ) : key === "fuelStationAddress" ? (
-                  <textarea
-                    id={key}
-                    name={key}
-                    value={fuelData[key]}
-                    onChange={handleChange}
-                    placeholder={
-                      key.charAt(0).toUpperCase() +
-                      key
-                        .slice(1)
-                        .replace(/([A-Z])/g, " $1")
-                        .trim()
-                    }
-                    className={errors[key] ? "input-error" : ""}
-                  />
-                ) : (
-                  <input
-                    type={
-                      key === "billDateTime"
-                        ? "datetime-local"
-                        : key.includes("Amount") ||
-                          key.includes("Price") ||
-                          key === "filledVolume"
-                        ? "number"
-                        : "text"
-                    }
-                    id={key}
-                    name={key}
-                    value={fuelData[key]}
-                    onChange={handleChange}
-                    placeholder={
-                      key.charAt(0).toUpperCase() +
-                      key
-                        .slice(1)
-                        .replace(/([A-Z])/g, " $1")
-                        .trim()
-                    }
-                    className={errors[key] ? "input-error" : ""}
-                  />
-                )}
-                {errors[key] && <p className="error">{errors[key]}</p>}
+                {renderFormInput(key)}
               </div>
             ))}
           </div>
-          <div className="add-fuel-record-buttons-container">
-            <button
-              type="button"
-              className="add-fuel-record-cancel-button"
-              onClick={onBack}
-            >
-              Cancel
-            </button>
-            <button type="submit" className="add-fuel-record-save-button">
-              {editingRecord ? "Update Record" : "Add Record"}
-            </button>
-          </div>
+          <ActionButtons
+            onCancel={onBack}
+            onSubmit={handleSubmit}
+            submitText={`${editingRecord ? "Update" : "Add"} Record`}
+          />
         </form>
       </main>
     </div>

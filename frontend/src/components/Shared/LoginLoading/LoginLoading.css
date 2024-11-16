@@ -1,6 +1,7 @@
 /* Loading.css */
 .loading-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   position: fixed;
@@ -8,7 +9,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(30, 30, 30, 0.9); /* Dark transparent background */
+  background: rgba(30, 30, 30, 1); /* Dark transparent background */
   z-index: 9999; /* To ensure it's on top of other elements */
 }
 
@@ -20,6 +21,10 @@
   height: 40px;
   margin-bottom: 10px;
   animation: spin 1s linear infinite;
+}
+
+.loading-container p {
+  font-weight: 600;
 }
 
 @keyframes spin {

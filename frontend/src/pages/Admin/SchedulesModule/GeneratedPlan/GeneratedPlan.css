@@ -3,34 +3,8 @@
   color: #ffffff;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
-}
-
-.generated-plan-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  margin-bottom: 10px;
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
-.generated-plan-back-icon {
-  font-size: 1rem;
-  cursor: pointer;
-  color: #ffffff;
-  margin-right: 1rem;
-}
-
-.generated-plan-top-bar h2 {
-  color: #ffffff;
-  margin: 0;
-  font-size: 1.3rem;
 }
 
 .generated-plan-main-content {
@@ -46,38 +20,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.7rem;
   margin-bottom: 0.7rem;
-}
-
-.generated-plan-search-input-wrapper {
-  position: relative;
-  flex: 1;
-  margin-right: 0.7rem;
-}
-
-.generated-plan-search-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #888;
-  font-size: 1rem;
-}
-
-.generated-plan-search-bar {
-  width: 100%;
-  padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-  border: none;
-  border-radius: 20px;
-  background-color: #2c2c2c;
-  border: 1px solid #333;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: #fff;
-  font-size: 0.9rem;
-}
-
-.generated-plan-search-bar:focus {
-  outline: none;
 }
 
 .generated-plan-action-button-container {
@@ -140,102 +84,16 @@
   color: #888;
 }
 
-.generated-plan-table-container {
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.generated-plan-table-wrapper {
-  overflow-x: auto;
-  max-height: calc(100vh - 300px);
-  scrollbar-width: thin;
-  scrollbar-color: #4a4a4a #2c2c2c;
-}
-
-.generated-plan-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.generated-plan-table th,
-.generated-plan-table td {
-  padding: 0.8rem;
-  text-align: center;
-  border-bottom: 1px solid #666;
-}
-
-.generated-plan-table th {
-  background-color: #1e1e1e;
-  color: #fff;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.generated-plan-table td {
-  background-color: #2c2c2c;
-  color: #fff;
-  font-size: 0.8rem;
-}
-
-.generated-plan-table tbody tr {
-  transition: background-color 0.3s ease;
-}
-
-.generated-plan-table tbody tr:hover {
-  background-color: #444;
-}
-
-.view-details-button {
-  background: none;
-  border: none;
+.generated-plan-view-icon {
   color: #11a8fd;
   cursor: pointer;
-  font-size: 0.9rem;
-  display: inline-flex; /* Change from flex to inline-flex */
-  align-items: center;
-  justify-content: center; /* Center content horizontally */
-  gap: 0.5rem;
-  width: 100%; /* Make the button take the full width of the td */
 }
 
-.generated-plan-pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.no-data-message {
+  text-align: center;
+  color: #888;
+  font-style: italic;
   margin-top: 20px;
-  gap: 10px;
-}
-
-.generated-plan-pagination-button {
-  background-color: #2c2c2c;
-  color: #fff;
-  border: 1px solid #444;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.generated-plan-pagination-button:hover {
-  background-color: #444;
-}
-
-.generated-plan-pagination-button.active {
-  background-color: #11a8fd;
-  border-color: #11a8fd;
-}
-
-.generated-plan-pagination-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 /* Responsive styles */
@@ -250,50 +108,14 @@
   }
 }
 
-@media (max-width: 992px) {
-  .generated-plan-table-wrapper {
-    max-height: calc(100vh - 350px);
-  }
-}
-
 @media (max-width: 768px) {
   .generated-plan-search-filter {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .generated-plan-search-input-wrapper {
-    margin-right: 0;
-    margin-bottom: 0.7rem;
-  }
-
   .generated-plan-action-button-container {
     flex-direction: row;
     flex-wrap: wrap;
-  }
-
-  /* .generated-plan-filter-button {
-    width: 100%;
-  } */
-
-  .generated-plan-table-wrapper {
-    max-height: calc(100vh - 400px);
-  }
-}
-
-@media (max-width: 576px) {
-  .generated-plan-top-bar h2 {
-    font-size: 1.2rem;
-  }
-
-  .generated-plan-table th,
-  .generated-plan-table td {
-    padding: 0.8rem;
-    font-size: 0.8rem;
-  }
-
-  .generated-plan-pagination-button {
-    padding: 6px 10px;
-    font-size: 0.8rem;
   }
 }

@@ -1,37 +1,21 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faArrowLeft,
-  faChevronLeft,
-  faChevronRight,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import "./AddAmuletsFee.css";
 import Button from "../../../../components/Shared/Button/Button";
 import AddAmuletFees from "../AddAmuletFees/AddAmuletFees";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
 
 const AddAmuletsFee = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
-  const containerRef = useRef(null);
+  const itemsPerPage = 10;
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, []);
-
-  const handleOutsideClick = (event) => {
-    if (containerRef.current && !containerRef.current.contains(event.target)) {
-      setSelectedStudent(null);
-    }
-  };
-
-  const students = [
+  const [students, setStudents] = useState([
     {
       id: 1,
       name: "Aishu J",
@@ -60,52 +44,86 @@ const AddAmuletsFee = ({ onBack }) => {
       academicYear: "2024-25",
       pending: "0",
     },
-    // ... Add the rest of the student data here
-  ];
+    // Add more student data here...
+  ]);
 
-  const filteredStudents = students.filter(
-    (student) =>
-      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.regNo.includes(searchTerm) ||
-      student.rollNo.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    setSelectedStudent(null); // Reset selection on component load
+  }, []);
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredStudents.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const handleAddClick = () => {
-    if (selectedStudent) {
-      setSelectedStudent(selectedStudent);
-    }
+  // Utility: Filter students based on search term
+  const getFilteredStudents = () => {
+    return students.filter(
+      (student) =>
+        student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.regNo.includes(searchTerm) ||
+        student.rollNo.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   };
 
+  // Utility: Paginate filtered results
+  const getPaginatedStudents = (filteredStudents) => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    return filteredStudents.slice(indexOfFirstItem, indexOfLastItem);
+  };
+
+  // Paginate search results
+  const filteredStudents = getFilteredStudents();
+  const paginatedStudents = getPaginatedStudents(filteredStudents);
+
+  // Handle row click
+  const handleRowClick = (student) => {
+    setSelectedStudent(selectedStudent?.id === student.id ? null : student);
+  };
+
+  // Handle adding amulet fee
   const handleAddAmuletFee = async (feeData) => {
     try {
-      // Simulate API call with setTimeout
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      console.log(
-        "Adding amulet fee for student:",
-        selectedStudent,
-        "Fee data:",
-        feeData
-      );
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Mock API call
+      console.log("Amulet fee added:", { student: selectedStudent, feeData });
     } catch (error) {
       console.error("Error adding amulet fee:", error);
     }
   };
 
-  const handleRowClick = (student) => {
-    setSelectedStudent(selectedStudent === student ? null : student);
-  };
+  // Table headers
+  const headers = [
+    "S.No",
+    "Student Name",
+    "Reg No",
+    "Roll No",
+    "Year",
+    "Department",
+    "Section",
+    "Institute Name",
+    "Route No",
+    "Stop Name",
+    "Academic Year",
+    "Pending Amulets",
+  ];
 
-  if (selectedStudent && selectedStudent.isBeingEdited) {
+  // Map paginated data to table rows
+  const rows = paginatedStudents.map((student, index) => ({
+    id: student.id,
+    data: {
+      "S.No": (currentPage - 1) * itemsPerPage + index + 1,
+      "Student Name": student.name,
+      "Reg No": student.regNo,
+      "Roll No": student.rollNo,
+      Year: student.year,
+      Department: student.department,
+      Section: student.section,
+      "Institute Name": student.instituteName,
+      "Route No": student.routeNo,
+      "Stop Name": student.stopName,
+      "Academic Year": student.academicYear,
+      "Pending Amulets": student.pending,
+    },
+  }));
+
+  // Handle editing the selected student
+  if (selectedStudent?.isBeingEdited) {
     return (
       <AddAmuletFees
         student={selectedStudent}
@@ -116,33 +134,14 @@ const AddAmuletsFee = ({ onBack }) => {
   }
 
   return (
-    <div className="add-amulets-fee-container" ref={containerRef}>
-      <header className="add-amulets-fee-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="add-amulets-fee-back-icon"
-          onClick={onBack}
-        />
-        <h2>Add Fee & Refill Amulets</h2>
-      </header>
-
+    <div className="add-amulets-fee-container">
+      <TopBar title="Add Fee & Refill Amulets" onBack={onBack} backButton />
       <main className="add-amulets-fee-main-content">
         <div className="add-amulets-fee-controls">
-          <div className="add-amulets-fee-search-bar-container">
-            <div className="add-amulets-fee-search-input-wrapper">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="add-amulets-fee-search-icon"
-              />
-              <input
-                type="text"
-                className="add-amulets-fee-search-bar"
-                placeholder="Search by Name, Reg No, or Roll No"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
+          <SearchBar
+            placeholder="Search by Name, Reg No, or Roll No"
+            onSearch={setSearchTerm}
+          />
           <div className="add-amulets-fee-action-buttons">
             <Button
               label={
@@ -163,82 +162,20 @@ const AddAmuletsFee = ({ onBack }) => {
           </div>
         </div>
 
-        <div className="add-amulets-fee-table-container">
-          <div className="add-amulets-fee-table-wrapper">
-            <table className="add-amulets-fee-table">
-              <thead>
-                <tr>
-                  <th>S.No</th>
-                  <th>Student Name</th>
-                  <th>Reg No</th>
-                  <th>Roll No</th>
-                  <th>Year</th>
-                  <th>Department</th>
-                  <th>Section</th>
-                  <th>Institute Name</th>
-                  <th>Route No</th>
-                  <th>Stop Name</th>
-                  <th>Academic Year</th>
-                  <th>Pending Amulets</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((student, index) => (
-                  <tr
-                    key={student.id}
-                    onClick={() => handleRowClick(student)}
-                    className={selectedStudent === student ? "selected" : ""}
-                  >
-                    <td>{indexOfFirstItem + index + 1}</td>
-                    <td>{student.name}</td>
-                    <td>{student.regNo}</td>
-                    <td>{student.rollNo}</td>
-                    <td>{student.year}</td>
-                    <td>{student.department}</td>
-                    <td>{student.section}</td>
-                    <td>{student.instituteName}</td>
-                    <td>{student.routeNo}</td>
-                    <td>{student.stopName}</td>
-                    <td>{student.academicYear}</td>
-                    <td>{student.pending}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <TableContainer
+          headers={headers}
+          rows={rows}
+          onRowClick={(row) =>
+            handleRowClick(students.find((s) => s.id === row.id))
+          }
+          selectedRowId={selectedStudent?.id}
+        />
 
-        <div className="add-amulets-fee-pagination">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="add-amulets-fee-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronLeft} />
-          </button>
-          {Array.from({
-            length: Math.ceil(filteredStudents.length / itemsPerPage),
-          }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => paginate(index + 1)}
-              className={`add-amulets-fee-pagination-button ${
-                currentPage === index + 1 ? "active" : ""
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={
-              currentPage === Math.ceil(filteredStudents.length / itemsPerPage)
-            }
-            className="add-amulets-fee-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronRight} />
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(filteredStudents.length / itemsPerPage)}
+          onPageChange={setCurrentPage}
+        />
       </main>
     </div>
   );

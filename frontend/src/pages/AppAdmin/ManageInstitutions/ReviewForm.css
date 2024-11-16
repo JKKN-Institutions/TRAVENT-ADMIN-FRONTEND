@@ -179,7 +179,7 @@
 }
 
 /* Save button */
-.save-button {
+/* .save-button {
   background-color: #4caf50;
   color: #ffffff;
   padding: 0.6rem 1.5rem;
@@ -193,7 +193,7 @@
 
 .save-button:hover {
   background-color: #45a049;
-}
+} */
 
 /* Input field styles */
 .review-input {

@@ -6,33 +6,6 @@
   flex-direction: column;
 }
 
-.buses-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  margin-bottom: 10px;
-  top: 0;
-  z-index: 999;
-  border-radius: 10px;
-}
-
-.buses-menu-icon {
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-right: 1rem;
-}
-
-.buses-top-bar h1 {
-  margin: 0;
-  font-size: 1.3rem;
-}
-
 .buses-main-content {
   flex: 1;
   padding: 0 0.5rem;
@@ -236,47 +209,9 @@
   margin-left: 0.5rem;
 }
 
-.buses-table-container {
-  overflow-x: auto;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  border-radius: inherit;
-}
-
-.buses-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.buses-table th,
-.buses-table td {
-  padding: 0.75rem;
-  text-align: center;
-  border-bottom: 1px solid #444;
-}
-
-.buses-table th {
-  background-color: #333;
-  color: #fff;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-}
-
-.buses-table td {
-  color: #fff;
-  font-size: 0.8rem;
-}
-
-.buses-table tbody tr:hover {
-  background-color: #333;
-}
-
-.buses-view-details {
-  background-color: transparent;
-  border: none;
+.buses-view-icon {
   color: #11a8fd;
   cursor: pointer;
-  font-size: 0.9rem;
 }
 
 .circular-chart {
@@ -317,10 +252,6 @@
     flex-direction: column;
   }
 
-  /* .buses-status-row {
-    flex-wrap: wrap;
-  } */
-
   .buses-running-container {
     flex-basis: calc(50% - 0.5rem);
   }
@@ -358,14 +289,6 @@
     align-self: flex-end;
   }
 
-  .buses-table-container {
-    overflow-x: scroll;
-  }
-
-  .buses-table {
-    min-width: 600px;
-  }
-
   .buses-status-container h2,
   .buses-condition-container h2,
   .buses-boarding-data h2 {
@@ -374,10 +297,6 @@
 }
 
 @media (max-width: 480px) {
-  .buses-top-bar h1 {
-    font-size: 1.2rem;
-  }
-
   .buses-status-container,
   .buses-condition-container {
     padding: 0.75rem;
@@ -417,13 +336,6 @@
   .buses-view-routes {
     font-size: 0.9rem;
   }
-
-  .buses-table th,
-  .buses-table td {
-    padding: 0.7rem;
-    font-size: 0.8rem;
-  }
-
   .buses-view-details {
     font-size: 0.8rem;
   }

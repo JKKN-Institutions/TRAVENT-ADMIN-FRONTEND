@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faSearch,
-  faFilter,
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import "./ViewStudents.css";
 import Button from "../../../../components/Shared/Button/Button";
+import TopBar from "../../../../components/Shared/TopBar/TopBar"; // Import TopBar
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar"; // Import SearchBar
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer"; // Import TableContainer
+import Pagination from "../../../../components/Shared/Pagination/Pagination"; // Import Pagination
 
 const studentsData = [
   {
@@ -241,52 +239,39 @@ const ViewStudents = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
-  const [filteredStudents, setFilteredStudents] = useState(studentsData);
-
   const [filters, setFilters] = useState({
-    route: "",
+    routeNo: "",
     year: "",
     department: "",
     section: "",
-    collegeName: "",
+    instituteName: "",
     status: "",
   });
 
-  useEffect(() => {
-    const results = studentsData.filter((student) =>
-      Object.values(student).some(
-        (value) =>
-          typeof value === "string" &&
-          value.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-    setFilteredStudents(results);
-    setCurrentPage(1);
-  }, [searchTerm]);
+  // Helper function to get unique filter values
+  const getUniqueValues = (key) => {
+    return [...new Set(studentsData.map((student) => student[key]))];
+  };
 
-  useEffect(() => {
-    const results = studentsData.filter((student) => {
-      return Object.entries(filters).every(([key, value]) => {
-        if (!value) return true;
-        return (
-          student[key] &&
-          student[key].toLowerCase().includes(value.toLowerCase())
-        );
-      });
-    });
-    setFilteredStudents(results);
-    setCurrentPage(1);
-  }, [filters]);
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredStudents.slice(
-    indexOfFirstItem,
-    indexOfLastItem
+  // Filter students based on search term
+  const filteredBySearchTerm = studentsData.filter((student) =>
+    Object.values(student).some(
+      (value) =>
+        typeof value === "string" &&
+        value.toLowerCase().includes(searchTerm.toLowerCase())
+    )
   );
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  // Filter students based on selected filters
+  const filteredStudents = filteredBySearchTerm.filter((student) =>
+    Object.entries(filters).every(([key, value]) =>
+      value
+        ? student[key].toString().toLowerCase().includes(value.toLowerCase())
+        : true
+    )
+  );
+
+  const handleSearchChange = (term) => setSearchTerm(term);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -296,36 +281,38 @@ const ViewStudents = ({ onBack }) => {
     }));
   };
 
-  const getUniqueValues = (key) => {
-    return [...new Set(studentsData.map((student) => student[key]))];
-  };
+  const studentColumns = [
+    { key: "sNo", label: "S.No" },
+    { key: "studentName", label: "Student Name" },
+    { key: "regNo", label: "Reg No" },
+    { key: "rollNo", label: "Roll No" },
+    { key: "year", label: "Year" },
+    { key: "department", label: "Department" },
+    { key: "section", label: "Section" },
+    { key: "instituteName", label: "Institute Name" },
+    { key: "routeNo", label: "Route No" },
+    { key: "stopName", label: "Stop Name" },
+    { key: "pendingFee", label: "Pending Fee" },
+    { key: "remainingAmulets", label: "Remaining Amulets" },
+    { key: "refilledAmulets", label: "Refilled Amulets" },
+    { key: "status", label: "Status" },
+  ];
+
+  const currentItems = filteredStudents.slice(
+    (currentPage - 1) * 10,
+    currentPage * 10
+  );
 
   return (
     <div className="view-students-container">
-      <header className="view-students-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="view-students-back-icon"
-          onClick={onBack}
-        />
-        <h2>View Students</h2>
-      </header>
+      <TopBar title="View Students" onBack={onBack} backButton={true} />
 
       <main className="view-students-main-content">
         <div className="view-students-search-filter">
-          <div className="view-students-search-input-wrapper">
-            <FontAwesomeIcon
-              icon={faSearch}
-              className="view-students-search-icon"
-            />
-            <input
-              type="text"
-              className="view-students-search-bar"
-              placeholder="Search by Route No or Name"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+          <SearchBar
+            placeholder="Search by Route No or Name"
+            onSearch={handleSearchChange}
+          />
           <div className="view-students-action-button-container">
             <Button
               label={
@@ -340,197 +327,56 @@ const ViewStudents = ({ onBack }) => {
 
         {showFilters && (
           <div className="view-students-filters">
-            <select
-              name="route"
-              value={filters.route}
-              onChange={handleFilterChange}
-            >
-              <option value="">Route</option>
-
-              {getUniqueValues("routeNo").map((route) => (
-                <option key={route} value={route}>
-                  {route}
+            {[
+              "routeNo",
+              "year",
+              "department",
+              "section",
+              "instituteName",
+              "status",
+            ].map((filter) => (
+              <select
+                key={filter}
+                name={filter}
+                value={filters[filter]}
+                onChange={handleFilterChange}
+              >
+                <option value="">
+                  {filter.charAt(0).toUpperCase() + filter.slice(1)}
                 </option>
-              ))}
-            </select>
-
-            <select
-              name="year"
-              value={filters.year}
-              onChange={handleFilterChange}
-            >
-              <option value="">Year</option>
-
-              {getUniqueValues("year").map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-
-            <select
-              name="department"
-              value={filters.department}
-              onChange={handleFilterChange}
-            >
-              <option value="">Department</option>
-
-              {getUniqueValues("department").map((dept) => (
-                <option key={dept} value={dept}>
-                  {dept}
-                </option>
-              ))}
-            </select>
-
-            <select
-              name="section"
-              value={filters.section}
-              onChange={handleFilterChange}
-            >
-              <option value="">Section</option>
-
-              {getUniqueValues("section").map((section) => (
-                <option key={section} value={section}>
-                  {section}
-                </option>
-              ))}
-            </select>
-
-            <select
-              name="collegeName"
-              value={filters.collegeName}
-              onChange={handleFilterChange}
-            >
-              <option value="">College Name</option>
-
-              {getUniqueValues("instituteName").map((institute) => (
-                <option key={institute} value={institute}>
-                  {institute}
-                </option>
-              ))}
-            </select>
-
-            <select
-              name="status"
-              value={filters.status}
-              onChange={handleFilterChange}
-            >
-              <option value="">Status</option>
-
-              {getUniqueValues("status").map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
+                {getUniqueValues(filter).map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            ))}
           </div>
         )}
 
-        <div className="view-students-table-container">
-          <div className="view-students-table-wrapper">
-            <table className="view-students-table">
-              <thead>
-                <tr>
-                  <th>S.No</th>
+        <TableContainer
+          headers={studentColumns.map((col) => col.label)}
+          rows={
+            currentItems.length > 0
+              ? currentItems.map((student) => ({
+                  id: student.regNo,
+                  data: student,
+                }))
+              : [
+                  {
+                    id: "no-data",
+                    data: { message: "No data available" },
+                    colSpan: studentColumns.length,
+                  },
+                ]
+          }
+        />
 
-                  <th>Student Name</th>
-
-                  <th>Reg No</th>
-
-                  <th>Roll No</th>
-
-                  <th>Year</th>
-
-                  <th>Department</th>
-
-                  <th>Section</th>
-
-                  <th>Institute Name</th>
-
-                  <th>Route No</th>
-
-                  <th>Stop Name</th>
-
-                  <th>Pending Fee</th>
-
-                  <th>Remaining Amulets</th>
-
-                  <th>Refilled Amulets</th>
-
-                  <th>Status</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {currentItems.map((student) => (
-                  <tr key={student.regNo}>
-                    <td>{student.sNo}</td>
-
-                    <td>{student.studentName}</td>
-
-                    <td>{student.regNo}</td>
-
-                    <td>{student.rollNo}</td>
-
-                    <td>{student.year}</td>
-
-                    <td>{student.department}</td>
-
-                    <td>{student.section}</td>
-
-                    <td>{student.instituteName}</td>
-
-                    <td>{student.routeNo}</td>
-
-                    <td>{student.stopName}</td>
-
-                    <td>{student.pendingFee}</td>
-
-                    <td>{student.remainingAmulets}</td>
-
-                    <td>{student.refilledAmulets}</td>
-
-                    <td>{student.status}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="view-students-pagination">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="view-students-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronLeft} />
-          </button>
-
-          {Array.from({
-            length: Math.ceil(filteredStudents.length / itemsPerPage),
-          }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => paginate(index + 1)}
-              className={`view-students-pagination-button ${
-                currentPage === index + 1 ? "active" : ""
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={
-              currentPage === Math.ceil(filteredStudents.length / itemsPerPage)
-            }
-            className="view-students-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronRight} />
-          </button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(filteredStudents.length / 10)}
+          onPageChange={setCurrentPage}
+        />
       </main>
     </div>
   );

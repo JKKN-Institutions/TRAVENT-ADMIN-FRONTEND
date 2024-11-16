@@ -1,39 +1,38 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSearch,
-  faArrowLeft,
   faPlus,
   faEdit,
   faTrash,
-  faChevronLeft,
-  faChevronRight,
   faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import AddNewStop from "../AddNewStop/AddNewStop";
 import StoppingPassengers from "../StoppingPassengers/StoppingPassengers";
-import "./Stoppings.css";
 import Button from "../../../../components/Shared/Button/Button";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
+import ConfirmationModal from "../../../../components/Shared/ConfirmationModal/ConfirmationModal";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
+import "./Stoppings.css";
 
 const Stoppings = ({ route, onBack, institutionId }) => {
   const [showAddStop, setShowAddStop] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedStop, setSelectedStop] = useState(null);
+  const [selectedStops, setSelectedStops] = useState([]);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [editingStop, setEditingStop] = useState(null);
   const [stops, setStops] = useState(route.stops);
-  const containerRef = useRef(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
-
   const [showStoppingPassengers, setShowStoppingPassengers] = useState(false);
   const [selectedStopForPassengers, setSelectedStopForPassengers] =
     useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-  useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, []);
+  const containerRef = useRef(null);
 
   const handleViewStudents = (stop) => {
     setSelectedStopForPassengers(stop);
@@ -50,93 +49,183 @@ const Stoppings = ({ route, onBack, institutionId }) => {
     );
   }
 
-  const handleOutsideClick = (event) => {
-    if (containerRef.current && !containerRef.current.contains(event.target)) {
-      setSelectedStop(null);
+  const handleDeleteStop = async () => {
+    try {
+      // Filter out selected stops from the current stops list
+      const updatedStops = stops.filter(
+        (stop) => !selectedStops.includes(stop.stopID)
+      );
+
+      setStops(updatedStops); // Update stops state
+
+      // Display success message
+      showToast("success", "Stops deleted successfully!");
+
+      // Clear selections and close confirmation modal
+      setSelectedStops([]);
+      setShowDeleteConfirmation(false);
+    } catch (error) {
+      showToast("error", "Failed to delete stops.");
     }
   };
 
-  const handleStopClick = (stop) => {
-    setSelectedStop(selectedStop?.stopID === stop.stopID ? null : stop);
-  };
-
-  const handleDeleteStop = () => {
-    setStops(stops.filter((stop) => stop.stopID !== selectedStop.stopID));
-    setShowDeleteConfirmation(false);
-    setSelectedStop(null);
-  };
-
   const handleEditStop = () => {
-    if (selectedStop) {
-      setEditingStop(selectedStop);
+    if (selectedStops.length === 1) {
+      const stopToEdit = stops.find((stop) => stop.stopID === selectedStops[0]);
+      setEditingStop(stopToEdit);
       setShowAddStop(true);
+    } else {
+      showToast("warn", "Please select a single stop to edit.");
     }
   };
 
   const handleAddOrEditComplete = (newOrUpdatedStop) => {
     if (newOrUpdatedStop) {
-      setStops((prevStops) => {
-        if (editingStop) {
-          return prevStops.map((stop) =>
-            stop.stopID === newOrUpdatedStop.stopID ? newOrUpdatedStop : stop
-          );
-        } else {
-          return [...prevStops, newOrUpdatedStop];
-        }
-      });
+      const loadingToastId = showToast(
+        "loading",
+        editingStop ? "Updating stop..." : "Adding new stop..."
+      );
+
+      setStops((prevStops) =>
+        editingStop
+          ? prevStops.map((stop) =>
+              stop.stopID === newOrUpdatedStop.stopID ? newOrUpdatedStop : stop
+            )
+          : [...prevStops, newOrUpdatedStop]
+      );
+
+      showToast(
+        "success",
+        editingStop
+          ? "Stop updated successfully!"
+          : "New stop added successfully!",
+        loadingToastId
+      );
     }
     setShowAddStop(false);
     setEditingStop(null);
-    setSelectedStop(null);
+    setSelectedStops([]);
   };
 
-  const filteredStops = stops.filter(
-    (stop) => stop.stopName?.toLowerCase().includes(searchTerm.toLowerCase()) // Ensure stopName is a string
+  const handleRowClick = (stopId) => {
+    setSelectedStops((prevSelected) =>
+      prevSelected.includes(stopId)
+        ? prevSelected.filter((id) => id !== stopId)
+        : [...prevSelected, stopId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedStops.length === stops.length) {
+      setSelectedStops([]); // Deselect all
+    } else {
+      setSelectedStops(stops.map((stop) => stop.stopID)); // Select all
+    }
+  };
+
+  const isSelectAllChecked = selectedStops.length === stops.length;
+  const isSelectAllIndeterminate =
+    selectedStops.length > 0 && selectedStops.length < stops.length;
+
+  const filteredStops = stops.filter((stop) =>
+    stop.stopName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredStops.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
 
-  const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(filteredStops.length / itemsPerPage); i++) {
-    pageNumbers.push(i);
-  }
+  const headers = [
+    <label className="custom-checkbox">
+      <input
+        type="checkbox"
+        checked={isSelectAllChecked}
+        ref={(el) => el && (el.indeterminate = isSelectAllIndeterminate)}
+        onChange={handleSelectAll}
+      />
+      <span className="checkbox-checkmark"></span>
+    </label>,
+    "S.No",
+    "Stop Name",
+    "Latitude",
+    "Longitude",
+    "District",
+    "City",
+    "State",
+    "Board Time",
+    "Drop Time",
+    "Boarding Count Morning",
+    "Boarding Count Evening",
+    "View Passengers",
+  ];
+
+  const rows =
+    currentItems.length > 0
+      ? currentItems.map((stop, index) => ({
+          id: stop.stopID,
+          data: {
+            select: (
+              <label className="custom-checkbox">
+                <input
+                  type="checkbox"
+                  checked={selectedStops.includes(stop.stopID)}
+                  onChange={() => handleRowClick(stop.stopID)}
+                />
+                <span className="checkbox-checkmark"></span>
+              </label>
+            ),
+            sNo: indexOfFirstItem + index + 1,
+            stopName: stop.stopName,
+            latitude: stop.latitude,
+            longitude: stop.longitude,
+            district: stop.districtName,
+            city: stop.cityName,
+            state: stop.stateName,
+            boardTime: stop.boardTime,
+            dropTime: stop.dropTime,
+            boardingCountMorning: stop.boardingCountMorning,
+            boardingCountEvening: stop.boardingCountEvening,
+            viewPassengers: (
+              <span
+                className="view-passengers-link"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleViewStudents(stop);
+                }}
+              >
+                <FontAwesomeIcon icon={faEye} />
+              </span>
+            ),
+          },
+          onClick: () => handleRowClick(stop.stopID),
+        }))
+      : [
+          {
+            id: "no-data",
+            data: { message: "No data available" },
+            colSpan: headers.length,
+          },
+        ];
 
   return (
     <div className="stoppings-container" ref={containerRef}>
+      <ToastNotification />
       {!showAddStop ? (
         <>
-          <header className="stoppings-top-bar">
-            <FontAwesomeIcon
-              icon={faArrowLeft}
-              className="stoppings-menu-icon"
-              onClick={onBack}
-            />
-            <h2>Stoppings for Route {route.routeNumber}</h2>
-          </header>
+          <TopBar
+            title={`Stoppings for Route ${route.routeNumber}`}
+            onBack={onBack}
+            backButton={true}
+          />
 
           <main className="stoppings-main-content">
             <div className="stoppings-controls">
-              <div className="stoppings-search-bar-container">
-                <div className="stoppings-search-input-wrapper">
-                  <FontAwesomeIcon
-                    icon={faSearch}
-                    className="stoppings-search-icon"
-                  />
-                  <input
-                    type="text"
-                    className="stoppings-search-bar"
-                    placeholder="Search by Stop Name"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-              </div>
-
+              <SearchBar
+                placeholder="Search by Stop Name"
+                onSearch={setSearchTerm}
+              />
               <div className="stoppings-action-buttons-container">
                 <Button
                   label={
@@ -146,7 +235,6 @@ const Stoppings = ({ route, onBack, institutionId }) => {
                   }
                   onClick={() => setShowAddStop(true)}
                 />
-
                 <Button
                   label={
                     <>
@@ -154,9 +242,8 @@ const Stoppings = ({ route, onBack, institutionId }) => {
                     </>
                   }
                   onClick={handleEditStop}
-                  disabled={!selectedStop}
+                  disabled={selectedStops.length !== 1}
                 />
-
                 <Button
                   label={
                     <>
@@ -164,117 +251,34 @@ const Stoppings = ({ route, onBack, institutionId }) => {
                     </>
                   }
                   onClick={() => setShowDeleteConfirmation(true)}
-                  disabled={!selectedStop}
+                  disabled={selectedStops.length === 0}
                 />
               </div>
             </div>
-            <div className="stoppings-table-container">
-              <div className="stoppings-table-wrapper">
-                <table className="stoppings-table">
-                  <thead>
-                    <tr>
-                      <th>S.No</th>
-                      <th>Stop Name</th>
-                      <th>Latitude</th>
-                      <th>Longitude</th>
-                      <th>District</th>
-                      <th>City</th>
-                      <th>State</th>
-                      <th>Board Time</th>
-                      <th>Drop Time</th>
-                      <th>Boarding Count Morning</th>
-                      <th>Boarding Count Evening</th>
-                      <th>View Passengers</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentItems.map((stop, index) => (
-                      <tr
-                        key={stop.stopID || index}
-                        onClick={() => handleStopClick(stop)}
-                        className={
-                          selectedStop?.stopID === stop.stopID ? "selected" : ""
-                        }
-                      >
-                        <td>{indexOfFirstItem + index + 1}</td>
-                        <td>{stop.stopName}</td>
-                        <td>{stop.latitude}</td>
-                        <td>{stop.longitude}</td>
-                        <td>{stop.districtName}</td>
-                        <td>{stop.cityName}</td>
-                        <td>{stop.stateName}</td>
-                        <td>{stop.boardTime}</td>
-                        <td>{stop.dropTime}</td>
-                        <td>{stop.boardingCountMorning}</td>
-                        <td>{stop.boardingCountEvening}</td>
-                        <td>
-                          <span
-                            className="view-passengers-link"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleViewStudents(stop);
-                            }}
-                          >
-                            <FontAwesomeIcon icon={faEye} /> View Passengers
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
 
-            <div className="stoppings-pagination">
-              <button
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="stoppings-pagination-button"
-              >
-                <FontAwesomeIcon icon={faChevronLeft} />
-              </button>
-              {pageNumbers.map((number) => (
-                <button
-                  key={number}
-                  onClick={() => paginate(number)}
-                  className={`stoppings-pagination-button ${
-                    currentPage === number ? "active" : ""
-                  }`}
-                >
-                  {number}
-                </button>
-              ))}
-              <button
-                onClick={() => paginate(currentPage + 1)}
-                disabled={currentPage === pageNumbers.length}
-                className="stoppings-pagination-button"
-              >
-                <FontAwesomeIcon icon={faChevronRight} />
-              </button>
-            </div>
+            <TableContainer
+              headers={headers}
+              rows={rows}
+              onRowClick={(row) => handleRowClick(row.id)}
+              selectedRowId={selectedStops}
+            />
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={Math.ceil(filteredStops.length / itemsPerPage)}
+              onPageChange={handlePageChange}
+            />
           </main>
 
           {showDeleteConfirmation && (
-            <div className="stoppings-delete-confirmation-modal">
-              <div className="stoppings-delete-confirmation-content">
-                <h3>Confirm Deletion</h3>
-                <p>Are you sure you want to delete this stop?</p>
-                <div className="stoppings-delete-confirmation-buttons">
-                  <button
-                    onClick={() => setShowDeleteConfirmation(false)}
-                    className="stoppings-cancel-delete"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleDeleteStop}
-                    className="stoppings-confirm-delete"
-                  >
-                    Yes, Delete
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ConfirmationModal
+              title="Confirm Deletion"
+              message="Are you sure you want to delete the selected stop(s)?"
+              confirmText="Yes, Delete"
+              cancelText="Cancel"
+              onConfirm={handleDeleteStop}
+              onCancel={() => setShowDeleteConfirmation(false)}
+            />
           )}
         </>
       ) : (

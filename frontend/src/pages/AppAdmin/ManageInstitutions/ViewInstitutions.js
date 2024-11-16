@@ -6,9 +6,6 @@ import {
   faPlus,
   faEdit,
   faTrash,
-  faSearch,
-  faChevronLeft,
-  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import AddInstitutionForm from "./AddInstitutionForm";
 import AddInstituteForm from "./AddInstituteForm";
@@ -18,14 +15,30 @@ import AddSectionForm from "./AddSectionForm";
 import AddAdminForm from "./AddAdminForm";
 import ReviewForm from "./ReviewForm";
 import Button from "../../../components/Shared/Button/Button";
+import SearchBar from "../../../components/Shared/SearchBar/SearchBar";
+import Loading from "../../../components/Shared/Loading/Loading";
+import TopBar from "../../../components/Shared/TopBar/TopBar";
+import TableContainer from "../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../components/Shared/Pagination/Pagination";
+import ConfirmationModal from "../../../components/Shared/ConfirmationModal/ConfirmationModal";
+import ToastNotification, {
+  showToast,
+} from "../../../components/Shared/ToastNotification/ToastNotification";
 
-const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
+const ViewInstitutions = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    // Handle search functionality here, filtering institutions based on query
+  };
 
   const [institutions, setInstitutions] = useState([
     {
@@ -150,14 +163,9 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
     },
   ]);
 
-  // const [isAddingInstitution, setIsAddingInstitution] = useState(false);
-  // const [isAddingInstitute, setIsAddingInstitute] = useState(false);
-  // const [isAddingDepartment, setIsAddingDepartment] = useState(false);
-  // const [isAddingYear, setIsAddingYear] = useState(false);
-
   const [currentStep, setCurrentStep] = useState("list");
   const [currentYear, setCurrentYear] = useState(1);
-  const [selectedInstitution, setSelectedInstitution] = useState(null);
+  const [selectedInstitutions, setSelectedInstitutions] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
@@ -180,36 +188,55 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
   };
 
   const handleEditClick = () => {
-    if (selectedInstitution) {
+    if (selectedInstitutions.length === 1) {
       setIsEditing(true);
-      setInstitutionData(selectedInstitution);
+      setInstitutionData(selectedInstitutions[0]);
       setCurrentStep("institution");
+    } else {
+      showToast("warn", "Please select a single institution to edit.");
     }
   };
 
   const handleDeleteClick = () => {
-    if (selectedInstitution) {
+    if (selectedInstitutions.length > 0) {
       setShowDeleteConfirmation(true);
+    } else {
+      showToast("warn", "Please select at least one institution to delete.");
     }
   };
 
   const handleConfirmDelete = () => {
-    setInstitutions(
-      institutions.filter((inst) => inst.id !== selectedInstitution.id)
+    setInstitutions((prev) =>
+      prev.filter((inst) => !selectedInstitutions.includes(inst.id))
     );
-    setSelectedInstitution(null);
+    setSelectedInstitutions([]);
     setShowDeleteConfirmation(false);
+    showToast("success", "Institution(s) deleted successfully!");
   };
 
-  const handleCancelDelete = () => {
-    setShowDeleteConfirmation(false);
-  };
+  const handleCancelDelete = () => setShowDeleteConfirmation(false);
 
-  const handleRowClick = (institution) => {
-    setSelectedInstitution(
-      selectedInstitution?.id === institution.id ? null : institution
+  const handleRowSelect = (institutionId) => {
+    setSelectedInstitutions((prevSelected) =>
+      prevSelected.includes(institutionId)
+        ? prevSelected.filter((id) => id !== institutionId)
+        : [...prevSelected, institutionId]
     );
   };
+
+  const handleSelectAll = () => {
+    if (selectedInstitutions.length === institutions.length) {
+      setSelectedInstitutions([]); // Deselect all if everything is already selected
+    } else {
+      setSelectedInstitutions(institutions.map((inst) => inst.id)); // Select all
+    }
+  };
+
+  const isSelectAllChecked =
+    selectedInstitutions.length === institutions.length;
+  const isSelectAllIndeterminate =
+    selectedInstitutions.length > 0 &&
+    selectedInstitutions.length < institutions.length;
 
   const handleFormSave = (data) => {
     setInstitutionData(data);
@@ -327,15 +354,15 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
       );
 
       if (response.ok) {
-        alert("Institution data saved successfully!");
+        showToast("success", "Institution data saved successfully!");
         resetForNewInstitute();
         setCurrentStep("list");
       } else {
         const result = await response.json();
-        alert(`Error: ${result.error}`);
+        showToast("error", `Error: ${result.error}`);
       }
     } catch (error) {
-      alert("An error occurred while saving the data.");
+      showToast("error", "An error occurred while saving the data.");
       console.error(error);
     }
   };
@@ -357,16 +384,8 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
     setCurrentStep("list");
   };
 
-  const handleBackToInstitution = () => {
-    setCurrentStep("institution");
-  };
-
   const handleBackToDepartmentOrFinish = () => {
     setCurrentStep("departmentOrFinish");
-  };
-
-  const handleBackToSection = () => {
-    setCurrentStep("section");
   };
 
   // Function to switch back to the list view
@@ -512,45 +531,23 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
 
   return (
     <>
+      <ToastNotification />
       {isLoading ? (
-        <div className="schedules-loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading Manage Institutions...</p>
-        </div>
+        <Loading message="Loading Manage Institutions..." />
       ) : (
         <div className="view-institutions-container">
           {currentStep === "list" && (
-            <header className="view-institutions-top-bar">
-              <div className="view-institutions-menu-icon">
-                <FontAwesomeIcon
-                  icon={faBars}
-                  className="menu-icon"
-                  onClick={toggleSidebar}
-                />
-              </div>
-              <div className="view-institutions-header">
-                <h2>Manage Institutions</h2>
-              </div>
-            </header>
+            <TopBar title="Manage Institutions" toggleSidebar={toggleSidebar} />
           )}
 
           <main className="view-institutions-main-content">
             {currentStep === "list" ? (
               <>
                 <div className="view-institutions-controls">
-                  <div className="view-institutions-search-bar-container">
-                    <div className="view-institutions-search-input-wrapper">
-                      <FontAwesomeIcon
-                        icon={faSearch}
-                        className="view-institutions-search-icon"
-                      />
-                      <input
-                        type="text"
-                        className="view-institutions-search-bar"
-                        placeholder="Search institutions..."
-                      />
-                    </div>
-                  </div>
+                  <SearchBar
+                    placeholder="Search institutions..."
+                    onSearch={handleSearch}
+                  />
 
                   <div className="view-institutions-action-buttons-container">
                     <Button
@@ -570,9 +567,9 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
                       }
                       onClick={handleEditClick}
                       className={`view-institutions-action-button view-institutions-edit-button ${
-                        !selectedInstitution ? "disabled" : ""
+                        selectedInstitutions.length !== 1 ? "disabled" : ""
                       }`}
-                      disabled={!selectedInstitution}
+                      disabled={selectedInstitutions.length !== 1}
                     />
                     <Button
                       label={
@@ -582,85 +579,73 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
                       }
                       onClick={handleDeleteClick}
                       className={`view-institutions-action-button view-institutions-delete-button ${
-                        !selectedInstitution ? "disabled" : ""
+                        selectedInstitutions.length === 0 ? "disabled" : ""
                       }`}
-                      disabled={!selectedInstitution}
+                      disabled={selectedInstitutions.length === 0}
                     />
                   </div>
                 </div>
 
-                <div className="view-institutions-table-container">
-                  <div className="view-institutions-table-wrapper">
-                    <table className="view-institutions-table">
-                      <thead>
-                        <tr>
-                          <th>S.No</th>
-                          <th>Institution Code</th>
-                          <th>Institute Name</th>
-                          <th>Institute State</th>
-                          <th>Departments Count</th>
-                          <th>Total Routes</th>
-                          <th>Total Buses</th>
-                          <th>Admin Name</th>
-                          <th>Admin Contact</th>
-                          <th>Created at</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {currentInstitutions.map((institution, index) => (
-                          <tr
-                            key={institution.id}
-                            onClick={() => handleRowClick(institution)}
-                            className={
-                              selectedInstitution?.id === institution.id
-                                ? "selected"
-                                : ""
-                            }
-                          >
-                            <td>{indexOfFirstItem + index + 1}</td>
-                            <td>{institution.code}</td>
-                            <td>{institution.name}</td>
-                            <td>{institution.state}</td>
-                            <td>{institution.departments}</td>
-                            <td>{institution.routes}</td>
-                            <td>{institution.buses}</td>
-                            <td>{institution.adminName}</td>
-                            <td>{institution.adminContact}</td>
-                            <td>{institution.createdAt}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+                <TableContainer
+                  headers={[
+                    <label className="new-user-requests-custom-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={isSelectAllChecked}
+                        ref={(el) =>
+                          el && (el.indeterminate = isSelectAllIndeterminate)
+                        }
+                        onChange={handleSelectAll}
+                      />
+                      <span className="new-user-requests-checkmark"></span>
+                    </label>,
+                    "S.No",
+                    "Institution Code",
+                    "Institute Name",
+                    "Institute State",
+                    "Departments Count",
+                    "Total Routes",
+                    "Total Buses",
+                    "Admin Name",
+                    "Admin Contact",
+                    "Created at",
+                  ]}
+                  rows={currentInstitutions.map((institution, index) => ({
+                    id: institution.id,
+                    data: {
+                      select: (
+                        <label className="new-user-requests-custom-checkbox">
+                          <input
+                            type="checkbox"
+                            checked={selectedInstitutions.includes(
+                              institution.id
+                            )}
+                            onChange={() => handleRowSelect(institution.id)}
+                          />
+                          <span className="new-user-requests-checkmark"></span>
+                        </label>
+                      ),
+                      sNo: indexOfFirstItem + index + 1,
+                      code: institution.code,
+                      name: institution.name,
+                      state: institution.state,
+                      departments: institution.departments,
+                      routes: institution.routes,
+                      buses: institution.buses,
+                      adminName: institution.adminName,
+                      adminContact: institution.adminContact,
+                      createdAt: institution.createdAt,
+                    },
+                  }))}
+                  onRowClick={(institution) => handleRowSelect(institution.id)}
+                  selectedRowId={selectedInstitutions?.id}
+                />
 
-                <div className="view-institutions-pagination">
-                  <button
-                    onClick={() => paginate(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="view-institutions-pagination-button"
-                  >
-                    <FontAwesomeIcon icon={faChevronLeft} />
-                  </button>
-                  {pageNumbers.map((number) => (
-                    <button
-                      key={number}
-                      onClick={() => paginate(number)}
-                      className={`view-institutions-pagination-button ${
-                        currentPage === number ? "active" : ""
-                      }`}
-                    >
-                      {number}
-                    </button>
-                  ))}
-                  <button
-                    onClick={() => paginate(currentPage + 1)}
-                    disabled={currentPage === pageNumbers.length}
-                    className="view-institutions-pagination-button"
-                  >
-                    <FontAwesomeIcon icon={faChevronRight} />
-                  </button>
-                </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={pageNumbers.length}
+                  onPageChange={paginate}
+                />
               </>
             ) : (
               renderForm()
@@ -668,26 +653,12 @@ const ViewInstitutions = ({ toggleSidebar, onAdd }) => {
           </main>
 
           {showDeleteConfirmation && (
-            <div className="view-institutions-delete-confirmation-modal">
-              <div className="view-institutions-delete-confirmation-content">
-                <h3>Confirm Deletion</h3>
-                <p>Are you sure you want to delete this institution?</p>
-                <div className="view-institutions-delete-confirmation-buttons">
-                  <button
-                    onClick={handleCancelDelete}
-                    className="view-institutions-cancel-delete"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleConfirmDelete}
-                    className="view-institutions-confirm-delete"
-                  >
-                    Yes, Delete
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ConfirmationModal
+              title="Confirm Deletion"
+              message="Are you sure you want to delete this institution?"
+              onConfirm={handleConfirmDelete}
+              onCancel={handleCancelDelete}
+            />
           )}
         </div>
       )}

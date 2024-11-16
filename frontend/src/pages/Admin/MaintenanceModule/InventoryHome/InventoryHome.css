@@ -21,7 +21,7 @@
 }
 
 .inventory-chart-container,
-.table-container {
+.inventory-table-container {
   background-color: #292929;
   border-radius: 8px;
   padding: 20px;
@@ -74,7 +74,7 @@
   border-radius: 4px;
 }
 
-.table-header {
+.inventory-table-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -136,7 +136,7 @@
   justify-content: flex-end;
 }
 
-.table-wrapper {
+.inventory-table-wrapper {
   overflow-x: auto; /* Horizontal scroll for the table */
   overflow-y: auto; /* Allow vertical scrolling for long content */
   max-height: 400px; /* Adjust to avoid cutting off content */
@@ -146,7 +146,7 @@
   border-radius: 8px;
 }
 
-.table-header h2 {
+.inventory-table-header h2 {
   font-size: 1.1rem;
 }
 
@@ -248,7 +248,7 @@
     margin-bottom: 0;
   }
   .inventory-chart-container,
-  .table-container {
+  .inventory-table-container {
     padding: 1rem;
   }
 

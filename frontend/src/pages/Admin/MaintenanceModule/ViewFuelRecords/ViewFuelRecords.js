@@ -1,16 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faArrowLeft,
-  faChevronLeft,
-  faChevronRight,
-  faEdit,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import "./ViewFuelRecords.css";
 import Button from "../../../../components/Shared/Button/Button";
 import AddFuelRecord from "../AddFuelRecord/AddFuelRecord";
+import TopBar from "../../../../components/Shared/TopBar/TopBar"; // Assuming the correct path
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
+import ConfirmationModal from "../../../../components/Shared/ConfirmationModal/ConfirmationModal";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
 
 const initialFuelRecordsData = [
   {
@@ -161,24 +162,25 @@ const ViewFuelRecords = ({ onBack }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedRecord, setSelectedRecord] = useState(null);
+
+  const [selectedRecords, setSelectedRecords] = useState([]);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showAddFuelRecord, setShowAddFuelRecord] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
   const containerRef = useRef(null);
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
+    const handleOutsideClick = (event) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
+        setSelectedRecords([]);
+      }
     };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
-
-  const handleOutsideClick = (event) => {
-    if (containerRef.current && !containerRef.current.contains(event.target)) {
-      setSelectedRecord(null);
-    }
-  };
 
   const filteredRecords = fuelRecords.filter(
     (record) =>
@@ -190,166 +192,96 @@ const ViewFuelRecords = ({ onBack }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredRecords.slice(indexOfFirstItem, indexOfLastItem);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
   const handleEdit = () => {
-    if (selectedRecord) {
-      setEditingRecord(selectedRecord);
+    if (selectedRecords.length === 1) {
+      const recordToEdit = fuelRecords.find(
+        (record) => record.route === selectedRecords[0]
+      );
+      setEditingRecord(recordToEdit);
       setShowAddFuelRecord(true);
+    } else {
+      showToast("warn", "Please select a single record to edit.");
     }
   };
 
   const handleDelete = () => {
-    if (selectedRecord) {
-      setShowDeleteConfirmation(true);
-    }
+    setShowDeleteConfirmation(true);
   };
 
   const confirmDelete = () => {
-    setFuelRecords(fuelRecords.filter((record) => record !== selectedRecord));
-    setShowDeleteConfirmation(false);
-    setSelectedRecord(null);
+    try {
+      // Update the fuel records by removing the selected ones
+      const updatedRecords = fuelRecords.filter(
+        (record) => !selectedRecords.includes(record.route)
+      );
+      setFuelRecords(updatedRecords);
+
+      // Reset selected records and close the confirmation modal
+      setSelectedRecords([]);
+      setShowDeleteConfirmation(false);
+
+      // Show success toast
+      showToast("success", "Selected record(s) deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting records:", error);
+      showToast("error", "Failed to delete records. Please try again.");
+    }
   };
 
   const handleAddOrEditComplete = async (fuelRecord) => {
     if (fuelRecord) {
       try {
-        // Simulate API call with a delay
         await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // If editing, update the existing record
-        if (editingRecord) {
-          // Here you would typically make an API call to update the record
-          console.log("Updating record:", fuelRecord);
-        } else {
-          // Here you would typically make an API call to create a new record
-          console.log("Creating new record:", fuelRecord);
-        }
-
-        // Return the saved/updated record to trigger the success toast
-        return fuelRecord;
+        setFuelRecords((prevRecords) => {
+          if (editingRecord) {
+            return prevRecords.map((record) =>
+              record.route === editingRecord.route ? fuelRecord : record
+            );
+          }
+          return [...prevRecords, fuelRecord];
+        });
+        setShowAddFuelRecord(false);
+        setEditingRecord(null);
+        setSelectedRecords([]);
       } catch (error) {
         console.error("Error saving fuel record:", error);
-        throw error; // Throw error to trigger error toast
       }
     }
-    setShowAddFuelRecord(false);
-    setEditingRecord(null);
-    setSelectedRecord(null);
   };
 
-  const handleRowClick = (record) => {
-    setSelectedRecord(selectedRecord === record ? null : record);
-  };
-
-  const FuelRecordsTable = ({ currentItems }) => (
-    <div className="view-fuel-records-table-container">
-      <div className="view-fuel-records-table-wrapper">
-        <table className="view-fuel-records-table">
-          <thead>
-            <tr>
-              <th>Route</th>
-              <th>Driver</th>
-              <th>Filled Liter</th>
-              <th>Amount</th>
-              <th>Date & Time</th>
-              <th>Fuel Type</th>
-              <th>Bill Number</th>
-              <th>Price/Liter</th>
-              <th>Fuel Station</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.map((record, index) => (
-              <tr
-                key={index}
-                onClick={() => handleRowClick(record)}
-                className={selectedRecord === record ? "selected" : ""}
-              >
-                <td>{record.route}</td>
-                <td>{record.driver}</td>
-                <td>{record.filledLiter}</td>
-                <td>{record.amount}</td>
-                <td>{record.dateTime}</td>
-                <td>{record.fuelType}</td>
-                <td>{record.billNumber}</td>
-                <td>{record.pricePerLiter}</td>
-                <td>{record.fuelStationAddress}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-
-  const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage }) => {
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
-      pageNumbers.push(i);
-    }
-
-    return (
-      <div className="view-fuel-records-pagination">
-        <button
-          onClick={() => paginate(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="view-fuel-records-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-        {pageNumbers.map((number) => (
-          <button
-            key={number}
-            onClick={() => paginate(number)}
-            className={`view-fuel-records-pagination-button ${
-              currentPage === number ? "active" : ""
-            }`}
-          >
-            {number}
-          </button>
-        ))}
-        <button
-          onClick={() => paginate(currentPage + 1)}
-          disabled={currentPage === pageNumbers.length}
-          className="view-fuel-records-pagination-button"
-        >
-          <FontAwesomeIcon icon={faChevronRight} />
-        </button>
-      </div>
+  const handleRowClick = (recordId) => {
+    setSelectedRecords((prevSelected) =>
+      prevSelected.includes(recordId)
+        ? prevSelected.filter((id) => id !== recordId)
+        : [...prevSelected, recordId]
     );
   };
 
+  const handleSelectAll = () => {
+    if (selectedRecords.length === currentItems.length) {
+      setSelectedRecords([]); // Deselect all
+    } else {
+      setSelectedRecords(currentItems.map((record) => record.route)); // Select all
+    }
+  };
+
+  const isSelectAllChecked = selectedRecords.length === currentItems.length;
+  const isSelectAllIndeterminate =
+    selectedRecords.length > 0 && selectedRecords.length < currentItems.length;
+
   return (
     <div className="view-fuel-records-container" ref={containerRef}>
+      <ToastNotification />
       {!showAddFuelRecord ? (
         <>
-          <header className="view-fuel-records-top-bar">
-            <FontAwesomeIcon
-              icon={faArrowLeft}
-              className="view-fuel-records-back-icon"
-              onClick={onBack}
-            />
-            <h2>Fuel Records</h2>
-          </header>
+          <TopBar title="Fuel Records" onBack={onBack} backButton={true} />
 
           <main className="view-fuel-records-main-content">
             <div className="view-fuel-records-controls">
-              <div className="view-fuel-records-search-bar-container">
-                <div className="view-fuel-records-search-input-wrapper">
-                  <FontAwesomeIcon
-                    icon={faSearch}
-                    className="view-fuel-records-search-icon"
-                  />
-                  <input
-                    type="text"
-                    className="view-fuel-records-search-bar"
-                    placeholder="Search by Driver or Route"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-              </div>
+              <SearchBar
+                placeholder="Search by Driver or Route"
+                onSearch={(value) => setSearchTerm(value)}
+              />
               <div className="view-fuel-records-action-buttons">
                 <Button
                   label={
@@ -358,7 +290,7 @@ const ViewFuelRecords = ({ onBack }) => {
                     </>
                   }
                   onClick={handleEdit}
-                  disabled={!selectedRecord}
+                  disabled={selectedRecords.length !== 1}
                 />
                 <Button
                   label={
@@ -367,7 +299,7 @@ const ViewFuelRecords = ({ onBack }) => {
                     </>
                   }
                   onClick={handleDelete}
-                  disabled={!selectedRecord}
+                  disabled={selectedRecords.length === 0}
                 />
               </div>
               <div className="view-fuel-records-date">
@@ -379,37 +311,71 @@ const ViewFuelRecords = ({ onBack }) => {
               </div>
             </div>
 
-            <FuelRecordsTable currentItems={currentItems} />
+            <TableContainer
+              headers={[
+                <label className="custom-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={isSelectAllChecked}
+                    ref={(el) =>
+                      el && (el.indeterminate = isSelectAllIndeterminate)
+                    }
+                    onChange={handleSelectAll}
+                  />
+                  <span className="checkbox-checkmark"></span>
+                </label>,
+                "Route",
+                "Driver",
+                "Filled Liter",
+                "Amount",
+                "Date & Time",
+                "Fuel Type",
+                "Bill Number",
+                "Price/Liter",
+                "Fuel Station",
+              ]}
+              rows={currentItems.map((record) => ({
+                id: record.route,
+                data: {
+                  select: (
+                    <label className="custom-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={selectedRecords.includes(record.route)}
+                        onChange={() => handleRowClick(record.route)}
+                      />
+                      <span className="checkbox-checkmark"></span>
+                    </label>
+                  ),
+                  route: record.route,
+                  driver: record.driver,
+                  filledLiter: record.filledLiter,
+                  amount: record.amount,
+                  dateTime: record.dateTime,
+                  fuelType: record.fuelType,
+                  billNumber: record.billNumber,
+                  pricePerLiter: record.pricePerLiter,
+                  fuelStation: record.fuelStationAddress,
+                },
+              }))}
+              onRowClick={(row) => handleRowClick(row.id)}
+              selectedRowId={selectedRecords}
+            />
 
             <Pagination
-              itemsPerPage={itemsPerPage}
-              totalItems={filteredRecords.length}
-              paginate={paginate}
               currentPage={currentPage}
+              totalPages={Math.ceil(filteredRecords.length / itemsPerPage)}
+              onPageChange={(page) => setCurrentPage(page)}
             />
           </main>
 
           {showDeleteConfirmation && (
-            <div className="view-fuel-records-delete-confirmation-modal">
-              <div className="view-fuel-records-delete-confirmation-content">
-                <h3>Confirm Deletion</h3>
-                <p>Are you sure you want to delete this fuel record?</p>
-                <div className="view-fuel-records-delete-confirmation-buttons">
-                  <button
-                    onClick={() => setShowDeleteConfirmation(false)}
-                    className="view-fuel-records-cancel-delete"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={confirmDelete}
-                    className="view-fuel-records-confirm-delete"
-                  >
-                    Yes, Delete
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ConfirmationModal
+              title="Confirm Deletion"
+              message="Are you sure you want to delete the selected record(s)?"
+              onCancel={() => setShowDeleteConfirmation(false)}
+              onConfirm={confirmDelete}
+            />
           )}
         </>
       ) : (

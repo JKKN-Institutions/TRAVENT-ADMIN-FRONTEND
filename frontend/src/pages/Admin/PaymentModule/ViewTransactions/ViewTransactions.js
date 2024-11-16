@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faArrowLeft,
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
 import "./ViewTransactions.css";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
 
 const transactionsData = [
   {
@@ -224,142 +221,79 @@ const transactionsData = [
 const ViewTransactions = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const itemsPerPage = 10;
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const filteredTransactions = transactionsData.filter(
-    (transaction) =>
-      transaction.studentName
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
-      transaction.regNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transaction.rollNo.toLowerCase().includes(searchTerm.toLowerCase())
+    ({ studentName, regNo, rollNo }) =>
+      [studentName, regNo, rollNo].some((field) =>
+        field.toLowerCase().includes(searchTerm.toLowerCase())
+      )
   );
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredTransactions.slice(
-    indexOfFirstItem,
-    indexOfLastItem
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
   );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  const pageNumbers = [];
-  for (
-    let i = 1;
-    i <= Math.ceil(filteredTransactions.length / itemsPerPage);
-    i++
-  ) {
-    pageNumbers.push(i);
-  }
+  const columns = [
+    { key: "sNo", label: "S.No" },
+    { key: "studentName", label: "Student Name" },
+    { key: "regNo", label: "Reg No" },
+    { key: "rollNo", label: "Roll No" },
+    { key: "year", label: "Year" },
+    { key: "department", label: "Department" },
+    { key: "section", label: "Section" },
+    { key: "instituteName", label: "Institute Name" },
+    { key: "routeNo", label: "Route No" },
+    { key: "stopName", label: "Stop Name" },
+    { key: "academicYear", label: "Academic Year" },
+    { key: "paidAmount", label: "Paid Amount" },
+    { key: "balanceAmount", label: "Balance Amount" },
+  ];
+
+  const rows = currentItems.map((transaction, index) => ({
+    id: transaction.sNo,
+    data: {
+      ...transaction,
+      sNo: (currentPage - 1) * itemsPerPage + index + 1,
+      paidAmount: `₹${transaction.paidAmount}`,
+      balanceAmount: `₹${transaction.balanceAmount}`,
+    },
+  }));
 
   return (
     <div className="view-transactions-container">
-      <header className="view-transactions-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="view-transactions-back-icon"
-          onClick={onBack}
-        />
-        <h2>View Transactions</h2>
-      </header>
+      <TopBar title="View Transactions" onBack={onBack} backButton />
 
       <main className="view-transactions-main-content">
         <div className="view-transactions-controls">
-          <div className="view-transactions-search-bar-container">
-            <div className="view-transactions-search-input-wrapper">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="view-transactions-search-icon"
-              />
-              <input
-                type="text"
-                className="view-transactions-search-bar"
-                placeholder="Search by Student Name, Reg No, or Roll No"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
+          <SearchBar
+            placeholder="Search by Student Name, Reg No, or Roll No"
+            onSearch={setSearchTerm}
+          />
           <div className="view-transactions-date">
             <input
               type="date"
               value={selectedDate.toISOString().split("T")[0]}
               onChange={(e) => setSelectedDate(new Date(e.target.value))}
+              className="view-transactions-date"
             />
           </div>
         </div>
-        <div className="view-transactions-table-container">
-          <div className="view-transactions-table-wrapper">
-            <table className="view-transactions-table">
-              <thead>
-                <tr>
-                  <th>S.No</th>
-                  <th>Student Name</th>
-                  <th>Reg No</th>
-                  <th>Roll No</th>
-                  <th>Year</th>
-                  <th>Department</th>
-                  <th>Section</th>
-                  <th>Institute Name</th>
-                  <th>Route No</th>
-                  <th>Stop Name</th>
-                  <th>Academic Year</th>
-                  <th>Paid Amount</th>
-                  <th>Balance Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((transaction, index) => (
-                  <tr key={transaction.sNo}>
-                    <td>{indexOfFirstItem + index + 1}</td>
-                    <td>{transaction.studentName}</td>
-                    <td>{transaction.regNo}</td>
-                    <td>{transaction.rollNo}</td>
-                    <td>{transaction.year}</td>
-                    <td>{transaction.department}</td>
-                    <td>{transaction.section}</td>
-                    <td>{transaction.instituteName}</td>
-                    <td>{transaction.routeNo}</td>
-                    <td>{transaction.stopName}</td>
-                    <td>{transaction.academicYear}</td>
-                    <td>{transaction.paidAmount}</td>
-                    <td>{transaction.balanceAmount}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
 
-        <div className="view-transactions-pagination">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="view-transactions-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronLeft} />
-          </button>
-          {pageNumbers.map((number) => (
-            <button
-              key={number}
-              onClick={() => paginate(number)}
-              className={`view-transactions-pagination-button ${
-                currentPage === number ? "active" : ""
-              }`}
-            >
-              {number}
-            </button>
-          ))}
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === pageNumbers.length}
-            className="view-transactions-pagination-button"
-          >
-            <FontAwesomeIcon icon={faChevronRight} />
-          </button>
-        </div>
+        <TableContainer
+          headers={columns.map(({ label }) => label)}
+          rows={rows}
+        />
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(filteredTransactions.length / itemsPerPage)}
+          onPageChange={paginate}
+        />
       </main>
     </div>
   );

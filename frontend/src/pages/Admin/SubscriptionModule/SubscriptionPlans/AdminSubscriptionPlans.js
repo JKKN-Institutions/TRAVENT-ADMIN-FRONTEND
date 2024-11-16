@@ -1,15 +1,55 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBars,
-  faCheck,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faChevronRight, faCheck } from "@fortawesome/free-solid-svg-icons";
 import "./AdminSubscriptionPlans.css";
 import AllSubscriptionPlans from "../AllSubscriptionPlans/AllSubscriptionPlans";
 import SubscriptionPaymentHistory from "../SubscriptionPaymentHistory/SubscriptionPaymentHistory";
 import PaymentSummary from "../PaymentSummary/PaymentSummary";
 import Loading from "../../../../components/Shared/Loading/Loading";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+
+// Reusable Card Component for Subscription Plans
+const PlanCard = ({ plan, onSubscribe }) => (
+  <div className="admin-plan-card">
+    <div className="admin-plan-price-name">
+      <h3>{plan.name}</h3>
+      <h4>₹{plan.price}</h4>
+    </div>
+    <p>
+      Validity: <span>{plan.validity}</span>
+    </p>
+    <p>
+      User Range: <span>{plan.userRange}</span>
+    </p>
+    <div className="admin-plan-price-subscribe">
+      <button
+        className="admin-subscribe-button"
+        onClick={() => onSubscribe(plan)}
+      >
+        Subscribe
+      </button>
+    </div>
+  </div>
+);
+
+// Reusable Card Component for Payment History
+const PaymentCard = ({ payment }) => (
+  <div className="admin-payment-card">
+    <div className="admin-payment-card-row">
+      <h3>{payment.name}</h3>
+      <h4>₹{payment.price}</h4>
+    </div>
+    <div className="admin-payment-card-row">
+      <p>{payment.date}</p>
+      <p>
+        Payment Id: <span>{payment.paymentId}</span>
+      </p>
+      <div className="admin-payment-price-check">
+        <FontAwesomeIcon icon={faCheck} className="admin-payment-check" />
+      </div>
+    </div>
+  </div>
+);
 
 const AdminSubscriptionPlans = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -23,13 +63,14 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const [currentPlan, setCurrentPlan] = useState({
+  const currentPlan = {
     name: "Medium Scale - Premium",
     price: "2,00,000",
     validity: "6 Months",
     userRange: "2000-5000",
-  });
-  const [allPlans, setAllPlans] = useState([
+  };
+
+  const allPlans = [
     {
       name: "Small Scale - Premium",
       price: "10,000",
@@ -48,20 +89,9 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
       validity: "6 Months",
       userRange: "5000-10000",
     },
-    // {
-    //   name: "XL Scale - Premium",
-    //   price: "10,00,000",
-    //   validity: "6 Months",
-    //   userRange: "10000-20000",
-    // },
-    // {
-    //   name: "XXL Scale - Premium",
-    //   price: "20,00,000",
-    //   validity: "6 Months",
-    //   userRange: "20000-40000",
-    // },
-  ]);
-  const [paymentHistory, setPaymentHistory] = useState([
+  ];
+
+  const paymentHistory = [
     {
       name: "Medium Scale - Premium",
       price: "2,00,000",
@@ -80,27 +110,13 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
       date: "19/07/2024 - 16:24:56",
       paymentId: "254F5ECE2",
     },
-    // {
-    //   name: "Medium Scale - Premium",
-    //   price: "2,00,000",
-    //   date: "19/07/2024 - 16:24:56",
-    //   paymentId: "254F5ECE2",
-    // },
-    // {
-    //   name: "Medium Scale - Premium",
-    //   price: "2,00,000",
-    //   date: "19/07/2024 - 16:24:56",
-    //   paymentId: "254F5ECE2",
-    // },
-  ]);
+  ];
 
   const handleSubscribe = (plan) => {
-    // Remove commas and convert price to a number
     const parsedPrice = parseFloat(plan.price.replace(/,/g, ""));
-
     setSelectedPlan({
       ...plan,
-      price: parsedPrice, // Store the numeric value
+      price: parsedPrice,
       paymentDate: new Date().toLocaleString(),
       institutionName: "JKKN Group of Institutions",
     });
@@ -133,19 +149,9 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
         <Loading message="Loading Subscription Plans..." />
       ) : (
         <div className="admin-subscription-plans-container">
-          <header className="admin-subscription-plans-top-bar">
-            <div className="admin-subscription-plans-menu-icon">
-              <FontAwesomeIcon
-                icon={faBars}
-                className="menu-icon"
-                onClick={toggleSidebar}
-              />
-            </div>
-            <div className="admin-subscription-plans-header">
-              <h2>Subscription Plans</h2>
-            </div>
-          </header>
+          <TopBar title="Subscription Plans" toggleSidebar={toggleSidebar} />
           <main className="admin-subscription-plans-main-content">
+            {/* Current Plan Section without Subscribe button */}
             <div className="admin-plans-section">
               <div className="admin-section-header">
                 <h2>Your Current Subscription Plan</h2>
@@ -166,6 +172,7 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
               </div>
             </div>
 
+            {/* All Subscription Plans Section */}
             <div className="admin-plans-section">
               <div className="admin-section-header">
                 <h2>All Subscription Plans</h2>
@@ -178,30 +185,16 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
               </div>
               <div className="admin-plans-grid">
                 {allPlans.map((plan, index) => (
-                  <div key={index} className="admin-plan-card">
-                    <div className="admin-plan-price-name">
-                      <h3>{plan.name}</h3>
-                      <h4>₹{plan.price}</h4>
-                    </div>
-                    <p>
-                      Validity: <span>{plan.validity}</span>
-                    </p>
-                    <p>
-                      User Range: <span>{plan.userRange}</span>{" "}
-                    </p>
-                    <div className="admin-plan-price-subscribe">
-                      <button
-                        className="admin-subscribe-button"
-                        onClick={() => handleSubscribe(plan)}
-                      >
-                        Subscribe
-                      </button>
-                    </div>
-                  </div>
+                  <PlanCard
+                    key={index}
+                    plan={plan}
+                    onSubscribe={handleSubscribe}
+                  />
                 ))}
               </div>
             </div>
 
+            {/* Payment History Section */}
             <div className="admin-plans-section">
               <div className="admin-section-header">
                 <h2>Payment History</h2>
@@ -214,24 +207,7 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
               </div>
               <div className="admin-plans-grid">
                 {paymentHistory.map((payment, index) => (
-                  <div key={index} className="admin-payment-card">
-                    <div className="admin-payment-card-row">
-                      <h3>{payment.name}</h3>
-                      <h4>₹{payment.price}</h4>
-                    </div>
-                    <div className="admin-payment-card-row">
-                      <p>{payment.date}</p>
-                      <p>
-                        Payment Id: <span>{payment.paymentId}</span>
-                      </p>
-                      <div className="admin-payment-price-check">
-                        <FontAwesomeIcon
-                          icon={faCheck}
-                          className="admin-payment-check"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  <PaymentCard key={index} payment={payment} />
                 ))}
               </div>
             </div>

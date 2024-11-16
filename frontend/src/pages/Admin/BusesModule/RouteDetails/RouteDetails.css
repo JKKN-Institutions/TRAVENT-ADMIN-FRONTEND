@@ -6,41 +6,6 @@
   flex-direction: column;
 }
 
-.route-details-top-bar {
-  background-color: #222222;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 999;
-}
-
-.route-details-back-button {
-  background: none;
-  border: none;
-  color: #ffffff;
-  cursor: pointer;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  margin-right: 1rem;
-  transition: transform 0.2s ease;
-}
-
-.route-details-back-button:hover {
-  transform: translateX(-3px);
-}
-
-.route-details-top-bar h2 {
-  margin: 0;
-  font-size: 1.3rem;
-  font-weight: 600;
-}
-
 .route-details-main-content {
   flex: 1;
   padding: 0 0.5rem;
@@ -146,9 +111,6 @@
 
 /* Small Mobile Responsiveness */
 @media (max-width: 480px) {
-  .route-details-top-bar h2 {
-    font-size: 1.2rem;
-  }
   .route-details-info-label {
     font-size: 0.9rem;
   }

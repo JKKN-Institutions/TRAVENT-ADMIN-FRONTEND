@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowLeft,
   faCheck,
   faArrowRight,
   faCalendar,
 } from "@fortawesome/free-solid-svg-icons";
 import "./SubscriptionPaymentHistory.css";
 import SubscriptionReceipt from "../SubscriptionReceipt/SubscriptionReceipt";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
 
 const SubscriptionPaymentHistory = ({ onBack }) => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -87,14 +87,7 @@ const SubscriptionPaymentHistory = ({ onBack }) => {
 
   return (
     <div className="subscription-payment-history-container">
-      <header className="subscription-payment-history-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="subscription-payment-history-back-icon"
-          onClick={onBack}
-        />
-        <h2>Payment History</h2>
-      </header>
+      <TopBar title="Payment History" onBack={onBack} backButton={true} />
       <main className="subscription-payment-history-main-content">
         <div className="subscription-payment-history-year-filter">
           <div className="subscription-payment-history-calendar">
@@ -115,6 +108,7 @@ const SubscriptionPaymentHistory = ({ onBack }) => {
             </select>
           </div>
         </div>
+
         <div className="subscription-payment-history-grid">
           {paymentHistory.map((payment, index) => (
             <div key={index} className="subscription-payment-history-card">

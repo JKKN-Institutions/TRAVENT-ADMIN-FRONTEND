@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faUser } from "@fortawesome/free-solid-svg-icons";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification"; // Import ToastNotification and showToast
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import FormInput from "../../../../components/Shared/FormInput/FormInput";
+import ActionButtons from "../../../../components/Shared/ActionButtons/ActionButtons";
 import "./AddNewDriver.css";
 
 const AddNewDriver = ({ driver, onBack, onSave }) => {
@@ -44,145 +46,81 @@ const AddNewDriver = ({ driver, onBack, onSave }) => {
     return formErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
-      toast.error("Please fill in all required fields", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      showToast("error", "Please fill in all required fields");
     } else {
-      const loadingToastId = toast.loading(
-        driver ? "Updating driver..." : "Adding new driver...",
-        {
-          position: "top-right",
-        }
+      const loadingToastId = showToast(
+        "loading",
+        driver ? "Updating driver..." : "Adding new driver..."
       );
 
       try {
         onSave(driverData);
-        toast.dismiss(loadingToastId);
-        setTimeout(() => {
-          toast.success(
-            <div>
-              Successfully {driver ? "updated" : "added"} driver.
-              <br />
-              <small>Driver details have been saved.</small>
-            </div>,
-            {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-            }
-          );
-        }, 100);
+        showToast(
+          "success",
+          `Successfully ${driver ? "updated" : "added"} driver.`,
+          loadingToastId
+        );
       } catch (error) {
-        toast.dismiss(loadingToastId);
-        toast.error(
+        showToast(
+          "error",
           `Failed to ${driver ? "update" : "add"} driver. Please try again.`,
-          {
-            position: "top-right",
-            autoClose: 3000,
-          }
+          loadingToastId
         );
         console.error("Error saving driver:", error);
       }
     }
   };
 
-  const renderInput = (key) => {
-    if (key === "category") {
-      return (
-        <select
-          id={key}
-          name={key}
-          value={driverData[key]}
-          onChange={handleChange}
-          className={errors[key] ? "input-error" : ""}
-        >
-          <option value="">Select Category</option>
-          <option value="main">Main Driver</option>
-          <option value="spare">Spare Driver</option>
-        </select>
-      );
-    } else {
-      return (
-        <input
-          type={key === "experience" ? "number" : "text"}
-          id={key}
-          name={key}
-          value={driverData[key]}
-          onChange={handleChange}
-          placeholder={
-            key.charAt(0).toUpperCase() +
-            key
-              .slice(1)
-              .replace(/([A-Z])/g, " $1")
-              .trim()
-          }
-          className={errors[key] ? "input-error" : ""}
-        />
-      );
-    }
-  };
-
   return (
     <div className="add-new-driver-container">
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        limit={3}
+      <ToastNotification />
+      <TopBar
+        title={driver ? "Edit Driver" : "Add New Driver"}
+        onBack={onBack}
+        backButton={true}
       />
-      <header className="add-new-driver-top-bar">
-        <button className="add-new-driver-back-button" onClick={onBack}>
-          <FontAwesomeIcon icon={faArrowLeft} />
-        </button>
-        <div className="add-new-driver-header">
-          <h2>{driver ? "Edit Driver" : "Add New Driver"}</h2>
-        </div>
-      </header>
       <main className="add-new-driver-main-content">
         <form onSubmit={handleSubmit}>
-          <div className="add-new-driver-avatar">
-            <FontAwesomeIcon icon={faUser} />
-          </div>
           <div className="add-new-driver-form-grid">
             {Object.keys(driverData).map((key) => (
               <div key={key} className="add-new-driver-form-group">
-                {renderInput(key)}
-                {errors[key] && <p className="error">{errors[key]}</p>}
+                <FormInput
+                  name={key}
+                  value={driverData[key]}
+                  onChange={(e) => handleChange(e)}
+                  placeholder={
+                    key.charAt(0).toUpperCase() +
+                    key
+                      .slice(1)
+                      .replace(/([A-Z])/g, " $1")
+                      .trim()
+                  }
+                  error={errors[key]}
+                  type={key === "experience" ? "number" : "text"}
+                  selectOptions={
+                    key === "category"
+                      ? [
+                          { value: "", label: "Select Category" },
+                          { value: "main", label: "Main Driver" },
+                          { value: "spare", label: "Spare Driver" },
+                        ]
+                      : null
+                  }
+                />
               </div>
             ))}
           </div>
-          <div className="add-new-driver-buttons-container">
-            <button
-              type="button"
-              className="add-new-driver-cancel-button"
-              onClick={onBack}
-            >
-              Cancel
-            </button>
-            <button type="submit" className="add-new-driver-save-button">
-              {driver ? "Update Driver" : "Add Driver"}
-            </button>
-          </div>
+
+          <ActionButtons
+            onCancel={onBack}
+            onSubmit={handleSubmit}
+            submitText={driver ? "Update Driver" : "Add Driver"}
+          />
         </form>
       </main>
     </div>

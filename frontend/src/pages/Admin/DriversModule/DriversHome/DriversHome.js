@@ -11,6 +11,24 @@ import AddNewDriver from "../AddNewDriver/AddNewDriver";
 import ViewAllDrivers from "../ViewAllDrivers/ViewAllDrivers";
 import Button from "../../../../components/Shared/Button/Button";
 import Loading from "../../../../components/Shared/Loading/Loading";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+
+const driversData = {
+  main: [
+    { name: "Velan K", routeAssigned: "1" },
+    { name: "Kathir", routeAssigned: "2" },
+    { name: "Ragavan", routeAssigned: "3" },
+    { name: "Muthu", routeAssigned: "4" },
+    { name: "Marudhu", routeAssigned: "5" },
+    { name: "Karthik", routeAssigned: "6" },
+  ],
+  spare: [
+    { name: "Velan", routeAssigned: "9" },
+    { name: "Kathir", routeAssigned: "10" },
+    { name: "Velan", routeAssigned: "12" },
+    { name: "Kathir", routeAssigned: "13" },
+  ],
+};
 
 const DriversHome = ({ toggleSidebar }) => {
   const [showAddNewDriver, setShowAddNewDriver] = useState(false);
@@ -22,53 +40,14 @@ const DriversHome = ({ toggleSidebar }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const mainDrivers = [
-    { name: "Velan K", routeAssigned: "1", category: "main" },
-    { name: "Kathir", routeAssigned: "2", category: "main" },
-    { name: "Ragavan", routeAssigned: "3", category: "main" },
-    { name: "Muthu", routeAssigned: "4", category: "main" },
-    { name: "Marudhu", routeAssigned: "5", category: "main" },
-    { name: "Karthik", routeAssigned: "6", category: "main" },
-  ];
-
-  const spareDrivers = [
-    { name: "Velan", routeAssigned: "9", category: "spare" },
-    { name: "Kathir", routeAssigned: "10", category: "spare" },
-    { name: "Velan", routeAssigned: "12", category: "spare" },
-    { name: "Kathir", routeAssigned: "13", category: "spare" },
-  ];
-
-  const handleAddNewDriver = () => {
-    setShowAddNewDriver(true);
-  };
+  const handleAddNewDriver = () => setShowAddNewDriver(true);
 
   const handleSaveNewDriver = (driverData) => {
     console.log("New driver data:", driverData);
     setShowAddNewDriver(false);
   };
 
-  const handleViewAll = (category) => {
-    setViewAllCategory(category);
-  };
-
-  if (showAddNewDriver) {
-    return (
-      <AddNewDriver
-        onBack={() => setShowAddNewDriver(false)}
-        onSave={handleSaveNewDriver}
-      />
-    );
-  }
-
-  if (viewAllCategory) {
-    return (
-      <ViewAllDrivers
-        category={viewAllCategory}
-        drivers={viewAllCategory === "main" ? mainDrivers : spareDrivers}
-        onBack={() => setViewAllCategory(null)}
-      />
-    );
-  }
+  const handleViewAll = (category) => setViewAllCategory(category);
 
   const renderDriverCard = (driver, index) => (
     <div key={index} className="drivers-home-card">
@@ -84,69 +63,64 @@ const DriversHome = ({ toggleSidebar }) => {
     </div>
   );
 
-  return (
-    <>
-      {isLoading ? (
-        <Loading message="Loading Drivers..." />
-      ) : (
-        <div className="drivers-home-container">
-          <header className="drivers-home-top-bar">
-            <div className="drivers-home-menu-icon" onClick={toggleSidebar}>
-              <FontAwesomeIcon icon={faBars} />
-            </div>
-            <h1>Drivers</h1>
-          </header>
+  if (showAddNewDriver) {
+    return (
+      <AddNewDriver
+        onBack={() => setShowAddNewDriver(false)}
+        onSave={handleSaveNewDriver}
+      />
+    );
+  }
 
-          <main className="drivers-home-main-content">
-            <div className="drivers-home-controls">
-              <div className="drivers-home-action-buttons">
-                <Button
-                  label={
-                    <>
-                      <FontAwesomeIcon icon={faPlus} /> Add New Driver
-                    </>
-                  }
-                  onClick={handleAddNewDriver}
-                />
-              </div>
-            </div>
-            <div className="drivers-home-section">
-              <div className="drivers-home-section-header">
-                <h2>Main Drivers</h2>
-                <button
-                  className="drivers-home-view-all"
-                  onClick={() => handleViewAll("main")}
-                >
-                  View All Drivers <FontAwesomeIcon icon={faChevronRight} />
-                </button>
-              </div>
-              <div className="drivers-home-grid">
-                {mainDrivers
-                  .slice(0, 5)
-                  .map((driver, index) => renderDriverCard(driver, index))}
-              </div>
-            </div>
+  if (viewAllCategory) {
+    return (
+      <ViewAllDrivers
+        category={viewAllCategory}
+        drivers={driversData[viewAllCategory]}
+        onBack={() => setViewAllCategory(null)}
+      />
+    );
+  }
 
-            <div className="drivers-home-section">
-              <div className="drivers-home-section-header">
-                <h2>Spare Drivers</h2>
-                <button
-                  className="drivers-home-view-all"
-                  onClick={() => handleViewAll("spare")}
-                >
-                  View All Drivers <FontAwesomeIcon icon={faChevronRight} />
-                </button>
-              </div>
-              <div className="drivers-home-grid">
-                {spareDrivers
-                  .slice(0, 5)
-                  .map((driver, index) => renderDriverCard(driver, index))}
-              </div>
-            </div>
-          </main>
+  const renderDriverSection = (title, category) => (
+    <div className="drivers-home-section">
+      <div className="drivers-home-section-header">
+        <h2>{title}</h2>
+        <button
+          className="drivers-home-view-all"
+          onClick={() => handleViewAll(category)}
+        >
+          View All Drivers <FontAwesomeIcon icon={faChevronRight} />
+        </button>
+      </div>
+      <div className="drivers-home-grid">
+        {driversData[category]
+          .slice(0, 5)
+          .map((driver, index) => renderDriverCard(driver, index))}
+      </div>
+    </div>
+  );
+
+  return isLoading ? (
+    <Loading message="Loading Drivers..." />
+  ) : (
+    <div className="drivers-home-container">
+      <TopBar title="Drivers" toggleSidebar={toggleSidebar} />
+      <main className="drivers-home-main-content">
+        <div className="drivers-home-controls">
+          <Button
+            label={
+              <>
+                <FontAwesomeIcon icon={faPlus} /> Add New Driver
+              </>
+            }
+            onClick={handleAddNewDriver}
+          />
         </div>
-      )}
-    </>
+        {renderDriverSection("Main Drivers", "main")}
+        {renderDriverSection("Spare Drivers", "spare")}
+      </main>
+    </div>
   );
 };
 

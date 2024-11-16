@@ -8,7 +8,7 @@ import {
   faList,
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import Logout from "../../../pages/AppAdmin/Logout/Logout";
+import Logout from "../Logout/Logout";
 
 const AppAdminSidebar = React.memo(
   ({ isOpen, toggleSidebar, setActiveComponent }) => {

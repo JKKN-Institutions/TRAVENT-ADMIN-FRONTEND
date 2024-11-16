@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./AddDepartmentForm.css";
+import FormInput from "../../../components/Shared/FormInput/FormInput";
+import ActionButtons from "../../../components/Shared/ActionButtons/ActionButtons";
 
 const AddDepartmentForm = ({ onBack, onSave, initialData, instituteData }) => {
   const [departmentData, setDepartmentData] = useState(
@@ -28,14 +30,46 @@ const AddDepartmentForm = ({ onBack, onSave, initialData, instituteData }) => {
 
   const validateForm = () => {
     let formErrors = {};
-    if (!departmentData.departmentCode)
-      formErrors.departmentCode = "Department Code is required";
-    if (!departmentData.departmentName)
-      formErrors.departmentName = "Department Name is required";
-    if (!departmentData.hodName) formErrors.hodName = "HOD Name is required";
-    if (!departmentData.hodEmail) formErrors.hodEmail = "HOD Email is required";
-    if (!departmentData.hodContactNumber)
-      formErrors.hodContactNumber = "HOD Contact Number is required";
+
+    // Department Code: Required, min length of 3
+    if (
+      !departmentData.departmentCode ||
+      departmentData.departmentCode.length < 3
+    )
+      formErrors.departmentCode =
+        "Department Code is required and should be at least 3 characters";
+
+    // Department Name: Required, min length of 3
+    if (
+      !departmentData.departmentName ||
+      departmentData.departmentName.length < 3
+    )
+      formErrors.departmentName =
+        "Department Name is required and should be at least 3 characters";
+
+    // HOD Name: Required, only letters and spaces
+    if (
+      !departmentData.hodName ||
+      !/^[A-Za-z\s]+$/.test(departmentData.hodName)
+    )
+      formErrors.hodName =
+        "HOD Name is required and should contain only letters and spaces";
+
+    // HOD Email: Required, valid email format
+    if (
+      !departmentData.hodEmail ||
+      !/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(departmentData.hodEmail)
+    )
+      formErrors.hodEmail = "Valid HOD Email is required";
+
+    // HOD Contact Number: Required, exactly 10 digits
+    if (
+      !departmentData.hodContactNumber ||
+      !/^\d{10}$/.test(departmentData.hodContactNumber)
+    )
+      formErrors.hodContactNumber =
+        "HOD Contact Number is required and should be 10 digits";
+
     return formErrors;
   };
 
@@ -50,7 +84,7 @@ const AddDepartmentForm = ({ onBack, onSave, initialData, instituteData }) => {
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
     } else {
-      onSave(departmentData);
+      onSave(departmentData); // Pass form data back to parent
     }
   };
 
@@ -98,83 +132,62 @@ const AddDepartmentForm = ({ onBack, onSave, initialData, instituteData }) => {
           <div className="department-form-header">
             <h2>Add New Department</h2>
           </div>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="department-form-grid">
-              <div className="department-form-group">
-                <input
-                  name="departmentCode"
-                  placeholder="Department Code"
-                  value={departmentData.departmentCode}
-                  onChange={handleInputChange}
-                  className={errors.departmentCode ? "input-error" : ""}
-                />
-                {errors.departmentCode && (
-                  <p className="error">{errors.departmentCode}</p>
-                )}
-              </div>
-              <div className="department-form-group">
-                <input
-                  name="departmentName"
-                  placeholder="Department Name"
-                  value={departmentData.departmentName}
-                  onChange={handleInputChange}
-                  className={errors.departmentName ? "input-error" : ""}
-                />
-                {errors.departmentName && (
-                  <p className="error">{errors.departmentName}</p>
-                )}
-              </div>
-              <div className="department-form-group">
-                <input
-                  name="hodName"
-                  placeholder="HOD Name"
-                  value={departmentData.hodName}
-                  onChange={handleInputChange}
-                  className={errors.hodName ? "input-error" : ""}
-                />
-                {errors.hodName && <p className="error">{errors.hodName}</p>}
-              </div>
-              <div className="department-form-group">
-                <input
-                  name="hodEmail"
-                  placeholder="HOD Email"
-                  value={departmentData.hodEmail}
-                  onChange={handleInputChange}
-                  className={errors.hodEmail ? "input-error" : ""}
-                />
-                {errors.hodEmail && <p className="error">{errors.hodEmail}</p>}
-              </div>
-              <div className="department-form-group">
-                <input
-                  name="hodContactNumber"
-                  placeholder="HOD Contact Number"
-                  value={departmentData.hodContactNumber}
-                  onChange={handleInputChange}
-                  className={errors.hodContactNumber ? "input-error" : ""}
-                />
-                {errors.hodContactNumber && (
-                  <p className="error">{errors.hodContactNumber}</p>
-                )}
-              </div>
+              <FormInput
+                id="departmentCode"
+                name="departmentCode"
+                type="text"
+                placeholder="Department Code"
+                value={departmentData.departmentCode}
+                onChange={handleInputChange}
+                error={errors.departmentCode}
+              />
+              <FormInput
+                id="departmentName"
+                name="departmentName"
+                type="text"
+                placeholder="Department Name"
+                value={departmentData.departmentName}
+                onChange={handleInputChange}
+                error={errors.departmentName}
+              />
+              <FormInput
+                id="hodName"
+                name="hodName"
+                type="text"
+                placeholder="HOD Name"
+                value={departmentData.hodName}
+                onChange={handleInputChange}
+                error={errors.hodName}
+              />
+              <FormInput
+                id="hodEmail"
+                name="hodEmail"
+                type="email"
+                placeholder="HOD Email"
+                value={departmentData.hodEmail}
+                onChange={handleInputChange}
+                error={errors.hodEmail}
+              />
+              <FormInput
+                id="hodContactNumber"
+                name="hodContactNumber"
+                type="tel"
+                placeholder="HOD Contact Number"
+                value={departmentData.hodContactNumber}
+                onChange={handleInputChange}
+                error={errors.hodContactNumber}
+              />
             </div>
+            <ActionButtons
+              onCancel={handleBackClick}
+              onSubmit={handleSubmit}
+              submitText="Save Department & Next"
+              cancelText="Previous"
+            />
           </form>
         </div>
-      </div>
-      <div className="department-buttons-container">
-        <button
-          type="button"
-          className="department-submit-button"
-          onClick={handleBackClick}
-        >
-          Previous
-        </button>
-        <button
-          type="submit"
-          className="department-submit-button"
-          onClick={handleSubmit}
-        >
-          Save Department & Next
-        </button>
       </div>
     </div>
   );

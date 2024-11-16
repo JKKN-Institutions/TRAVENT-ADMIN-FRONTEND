@@ -7,11 +7,12 @@ import {
   faCheckCircle,
   faTimesCircle,
   faExclamationCircle,
-  faChevronLeft,
-  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import "./PaymentHistory.css";
 import Button from "../../../../components/Shared/Button/Button";
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
 
 const PaymentHistory = ({ student, onBack }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -89,16 +90,68 @@ const PaymentHistory = ({ student, onBack }) => {
     }
   };
 
+  const columns = [
+    { key: "academicYear", label: "Academic Year" },
+    { key: "totalFee", label: "Total Fee" },
+    { key: "paidFee", label: "Paid Fee" },
+    { key: "pendingFee", label: "Pending Fee" },
+    { key: "term1", label: "Term 1" },
+    { key: "term2", label: "Term 2" },
+    { key: "term3", label: "Term 3" },
+    { key: "amuletsFee", label: "Amulets Fee" },
+  ];
+
+  const rows = currentItems.map((year) => ({
+    id: year.academicYear,
+    data: {
+      academicYear: year.academicYear,
+      totalFee: `₹${year.totalFee}`,
+      paidFee: `₹${year.paidFee}`,
+      pendingFee: `₹${year.pendingFee}`,
+      term1: (
+        <div className="term-status">
+          <span>₹{year.term1.amount}</span>
+          <span className={`payment-status ${year.term1.status.toLowerCase()}`}>
+            {getStatusIcon(year.term1.status)} {year.term1.status}
+          </span>
+          <span>{year.term1.date}</span>
+        </div>
+      ),
+      term2: (
+        <div className="term-status">
+          <span>₹{year.term2.amount}</span>
+          <span className={`payment-status ${year.term2.status.toLowerCase()}`}>
+            {getStatusIcon(year.term2.status)} {year.term2.status}
+          </span>
+          <span>{year.term2.date}</span>
+        </div>
+      ),
+      term3: (
+        <div className="term-status">
+          <span>₹{year.term3.amount}</span>
+          <span className={`payment-status ${year.term3.status.toLowerCase()}`}>
+            {getStatusIcon(year.term3.status)} {year.term3.status}
+          </span>
+          <span>{year.term3.date}</span>
+        </div>
+      ),
+      amuletsFee: (
+        <div className="term-status">
+          <span>₹{year.amuletsFee.amount}</span>
+          <span
+            className={`payment-status ${year.amuletsFee.status.toLowerCase()}`}
+          >
+            {getStatusIcon(year.amuletsFee.status)} {year.amuletsFee.status}
+          </span>
+          <span>{year.amuletsFee.date}</span>
+        </div>
+      ),
+    },
+  }));
+
   return (
     <div className="view-history-container">
-      <header className="view-history-top-bar">
-        <FontAwesomeIcon
-          icon={faArrowLeft}
-          className="view-history-back-button"
-          onClick={onBack}
-        />
-        <h2>Payment History</h2>
-      </header>
+      <TopBar title="Payment History" onBack={onBack} backButton={true} />
 
       <main className="view-history-main-content">
         <div className="view-history-actions">
@@ -139,115 +192,13 @@ const PaymentHistory = ({ student, onBack }) => {
           </p>
         </section>
 
-        <section className="view-history-payment-details">
-          <div className="view-history-table-container">
-            <div className="view-history-table-wrapper">
-              <table className="view-history-table">
-                <thead>
-                  <tr>
-                    <th>Academic Year</th>
-                    <th>Total Fee</th>
-                    <th>Paid Fee</th>
-                    <th>Pending Fee</th>
-                    <th>Term 1</th>
-                    <th>Term 2</th>
-                    <th>Term 3</th>
-                    <th>Amulets Fee</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentItems.map((year) => (
-                    <tr key={year.academicYear}>
-                      <td>{year.academicYear}</td>
-                      <td>₹{year.totalFee}</td>
-                      <td>₹{year.paidFee}</td>
-                      <td>₹{year.pendingFee}</td>
-                      <td>
-                        <div className="term-status">
-                          <span>₹{year.term1.amount}</span>
-                          <span
-                            className={`payment-status ${year.term1.status.toLowerCase()}`}
-                          >
-                            {getStatusIcon(year.term1.status)}{" "}
-                            {year.term1.status}
-                          </span>
-                          <span>{year.term1.date}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="term-status">
-                          <span>₹{year.term2.amount}</span>
-                          <span
-                            className={`payment-status ${year.term2.status.toLowerCase()}`}
-                          >
-                            {getStatusIcon(year.term2.status)}{" "}
-                            {year.term2.status}
-                          </span>
-                          <span>{year.term2.date}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="term-status">
-                          <span>₹{year.term3.amount}</span>
-                          <span
-                            className={`payment-status ${year.term3.status.toLowerCase()}`}
-                          >
-                            {getStatusIcon(year.term3.status)}{" "}
-                            {year.term3.status}
-                          </span>
-                          <span>{year.term3.date}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="term-status">
-                          <span>₹{year.amuletsFee.amount}</span>
-                          <span
-                            className={`payment-status ${year.amuletsFee.status.toLowerCase()}`}
-                          >
-                            {getStatusIcon(year.amuletsFee.status)}{" "}
-                            {year.amuletsFee.status}
-                          </span>
-                          <span>{year.amuletsFee.date}</span>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div className="view-history-pagination">
-            <button
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="view-history-pagination-button"
-            >
-              <FontAwesomeIcon icon={faChevronLeft} />
-            </button>
-            {Array.from({
-              length: Math.ceil(paymentHistory.length / itemsPerPage),
-            }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => paginate(index + 1)}
-                className={`view-history-pagination-button ${
-                  currentPage === index + 1 ? "active" : ""
-                }`}
-              >
-                {index + 1}
-              </button>
-            ))}
-            <button
-              onClick={() => paginate(currentPage + 1)}
-              disabled={
-                currentPage === Math.ceil(paymentHistory.length / itemsPerPage)
-              }
-              className="view-history-pagination-button"
-            >
-              <FontAwesomeIcon icon={faChevronRight} />
-            </button>
-          </div>
-        </section>
+        <TableContainer headers={columns.map((col) => col.label)} rows={rows} />
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(paymentHistory.length / itemsPerPage)}
+          onPageChange={paginate}
+        />
       </main>
     </div>
   );
