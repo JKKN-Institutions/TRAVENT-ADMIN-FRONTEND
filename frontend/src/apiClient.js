@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "https://travent-admin-server.vercel.app/api",
+  baseURL:
+    "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api",
 });
 
 // Add a request interceptor
@@ -32,7 +33,7 @@ apiClient.interceptors.response.use(
         // Refresh the access token
         const refreshToken = localStorage.getItem("refreshToken");
         const { data } = await axios.post(
-          "https://travent-admin-server.vercel.app/api/auth/refresh-token",
+          "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/refresh-token",
           { refreshToken }
         );
 

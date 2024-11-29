@@ -146,8 +146,8 @@ const AddNewStop = ({ route, onBack, institutionId, editingStop }) => {
     );
 
     const url = editingStop
-      ? "https://travent-admin-server.vercel.app/api/institutionsExtended/update-stop"
-      : "https://travent-admin-server.vercel.app/api/institutionsExtended/add-stop";
+      ? "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutionsExtended/update-stop"
+      : "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutionsExtended/add-stop";
 
     try {
       const payload = editingStop

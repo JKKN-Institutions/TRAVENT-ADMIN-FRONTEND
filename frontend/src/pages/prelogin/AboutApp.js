@@ -154,7 +154,7 @@ const AboutApp = () => {
 
       // Send the Firebase token to backend for validation
       const { data } = await axios.post(
-        "https://travent-admin-server.vercel.app/api/auth/google-sign-in",
+        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/google-sign-in",
         { tokenId: token }
       );
 
@@ -205,7 +205,7 @@ const AboutApp = () => {
 
       try {
         const { data } = await axios.post(
-          "https://travent-admin-server.vercel.app/api/auth/login",
+          "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/login",
           { email, password }
         );
 
@@ -250,7 +250,7 @@ const AboutApp = () => {
 
   //     try {
   //       const { data } = await axios.post(
-  //         "https://travent-admin-server.vercel.app/api/auth/login",
+  //         "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/login",
   //         { email, password }
   //       );
 

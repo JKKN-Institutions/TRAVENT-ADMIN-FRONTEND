@@ -143,7 +143,7 @@ const ManageInstitutions = ({ toggleSidebar }) => {
 
     try {
       const response = await fetch(
-        "https://travent-admin-server.vercel.app/api/institutions/add",
+        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutions/add",
         {
           method: "POST",
           headers: {
