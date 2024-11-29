@@ -6,6 +6,7 @@ import {
   faTrash,
   faEye,
 } from "@fortawesome/free-solid-svg-icons";
+import apiClient from "../../../../apiClient";
 import AddNewStop from "../AddNewStop/AddNewStop";
 import StoppingPassengers from "../StoppingPassengers/StoppingPassengers";
 import Button from "../../../../components/Shared/Button/Button";
@@ -20,21 +21,20 @@ import ToastNotification, {
 import "./Stoppings.css";
 
 const Stoppings = ({ route, onBack, institutionId }) => {
-  const [showAddStop, setShowAddStop] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [stops, setStops] = useState(route.stops || []); // Initialize stops from the route prop
   const [selectedStops, setSelectedStops] = useState([]);
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [showAddStop, setShowAddStop] = useState(false);
   const [editingStop, setEditingStop] = useState(null);
-  const [stops, setStops] = useState(route.stops);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showStoppingPassengers, setShowStoppingPassengers] = useState(false);
   const [selectedStopForPassengers, setSelectedStopForPassengers] =
     useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-
   const containerRef = useRef(null);
 
-  const handleViewStudents = (stop) => {
+  const handleViewPassengers = (stop) => {
     setSelectedStopForPassengers(stop);
     setShowStoppingPassengers(true);
   };
@@ -48,36 +48,6 @@ const Stoppings = ({ route, onBack, institutionId }) => {
       />
     );
   }
-
-  const handleDeleteStop = async () => {
-    try {
-      // Filter out selected stops from the current stops list
-      const updatedStops = stops.filter(
-        (stop) => !selectedStops.includes(stop.stopID)
-      );
-
-      setStops(updatedStops); // Update stops state
-
-      // Display success message
-      showToast("success", "Stops deleted successfully!");
-
-      // Clear selections and close confirmation modal
-      setSelectedStops([]);
-      setShowDeleteConfirmation(false);
-    } catch (error) {
-      showToast("error", "Failed to delete stops.");
-    }
-  };
-
-  const handleEditStop = () => {
-    if (selectedStops.length === 1) {
-      const stopToEdit = stops.find((stop) => stop.stopID === selectedStops[0]);
-      setEditingStop(stopToEdit);
-      setShowAddStop(true);
-    } else {
-      showToast("warn", "Please select a single stop to edit.");
-    }
-  };
 
   const handleAddOrEditComplete = (newOrUpdatedStop) => {
     if (newOrUpdatedStop) {
@@ -107,6 +77,58 @@ const Stoppings = ({ route, onBack, institutionId }) => {
     setSelectedStops([]);
   };
 
+  const handleDeleteStop = async () => {
+    if (selectedStops.length === 0) {
+      showToast("warn", "No stops selected to delete.");
+      return;
+    }
+
+    // Close the confirmation modal immediately
+    setShowDeleteConfirmation(false);
+
+    try {
+      // Make the API call using apiClient
+      const response = await apiClient.delete(
+        "/institutionsExtended/delete-stops",
+        {
+          data: {
+            institutionId,
+            routeNumber: route.routeNumber,
+            stopIDs: selectedStops,
+          },
+        }
+      );
+
+      console.log("hhhhhh", response.data);
+
+      if (response.data.success) {
+        // Update the stops state
+        setStops((prevStops) =>
+          prevStops.filter((stop) => !selectedStops.includes(stop.stopID))
+        );
+
+        showToast("success", "Stops deleted successfully.");
+      } else {
+        showToast("error", response.data.message);
+      }
+
+      setSelectedStops([]); // Clear selection
+    } catch (error) {
+      console.error("Error deleting stops:", error);
+      showToast("error", "Failed to delete stops.");
+    }
+  };
+
+  const handleEditStop = () => {
+    if (selectedStops.length === 1) {
+      const stopToEdit = stops.find((stop) => stop.stopID === selectedStops[0]);
+      setEditingStop(stopToEdit);
+      setShowAddStop(true);
+    } else {
+      showToast("warn", "Please select a single stop to edit.");
+    }
+  };
+
   const handleRowClick = (stopId) => {
     setSelectedStops((prevSelected) =>
       prevSelected.includes(stopId)
@@ -121,6 +143,14 @@ const Stoppings = ({ route, onBack, institutionId }) => {
     } else {
       setSelectedStops(stops.map((stop) => stop.stopID)); // Select all
     }
+  };
+
+  const formatTimeTo12Hour = (time) => {
+    if (!time) return ""; // Handle empty time
+    const [hours, minutes] = time.split(":").map(Number);
+    const period = hours >= 12 ? "PM" : "AM";
+    const formattedHours = hours % 12 || 12; // Convert 0 to 12 for midnight
+    return `${formattedHours}:${minutes.toString().padStart(2, "0")} ${period}`;
   };
 
   const isSelectAllChecked = selectedStops.length === stops.length;
@@ -183,8 +213,8 @@ const Stoppings = ({ route, onBack, institutionId }) => {
             district: stop.districtName,
             city: stop.cityName,
             state: stop.stateName,
-            boardTime: stop.boardTime,
-            dropTime: stop.dropTime,
+            boardTime: formatTimeTo12Hour(stop.boardTime), // Format boardTime
+            dropTime: formatTimeTo12Hour(stop.dropTime), // Format dropTime
             boardingCountMorning: stop.boardingCountMorning,
             boardingCountEvening: stop.boardingCountEvening,
             viewPassengers: (
@@ -192,7 +222,7 @@ const Stoppings = ({ route, onBack, institutionId }) => {
                 className="view-passengers-link"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleViewStudents(stop);
+                  handleViewPassengers(stop);
                 }}
               >
                 <FontAwesomeIcon icon={faEye} />

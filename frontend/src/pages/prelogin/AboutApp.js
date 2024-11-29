@@ -3,9 +3,23 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import "./AboutApp.css";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithCredential,
+  signInWithPopup,
+} from "firebase/auth";
+import { initializeApp } from "firebase/app";
+import { firebaseConfig } from "../../config/firebaseConfig";
 import LoginLoading from "../../components/Shared/LoginLoading/LoginLoading";
 import LoginForm from "./LoginForm/LoginForm";
+import ToastNotification, {
+  showToast,
+} from "../../components/Shared/ToastNotification/ToastNotification";
+import "./AboutApp.css";
+
+const firebaseApp = initializeApp(firebaseConfig); // Initialize Firebase
+const auth = getAuth(firebaseApp);
 
 const PAGES_DATA = [
   {
@@ -129,6 +143,61 @@ const AboutApp = () => {
     []
   );
 
+  // Google SignIn handler
+  const handleGoogleSignIn = useCallback(async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const token = await user.getIdToken();
+
+      // Send the Firebase token to backend for validation
+      const { data } = await axios.post(
+        "http://localhost:3000/api/auth/google-sign-in",
+        { tokenId: token }
+      );
+
+      // Store tokens and navigate
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      localStorage.setItem(
+        "institutionId",
+        data.institutionDetails.institutionId
+      );
+
+      const { role, uniqueRoute } = data;
+      if (role === "admin") {
+        navigate(`/admin/${uniqueRoute}`);
+      } else if (role === "appadmin") {
+        navigate("/app-admin");
+      } else {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Google Sign-In Error: ", error.message);
+
+      // Error check using `error.response`
+      if (error.response) {
+        if (error.response.status === 404) {
+          showToast(
+            "error",
+            error.response.data.message ||
+              "User not found. Please register first."
+          );
+        } else {
+          showToast(
+            "error",
+            "There was an issue during Google Sign-In. Please try again."
+          );
+        }
+      } else {
+        // Handle cases where `response` does not exist, e.g., network errors
+        showToast("error", "Network error. Please try again later.");
+      }
+    }
+  }, [navigate]);
+
   const handleLogin = useCallback(
     async (e) => {
       e.preventDefault();
@@ -136,17 +205,34 @@ const AboutApp = () => {
 
       try {
         const { data } = await axios.post(
-          "https://travent-admin-server.vercel.app/api/auth/login",
+          "http://localhost:3000/api/auth/login",
           { email, password }
         );
 
-        const { token, institutionDetails } = data;
-        const decodedToken = jwtDecode(token);
-        localStorage.setItem("authToken", token);
+        const {
+          accessToken,
+          refreshToken,
+          role,
+          uniqueRoute,
+          institutionDetails,
+        } = data;
 
-        const route = roleRoutes[decodedToken.role];
-        if (route) {
-          navigate(route, { state: { institutionDetails } });
+        // Store the access token and refresh token in local storage
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+
+        // Store institutionId only for admin role
+        if (role === "admin" && institutionDetails?.institutionId) {
+          localStorage.setItem(
+            "institutionId",
+            institutionDetails.institutionId
+          );
+        }
+
+        if (role === "admin") {
+          navigate(`/admin/${uniqueRoute}`); // Redirect to unique admin route
+        } else if (role === "appadmin") {
+          navigate("/app-admin");
         }
       } catch (error) {
         alert(error.response?.data?.message || "An error occurred");
@@ -154,8 +240,36 @@ const AboutApp = () => {
         setIsAuthenticating(false);
       }
     },
-    [email, password, navigate, roleRoutes]
+    [email, password, navigate]
   );
+
+  // const handleLogin = useCallback(
+  //   async (e) => {
+  //     e.preventDefault();
+  //     setIsAuthenticating(true);
+
+  //     try {
+  //       const { data } = await axios.post(
+  //         "http://localhost:3000/api/auth/login",
+  //         { email, password }
+  //       );
+
+  //       const { token, role, institutionDetails } = data;
+  //       const decodedToken = jwtDecode(token);
+  //       localStorage.setItem("authToken", token);
+
+  //       const route = roleRoutes[role];
+  //       if (route) {
+  //         navigate(route, { state: { institutionDetails } });
+  //       }
+  //     } catch (error) {
+  //       alert(error.response?.data?.message || "An error occurred");
+  //     } finally {
+  //       setIsAuthenticating(false);
+  //     }
+  //   },
+  //   [email, password, navigate, roleRoutes]
+  // );
 
   const nextPage = useCallback(() => {
     setCurrentPage((prev) => (prev < 3 ? prev + 1 : 4));
@@ -167,6 +281,7 @@ const AboutApp = () => {
 
   return (
     <div className="app-container">
+      <ToastNotification />
       {isAuthenticating && <LoginLoading />}
       {currentPage === 4 ? (
         <LoginForm
@@ -177,6 +292,7 @@ const AboutApp = () => {
           showPassword={showPassword}
           setShowPassword={setShowPassword}
           handleLogin={handleLogin}
+          handleGoogleSignIn={handleGoogleSignIn}
         />
       ) : (
         <PageContent currentPage={currentPage} onNextPage={nextPage} />

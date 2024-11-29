@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "./NewUserRequest.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 import ActionButton from "../../../../components/Shared/Button/Button";
 import Loading from "../../../../components/Shared/Loading/Loading";
 import TopBar from "../../../../components/Shared/TopBar/TopBar";
@@ -9,154 +10,67 @@ import ToastNotification, {
 } from "../../../../components/Shared/ToastNotification/ToastNotification";
 import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
 import Pagination from "../../../../components/Shared/Pagination/Pagination";
+import apiClient from "../../../../apiClient";
+import SpecificPassengerDetails from "../SpecificPassengerDetails/SpecificPassengerDetails";
+import "./NewUserRequest.css";
 
-const dummyData = [
-  {
-    _id: "1",
-    type: "student",
-    basicDetails: { name: "John Doe" },
-    studentDetails: {
-      regNo: "S001",
-      rollNo: "R001",
-      year: "2",
-      department: "CS",
-      section: "A",
-      instituteName: "ABC College",
-    },
-    locationDetails: { stopName: "Stop 1" },
-  },
-  {
-    _id: "2",
-    type: "student",
-    basicDetails: { name: "Jane Smith" },
-    studentDetails: {
-      regNo: "S002",
-      rollNo: "R002",
-      year: "3",
-      department: "EE",
-      section: "B",
-      instituteName: "ABC College",
-    },
-    locationDetails: { stopName: "Stop 2" },
-  },
-  {
-    _id: "3",
-    type: "student",
-    basicDetails: { name: "Alice Johnson" },
-    studentDetails: {
-      regNo: "S003",
-      rollNo: "R003",
-      year: "1",
-      department: "ME",
-      section: "C",
-      instituteName: "XYZ Institute",
-    },
-    locationDetails: { stopName: "Stop 3" },
-  },
-  {
-    _id: "4",
-    type: "student",
-    basicDetails: { name: "Bob Williams" },
-    studentDetails: {
-      regNo: "S004",
-      rollNo: "R004",
-      year: "4",
-      department: "CE",
-      section: "A",
-      instituteName: "XYZ Institute",
-    },
-    locationDetails: { stopName: "Stop 1" },
-  },
-  {
-    _id: "5",
-    type: "student",
-    basicDetails: { name: "Charlie Brown" },
-    studentDetails: {
-      regNo: "S005",
-      rollNo: "R005",
-      year: "2",
-      department: "CS",
-      section: "B",
-      instituteName: "ABC College",
-    },
-    locationDetails: { stopName: "Stop 2" },
-  },
-  {
-    _id: "6",
-    type: "staff",
-    basicDetails: { name: "David Miller" },
-    staffDetails: {
-      staffId: "ST001",
-      instituteName: "ABC College",
-      department: "CS",
-      designation: "Professor",
-    },
-    locationDetails: { stopName: "Stop 1" },
-  },
-  {
-    _id: "7",
-    type: "staff",
-    basicDetails: { name: "Eva Garcia" },
-    staffDetails: {
-      staffId: "ST002",
-      instituteName: "XYZ Institute",
-      department: "EE",
-      designation: "Assistant Professor",
-    },
-    locationDetails: { stopName: "Stop 3" },
-  },
-  {
-    _id: "8",
-    type: "staff",
-    basicDetails: { name: "Frank Wilson" },
-    staffDetails: {
-      staffId: "ST003",
-      instituteName: "ABC College",
-      department: "ME",
-      designation: "Lecturer",
-    },
-    locationDetails: { stopName: "Stop 2" },
-  },
-  {
-    _id: "9",
-    type: "staff",
-    basicDetails: { name: "Grace Lee" },
-    staffDetails: {
-      staffId: "ST004",
-      instituteName: "XYZ Institute",
-      department: "CE",
-      designation: "Professor",
-    },
-    locationDetails: { stopName: "Stop 1" },
-  },
-  {
-    _id: "10",
-    type: "staff",
-    basicDetails: { name: "Henry Taylor" },
-    staffDetails: {
-      staffId: "ST005",
-      instituteName: "ABC College",
-      department: "CS",
-      designation: "Assistant Professor",
-    },
-    locationDetails: { stopName: "Stop 3" },
-  },
-];
+// Decline Modal
+const DeclineOverlay = ({ onClose, onSubmit }) => {
+  const [declineReason, setDeclineReason] = useState("");
+
+  const handleSubmit = () => {
+    console.log("Decline Reason:", declineReason); // Add this log to check the reason
+    if (declineReason.trim()) {
+      onSubmit(declineReason);
+    } else {
+      showToast("warn", "Please provide a reason for declining.");
+    }
+  };
+
+  return (
+    <div className="new-user-decline-overlay">
+      <div className="new-user-decline-overlay-content">
+        <h3>Decline Reason</h3>
+        <textarea
+          value={declineReason}
+          onChange={(e) => setDeclineReason(e.target.value)}
+          placeholder="Provide a reason for declining"
+        />
+        <div className="new-user-decline-overlay-buttons">
+          <button onClick={handleSubmit}>Submit</button>
+          <button onClick={onClose}>Cancel</button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 function NewUserRequest({ onBack }) {
   const [pendingUsers, setPendingUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [viewingUser, setViewingUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPageStudent, setCurrentPageStudent] = useState(1);
   const [currentPageStaff, setCurrentPageStaff] = useState(1);
+  const [declineOverlayVisible, setDeclineOverlayVisible] = useState(false);
+  const [declineReason, setDeclineReason] = useState("");
   const itemsPerPage = 5;
 
   useEffect(() => {
-    setTimeout(() => {
-      setPendingUsers(dummyData);
-      setIsLoading(false);
-    }, 1500);
+    const fetchPendingUsers = async () => {
+      try {
+        const response = await apiClient.get("/passengers/pending-passengers");
+        setPendingUsers(response.data);
+      } catch (error) {
+        console.error("Error fetching pending users:", error);
+        showToast("error", "Failed to fetch pending users.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPendingUsers();
   }, []);
 
   const handleRowClick = (userId) => {
@@ -165,6 +79,10 @@ function NewUserRequest({ onBack }) {
         ? prev.filter((id) => id !== userId)
         : [...prev, userId]
     );
+  };
+
+  const handleViewUser = (user) => {
+    setViewingUser(user); // Set the user being viewed
   };
 
   const handleSelectAll = (type) => {
@@ -181,16 +99,27 @@ function NewUserRequest({ onBack }) {
     );
   };
 
+  // Handle the approve or decline action
   const handleAction = async (action) => {
     if (!selectedUsers.length)
       return showToast("warn", "Please select at least one user.");
+
+    // Ensure that the reason is provided before proceeding with decline
+    if (action === "decline" && !declineReason.trim()) {
+      showToast("warn", "Please provide a reason for declining.");
+      return;
+    }
+
     const loadingToastId = showToast(
       "loading",
-      `${action}ing selected users...`
+      `${action.charAt(0).toUpperCase() + action.slice(1)}ing selected users...`
     );
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await apiClient.post(
+        `/passengers/${action}-passengers`,
+        { selectedUsers, reason: declineReason }
+      );
       setPendingUsers((users) =>
         users.map((user) =>
           selectedUsers.includes(user._id)
@@ -209,8 +138,18 @@ function NewUserRequest({ onBack }) {
         } user(s).`,
         loadingToastId
       );
-    } catch {
+
+      if (action === "decline") {
+        // Send email notifications for declined users
+        selectedUsers.forEach((userId) => {
+          const user = pendingUsers.find((user) => user._id === userId);
+        });
+      }
+    } catch (error) {
+      console.error("Error response:", error.response); // Log the error details
       showToast("error", `Failed to ${action} users.`, loadingToastId);
+    } finally {
+      setDeclineOverlayVisible(false);
     }
   };
 
@@ -218,9 +157,10 @@ function NewUserRequest({ onBack }) {
     <label className="custom-checkbox">
       <input
         type="checkbox"
-        checked={pendingUsers
-          .filter((user) => user.type === type)
-          .every((user) => selectedUsers.includes(user._id))}
+        checked={
+          pendingUsers.filter((user) => user.type === type).length > 0 &&
+          pendingUsers.every((user) => selectedUsers.includes(user._id))
+        }
         onChange={() => handleSelectAll(type)}
       />
       <span className="checkbox-checkmark"></span>
@@ -236,6 +176,7 @@ function NewUserRequest({ onBack }) {
           "Section",
           "Institute Name",
           "Stop Name",
+          "View Details",
           "Status",
         ]
       : [
@@ -245,71 +186,109 @@ function NewUserRequest({ onBack }) {
           "Department",
           "Designation",
           "Stop Name",
+          "View Details",
           "Status",
         ]),
   ];
 
-  const createRowData = (user, index) => ({
-    id: user._id,
-    data: {
-      select: (
-        <label className="custom-checkbox">
-          <input
-            type="checkbox"
-            checked={selectedUsers.includes(user._id)}
-            onChange={() => handleRowClick(user._id)}
-          />
-          <span className="checkbox-checkmark"></span>
-        </label>
-      ),
-      sNo: index + 1,
-      name: user.basicDetails.name,
-      regNo: user.studentDetails?.regNo || "N/A",
-      rollNo: user.studentDetails?.rollNo || "N/A",
-      year: user.studentDetails?.year || "N/A",
-      department: user.studentDetails?.department || "N/A",
-      section: user.studentDetails?.section || "N/A",
-      institute: user.studentDetails?.instituteName || "N/A",
-      stopName: user.locationDetails?.stopName || "N/A",
-      status: (
-        <span
-          className={`status-badge ${
-            user.status ? user.status.toLowerCase() : "pending"
-          }`}
-        >
-          {user.status || "Not Approved"}
-        </span>
-      ),
-    },
-    onClick: () => handleRowClick(user._id),
-  });
+  const createRowData = (user, index) => {
+    const isStudent = user.type === "student";
 
-  const paginatedData = (type, currentPage) =>
-    pendingUsers
+    // Conditionally render data based on user type
+    return {
+      id: user._id,
+      data: {
+        select: (
+          <label className="custom-checkbox">
+            <input
+              type="checkbox"
+              checked={selectedUsers.includes(user._id)}
+              onChange={() => handleRowClick(user._id)}
+            />
+            <span className="checkbox-checkmark"></span>
+          </label>
+        ),
+        sNo: index + 1,
+        ...(isStudent
+          ? {
+              name: user.basicDetails.name || "N/A",
+              regNo: user.studentDetails?.regNo || "N/A",
+              rollNo: user.studentDetails?.rollNo || "N/A",
+              year: user.studentDetails?.year || "N/A",
+              department: user.studentDetails?.department || "N/A",
+              section: user.studentDetails?.section || "N/A",
+              institute: user.studentDetails?.instituteName || "N/A",
+              stopName: user.locationDetails?.stopName || "N/A",
+            }
+          : {
+              name: user.basicDetails.name || "N/A",
+              staffId: user.staffDetails?.staffId || "N/A",
+              institute: user.staffDetails?.instituteName || "N/A",
+              department: user.staffDetails?.department || "N/A",
+              designation: user.staffDetails?.designation || "N/A",
+              stopName: user.locationDetails?.stopName || "N/A",
+            }),
+        viewDetails: (
+          <FontAwesomeIcon
+            icon={faEye}
+            className="view-icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleViewUser(user); // Show user details on click
+            }}
+          />
+        ),
+        status: (
+          <span
+            className={`status-badge ${
+              user.status ? user.status.toLowerCase() : "pending"
+            }`}
+          >
+            {user.status || "Pending"}
+          </span>
+        ),
+      },
+      onClick: () => handleRowClick(user._id),
+    };
+  };
+
+  const paginatedData = (type, currentPage) => {
+    return pendingUsers
       .filter((user) => user.type === type)
       .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  };
 
-  const renderTable = (type, headers, currentPage, setCurrentPage) => (
-    <>
-      <h3>{type === "student" ? "Student Table" : "Staff Table"}</h3>
-      <TableContainer
-        headers={headers}
-        rows={paginatedData(type, currentPage).map((user, index) =>
-          createRowData(user, index)
-        )}
-        onRowClick={(row) => handleRowClick(row.id)}
-        selectedRowId={selectedUsers}
-      />
-      <Pagination
-        currentPage={currentPage}
-        totalPages={Math.ceil(
-          pendingUsers.filter((user) => user.type === type).length /
-            itemsPerPage
-        )}
-        onPageChange={setCurrentPage}
-      />
-    </>
-  );
+  const renderTable = (type, currentPage, setCurrentPage) => {
+    const rows = paginatedData(type, currentPage).map((user, index) =>
+      createRowData(user, index)
+    );
+
+    return (
+      <div className="user-table-container">
+        <div className="new-user-table-header">
+          <h3>{type === "student" ? "Student Table" : "Staff Table"}</h3>
+          <p className="new-user-total-count">
+            Total {type === "student" ? "Students" : "Staff"}:{" "}
+            {pendingUsers.filter((user) => user.type === type).length}
+          </p>
+        </div>
+        <TableContainer
+          headers={headers(type)}
+          rows={rows}
+          onRowClick={(row) => handleRowClick(row.id)}
+          selectedRowId={selectedUsers}
+        />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(
+            pendingUsers.filter((user) => user.type === type).length /
+              itemsPerPage
+          )}
+          onPageChange={setCurrentPage}
+        />
+      </div>
+    );
+  };
 
   return isLoading ? (
     <Loading message="Loading New User Requests..." />
@@ -330,26 +309,39 @@ function NewUserRequest({ onBack }) {
             />
             <ActionButton
               label="Decline"
-              onClick={() => handleAction("decline")}
+              onClick={() => setDeclineOverlayVisible(true)}
             />
           </div>
         </div>
         <div className="new-user-requests-table-container">
           {renderTable(
             "student",
-            headers("student"),
+
             currentPageStudent,
             setCurrentPageStudent
           )}
-        </div>
-        <div className="new-user-requests-table-container">
           {renderTable(
             "staff",
-            headers("staff"),
+
             currentPageStaff,
             setCurrentPageStaff
           )}
         </div>
+        {viewingUser && (
+          <SpecificPassengerDetails
+            user={viewingUser}
+            onClose={() => setViewingUser(null)} // Close user details view
+          />
+        )}
+        {declineOverlayVisible && (
+          <DeclineOverlay
+            onClose={() => setDeclineOverlayVisible(false)}
+            onSubmit={(reason) => {
+              setDeclineReason(reason);
+              handleAction("decline");
+            }}
+          />
+        )}
       </main>
     </div>
   );

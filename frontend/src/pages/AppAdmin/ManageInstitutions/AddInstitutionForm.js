@@ -21,18 +21,8 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (!initialData) {
-      setInstitutionData({
-        institutionName: "",
-        state: "",
-        founderName: "",
-        founderEmail: "",
-        founderContactNumber: "",
-        address: "",
-        contact1: "",
-        contact2: "",
-        emailDomain: "",
-      });
+    if (initialData) {
+      setInstitutionData(initialData);
     }
   }, [initialData]);
 
@@ -101,7 +91,7 @@ const AddInstitutionForm = ({ onSave, onBack, initialData }) => {
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
     } else {
-      console.log("Institution data to save:", institutionData);
+      console.log("Institution Data:", institutionData);
       onSave(institutionData); // Pass form data back to parent
     }
   };

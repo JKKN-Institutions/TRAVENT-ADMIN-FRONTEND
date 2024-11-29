@@ -1,3 +1,4 @@
+/* Main Container for the New User Requests */
 .new-user-requests {
   background-color: #1e1e1e;
   color: #ffffff;
@@ -7,6 +8,7 @@
   overflow: hidden;
 }
 
+/* Main Content Area */
 .new-user-requests-main-content {
   flex: 1;
   overflow-y: auto;
@@ -17,6 +19,7 @@
   scrollbar-color: #4a4a4a #2c2c2c;
 }
 
+/* Controls Section - Search Bar, Action Buttons */
 .new-user-requests-controls {
   display: flex;
   justify-content: space-between;
@@ -25,24 +28,39 @@
   gap: 0.5rem;
 }
 
+/* Table Header Section */
+.new-user-table-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.new-user-total-count {
+  font-size: 14px;
+  font-weight: bold;
+  color: #eee;
+}
+
+/* Action Buttons (Approve/Decline) */
 .new-user-action-buttons-container {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
 
+/* Table Container */
 .new-user-requests-table-container {
   overflow: hidden;
-
   margin-bottom: 1rem;
 }
 
+/* Header for Each Table */
 .new-user-requests-table-container h3 {
   margin-bottom: 10px;
   font-size: 1.1rem;
   color: #fff;
 }
 
+/* Custom Checkbox for Selection */
 .custom-checkbox {
   display: block;
   position: relative;
@@ -99,6 +117,7 @@
   display: block;
 }
 
+/* Status Badge for User Status */
 .status-badge {
   padding: 4px 8px;
   border-radius: 12px;
@@ -122,10 +141,82 @@
   color: white;
 }
 
+/* Overlay for Decline Modal */
+.new-user-decline-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.new-user-decline-overlay-content {
+  background: #2c2c2c;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+
+.new-user-decline-overlay h3 {
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.new-user-decline-overlay textarea {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #444;
+  color: #fff;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.new-user-decline-overlay-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.new-user-decline-overlay-buttons button {
+  padding: 10px 15px;
+  background-color: #11a8fd;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.new-user-decline-overlay-buttons button:hover {
+  background-color: #0997c9;
+}
+
+.new-user-decline-overlay-buttons button:nth-child(2) {
+  background-color: #f44336;
+}
+
+.new-user-decline-overlay-buttons button:nth-child(2):hover {
+  background-color: #d32f2f;
+}
+
+/* Mobile Adjustments */
 @media (max-width: 480px) {
   .new-user-requests-controls {
     flex-direction: column;
     align-items: stretch;
     gap: 0.7rem;
+  }
+
+  .new-user-decline-overlay-content {
+    padding: 1rem;
   }
 }

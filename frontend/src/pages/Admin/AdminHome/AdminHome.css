@@ -15,6 +15,32 @@
   scrollbar-color: #4a4a4a #2c2c2c;
 }
 
+.admin-welcome-section {
+  padding: 20px;
+  text-align: center;
+  background-color: #292929;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-welcome-section h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.admin-welcome-section span {
+  color: #ffa726;
+}
+
+.admin-welcome-section p {
+  margin: 5px 0 0;
+  font-size: 1.2rem;
+  color: #cccccc;
+}
+
 .admin-sub-content-wrapper {
   display: flex;
   flex-direction: row;

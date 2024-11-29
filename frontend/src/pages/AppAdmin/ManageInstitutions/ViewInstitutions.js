@@ -2,18 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./ViewInstitutions.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faBars,
+  faEye,
   faPlus,
   faEdit,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import AddInstitutionForm from "./AddInstitutionForm";
-import AddInstituteForm from "./AddInstituteForm";
-import AddDepartmentForm from "./AddDepartmentForm";
-import AddYearForm from "./AddYearForm";
-import AddSectionForm from "./AddSectionForm";
-import AddAdminForm from "./AddAdminForm";
-import ReviewForm from "./ReviewForm";
 import Button from "../../../components/Shared/Button/Button";
 import SearchBar from "../../../components/Shared/SearchBar/SearchBar";
 import Loading from "../../../components/Shared/Loading/Loading";
@@ -24,6 +17,15 @@ import ConfirmationModal from "../../../components/Shared/ConfirmationModal/Conf
 import ToastNotification, {
   showToast,
 } from "../../../components/Shared/ToastNotification/ToastNotification";
+
+import AddInstitutionForm from "./AddInstitutionForm";
+import AddInstituteForm from "./AddInstituteForm";
+import AddDepartmentForm from "./AddDepartmentForm";
+import AddYearForm from "./AddYearForm";
+import AddSectionForm from "./AddSectionForm";
+import AddAdminForm from "./AddAdminForm";
+import ReviewForm from "./ReviewForm";
+import SpecificInstitutionDetails from "./SpecificInstitutionDetails";
 
 const ViewInstitutions = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -178,22 +180,69 @@ const ViewInstitutions = ({ toggleSidebar }) => {
   const [sectionData, setSectionData] = useState([]);
   // const [savedSections, setSavedSections] = useState([]);
   const [adminData, setAdminData] = useState(null); // Store admin details
+  const [viewingInstitution, setViewingInstitution] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+
+  // Fetch institutions data
+  useEffect(() => {
+    const fetchInstitutions = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/institutions/list"
+        );
+        if (response.ok) {
+          const data = await response.json();
+          console.log("jjjj", data);
+          setInstitutions(data);
+        } else {
+          showToast("error", "Failed to fetch institutions.");
+        }
+      } catch (error) {
+        showToast("error", "An error occurred.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchInstitutions();
+  }, []);
+
+  const handleViewInstitution = async (institutionId) => {
+    try {
+      console.log("Fetching details for institution ID:", institutionId);
+      const response = await fetch(
+        `http://localhost:3000/api/institutions/${institutionId}`
+      );
+      if (response.ok) {
+        const institutionDetails = await response.json();
+        console.log("Institution Details:", institutionDetails);
+        setViewingInstitution(institutionDetails);
+      } else {
+        showToast("error", "Failed to fetch institution details.");
+      }
+    } catch (error) {
+      console.error("Error fetching institution details:", error);
+      showToast("error", "An error occurred.");
+    }
+  };
 
   const handleAddClick = () => {
     setIsEditing(false);
     setCurrentStep("institution");
   };
 
-  const handleEditClick = () => {
+  // Edit Institution
+  const handleEditClick = async () => {
     if (selectedInstitutions.length === 1) {
-      setIsEditing(true);
-      setInstitutionData(selectedInstitutions[0]);
+      const institutionId = selectedInstitutions[0];
+      const institutionToEdit = institutions.find(
+        (inst) => inst._id === institutionId
+      );
+      setInstitutionData(institutionToEdit);
       setCurrentStep("institution");
     } else {
-      showToast("warn", "Please select a single institution to edit.");
+      alert("Please select one institution to edit.");
     }
   };
 
@@ -205,13 +254,42 @@ const ViewInstitutions = ({ toggleSidebar }) => {
     }
   };
 
-  const handleConfirmDelete = () => {
-    setInstitutions((prev) =>
-      prev.filter((inst) => !selectedInstitutions.includes(inst.id))
-    );
-    setSelectedInstitutions([]);
-    setShowDeleteConfirmation(false);
-    showToast("success", "Institution(s) deleted successfully!");
+  const handleConfirmDelete = async () => {
+    if (selectedInstitutions.length > 0) {
+      try {
+        for (const institutionId of selectedInstitutions) {
+          const response = await fetch(
+            `http://localhost:3000/api/institutions/delete/${institutionId}`,
+            {
+              method: "DELETE",
+            }
+          );
+          if (!response.ok) {
+            console.error(
+              `Failed to delete institution with ID: ${institutionId}`
+            );
+            showToast(
+              "error",
+              `Failed to delete institution with ID: ${institutionId}`
+            );
+          }
+        }
+
+        // Update the institutions list after deletion
+        setInstitutions((prev) =>
+          prev.filter((inst) => !selectedInstitutions.includes(inst._id))
+        );
+
+        setSelectedInstitutions([]);
+        setShowDeleteConfirmation(false);
+        showToast("success", "Institution(s) deleted successfully!");
+      } catch (error) {
+        console.error("An error occurred while deleting institutions:", error);
+        showToast("error", "An error occurred while deleting institutions.");
+      }
+    } else {
+      alert("Please select at least one institution to delete.");
+    }
   };
 
   const handleCancelDelete = () => setShowDeleteConfirmation(false);
@@ -245,8 +323,18 @@ const ViewInstitutions = ({ toggleSidebar }) => {
 
   // Save institute data, reset form, and move to department step
   const handleInstituteSave = (data) => {
+    // Avoid duplicate entries in institutes array
+    const isDuplicate = institutes.some(
+      (institute) => institute.instituteCode === data.instituteCode
+    );
+
+    if (isDuplicate) {
+      showToast("warn", "This institute is already added.");
+      return;
+    }
+
     setCurrentInstitute(data);
-    setInstitutes([...institutes, { ...data, departments: [] }]); // Add institute to list
+    setInstitutes([...institutes, { ...data, departments: [] }]); // Add new institute
     setCurrentStep("department");
   };
 
@@ -336,34 +424,38 @@ const ViewInstitutions = ({ toggleSidebar }) => {
 
   const handleReviewSubmit = async () => {
     const finalData = {
-      institutionData,
+      ...institutionData,
       institutes,
-      adminDetails: adminData,
+      adminDetails: { ...adminData },
     };
+
+    console.log("Data sent to backend:", JSON.stringify(finalData, null, 2));
 
     try {
       const response = await fetch(
-        "https://travent-admin-server.vercel.app/api/institutions/add",
+        "http://localhost:3000/api/institutions/add",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(finalData),
         }
       );
 
+      console.log("Response Status:", response.status);
+      console.log("Response OK:", response.ok);
+
       if (response.ok) {
-        showToast("success", "Institution data saved successfully!");
-        resetForNewInstitute();
-        setCurrentStep("list");
+        showToast("success", "Institution added successfully!");
+        setTimeout(() => {
+          resetForNewInstitute();
+        }, 3000);
       } else {
-        const result = await response.json();
-        showToast("error", `Error: ${result.error}`);
+        const { error } = await response.json();
+        showToast("error", `Error: ${error}`);
       }
     } catch (error) {
-      showToast("error", "An error occurred while saving the data.");
-      console.error(error);
+      console.error("Error submitting data:", error);
+      showToast("error", "An error occurred.");
     }
   };
 
@@ -600,41 +692,51 @@ const ViewInstitutions = ({ toggleSidebar }) => {
                       <span className="new-user-requests-checkmark"></span>
                     </label>,
                     "S.No",
-                    "Institution Code",
+                    "Travent Id",
                     "Institute Name",
                     "Institute State",
                     "Departments Count",
-                    "Total Routes",
-                    "Total Buses",
                     "Admin Name",
                     "Admin Contact",
                     "Created at",
+                    "View",
                   ]}
                   rows={currentInstitutions.map((institution, index) => ({
-                    id: institution.id,
+                    id: institution._id,
                     data: {
                       select: (
                         <label className="new-user-requests-custom-checkbox">
                           <input
                             type="checkbox"
                             checked={selectedInstitutions.includes(
-                              institution.id
+                              institution._id
                             )}
-                            onChange={() => handleRowSelect(institution.id)}
+                            onChange={() => handleRowSelect(institution._id)}
                           />
                           <span className="new-user-requests-checkmark"></span>
                         </label>
                       ),
                       sNo: indexOfFirstItem + index + 1,
-                      code: institution.code,
-                      name: institution.name,
-                      state: institution.state,
-                      departments: institution.departments,
-                      routes: institution.routes,
-                      buses: institution.buses,
-                      adminName: institution.adminName,
-                      adminContact: institution.adminContact,
-                      createdAt: institution.createdAt,
+                      code: institution.institutionId || "N/A",
+                      name: institution.institutionName || "N/A",
+                      state: institution.state || "N/A",
+                      departments: institution.institutes?.length || 0,
+                      adminName: institution.adminDetails?.adminName || "N/A", // Safe access
+                      adminContact:
+                        institution.adminDetails?.contactNumber || "N/A", // Safe access
+                      createdAt: institution.createdAt
+                        ? new Date(institution.createdAt).toLocaleString()
+                        : "N/A",
+                      View: (
+                        <FontAwesomeIcon
+                          icon={faEye}
+                          className="view-icon"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent row selection if needed
+                            handleViewInstitution(institution._id); // Pass the current institution
+                          }}
+                        />
+                      ),
                     },
                   }))}
                   onRowClick={(institution) => handleRowSelect(institution.id)}
@@ -658,6 +760,13 @@ const ViewInstitutions = ({ toggleSidebar }) => {
               message="Are you sure you want to delete this institution?"
               onConfirm={handleConfirmDelete}
               onCancel={handleCancelDelete}
+            />
+          )}
+
+          {viewingInstitution && (
+            <SpecificInstitutionDetails
+              institution={viewingInstitution}
+              onClose={() => setViewingInstitution(null)} // Close modal
             />
           )}
         </div>

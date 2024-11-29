@@ -7,6 +7,7 @@ import AdminDashboard from "./pages/Admin/AdminDashboard/AdminDashboard";
 import AddNewRoute from "./pages/Admin/BusesModule/AddNewRoute/AddNewRoute"; // Import AddNewRoute
 import AllRoutesLiveTracking from "./pages/Admin/LiveTrackingModule/AllRoutesLiveTracking/AllRoutesLiveTracking";
 import ToastNotification from "./components/Shared/ToastNotification/ToastNotification";
+import PrivateRoute from "./PrivateRoute";
 
 function App() {
   return (
@@ -17,7 +18,14 @@ function App() {
         <Route path="/app-admin" element={<AppAdminDashboard />} />
 
         {/* Wrap admin-related routes within the Layout */}
-        <Route path="/admin" element={<AdminDashboard />}></Route>
+        <Route
+          path="/admin/:uniqueRoute"
+          element={
+            <PrivateRoute>
+              <AdminDashboard />
+            </PrivateRoute>
+          }
+        />
 
         {/* Independent route for ViewRoutes */}
         {/* <Route path="/view-routes" element={<ViewRoutes />} /> */}

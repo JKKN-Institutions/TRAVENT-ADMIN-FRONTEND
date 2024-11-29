@@ -1,0 +1,185 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.modal-container {
+  background: #1a1a1a;
+  width: 95%;
+  max-width: 1200px;
+  max-height: 90vh;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+  animation: slideIn 0.3s ease-out;
+}
+
+.modal-header {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(to right, #1a1a1a, #242424);
+  padding: 1.5rem;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+
+.modal-header h2 {
+  color: #fff;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.close-button {
+  color: #999;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-button:hover {
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.modal-content {
+  padding: 1.5rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #333;
+}
+
+.section-title {
+  color: #fff;
+  font-size: 1.25rem;
+  margin: 0;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.detail-item {
+  background: #242424;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+  transition: background-color 0.2s;
+}
+
+.detail-item:hover {
+  background: #2a2a2a;
+}
+
+.detail-label {
+  display: block;
+  color: #999;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.detail-value {
+  color: #fff;
+  font-size: 1rem;
+  word-break: break-word;
+}
+
+.institute-section {
+  background: rgba(255, 255, 255, 0.03);
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid #333;
+}
+
+.departments-container {
+  margin-top: 1rem;
+}
+
+.department-section {
+  background: rgba(255, 255, 255, 0.02);
+  margin: 1rem 0;
+  padding: 1.25rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+}
+
+.years-container {
+  margin-top: 1rem;
+}
+
+.year-section {
+  background: rgba(255, 255, 255, 0.01);
+  margin: 0.75rem 0;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #555;
+}
+
+.sections-list {
+  background: #2a2a2a;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-top: 0.75rem;
+}
+
+.sections-label {
+  color: #999;
+  margin-right: 0.5rem;
+}
+
+.sections-value {
+  color: #fff;
+}
+
+.admin-section {
+  margin-top: 2rem;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.closing {
+  animation: slideOut 0.3s ease-out forwards;
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}

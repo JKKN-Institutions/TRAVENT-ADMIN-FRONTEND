@@ -1,4 +1,3 @@
-// FormInput.js
 import React from "react";
 import "./FormInput.css";
 
@@ -12,6 +11,7 @@ const FormInput = ({
   onChange,
   options = [],
   rows = 3,
+  disabled = false, // Add the disabled prop
 }) => {
   return (
     <div className="form-group">
@@ -22,6 +22,7 @@ const FormInput = ({
           value={value}
           onChange={onChange}
           className={error ? "input-error" : ""}
+          disabled={disabled} // Add disabled here
         >
           {/* Add a disabled placeholder option */}
           <option value="">{placeholder}</option>
@@ -40,6 +41,7 @@ const FormInput = ({
           placeholder={placeholder}
           className={error ? "input-error" : ""}
           rows={rows}
+          disabled={disabled} // Add disabled here
         />
       ) : (
         <input
@@ -50,6 +52,7 @@ const FormInput = ({
           onChange={onChange}
           placeholder={placeholder}
           className={error ? "input-error" : ""}
+          disabled={disabled} // Add disabled here
         />
       )}
       {error && <p className="error">{error}</p>}

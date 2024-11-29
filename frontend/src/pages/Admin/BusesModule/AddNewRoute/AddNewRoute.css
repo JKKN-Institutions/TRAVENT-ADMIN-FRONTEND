@@ -7,6 +7,25 @@
   overflow: hidden;
 }
 
+input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0; /* Hides the native icon but keeps functionality */
+}
+
+input[type="time"] {
+  position: relative;
+}
+
+input[type="time"]::after {
+  content: "\f017"; /* Example: FontAwesome clock icon */
+  font-family: "Font Awesome 5 Free";
+  color: #666; /* Custom color */
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
 .add-new-route-main-content {
   /* flex: 1; */
   overflow-y: auto;

@@ -14,7 +14,16 @@ import Button from "../../../../components/Shared/Button/Button";
 import TopBar from "../../../../components/Shared/TopBar/TopBar";
 import "./RouteDetails.css";
 
-const RouteDetails = ({ route, onBack, institutionId, onRouteUpdate }) => {
+// Helper function to format time
+const formatTime = (time) => {
+  if (!time) return "N/A";
+  const [hours, minutes] = time.split(":").map(Number);
+  const ampm = hours >= 12 ? "PM" : "AM";
+  const formattedHours = hours % 12 || 12; // Convert 0 to 12 for 12-hour format
+  return `${formattedHours}:${minutes.toString().padStart(2, "0")} ${ampm}`;
+};
+
+const RouteDetails = ({ route, onBack, institutionId }) => {
   const [activeView, setActiveView] = useState(null); // To control which component to display
 
   // Handle changing active view
@@ -27,11 +36,6 @@ const RouteDetails = ({ route, onBack, institutionId, onRouteUpdate }) => {
     } else {
       onBack(); // If we're already on RouteDetails, call onBack function to navigate back
     }
-  };
-
-  const handleRouteUpdate = (updatedRoute) => {
-    onRouteUpdate(updatedRoute);
-    setActiveView(null); // Reset view after updating route
   };
 
   // Render different views based on activeView state
@@ -58,7 +62,6 @@ const RouteDetails = ({ route, onBack, institutionId, onRouteUpdate }) => {
           <AddNewRoute
             route={route}
             onBack={handleBackClick}
-            onSave={handleRouteUpdate}
             institutionId={institutionId}
           />
         );
@@ -118,14 +121,27 @@ const RouteDetails = ({ route, onBack, institutionId, onRouteUpdate }) => {
               </div>
               <div className="route-details-info">
                 {[
+                  ["Route Number", route.routeNumber],
                   ["Route Name", route.routeName],
-                  ["Main Driver", route.mainDriver],
-                  ["Departure Time", route.departureFromHalt],
-                  ["ETA", route.eta],
-                  ["Seat Capacity", route.sittingCapacity],
+                  ["ETA", formatTime(route.eta)],
+                  ["Sitting Capacity", route.sittingCapacity],
                   ["Standing Capacity", route.standingCapacity],
                   ["Vehicle Registration No", route.vehicleRegistrationNumber],
-                  ["Fuel", "60 / 80 litres"],
+                  ["Main Driver", route.mainDriver],
+                  ["Departure From Halt", formatTime(route.departureFromHalt)],
+                  [
+                    "College Arrival Time",
+                    formatTime(route.collegeArrivalTime),
+                  ],
+                  [
+                    "Departure From College",
+                    formatTime(route.departureFromCollege),
+                  ],
+                  [
+                    "Drop Time From College",
+                    formatTime(route.dropTimeFromCollege),
+                  ],
+                  ["Fuel", "60 / 80 litres"], // Placeholder value
                 ].map(([label, value], index) => (
                   <div key={index} className="route-details-info-item">
                     <span className="route-details-info-label">{label}:</span>

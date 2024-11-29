@@ -84,6 +84,7 @@ const AddDepartmentForm = ({ onBack, onSave, initialData, instituteData }) => {
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
     } else {
+      console.log("Department Data Submitted:", departmentData);
       onSave(departmentData); // Pass form data back to parent
     }
   };

@@ -27,12 +27,18 @@ const ReviewForm = ({
     }
   };
 
-  const handleFinalSubmit = () => {
+  const handleFinalSubmit = async () => {
     try {
-      onSubmit();
-      showToast("success", "Data submitted successfully!");
-      goToViewInstitutions();
+      console.log("Final Data to Submit:", data);
+
+      // Await the onSubmit function to ensure toast is shown at the correct time
+      await onSubmit();
+      setTimeout(() => {
+        console.log("Navigating to View Institutions...");
+        goToViewInstitutions(); // Or any other logic you want to execute after the delay
+      }, 3000);
     } catch (error) {
+      console.error("Submission error:", error);
       showToast("error", "Submission failed. Please try again.");
     }
   };

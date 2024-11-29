@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
 import { Doughnut } from "react-chartjs-2";
 import {
   faBell,
@@ -11,12 +12,35 @@ import NewUserRequest from "../AdminDashboard/NewUserRequest/NewUserRequest";
 import AdminNotifications from "../AdminNotifications/AdminNotifications";
 import Loading from "../../../components/Shared/Loading/Loading";
 import "./AdminHome.css";
+import apiClient from "../../../apiClient";
 
 const AdminHome = ({ toggleSidebar, resetState }) => {
   const [showNewUserRequests, setShowNewUserRequests] = useState(false);
   const [showAdminNotifications, setShowAdminNotifications] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [adminDetails, setAdminDetails] = useState(null);
   const envelopeRef = useRef(null);
+
+  useEffect(() => {
+    const institutionId = localStorage.getItem("institutionId");
+    console.log("Retrieved Institution ID:", institutionId); // Display in console
+
+    const fetchDetails = async () => {
+      try {
+        const uniqueRoute = window.location.pathname.split("/").pop(); // Extract uniqueRoute from URL
+        const response = await apiClient.get(
+          `/institutions/admin-details/${uniqueRoute}`
+        );
+        setAdminDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching admin details:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDetails();
+  }, []);
 
   const handleEnvelopeClick = (event) => {
     event.preventDefault();
@@ -130,6 +154,17 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
           />
 
           <main className="admin-main-content">
+            <div className="admin-welcome-section">
+              <h1>
+                Welcome, <span>{adminDetails?.adminName || "Admin"}</span>!
+              </h1>
+              <p>
+                <strong>
+                  {adminDetails?.institutionName || "Institution"}
+                </strong>
+              </p>
+            </div>
+
             <div className="admin-content-wrapper">
               <h2>Real Time Data</h2>
               <div className="admin-sub-content-wrapper">
@@ -189,7 +224,7 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
               {warnings.map((warning, index) => (
                 <div key={index} className="admin-warning-item">
                   <img
-                    src="./uploads/splash-image.png"
+                    src="../uploads/splash-image.png"
                     alt={warning.name}
                     className="admin-avatar"
                   />

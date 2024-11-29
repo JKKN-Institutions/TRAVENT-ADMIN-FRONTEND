@@ -44,6 +44,7 @@ const AddYearForm = ({ onBack, onSave, initialData, departmentData }) => {
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
     } else {
+      console.log("Year Data Submitted:", yearData);
       onSave(yearData);
     }
   };

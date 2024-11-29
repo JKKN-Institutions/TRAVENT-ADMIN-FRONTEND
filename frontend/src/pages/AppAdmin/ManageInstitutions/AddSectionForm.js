@@ -47,6 +47,7 @@ const AddSectionForm = ({ year, onSave, onBack, initialData, yearData }) => {
         0,
         sectionOptions.indexOf(selectedSection) + 1
       );
+      console.log(`Section Data for Year ${year} Submitted:`, selectedSections);
       onSave(selectedSections);
     }
   };

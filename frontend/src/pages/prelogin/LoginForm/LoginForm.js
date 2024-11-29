@@ -11,6 +11,7 @@ const LoginForm = ({
   showPassword,
   setShowPassword,
   handleLogin,
+  handleGoogleSignIn,
 }) => {
   // Memoize the password toggle to prevent unnecessary re-renders
   const togglePasswordVisibility = useCallback(() => {
@@ -70,7 +71,7 @@ const LoginForm = ({
           <span className="or-sign-in">Or sign in with</span>
           <span className="line"></span>
         </div>
-        <button className="google-sign-in-button">
+        <button className="google-sign-in-button" onClick={handleGoogleSignIn}>
           <img
             src="./uploads/google-icon.png"
             alt="Google Icon"

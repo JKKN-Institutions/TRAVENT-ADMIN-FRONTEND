@@ -1,114 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faEye } from "@fortawesome/free-solid-svg-icons";
 import "./ViewStaffs.css";
 import Button from "../../../../components/Shared/Button/Button";
 import TopBar from "../../../../components/Shared/TopBar/TopBar"; // Import TopBar
 import SearchBar from "../../../../components/Shared/SearchBar/SearchBar"; // Import SearchBar
 import TableContainer from "../../../../components/Shared/TableContainer/TableContainer"; // Import TableContainer
 import Pagination from "../../../../components/Shared/Pagination/Pagination"; // Import Pagination
-
-const staffsData = [
-  {
-    sNo: 1,
-    staffName: "John Doe",
-    empId: "EMP001",
-    department: "Computer Science",
-    designation: "Professor",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "15",
-    stopName: "Seelanayakkampatti Bypass",
-    pendingFee: 0,
-    remainingAmulets: 100,
-    refilledAmulets: 0,
-    status: "Active",
-  },
-  {
-    sNo: 2,
-    staffName: "Jane Smith",
-    empId: "EMP002",
-    department: "Pharmacy",
-    designation: "Associate Professor",
-    instituteName: "JKKN College of Pharmacy",
-    routeNo: "7",
-    stopName: "Kakapalayam",
-    pendingFee: 1500,
-    remainingAmulets: 80,
-    refilledAmulets: 50,
-    status: "Active",
-  },
-  {
-    sNo: 3,
-    staffName: "Robert Johnson",
-    empId: "EMP003",
-    department: "Allied Health Sciences",
-    designation: "Assistant Professor",
-    instituteName: "JKKN College of Allied Health Sciences",
-    routeNo: "9",
-    stopName: "Thiruvagowndanoor Bypass",
-    pendingFee: 0,
-    remainingAmulets: 60,
-    refilledAmulets: 100,
-    status: "Active",
-  },
-  {
-    sNo: 4,
-    staffName: "Emily Brown",
-    empId: "EMP004",
-    department: "Engineering",
-    designation: "Lab Assistant",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "12",
-    stopName: "Ariyanoor",
-    pendingFee: 3000,
-    remainingAmulets: 40,
-    refilledAmulets: 0,
-    status: "Active",
-  },
-  {
-    sNo: 5,
-    staffName: "Michael Wilson",
-    empId: "EMP005",
-    department: "Arts & Science",
-    designation: "Lecturer",
-    instituteName: "JKKN College of Arts & Science",
-    routeNo: "5",
-    stopName: "Kanthampatti Bypass",
-    pendingFee: 1500,
-    remainingAmulets: 70,
-    refilledAmulets: 50,
-    status: "Active",
-  },
-  {
-    sNo: 6,
-    staffName: "Sarah Davis",
-    empId: "EMP006",
-    department: "Dental",
-    designation: "Senior Lecturer",
-    instituteName: "JKKN Dental College & Hospital",
-    routeNo: "3",
-    stopName: "Kondalampatty Bypass",
-    pendingFee: 0,
-    remainingAmulets: 90,
-    refilledAmulets: 0,
-    status: "Active",
-  },
-  {
-    sNo: 7,
-    staffName: "David Miller",
-    empId: "EMP007",
-    department: "Education",
-    designation: "Professor",
-    instituteName: "JKKN College of Education",
-    routeNo: "8",
-    stopName: "Gowndanoor",
-    pendingFee: 4500,
-    remainingAmulets: 20,
-    refilledAmulets: 0,
-    status: "Inactive",
-  },
-  // ... Add more staff data here
-];
+import Loading from "../../../../components/Shared/Loading/Loading";
+import apiClient from "../../../../apiClient";
+import SpecificStudentDetails from "../SpecificStudentDetails/SpecificStudentDetails";
 
 const ViewStaffs = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -121,32 +22,49 @@ const ViewStaffs = ({ onBack }) => {
     instituteName: "",
     status: "",
   });
+  const [staffsData, setStaffsData] = useState([]); // Store staff data from the backend
+  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [selectedRowId, setSelectedRowId] = useState(null);
+  const [viewStaffDetails, setViewStaffDetails] = useState(null);
 
-  // Optimized filtering logic
-  const filterData = (data, term, filters) => {
-    return data
-      .filter((staff) =>
-        Object.values(staff).some(
-          (value) =>
-            typeof value === "string" &&
-            value.toLowerCase().includes(term.toLowerCase())
-        )
-      )
-      .filter((staff) =>
-        Object.entries(filters).every(([key, value]) =>
-          value
-            ? staff[key].toString().toLowerCase().includes(value.toLowerCase())
-            : true
-        )
-      );
+  // Fetch the approved staffs when the component mounts
+  useEffect(() => {
+    const fetchApprovedStaffs = async () => {
+      try {
+        const response = await apiClient.get("/passengers/approved-staffs");
+        setStaffsData(response.data);
+      } catch (error) {
+        console.error("Error fetching approved staffs:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchApprovedStaffs();
+  }, []);
+
+  // Helper function to get unique filter values
+  const getUniqueValues = (key) => {
+    return [...new Set(staffsData.map((staff) => staff[key]))];
   };
 
-  const [filteredStaffs, setFilteredStaffs] = useState(staffsData);
+  // Filter staff based on search term
+  const filteredBySearchTerm = staffsData.filter((staff) =>
+    Object.values(staff.basicDetails).some(
+      (value) =>
+        typeof value === "string" &&
+        value.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
 
-  useEffect(() => {
-    setFilteredStaffs(filterData(staffsData, searchTerm, filters));
-    setCurrentPage(1);
-  }, [searchTerm, filters]);
+  // Filter staff based on selected filters
+  const filteredStaffs = filteredBySearchTerm.filter((staff) =>
+    Object.entries(filters).every(([key, value]) =>
+      value
+        ? staff[key].toString().toLowerCase().includes(value.toLowerCase())
+        : true
+    )
+  );
 
   const handleSearchChange = (term) => setSearchTerm(term);
 
@@ -154,10 +72,6 @@ const ViewStaffs = ({ onBack }) => {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
   };
-
-  const getUniqueValues = (key) => [
-    ...new Set(staffsData.map((staff) => staff[key])),
-  ];
 
   const staffColumns = [
     { key: "sNo", label: "S.No" },
@@ -172,12 +86,21 @@ const ViewStaffs = ({ onBack }) => {
     { key: "remainingAmulets", label: "Remaining Amulets" },
     { key: "refilledAmulets", label: "Refilled Amulets" },
     { key: "status", label: "Status" },
+    { key: "viewDetails", label: "View Details" },
   ];
 
   const currentItems = filteredStaffs.slice(
     (currentPage - 1) * 10,
     currentPage * 10
   );
+
+  const handleViewDetails = (staff) => {
+    setViewStaffDetails(staff); // Set selected student details to view
+  };
+
+  const handleNoData = (value) => {
+    return value === null || value === undefined ? "No data" : value;
+  };
 
   return (
     <div className="view-staffs-container">
@@ -228,20 +151,70 @@ const ViewStaffs = ({ onBack }) => {
           </div>
         )}
 
-        <TableContainer
-          headers={staffColumns.map((col) => col.label)}
-          rows={
-            currentItems.length > 0
-              ? currentItems.map((staff) => ({ id: staff.empId, data: staff }))
-              : [
-                  {
-                    id: "no-data",
-                    data: { message: "No data available" },
-                    colSpan: staffColumns.length,
-                  },
-                ]
-          }
-        />
+        {isLoading ? (
+          <Loading message="Loading Staffs" />
+        ) : (
+          <TableContainer
+            headers={staffColumns.map((col) => col.label)}
+            rows={
+              currentItems.length > 0
+                ? currentItems.map((staff, index) => ({
+                    id: staff.empId, // Use unique identifier for the row
+                    data: staffColumns.map((col) => {
+                      if (col.key === "sNo") {
+                        return index + 1; // This is the S.No, based on row index
+                      }
+                      if (col.key === "staffName") {
+                        return staff.basicDetails.name || "No data";
+                      }
+                      if (col.key === "empId") {
+                        return staff.staffDetails.staffId || "No data";
+                      }
+                      if (col.key === "department") {
+                        return staff.staffDetails.department || "No data";
+                      }
+                      if (col.key === "designation") {
+                        return staff.staffDetails.designation || "No data";
+                      }
+                      if (col.key === "instituteName") {
+                        return staff.staffDetails.instituteName || "No data";
+                      }
+                      if (col.key === "routeNo") {
+                        return staff.locationDetails.routeNo || "No data";
+                      }
+                      if (col.key === "stopName") {
+                        return staff.locationDetails.stopName || "No data";
+                      }
+                      if (col.key === "pendingFee") {
+                        return handleNoData(staff.pendingFee);
+                      }
+                      if (col.key === "remainingAmulets") {
+                        return handleNoData(staff.remainingAmulets);
+                      }
+                      if (col.key === "refilledAmulets") {
+                        return handleNoData(staff.refilledAmulets);
+                      }
+                      if (col.key === "status") {
+                        return staff.accountStatus || "No data";
+                      }
+                      if (col.key === "viewDetails") {
+                        return (
+                          <FontAwesomeIcon
+                            icon={faEye}
+                            className="view-icon"
+                            onClick={() => handleViewDetails(staff)}
+                          />
+                        );
+                      }
+                      return staff[col.key] || "No data";
+                    }),
+                  }))
+                : [{ id: "no-data", data: ["No data available"] }] // Display message when no data
+            }
+            selectedRowId={selectedRowId} // Pass the selectedRowId to TableContainer
+            setSelectedRowId={setSelectedRowId} // Pass the setSelectedRowId function
+          />
+        )}
 
         <Pagination
           currentPage={currentPage}
@@ -249,6 +222,12 @@ const ViewStaffs = ({ onBack }) => {
           onPageChange={setCurrentPage}
         />
       </main>
+      {viewStaffDetails && (
+        <SpecificStudentDetails
+          user={viewStaffDetails} // Pass the selected student details
+          onClose={() => setViewStaffDetails(null)} // Close the modal or component
+        />
+      )}
     </div>
   );
 };

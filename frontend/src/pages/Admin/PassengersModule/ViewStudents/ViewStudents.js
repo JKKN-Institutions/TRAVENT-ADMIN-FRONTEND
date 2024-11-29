@@ -1,239 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faEye } from "@fortawesome/free-solid-svg-icons";
 import "./ViewStudents.css";
 import Button from "../../../../components/Shared/Button/Button";
 import TopBar from "../../../../components/Shared/TopBar/TopBar"; // Import TopBar
 import SearchBar from "../../../../components/Shared/SearchBar/SearchBar"; // Import SearchBar
 import TableContainer from "../../../../components/Shared/TableContainer/TableContainer"; // Import TableContainer
 import Pagination from "../../../../components/Shared/Pagination/Pagination"; // Import Pagination
-
-const studentsData = [
-  {
-    sNo: 1,
-    studentName: "Aishu J",
-    regNo: "611220104123",
-    rollNo: "2k24AHS157",
-    year: "I",
-    department: "AHS",
-    section: "A",
-    instituteName: "JKKN College of Allied Health Sciences",
-    routeNo: "15",
-    stopName: "Seelanayakkampatti Bypass",
-    pendingFee: 4500,
-    remainingAmulets: 40,
-    refilledAmulets: 0,
-    status: "Active",
-  },
-  {
-    sNo: 2,
-    studentName: "Arun S",
-    regNo: "611220104145",
-    rollNo: "2k22BP135",
-    year: "III",
-    department: "B.PHARM",
-    section: "A",
-    instituteName: "JKKN College of Pharmacy",
-    routeNo: "15",
-    stopName: "Kakapalayam",
-    pendingFee: 4500,
-    remainingAmulets: 50,
-    refilledAmulets: 0,
-    status: "Active",
-  },
-  {
-    sNo: 3,
-    studentName: "Balagi G",
-    regNo: "611220104134",
-    rollNo: "2k20PD159",
-    year: "V",
-    department: "PHARM D",
-    section: "B",
-    instituteName: "JKKN College of Pharmacy",
-    routeNo: "1",
-    stopName: "Thiruvagowndanoor Bypass",
-    pendingFee: 4500,
-    remainingAmulets: 50,
-    refilledAmulets: 0,
-    status: "Active",
-  },
-  {
-    sNo: 4,
-    studentName: "Gobi U",
-    regNo: "611220104185",
-    rollNo: "2k21CSE152",
-    year: "IV",
-    department: "CSE",
-    section: "B",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "5",
-    stopName: "Kakapalayam",
-    pendingFee: 4500,
-    remainingAmulets: 60,
-    refilledAmulets: 100,
-    status: "Active",
-  },
-  {
-    sNo: 5,
-    studentName: "Gopal O",
-    regNo: "611220104198",
-    rollNo: "2k24EEE165",
-    year: "I",
-    department: "EEE",
-    section: "C",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "7",
-    stopName: "Seelanayakkampatti Bypass",
-    pendingFee: 3000,
-    remainingAmulets: 60,
-    refilledAmulets: 0,
-    status: "Active",
-  },
-  {
-    sNo: 6,
-    studentName: "Gowtham R",
-    regNo: "611220104165",
-    rollNo: "2k24AHS155",
-    year: "I",
-    department: "AHS",
-    section: "A",
-    instituteName: "JKKN College of Allied Health Sciences",
-    routeNo: "15",
-    stopName: "Kanthampatti Bypass",
-    pendingFee: 1500,
-    remainingAmulets: 100,
-    refilledAmulets: 100,
-    status: "Active",
-  },
-  {
-    sNo: 7,
-    studentName: "Jaya V",
-    regNo: "611220104176",
-    rollNo: "2k24ECE163",
-    year: "I",
-    department: "ECE",
-    section: "B",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "15",
-    stopName: "Ariyanoor",
-    pendingFee: 1500,
-    remainingAmulets: 80,
-    refilledAmulets: 0,
-    status: "Active",
-  },
-  {
-    sNo: 8,
-    studentName: "Karthik L",
-    regNo: "611220104187",
-    rollNo: "2k23IT151",
-    year: "II",
-    department: "IT",
-    section: "B",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "9",
-    stopName: "Kanthampatti Bypass",
-    pendingFee: 1500,
-    remainingAmulets: 30,
-    refilledAmulets: 0,
-    status: "Active",
-  },
-  {
-    sNo: 9,
-    studentName: "Keerthi S",
-    regNo: "611220104182",
-    rollNo: "2k21IT111",
-    year: "IV",
-    department: "IT",
-    section: "A",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "8",
-    stopName: "Kondalampatty Bypass",
-    pendingFee: 4500,
-    remainingAmulets: 100,
-    refilledAmulets: 0,
-    status: "Active",
-  },
-  {
-    sNo: 10,
-    studentName: "Kumar S",
-    regNo: "611220104194",
-    rollNo: "2k23CSE134",
-    year: "II",
-    department: "CSE",
-    section: "A",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "17",
-    stopName: "Gowndanoor",
-    pendingFee: 3000,
-    remainingAmulets: 0,
-    refilledAmulets: 0,
-    status: "Inactive",
-  },
-  {
-    sNo: 11,
-    studentName: "Prem K",
-    regNo: "611220104113",
-    rollNo: "2k22BP132",
-    year: "III",
-    department: "B.PHARM",
-    section: "A",
-    instituteName: "JKKN College of Pharmacy",
-    routeNo: "24",
-    stopName: "Magundanjavadi",
-    pendingFee: 3000,
-    remainingAmulets: 50,
-    refilledAmulets: 100,
-    status: "Active",
-  },
-  {
-    sNo: 12,
-    studentName: "Sanjay J",
-    regNo: "611220104157",
-    rollNo: "2k23EEE162",
-    year: "II",
-    department: "EEE",
-    section: "C",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "17",
-    stopName: "Kakapalayam",
-    pendingFee: 3000,
-    remainingAmulets: 20,
-    refilledAmulets: 0,
-    status: "Active",
-  },
-  {
-    sNo: 13,
-    studentName: "Senthil S",
-    regNo: "611220104119",
-    rollNo: "2k24AHS124",
-    year: "I",
-    department: "AHS",
-    section: "A",
-    instituteName: "JKKN College of Allied Health Sciences",
-    routeNo: "8",
-    stopName: "Thiruvagowndanoor Bypass",
-    pendingFee: 4500,
-    remainingAmulets: 60,
-    refilledAmulets: 100,
-    status: "Active",
-  },
-  {
-    sNo: 14,
-    studentName: "Snekha H",
-    regNo: "611220104196",
-    rollNo: "2k20PD155",
-    year: "V",
-    department: "PHARM D",
-    section: "B",
-    instituteName: "JKKN College of Pharmacy",
-    routeNo: "15",
-    stopName: "Seelanayakkampatti Bypass",
-    pendingFee: 3000,
-    remainingAmulets: 20,
-    refilledAmulets: 0,
-    status: "Active",
-  },
-];
+import Loading from "../../../../components/Shared/Loading/Loading";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
+import apiClient from "../../../../apiClient";
+import SpecificStudentDetails from "../SpecificStudentDetails/SpecificStudentDetails";
 
 const ViewStudents = ({ onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -245,17 +24,42 @@ const ViewStudents = ({ onBack }) => {
     department: "",
     section: "",
     instituteName: "",
-    status: "",
+    accountStatus: "",
   });
+  const [pendingUsers, setPendingUsers] = useState([]); // State for storing pending users
+  const [isLoading, setIsLoading] = useState(true); // State for loading indicator
+  const [selectedRowId, setSelectedRowId] = useState(null);
+  const [viewStudentDetails, setViewStudentDetails] = useState(null);
+
+  // Fetch the pending users when the component mounts
+  useEffect(() => {
+    const fetchPendingUsers = async () => {
+      try {
+        const response = await apiClient.get("/passengers/approved-students");
+        // Filter out users with status "approved"
+        const approvedUsers = response.data.filter(
+          (user) => user.status === "approved" && user.type === "student"
+        );
+        setPendingUsers(approvedUsers);
+      } catch (error) {
+        console.error("Error fetching pending users:", error);
+        showToast("error", "Failed to fetch pending users.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPendingUsers();
+  }, []);
 
   // Helper function to get unique filter values
   const getUniqueValues = (key) => {
-    return [...new Set(studentsData.map((student) => student[key]))];
+    return [...new Set(pendingUsers.map((student) => student[key]))];
   };
 
   // Filter students based on search term
-  const filteredBySearchTerm = studentsData.filter((student) =>
-    Object.values(student).some(
+  const filteredBySearchTerm = pendingUsers.filter((student) =>
+    Object.values(student.basicDetails).some(
       (value) =>
         typeof value === "string" &&
         value.toLowerCase().includes(searchTerm.toLowerCase())
@@ -296,12 +100,21 @@ const ViewStudents = ({ onBack }) => {
     { key: "remainingAmulets", label: "Remaining Amulets" },
     { key: "refilledAmulets", label: "Refilled Amulets" },
     { key: "status", label: "Status" },
+    { key: "viewDetails", label: "View Details" },
   ];
 
   const currentItems = filteredStudents.slice(
     (currentPage - 1) * 10,
     currentPage * 10
   );
+
+  const handleNoData = (value) => {
+    return value === null || value === undefined ? "No data" : value;
+  };
+
+  const handleViewDetails = (student) => {
+    setViewStudentDetails(student); // Set selected student details to view
+  };
 
   return (
     <div className="view-students-container">
@@ -353,24 +166,85 @@ const ViewStudents = ({ onBack }) => {
             ))}
           </div>
         )}
-
-        <TableContainer
-          headers={studentColumns.map((col) => col.label)}
-          rows={
-            currentItems.length > 0
-              ? currentItems.map((student) => ({
-                  id: student.regNo,
-                  data: student,
-                }))
-              : [
-                  {
-                    id: "no-data",
-                    data: { message: "No data available" },
-                    colSpan: studentColumns.length,
-                  },
-                ]
-          }
-        />
+        {isLoading ? (
+          <Loading message="Loading Students" />
+        ) : (
+          <TableContainer
+            headers={studentColumns.map((col) => col.label)}
+            rows={
+              currentItems.length > 0
+                ? currentItems.map((student, index) => ({
+                    id: student.regNo, // Use unique identifier for the row
+                    data: studentColumns.map((col) => {
+                      // Display S.No based on the index + 1
+                      if (col.key === "sNo") {
+                        return index + 1; // This is the S.No, based on row index
+                      }
+                      if (col.key === "studentName") {
+                        return student.basicDetails.name || "No data";
+                      }
+                      if (col.key === "regNo") {
+                        return student.studentDetails.regNo || "No data";
+                      }
+                      if (col.key === "rollNo") {
+                        return student.studentDetails.rollNo || "No data";
+                      }
+                      if (col.key === "year") {
+                        return student.studentDetails.year || "No data";
+                      }
+                      if (col.key === "department") {
+                        return student.studentDetails.department || "No data";
+                      }
+                      if (col.key === "section") {
+                        return student.studentDetails.section || "No data";
+                      }
+                      if (col.key === "instituteName") {
+                        return (
+                          student.studentDetails.instituteName || "No data"
+                        );
+                      }
+                      if (col.key === "routeNo") {
+                        return student.locationDetails.routeNo || "No data";
+                      }
+                      if (col.key === "stopName") {
+                        return student.locationDetails.stopName || "No data";
+                      }
+                      if (col.key === "pendingFee") {
+                        return handleNoData(student.pendingFee); // Handle Pending Fee
+                      }
+                      if (col.key === "remainingAmulets") {
+                        return handleNoData(student.remainingAmulets); // Handle Remaining Amulets
+                      }
+                      if (col.key === "refilledAmulets") {
+                        return handleNoData(student.refilledAmulets); // Handle Refilled Amulets
+                      }
+                      if (col.key === "status") {
+                        return student.accountStatus || "No data";
+                      }
+                      if (col.key === "viewDetails") {
+                        return (
+                          <FontAwesomeIcon
+                            icon={faEye}
+                            className="view-icon"
+                            onClick={() => handleViewDetails(student)}
+                          />
+                        );
+                      }
+                      return student[col.key] || "No data";
+                    }),
+                  }))
+                : [
+                    {
+                      id: "no-data",
+                      data: { message: "No data available" },
+                      colSpan: studentColumns.length,
+                    },
+                  ]
+            }
+            selectedRowId={selectedRowId} // Pass the selectedRowId to TableContainer
+            setSelectedRowId={setSelectedRowId} // Pass the setSelectedRowId function
+          />
+        )}
 
         <Pagination
           currentPage={currentPage}
@@ -378,6 +252,12 @@ const ViewStudents = ({ onBack }) => {
           onPageChange={setCurrentPage}
         />
       </main>
+      {viewStudentDetails && (
+        <SpecificStudentDetails
+          user={viewStudentDetails} // Pass the selected student details
+          onClose={() => setViewStudentDetails(null)} // Close the modal or component
+        />
+      )}
     </div>
   );
 };

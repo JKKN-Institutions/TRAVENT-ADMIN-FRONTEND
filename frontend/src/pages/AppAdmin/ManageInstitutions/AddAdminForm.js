@@ -57,6 +57,7 @@ const AddAdminForm = ({ onSave, onBack }) => {
       setErrors(formErrors);
     } else {
       const { confirmPassword, ...adminDetails } = adminData;
+      console.log("Admin Data Submitted:", adminDetails);
       onSave(adminDetails);
     }
   };
