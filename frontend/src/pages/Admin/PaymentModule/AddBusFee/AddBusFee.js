@@ -3,15 +3,15 @@ import { showToast } from "../../../../components/Shared/ToastNotification/Toast
 import TopBar from "../../../../components/Shared/TopBar/TopBar";
 import ActionButtons from "../../../../components/Shared/ActionButtons/ActionButtons";
 import ToastNotification from "../../../../components/Shared/ToastNotification/ToastNotification";
+import apiClient from "../../../../apiClient";
 import "./AddBusFee.css";
 
-const AddBusFee = ({ busFeeData, onBack, onSave }) => {
+const AddBusFee = ({ busFeeData, onBack }) => {
   const initialFormState = {
     academicYearStart: new Date().getFullYear(),
     academicYearEnd: new Date().getFullYear() + 1,
     institute: "",
     totalBusFee: "",
-    termSelection: { term1: false, term2: false, term3: false },
     duration: {
       term1: { start: "", end: "" },
       term2: { start: "", end: "" },
@@ -25,15 +25,59 @@ const AddBusFee = ({ busFeeData, onBack, onSave }) => {
   };
 
   const [formData, setFormData] = useState(initialFormState);
+  const [institutes, setInstitutes] = useState([]);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (busFeeData) setFormData(busFeeData);
+    // Fetch institution ID from localStorage
+    const institutionId = localStorage.getItem("institutionId");
+
+    if (institutionId) {
+      // Fetch institutes for this institutionId using apiClient
+      apiClient
+        .get(`/institutions/institutes/${institutionId}`)
+        .then((response) => {
+          const data = response.data; // Parse response JSON directly
+          console.log(data);
+
+          if (data.institutes) {
+            setInstitutes(data.institutes);
+          } else {
+            setErrors("No institutes found for this institution");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching institutes:", error);
+          setErrors(`Failed to fetch institutes: ${error.message}`);
+        });
+    } else {
+      setErrors("Institution ID not found in localStorage");
+    }
+
+    if (busFeeData) {
+      setFormData(busFeeData);
+    }
   }, [busFeeData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+    if (name === "academicYearStart") {
+      const newStartYear = Number(value); // Ensure it's a number
+      setFormData({
+        ...formData,
+        academicYearStart: newStartYear,
+        academicYearEnd: newStartYear + 1, // Ensure the end year is always 1 year after start
+      });
+    } else if (name === "academicYearEnd") {
+      setFormData({
+        ...formData,
+        academicYearEnd: Number(value), // Ensure it's a number
+      });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+
     if (errors[name]) setErrors({ ...errors, [name]: null });
   };
 
@@ -53,13 +97,8 @@ const AddBusFee = ({ busFeeData, onBack, onSave }) => {
     if (!formData.totalBusFee)
       formErrors.totalBusFee = "Total bus fee is required";
 
-    const selectedTerms = Object.entries(formData.termSelection)
-      .filter(([_, isSelected]) => isSelected)
-      .map(([term]) => term);
-    if (selectedTerms.length === 0)
-      formErrors.termSelection = "At least one term must be selected";
-
-    selectedTerms.forEach((term) => {
+    // Validate each term (Term 1, Term 2, and Term 3)
+    ["term1", "term2", "term3"].forEach((term) => {
       const { start, end } = formData.duration[term];
       const { amount, dueDate } = formData.termWisePayment[term];
       if (!start)
@@ -74,30 +113,55 @@ const AddBusFee = ({ busFeeData, onBack, onSave }) => {
     return formErrors;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
       showToast("error", "Please fill in all required fields");
     } else {
-      const loadingToastId = showToast(
-        "loading",
-        busFeeData ? "Updating bus fee..." : "Adding new bus fee..."
-      );
       try {
-        await onSave(formData);
-        showToast(
-          "success",
-          `Successfully ${busFeeData ? "updated" : "added"} bus fee`,
-          loadingToastId
+        const institutionId = localStorage.getItem("institutionId");
+
+        const requestData = {
+          institutionId,
+          instituteCode: formData.institute,
+          busFeeData: {
+            academicYearStart: formData.academicYearStart,
+            academicYearEnd: formData.academicYearEnd,
+            totalBusFee: formData.totalBusFee,
+            duration: formData.duration,
+            termWisePayment: formData.termWisePayment,
+          },
+        };
+
+        const response = await apiClient.post(
+          "/institutions/add-bus-fee",
+          requestData
         );
-        onBack();
+
+        if (response.status === 201) {
+          showToast(
+            "success",
+            `Successfully ${busFeeData ? "updated" : "added"} bus fee`
+          );
+          setTimeout(() => {
+            onBack();
+          }, 3000);
+        }
       } catch (error) {
-        showToast(
-          "error",
-          `Failed to ${busFeeData ? "update" : "add"} bus fee`
-        );
-        console.error("Error saving bus fee:", error);
+        // Handle different error cases based on status codes
+        if (error.response && error.response.status === 400) {
+          showToast("error", error.response.data.message);
+        } else {
+          console.error("Error saving bus fee:", error);
+          showToast(
+            "error",
+            `Failed to ${
+              busFeeData ? "update" : "add"
+            } bus fee. Please try again.`
+          );
+        }
       }
     }
   };
@@ -219,9 +283,14 @@ const AddBusFee = ({ busFeeData, onBack, onSave }) => {
                   className={errors.institute ? "input-error" : ""}
                 >
                   <option value="">Select Institute</option>
-                  <option value="JKKN Arts and Science">
-                    JKKN Arts and Science
-                  </option>
+                  {institutes.map((institute) => (
+                    <option
+                      key={institute.instituteCode}
+                      value={institute.instituteCode}
+                    >
+                      {institute.instituteName}
+                    </option>
+                  ))}
                 </select>
                 {errors.institute && (
                   <p className="error">{errors.institute}</p>
@@ -239,33 +308,6 @@ const AddBusFee = ({ busFeeData, onBack, onSave }) => {
                 />
                 {errors.totalBusFee && (
                   <p className="error">{errors.totalBusFee}</p>
-                )}
-              </div>
-              <div className="add-bus-fee-form-group">
-                <label>Term Selection</label>
-                <div className="term-selection-buttons">
-                  {["term1", "term2", "term3"].map((term) => (
-                    <button
-                      key={term}
-                      type="button"
-                      className={`${
-                        formData.termSelection[term] ? "active" : ""
-                      } ${errors.termSelection ? "input-error" : ""}`}
-                      onClick={() =>
-                        handleNestedChange(
-                          "termSelection",
-                          term,
-                          term,
-                          !formData.termSelection[term]
-                        )
-                      }
-                    >
-                      {term.charAt(0).toUpperCase() + term.slice(1)}
-                    </button>
-                  ))}
-                </div>
-                {errors.termSelection && (
-                  <p className="error">{errors.termSelection}</p>
                 )}
               </div>
             </div>

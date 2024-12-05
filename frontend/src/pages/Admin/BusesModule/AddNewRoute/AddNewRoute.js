@@ -12,15 +12,13 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
   const [routeData, setRouteData] = useState({
     routeNumber: "",
     routeName: "",
-    eta: "",
+
     sittingCapacity: "",
     standingCapacity: "",
     vehicleRegistrationNumber: "",
     mainDriver: "",
-    departureFromHalt: "",
     collegeArrivalTime: "",
     departureFromCollege: "",
-    dropTimeFromCollege: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -35,15 +33,14 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
       setRouteData({
         routeNumber: "",
         routeName: "",
-        eta: "",
+
         sittingCapacity: "",
         standingCapacity: "",
         vehicleRegistrationNumber: "",
         mainDriver: "",
-        departureFromHalt: "",
+
         collegeArrivalTime: "",
         departureFromCollege: "",
-        dropTimeFromCollege: "",
       });
     }
   }, [route]);
@@ -63,8 +60,6 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
     if (!routeData.routeName || routeData.routeName.length < 3)
       formErrors.routeName =
         "Route Name is required and should be at least 3 characters";
-
-    if (!routeData.eta) formErrors.eta = "ETA is required";
 
     if (
       routeData.sittingCapacity &&
@@ -89,12 +84,7 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
       formErrors.mainDriver =
         "Main Driver is required and should only contain letters";
 
-    const timeFields = [
-      "departureFromHalt",
-      "collegeArrivalTime",
-      "departureFromCollege",
-      "dropTimeFromCollege",
-    ];
+    const timeFields = ["collegeArrivalTime", "departureFromCollege"];
 
     timeFields.forEach((field) => {
       if (!routeData[field]) {
@@ -181,13 +171,7 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
                   id={key}
                   name={key}
                   type={
-                    [
-                      "eta",
-                      "departureFromHalt",
-                      "departureFromCollege",
-                      "collegeArrivalTime",
-                      "dropTimeFromCollege",
-                    ].includes(key)
+                    ["departureFromCollege", "collegeArrivalTime"].includes(key)
                       ? "time"
                       : key.includes("Capacity")
                       ? "number"

@@ -5,14 +5,25 @@ import ActionButtons from "../../../components/Shared/ActionButtons/ActionButton
 import ToastNotification, {
   showToast,
 } from "../../../components/Shared/ToastNotification/ToastNotification";
+import apiClient from "../../../apiClient"; // Import the apiClient
 import "./NewSubscriptionPlanForm.css";
 
-const NewSubscriptionPlanForm = ({ onSave, onBack, editingPlan }) => {
+const NewSubscriptionPlanForm = ({
+  onBack,
+  editingPlan,
+  setShowNewPlanForm,
+  setEditingPlan,
+  setSelectedPlans,
+  setPlans, // Pass the setPlans function to update plans
+  setGroupedPlans, // Pass the setGroupedPlans function to update grouped plans
+  fetchPlans,
+}) => {
   const [planData, setPlanData] = useState({
     name: "",
     validity: "",
     userRange: "",
     price: "",
+    category: "Short-term", // Default category
   });
 
   const [errors, setErrors] = useState({});
@@ -20,86 +31,144 @@ const NewSubscriptionPlanForm = ({ onSave, onBack, editingPlan }) => {
   useEffect(() => {
     if (editingPlan) {
       setPlanData({
-        name: editingPlan.name,
-        validity: editingPlan.validity,
-        userRange: editingPlan.userRange,
-        price: editingPlan.price,
+        name: editingPlan.plan_name || "",
+        validity: editingPlan.validity || "",
+        userRange: editingPlan.user_range || "",
+        price: editingPlan.price || "",
+        category: editingPlan.category || "Short-term", // Default to "Short-term"
       });
     }
   }, [editingPlan]);
 
+  // Category to validity mapping
+  const categoryToValidityMap = {
+    "Short-term": ["1 Month", "3 Months"],
+    "Medium-term": ["6 Months"],
+    "Long-term": ["12 Months", "24 Months", "36 Months"],
+  };
+
+  const validitiesForCategory = categoryToValidityMap[planData.category] || [];
+
+  // Validation function for form fields
   const validateForm = () => {
     const formErrors = {};
 
-    // Check if the subscription name is filled
     if (!planData.name) formErrors.name = "Subscription Name is required";
-
-    // Check if validity is selected
     if (!planData.validity) formErrors.validity = "Validity is required";
-
-    // Validate User Range format as "min-max" (e.g., "5000-10000")
     if (!/^\d{1,6}-\d{1,6}$/.test(planData.userRange)) {
       formErrors.userRange = "User Range should be in format '5000-10000'";
     } else {
       const [min, max] = planData.userRange.split("-").map(Number);
-      if (min >= max) {
+      if (min >= max)
         formErrors.userRange = "User Range minimum should be less than maximum";
-      }
     }
-
-    // Validate Amount to accept comma-separated numbers (e.g., "5,00,000")
     if (!/^\d{1,3}(,\d{2,3})*(\.\d{0,2})?$/.test(planData.price)) {
       formErrors.price = "Amount should be in format '5,00,000' or numeric";
     }
-
     return formErrors;
   };
 
+  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPlanData({ ...planData, [name]: value });
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: null });
-    }
+    if (errors[name]) setErrors({ ...errors, [name]: null });
   };
 
+  // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
       showToast("error", "Please fill in all required fields correctly");
     } else {
       try {
-        const loadingToastId = showToast(
-          "loading",
-          editingPlan
-            ? "Updating subscription plan..."
-            : "Adding new subscription plan..."
-        );
+        console.log("Category before submitting:", planData.category);
 
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        if (!planData.category) {
+          showToast("error", "Please select a valid plan category.");
+          return;
+        }
 
-        onSave(planData);
+        let response;
 
-        // Dismiss loading toast and show success message
-        showToast(
-          "success",
-          `Successfully ${
-            editingPlan ? "updated" : "added"
-          } subscription plan.`,
-          loadingToastId
-        );
+        if (editingPlan) {
+          response = await apiClient.put(
+            `/appAdmin/subscription-plans/${editingPlan.plan_id}`,
+            {
+              plan_name: planData.name,
+              validity: planData.validity,
+              category: planData.category,
+              user_range: planData.userRange,
+              price: planData.price.replace(/,/g, ""),
+            }
+          );
+        } else {
+          response = await apiClient.post("/appAdmin/subscription-plans", {
+            plan_name: planData.name,
+            validity: planData.validity,
+            category: planData.category,
+            user_range: planData.userRange,
+            price: planData.price.replace(/,/g, ""),
+          });
+        }
 
-        // Delay going back to allow the user to see the success toast
-        setTimeout(() => onBack(), 3100);
+        // Log the API response to confirm the plan details
+        console.log("API Response:", response.data);
+
+        const newPlan = response.data.newPlan || response.data.updatedPlan; // Handle both scenarios
+
+        if (newPlan && newPlan.category) {
+          // Update plans state
+          if (editingPlan) {
+            setPlans((prevPlans) =>
+              prevPlans.map((plan) =>
+                plan.plan_id === editingPlan.plan_id
+                  ? { ...newPlan, plan_id: plan.plan_id }
+                  : plan
+              )
+            );
+          } else {
+            setPlans((prevPlans) => [newPlan, ...prevPlans]);
+          }
+
+          // Group plans by category
+          const grouped = {
+            "Short-term": [],
+            "Medium-term": [],
+            "Long-term": [],
+          };
+
+          grouped[newPlan.category].push(newPlan);
+          setGroupedPlans(grouped);
+
+          // Show success toast
+          showToast(
+            "success",
+            `Successfully ${
+              editingPlan ? "updated" : "added"
+            } subscription plan.`
+          );
+
+          fetchPlans();
+
+          // Reset the form and close it after a delay
+          setTimeout(() => {
+            setShowNewPlanForm(false);
+            setEditingPlan(null);
+            setSelectedPlans([]);
+          }, 3100);
+        } else {
+          throw new Error("Invalid plan category.");
+        }
       } catch (error) {
+        console.error("Error saving subscription plan:", error);
         showToast(
           "error",
-          "Failed to save subscription plan. Please try again."
+          error.message || "Failed to save subscription plan."
         );
-        console.error("Error saving subscription plan:", error);
       }
     }
   };
@@ -117,6 +186,7 @@ const NewSubscriptionPlanForm = ({ onSave, onBack, editingPlan }) => {
       <main className="new-subscription-plan-main-content">
         <form onSubmit={handleSubmit}>
           <div className="new-subscription-plan-form-grid">
+            {/* Subscription Name */}
             <FormInput
               id="name"
               name="name"
@@ -126,6 +196,22 @@ const NewSubscriptionPlanForm = ({ onSave, onBack, editingPlan }) => {
               onChange={handleInputChange}
             />
 
+            {/* Plan Category */}
+            <FormInput
+              id="category"
+              name="category"
+              type="select"
+              value={planData.category}
+              placeholder="Select Plan Category"
+              onChange={handleInputChange}
+              options={[
+                { value: "Short-term", label: "Short-term" },
+                { value: "Medium-term", label: "Medium-term" },
+                { value: "Long-term", label: "Long-term" },
+              ]}
+            />
+
+            {/* Validity */}
             <FormInput
               id="validity"
               name="validity"
@@ -134,12 +220,13 @@ const NewSubscriptionPlanForm = ({ onSave, onBack, editingPlan }) => {
               placeholder="Select months"
               error={errors.validity}
               onChange={handleInputChange}
-              options={[
-                { value: "6 Months", label: "6 Months" },
-                { value: "12 Months", label: "12 Months" },
-              ]}
+              options={validitiesForCategory.map((validity) => ({
+                value: validity,
+                label: validity,
+              }))}
             />
 
+            {/* User Range */}
             <FormInput
               id="userRange"
               name="userRange"
@@ -149,6 +236,7 @@ const NewSubscriptionPlanForm = ({ onSave, onBack, editingPlan }) => {
               onChange={handleInputChange}
             />
 
+            {/* Price */}
             <FormInput
               id="price"
               name="price"
@@ -159,6 +247,7 @@ const NewSubscriptionPlanForm = ({ onSave, onBack, editingPlan }) => {
             />
           </div>
 
+          {/* Action buttons */}
           <ActionButtons
             onCancel={onBack}
             onSubmit={handleSubmit}

@@ -14,7 +14,8 @@ import Button from "../../../components/Shared/Button/Button";
 import Loading from "../../../components/Shared/Loading/Loading";
 import ToastNotification, {
   showToast,
-} from "../../../components/Shared/ToastNotification/ToastNotification"; // Import ToastNotification and showToast
+} from "../../../components/Shared/ToastNotification/ToastNotification";
+import apiClient from "../../../apiClient";
 import "./SubscriptionPlans.css";
 
 const SubscriptionPlans = ({ toggleSidebar }) => {
@@ -24,61 +25,49 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
   const [editingPlan, setEditingPlan] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [plans, setPlans] = useState([
-    {
-      id: 1,
-      name: "Small Scale - Premium",
-      validity: "6 Months",
-      userRange: "1-2000",
-      price: "1,00,000",
-    },
-    {
-      id: 2,
-      name: "Medium Scale - Premium",
-      validity: "6 Months",
-      userRange: "2000-5000",
-      price: "2,00,000",
-    },
-    {
-      id: 3,
-      name: "Large Scale - Premium",
-      validity: "6 Months",
-      userRange: "5000-10000",
-      price: "5,00,000",
-    },
-    {
-      id: 4,
-      name: "XL Scale - Premium",
-      validity: "6 Months",
-      userRange: "10000-20000",
-      price: "10,00,000",
-    },
-    {
-      id: 5,
-      name: "XXL Scale - Premium",
-      validity: "6 Months",
-      userRange: "20000-40000",
-      price: "20,00,000",
-    },
-    {
-      id: 6,
-      name: "Small Scale - Ultra Premium",
-      validity: "12 Months",
-      userRange: "1-2000",
-      price: "2,00,000",
-    },
-    {
-      id: 7,
-      name: "Medium Scale - Ultra Premium",
-      validity: "12 Months",
-      userRange: "2000-5000",
-      price: "4,00,000",
-    },
-  ]);
+  const [plans, setPlans] = useState([]);
+  const [groupedPlans, setGroupedPlans] = useState({
+    "Short-term": [],
+    "Medium-term": [],
+    "Long-term": [],
+  });
+
+  const fetchPlans = async () => {
+    try {
+      console.log("Fetching subscription plans...");
+      const response = await apiClient.get("/appAdmin/get-subscription-plans");
+
+      console.log("Fetched plans:", response.data);
+      setPlans(response.data);
+
+      // Group plans by category (Short-term, Medium-term, Long-term)
+      const grouped = {
+        "Short-term": [],
+        "Medium-term": [],
+        "Long-term": [],
+      };
+
+      response.data.forEach((plan) => {
+        if (plan.category === "Short-term") {
+          grouped["Short-term"].push(plan);
+        } else if (plan.category === "Medium-term") {
+          grouped["Medium-term"].push(plan);
+        } else if (plan.category === "Long-term") {
+          grouped["Long-term"].push(plan);
+        }
+      });
+
+      setGroupedPlans(grouped); // Set grouped plans in state
+      setIsLoading(false); // Stop loading once data is fetched
+    } catch (error) {
+      console.error("Error fetching subscription plans:", error);
+      showToast("error", "Failed to fetch subscription plans.");
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1500);
-    return () => clearTimeout(timer);
+    fetchPlans(); // Initial fetch of plans
   }, []);
 
   const handleAddPlan = () => {
@@ -86,28 +75,14 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
     setShowNewPlanForm(true);
   };
 
-  const handleSavePlan = async (newPlan) => {
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      if (editingPlan) {
-        setPlans(
-          plans.map((plan) =>
-            plan.id === editingPlan.id ? { ...newPlan, id: plan.id } : plan
-          )
-        );
-      } else {
-        setPlans([...plans, { ...newPlan, id: Date.now() }]);
-      }
-
-      setTimeout(() => {
-        setShowNewPlanForm(false);
-        setEditingPlan(null);
-        setSelectedPlans([]);
-      }, 3100);
-    } catch (error) {
-      console.error("Error saving subscription plan:", error);
-    }
+  const handleSelectPlan = (plan) => {
+    const alreadySelected = selectedPlans.find(
+      (p) => p.plan_id === plan.plan_id
+    );
+    const updatedSelection = alreadySelected
+      ? selectedPlans.filter((p) => p.plan_id !== plan.plan_id)
+      : [...selectedPlans, plan];
+    setSelectedPlans(updatedSelection);
   };
 
   const handleBackFromForm = () => {
@@ -115,18 +90,11 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
     setEditingPlan(null);
   };
 
-  const handleSelectPlan = (plan) => {
-    const alreadySelected = selectedPlans.find((p) => p.id === plan.id);
-    const updatedSelection = alreadySelected
-      ? selectedPlans.filter((p) => p.id !== plan.id)
-      : [...selectedPlans, plan];
-    setSelectedPlans(updatedSelection);
-  };
-
   const handleEditPlan = () => {
     if (selectedPlans.length === 1) {
-      setEditingPlan(selectedPlans[0]);
-      setShowNewPlanForm(true);
+      const planToEdit = selectedPlans[0];
+      setEditingPlan(planToEdit);
+      setShowNewPlanForm(true); // Open the form for editing
     }
   };
 
@@ -136,12 +104,15 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
     }
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     try {
-      setPlans(
-        plans.filter((plan) => !selectedPlans.some((p) => p.id === plan.id))
-      );
-      setSelectedPlans([]);
+      const planIdsToDelete = selectedPlans.map((plan) => plan.plan_id); // Collect plan IDs of the selected plans
+      await apiClient.delete("/appAdmin/subscription-plans", {
+        data: { plan_ids: planIdsToDelete }, // Send the plan_ids in the body
+      });
+
+      fetchPlans();
+      setSelectedPlans([]); // Clear the selected plans
       setShowDeleteConfirmation(false);
 
       showToast(
@@ -165,16 +136,22 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
     setSearchQuery(query);
   };
 
-  const filteredPlans = plans.filter((plan) =>
-    plan.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredPlans = plans.filter(
+    (plan) =>
+      plan.name && plan.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (showNewPlanForm) {
     return (
       <NewSubscriptionPlanForm
-        onSave={handleSavePlan}
         onBack={handleBackFromForm}
         editingPlan={editingPlan}
+        setShowNewPlanForm={setShowNewPlanForm}
+        setEditingPlan={setEditingPlan}
+        setSelectedPlans={setSelectedPlans}
+        setPlans={setPlans} // Pass setPlans to update the plans state
+        setGroupedPlans={setGroupedPlans}
+        fetchPlans={fetchPlans}
       />
     );
   }
@@ -186,15 +163,13 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
       ) : (
         <div className="subscription-plans-container">
           <TopBar title="Subscription Plans" toggleSidebar={toggleSidebar} />
-          <ToastNotification position="top-right" theme="dark" />{" "}
-          {/* Toast notification container */}
+          <ToastNotification position="top-right" theme="dark" />
           <main className="subscription-plans-main-content">
             <div className="subscription-plans-controls">
               <SearchBar
                 placeholder="Search subscription plans..."
                 onSearch={handleSearch}
               />
-
               <div className="subscription-plans-action-buttons-container">
                 <Button
                   label={
@@ -227,64 +202,48 @@ const SubscriptionPlans = ({ toggleSidebar }) => {
                 />
               </div>
             </div>
-            <div className="plans-section">
-              <h2>6 Months Plans - Premium</h2>
-              <div className="plans-grid">
-                {filteredPlans
-                  .filter((plan) => plan.validity === "6 Months")
-                  .map((plan) => (
-                    <div
-                      key={plan.id}
-                      className={`plan-card ${
-                        selectedPlans.some((p) => p.id === plan.id)
-                          ? "selected"
-                          : ""
-                      }`}
-                      onClick={() => handleSelectPlan(plan)}
-                    >
-                      {selectedPlans.some((p) => p.id === plan.id) && (
-                        <div className="plan-card-check">
-                          <FontAwesomeIcon icon={faCheck} />
-                        </div>
-                      )}
-                      <h3>{plan.name}</h3>
-                      <p>Validity: {plan.validity}</p>
-                      <p>User Range: {plan.userRange}</p>
-                      <h4>₹{plan.price}</h4>
-                    </div>
-                  ))}
-              </div>
-            </div>
 
-            <div className="plans-section">
-              <h2>12 Months Plans - Ultra Premium</h2>
-              <div className="plans-grid">
-                {filteredPlans
-                  .filter((plan) => plan.validity === "12 Months")
-                  .map((plan) => (
-                    <div
-                      key={plan.id}
-                      className={`plan-card ${
-                        selectedPlans.some((p) => p.id === plan.id)
-                          ? "selected"
-                          : ""
-                      }`}
-                      onClick={() => handleSelectPlan(plan)}
-                    >
-                      {selectedPlans.some((p) => p.id === plan.id) && (
-                        <div className="plan-card-check">
-                          <FontAwesomeIcon icon={faCheck} />
+            {/* Display grouped plans by category */}
+            {Object.keys(groupedPlans).map((category) => {
+              const plansInCategory = groupedPlans[category];
+              if (plansInCategory.length > 0) {
+                return (
+                  <div key={category} className="plans-section">
+                    <h2>{category} Plans</h2>
+                    <div className="plans-grid">
+                      {plansInCategory.map((plan) => (
+                        <div
+                          key={plan.plan_id}
+                          className={`plan-card ${
+                            selectedPlans.some(
+                              (p) => p.plan_id === plan.plan_id
+                            )
+                              ? "selected"
+                              : ""
+                          }`}
+                          onClick={() => handleSelectPlan(plan)} // Select plan when clicked
+                        >
+                          {selectedPlans.some(
+                            (p) => p.plan_id === plan.plan_id
+                          ) && (
+                            <div className="plan-card-check">
+                              <FontAwesomeIcon icon={faCheck} />
+                            </div>
+                          )}
+                          <h3>{plan.plan_name}</h3>
+                          <p>Validity: {plan.validity}</p>
+                          <p>User Range: {plan.user_range}</p>
+                          <h4>₹{plan.price}</h4>
                         </div>
-                      )}
-                      <h3>{plan.name}</h3>
-                      <p>Validity: {plan.validity}</p>
-                      <p>User Range: {plan.userRange}</p>
-                      <h4>₹{plan.price}</h4>
+                      ))}
                     </div>
-                  ))}
-              </div>
-            </div>
+                  </div>
+                );
+              }
+              return null;
+            })}
           </main>
+
           {showDeleteConfirmation && (
             <ConfirmationModal
               title="Confirm Deletion"

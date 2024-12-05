@@ -1,4 +1,3 @@
-// ToastNotification.js
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -22,6 +21,7 @@ const ToastNotification = ({ position = "top-right", theme = "dark" }) => {
 
 // Function to display different types of toasts
 export const showToast = (type, message, loadingId = null) => {
+  // Dismiss loading toast if an ID is provided
   if (loadingId) toast.dismiss(loadingId);
 
   switch (type) {
@@ -38,7 +38,8 @@ export const showToast = (type, message, loadingId = null) => {
       toast.warn(message);
       break;
     case "loading":
-      return toast.loading(message); // Returns the loading toast ID for future dismissal
+      // Return the toast ID for future dismissal
+      return toast.loading(message); // This returns the loading toast ID
     default:
       toast(message);
   }

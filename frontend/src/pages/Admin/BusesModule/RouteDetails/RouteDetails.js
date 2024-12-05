@@ -123,12 +123,12 @@ const RouteDetails = ({ route, onBack, institutionId }) => {
                 {[
                   ["Route Number", route.routeNumber],
                   ["Route Name", route.routeName],
-                  ["ETA", formatTime(route.eta)],
+
                   ["Sitting Capacity", route.sittingCapacity],
                   ["Standing Capacity", route.standingCapacity],
                   ["Vehicle Registration No", route.vehicleRegistrationNumber],
                   ["Main Driver", route.mainDriver],
-                  ["Departure From Halt", formatTime(route.departureFromHalt)],
+
                   [
                     "College Arrival Time",
                     formatTime(route.collegeArrivalTime),
@@ -137,11 +137,6 @@ const RouteDetails = ({ route, onBack, institutionId }) => {
                     "Departure From College",
                     formatTime(route.departureFromCollege),
                   ],
-                  [
-                    "Drop Time From College",
-                    formatTime(route.dropTimeFromCollege),
-                  ],
-                  ["Fuel", "60 / 80 litres"], // Placeholder value
                 ].map(([label, value], index) => (
                   <div key={index} className="route-details-info-item">
                     <span className="route-details-info-label">{label}:</span>

@@ -1,16 +1,11 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithCredential,
-  signInWithPopup,
-} from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "../../config/firebaseConfig";
+import { getDeviceToken } from "../../config/getDeviceToken";
 import LoginLoading from "../../components/Shared/LoginLoading/LoginLoading";
 import LoginForm from "./LoginForm/LoginForm";
 import ToastNotification, {
@@ -151,12 +146,15 @@ const AboutApp = () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       const token = await user.getIdToken();
+      console.log("Firebase token:", token);
 
       // Send the Firebase token to backend for validation
       const { data } = await axios.post(
-        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/google-sign-in",
+        "http://localhost:3000/api/auth/google-sign-in",
         { tokenId: token }
       );
+
+      console.log("Response data:", data);
 
       // Store tokens and navigate
       localStorage.setItem("accessToken", data.accessToken);
@@ -165,6 +163,8 @@ const AboutApp = () => {
         "institutionId",
         data.institutionDetails.institutionId
       );
+
+      await getDeviceToken();
 
       const { role, uniqueRoute } = data;
       if (role === "admin") {
@@ -205,7 +205,7 @@ const AboutApp = () => {
 
       try {
         const { data } = await axios.post(
-          "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/login",
+          "http://localhost:3000/api/auth/login",
           { email, password }
         );
 
@@ -229,6 +229,8 @@ const AboutApp = () => {
           );
         }
 
+        await getDeviceToken();
+
         if (role === "admin") {
           navigate(`/admin/${uniqueRoute}`); // Redirect to unique admin route
         } else if (role === "appadmin") {
@@ -250,7 +252,7 @@ const AboutApp = () => {
 
   //     try {
   //       const { data } = await axios.post(
-  //         "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/login",
+  //         "http://localhost:3000/api/auth/login",
   //         { email, password }
   //       );
 

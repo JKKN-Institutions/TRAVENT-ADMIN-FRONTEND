@@ -185,26 +185,27 @@ const ViewInstitutions = ({ toggleSidebar }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
 
+  const fetchInstitutions = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/institutions/list"
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log("jjjj", data);
+        setInstitutions(data);
+      } else {
+        showToast("error", "Failed to fetch institutions.");
+      }
+    } catch (error) {
+      showToast("error", "An error occurred.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Fetch institutions data
   useEffect(() => {
-    const fetchInstitutions = async () => {
-      try {
-        const response = await fetch(
-          "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutions/list"
-        );
-        if (response.ok) {
-          const data = await response.json();
-          console.log("jjjj", data);
-          setInstitutions(data);
-        } else {
-          showToast("error", "Failed to fetch institutions.");
-        }
-      } catch (error) {
-        showToast("error", "An error occurred.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchInstitutions();
   }, []);
 
@@ -212,7 +213,7 @@ const ViewInstitutions = ({ toggleSidebar }) => {
     try {
       console.log("Fetching details for institution ID:", institutionId);
       const response = await fetch(
-        `https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutions/${institutionId}`
+        `http://localhost:3000/api/institutions/${institutionId}`
       );
       if (response.ok) {
         const institutionDetails = await response.json();
@@ -259,12 +260,16 @@ const ViewInstitutions = ({ toggleSidebar }) => {
       try {
         for (const institutionId of selectedInstitutions) {
           const response = await fetch(
-            `https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutions/delete/${institutionId}`,
+            `http://localhost:3000/api/institutions/delete/${institutionId}`,
             {
               method: "DELETE",
             }
           );
-          if (!response.ok) {
+          if (response.ok) {
+            showToast(
+              `${selectedInstitutions.length} institution(s) deleted successfully.`
+            );
+          } else {
             console.error(
               `Failed to delete institution with ID: ${institutionId}`
             );
@@ -327,11 +332,6 @@ const ViewInstitutions = ({ toggleSidebar }) => {
     const isDuplicate = institutes.some(
       (institute) => institute.instituteCode === data.instituteCode
     );
-
-    if (isDuplicate) {
-      showToast("warn", "This institute is already added.");
-      return;
-    }
 
     setCurrentInstitute(data);
     setInstitutes([...institutes, { ...data, departments: [] }]); // Add new institute
@@ -433,7 +433,7 @@ const ViewInstitutions = ({ toggleSidebar }) => {
 
     try {
       const response = await fetch(
-        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutions/add",
+        "http://localhost:3000/api/institutions/add",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -447,6 +447,7 @@ const ViewInstitutions = ({ toggleSidebar }) => {
       if (response.ok) {
         showToast("success", "Institution added successfully!");
         setTimeout(() => {
+          fetchInstitutions();
           resetForNewInstitute();
         }, 3000);
       } else {
