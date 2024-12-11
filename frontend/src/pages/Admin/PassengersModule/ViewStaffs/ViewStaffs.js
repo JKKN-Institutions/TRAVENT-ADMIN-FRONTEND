@@ -180,10 +180,12 @@ const ViewStaffs = ({ onBack }) => {
                         return staff.staffDetails.instituteName || "No data";
                       }
                       if (col.key === "routeNo") {
-                        return staff.locationDetails.routeNo || "No data";
+                        return (
+                          staff.locationDetails.assignedRouteNumber || "No data"
+                        );
                       }
                       if (col.key === "stopName") {
-                        return staff.locationDetails.stopName || "No data";
+                        return staff.stopName || "No data";
                       }
                       if (col.key === "pendingFee") {
                         return handleNoData(staff.pendingFee);

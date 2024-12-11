@@ -42,6 +42,7 @@ const Stoppings = ({ route, onBack, institutionId }) => {
   if (showStoppingPassengers) {
     return (
       <StoppingPassengers
+        route={route}
         stop={selectedStopForPassengers}
         onBack={() => setShowStoppingPassengers(false)}
         institutionId={institutionId}

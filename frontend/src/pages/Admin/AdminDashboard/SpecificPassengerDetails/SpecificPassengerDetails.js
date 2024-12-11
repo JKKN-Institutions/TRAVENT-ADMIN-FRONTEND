@@ -50,7 +50,7 @@ const SpecificPassengerDetails = ({ user, onClose }) => {
           { label: "Designation", value: user.staffDetails.designation },
         ]),
     { label: "Stop Name", value: user.locationDetails.stopName },
-    { label: "Route No", value: user.locationDetails.routeNo },
+    { label: "Bording Period", value: user.locationDetails.boardingPeriods },
   ];
 
   return (

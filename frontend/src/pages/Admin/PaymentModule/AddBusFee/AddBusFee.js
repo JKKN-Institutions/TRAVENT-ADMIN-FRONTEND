@@ -54,8 +54,28 @@ const AddBusFee = ({ busFeeData, onBack }) => {
       setErrors("Institution ID not found in localStorage");
     }
 
+    console.log("busFeeData", busFeeData);
     if (busFeeData) {
-      setFormData(busFeeData);
+      // Ensure busFeeData contains all necessary properties before setting the state
+      const busFeeDataWithDefaults = {
+        ...initialFormState, // Use initial values for non-provided fields
+        ...busFeeData, // Override with provided busFeeData
+        duration: {
+          ...initialFormState.duration, // Default values for duration
+          ...busFeeData.duration, // Merge with provided duration
+        },
+        termWisePayment: {
+          ...initialFormState.termWisePayment, // Default values for termWisePayment
+          ...busFeeData.termWisePayment, // Merge with provided termWisePayment
+        },
+      };
+
+      // Avoid resetting the form data if the busFeeData is already being set properly
+      if (JSON.stringify(formData) !== JSON.stringify(busFeeDataWithDefaults)) {
+        setFormData(busFeeDataWithDefaults); // Set the form data with busFeeData
+      }
+
+      console.log("Updated formData:", busFeeDataWithDefaults);
     }
   }, [busFeeData]);
 
@@ -97,13 +117,18 @@ const AddBusFee = ({ busFeeData, onBack }) => {
     if (!formData.totalBusFee)
       formErrors.totalBusFee = "Total bus fee is required";
 
-    // Validate each term (Term 1, Term 2, and Term 3)
     ["term1", "term2", "term3"].forEach((term) => {
-      const { start, end } = formData.duration[term];
-      const { amount, dueDate } = formData.termWisePayment[term];
+      const { start, end } = formData.duration[term] || {};
+      const { amount, dueDate } = formData.termWisePayment[term] || {};
+
       if (!start)
         formErrors[`${term}Start`] = `Start date for ${term} is required`;
       if (!end) formErrors[`${term}End`] = `End date for ${term} is required`;
+      if (start && end && new Date(start) > new Date(end)) {
+        formErrors[
+          `${term}Duration`
+        ] = `Start date for ${term} cannot be after end date`;
+      }
       if (!amount)
         formErrors[`${term}Amount`] = `Amount for ${term} is required`;
       if (!dueDate)
@@ -113,8 +138,8 @@ const AddBusFee = ({ busFeeData, onBack }) => {
     return formErrors;
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const formErrors = validateForm();
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);

@@ -1,6 +1,10 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import ForgetPassword from "../ForgetPassword";
+import ToastNotification, {
+  showToast,
+} from "../../../components/Shared/ToastNotification/ToastNotification";
 import "./LoginForm.css";
 
 const LoginForm = ({
@@ -13,13 +17,52 @@ const LoginForm = ({
   handleLogin,
   handleGoogleSignIn,
 }) => {
+  const [showForgetPassword, setShowForgetPassword] = useState(false);
   // Memoize the password toggle to prevent unnecessary re-renders
   const togglePasswordVisibility = useCallback(() => {
     setShowPassword((prev) => !prev);
   }, [setShowPassword]);
 
+  const resetPassword = async (email, newPassword) => {
+    try {
+      const response = await fetch(
+        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/update-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, newPassword }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        showToast("success", data.message);
+        setTimeout(() => {
+          setShowForgetPassword(false);
+        }, 3000);
+      } else {
+        showToast("error", data.message);
+      }
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      showToast("Something went wrong. Please try again later.", "error");
+    }
+  };
+
+  const handlePasswordReset = (email, newPassword) => {
+    resetPassword(email, newPassword);
+  };
+
+  if (showForgetPassword) {
+    return <ForgetPassword handlePasswordReset={handlePasswordReset} />;
+  }
+
   return (
     <div className="page-container">
+      <ToastNotification />
       <div className="page-header">
         <img
           src="./uploads/splash-image.png"
@@ -60,7 +103,14 @@ const LoginForm = ({
           </button>
         </div>
 
-        <a href="#" className="forgot-password">
+        <a
+          href="#"
+          className="forgot-password"
+          onClick={(e) => {
+            e.preventDefault();
+            setShowForgetPassword(true);
+          }}
+        >
           Forgot Password?
         </a>
         <button className="sign-in-button" onClick={handleLogin}>

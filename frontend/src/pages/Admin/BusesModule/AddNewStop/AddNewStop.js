@@ -18,8 +18,6 @@ const AddNewStop = ({ route, onBack, institutionId, editingStop }) => {
     stateName: "",
     boardTime: "",
     dropTime: "",
-    boardingCountMorning: "",
-    boardingCountEvening: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -105,26 +103,6 @@ const AddNewStop = ({ route, onBack, institutionId, editingStop }) => {
         "Drop Time is required and should be in HH:mm format.";
     }
 
-    // Validate Boarding Count Morning
-    if (
-      stopData.boardingCountMorning === "" ||
-      isNaN(stopData.boardingCountMorning) ||
-      stopData.boardingCountMorning < 0
-    ) {
-      formErrors.boardingCountMorning =
-        "Boarding Count Morning is required and should be a non-negative number.";
-    }
-
-    // Validate Boarding Count Evening
-    if (
-      stopData.boardingCountEvening === "" ||
-      isNaN(stopData.boardingCountEvening) ||
-      stopData.boardingCountEvening < 0
-    ) {
-      formErrors.boardingCountEvening =
-        "Boarding Count Evening is required and should be a non-negative number.";
-    }
-
     return formErrors;
   };
 
@@ -146,8 +124,8 @@ const AddNewStop = ({ route, onBack, institutionId, editingStop }) => {
     );
 
     const url = editingStop
-      ? "http://localhost:3000/api/institutionsExtended/update-stop"
-      : "http://localhost:3000/api/institutionsExtended/add-stop";
+      ? "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutionsExtended/update-stop"
+      : "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutionsExtended/add-stop";
 
     try {
       const payload = editingStop
@@ -216,9 +194,7 @@ const AddNewStop = ({ route, onBack, institutionId, editingStop }) => {
                     id={key}
                     name={key}
                     type={
-                      key.includes("Count") ||
-                      key.includes("latitude") ||
-                      key.includes("longitude")
+                      key.includes("latitude") || key.includes("longitude")
                         ? "number"
                         : key.includes("Time")
                         ? "time"

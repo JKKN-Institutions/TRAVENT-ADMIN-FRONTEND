@@ -18,8 +18,9 @@
 
 .update-bus-fee-controls {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
+  gap: 0.7rem;
   margin-bottom: 0.7rem;
 }
 

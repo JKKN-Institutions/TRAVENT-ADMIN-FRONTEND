@@ -204,10 +204,13 @@ const ViewStudents = ({ onBack }) => {
                         );
                       }
                       if (col.key === "routeNo") {
-                        return student.locationDetails.routeNo || "No data";
+                        return (
+                          student.locationDetails.assignedRouteNumber ||
+                          "No data"
+                        );
                       }
                       if (col.key === "stopName") {
-                        return student.locationDetails.stopName || "No data";
+                        return student.stopName || "No data";
                       }
                       if (col.key === "pendingFee") {
                         return handleNoData(student.pendingFee); // Handle Pending Fee

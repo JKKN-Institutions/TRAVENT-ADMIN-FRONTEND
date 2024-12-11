@@ -12,7 +12,6 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
   const [routeData, setRouteData] = useState({
     routeNumber: "",
     routeName: "",
-
     sittingCapacity: "",
     standingCapacity: "",
     vehicleRegistrationNumber: "",
@@ -136,20 +135,41 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
 
       const response = await apiClient.post(url, payload);
 
-      showToast(
-        "success",
-        `Route ${route ? "updated" : "added"} successfully.`,
-        loadingToastId
-      );
+      // Check if the response contains a success message
+      if (response.data.message === "Route added successfully.") {
+        showToast("success", `Route added successfully.`, loadingToastId);
+      } else if (response.data.message === "Route updated successfully.") {
+        showToast("success", `Route updated successfully.`, loadingToastId);
+      } else if (response.data.message) {
+        // Display the backend error message
+        showToast("error", response.data.message, loadingToastId);
+      } else {
+        showToast(
+          "error",
+          `Failed to ${route ? "update" : "add"} route. Please try again.`,
+          loadingToastId
+        );
+      }
 
       if (onSave) onSave(response.data);
       setTimeout(() => onBack(), 3100);
     } catch (error) {
-      showToast(
-        "error",
-        `Failed to ${route ? "update" : "add"} route. Please try again.`,
-        loadingToastId
-      );
+      // Handle AxiosError (for 400 or other error status codes)
+      if (error.response && error.response.status === 400) {
+        // Backend validation error
+        showToast(
+          "error",
+          error.response.data.message || "Bad request. Please check the input.",
+          loadingToastId
+        );
+      } else {
+        // Generic error handling for other errors
+        showToast(
+          "error",
+          `Failed to ${route ? "update" : "add"} route. Please try again.`,
+          loadingToastId
+        );
+      }
       console.error("Error saving route:", error);
     }
   };

@@ -3,11 +3,12 @@ import "./TableContainer.css";
 
 const TableContainer = ({
   headers,
-  rows,
+  rows = [], // default to empty array if rows is undefined or null
   onRowClick,
   selectedRowId,
   actions,
 }) => {
+  // Check if rows is empty or contains a 'no-data' row
   const isEmpty =
     rows.length === 0 || (rows.length === 1 && rows[0].id === "no-data");
 

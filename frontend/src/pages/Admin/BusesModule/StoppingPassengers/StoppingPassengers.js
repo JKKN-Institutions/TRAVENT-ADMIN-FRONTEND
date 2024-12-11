@@ -1,85 +1,66 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserGraduate, faUserTie } from "@fortawesome/free-solid-svg-icons";
+import apiClient from "../../../../apiClient";
 import "./StoppingPassengers.css";
-import TopBar from "../../../../components/Shared/TopBar/TopBar"; // Import TopBar
-import SearchBar from "../../../../components/Shared/SearchBar/SearchBar"; // Import SearchBar
-import TableContainer from "../../../../components/Shared/TableContainer/TableContainer"; // Import TableContainer
-import Pagination from "../../../../components/Shared/Pagination/Pagination"; // Import Pagination
+import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
+import TableContainer from "../../../../components/Shared/TableContainer/TableContainer";
+import Pagination from "../../../../components/Shared/Pagination/Pagination";
 
-const StoppingPassengers = ({ stop, onBack, institutionId }) => {
+const StoppingPassengers = ({ stop, onBack, institutionId, route }) => {
+  const [loading, setLoading] = useState(false);
+  const [stopName, setStopName] = useState(stop.stopName || ""); // Default stop name
+  const [studentsData, setStudentsData] = useState([]);
+  const [staffData, setStaffData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPageStudent, setCurrentPageStudent] = useState(1);
   const [currentPageStaff, setCurrentPageStaff] = useState(1);
-  const [itemsPerPage] = useState(10);
+  const itemsPerPage = 10;
 
-  // Mock data for students and staff
-  const studentsData = [
-    {
-      id: 1,
-      studentName: "Senthil S",
-      regNo: "611220104123",
-      rollNo: "2K24AHS157",
-      year: "I",
-      department: "AHS",
-      section: "A",
-      instituteName: "JKKN AHS",
-      pendingFee: 4500,
-      amulets: { remaining: 60, refilled: 0 },
-      status: "Active",
-    },
-    {
-      id: 2,
-      studentName: "Balagi G",
-      regNo: "611220103233",
-      rollNo: "2K22BP135",
-      year: "III",
-      department: "B.PHARM",
-      section: "A",
-      instituteName: "JKKN Pharmacy",
-      pendingFee: 4500,
-      amulets: { remaining: 50, refilled: 0 },
-      status: "Active",
-    },
-  ];
+  // Fetch passengers from the backend
+  useEffect(() => {
+    const fetchPassengers = async () => {
+      setLoading(true);
+      try {
+        const response = await apiClient.get(
+          "/institutionsExtended/stopping-passengers",
+          {
+            params: {
+              institutionId,
+              routeNumber: route.routeNumber,
+              stopId: stop.stopID,
+            },
+          }
+        );
+        const { stopName: fetchedStopName, students, staff } = response.data;
+        setStopName(fetchedStopName);
+        setStudentsData(students);
+        setStaffData(staff);
+      } catch (error) {
+        console.error("Error fetching stopping passengers:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const staffData = [
-    {
-      id: 1,
-      staffName: "Balagi G",
-      staffID: "2K20PD159",
-      department: "PHARM D",
-      designation: "Professor",
-      instituteName: "JKKN College of Pharmacy",
-      pendingFee: "Nil",
-      amulets: { remaining: 50, refilled: 0 },
-      status: "Active",
-    },
-    {
-      id: 2,
-      staffName: "Senthil S",
-      staffID: "2K24AHS174",
-      department: "AHS",
-      designation: "Professor",
-      instituteName: "JKKN College of Allied Health Sciences",
-      pendingFee: 1000,
-      amulets: { remaining: 60, refilled: 100 },
-      status: "Active",
-    },
-  ];
+    fetchPassengers();
+  }, [institutionId, route.routeNumber, stop.stopID]);
 
+  // Filter data based on search term
   const filteredStudents = studentsData.filter(
     (student) =>
-      student.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.regNo.toLowerCase().includes(searchTerm.toLowerCase())
+      student.studentName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.regNo?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const filteredStaff = staffData.filter(
     (staff) =>
-      staff.staffName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      staff.staffID.toLowerCase().includes(searchTerm.toLowerCase())
+      staff.staffName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      staff.staffID?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Define columns for students and staff tables
   const studentColumns = [
     { key: "serialNumber", label: "S.No" },
     { key: "studentName", label: "Student Name" },
@@ -90,7 +71,8 @@ const StoppingPassengers = ({ stop, onBack, institutionId }) => {
     { key: "section", label: "Section" },
     { key: "instituteName", label: "Institute Name" },
     { key: "pendingFee", label: "Pending Fee" },
-    { key: "amulets", label: "Amulets (Remaining / Refilled)" },
+    { key: "remainingAmulets", label: "Remaining Amulets" },
+    { key: "refilledAmulets", label: "Refilled Amulets" },
     { key: "status", label: "Status" },
   ];
 
@@ -102,73 +84,122 @@ const StoppingPassengers = ({ stop, onBack, institutionId }) => {
     { key: "designation", label: "Designation" },
     { key: "instituteName", label: "Institute Name" },
     { key: "pendingFee", label: "Pending Fee" },
-    { key: "amulets", label: "Amulets (Remaining / Refilled)" },
+    { key: "remainingAmulets", label: "Remaining Amulets" },
+    { key: "refilledAmulets", label: "Refilled Amulets" },
     { key: "status", label: "Status" },
   ];
+
+  // Pagination logic for students and staff
+  const indexOfLastStudent = currentPageStudent * itemsPerPage;
+  const indexOfFirstStudent = indexOfLastStudent - itemsPerPage;
+  const currentStudents = filteredStudents.slice(
+    indexOfFirstStudent,
+    indexOfLastStudent
+  );
+
+  const indexOfLastStaff = currentPageStaff * itemsPerPage;
+  const indexOfFirstStaff = indexOfLastStaff - itemsPerPage;
+  const currentStaff = filteredStaff.slice(indexOfFirstStaff, indexOfLastStaff);
+
+  const renderNoDataRow = (colSpan) => ({
+    id: "no-data",
+    data: { message: "No data available" },
+    colSpan,
+  });
 
   return (
     <div className="stopping-passengers-container">
       <TopBar
-        title={`Passengers for Stop: ${stop.stopName}`}
+        title={`Passengers for Stop: ${stopName}`}
         onBack={onBack}
         backButton={true}
       />
 
-      <main className="stopping-passengers-main-content">
-        <div className="stopping-passengers-controls">
-          <SearchBar
-            placeholder="Search passengers..."
-            onSearch={setSearchTerm}
-          />
-        </div>
-        <div className="stopping-passengers-tables-container">
-          <div className="stopping-passengers-table-section">
-            <h3>
-              <FontAwesomeIcon icon={faUserGraduate} /> Students
-            </h3>
-            <TableContainer
-              headers={studentColumns.map((col) => col.label)}
-              rows={filteredStudents.map((student, index) => ({
-                id: student.id,
-                data: {
-                  ...student,
-                  serialNumber:
-                    index + 1 + (currentPageStudent - 1) * itemsPerPage,
-                  amulets: `${student.amulets.remaining} / ${student.amulets.refilled}`,
-                },
-              }))}
-            />
-            <Pagination
-              currentPage={currentPageStudent}
-              totalPages={Math.ceil(filteredStudents.length / itemsPerPage)}
-              onPageChange={setCurrentPageStudent}
+      {loading ? (
+        <p>Loading passengers...</p>
+      ) : (
+        <main className="stopping-passengers-main-content">
+          <div className="stopping-passengers-controls">
+            <SearchBar
+              placeholder="Search passengers..."
+              onSearch={setSearchTerm}
             />
           </div>
+          <div className="stopping-passengers-tables-container">
+            <div className="stopping-passengers-table-section">
+              <h3>
+                <FontAwesomeIcon icon={faUserGraduate} /> Students
+              </h3>
+              <TableContainer
+                headers={studentColumns.map((col) => col.label)}
+                rows={
+                  currentStudents.length > 0
+                    ? currentStudents.map((student, index) => ({
+                        id: student.id,
+                        data: {
+                          serialNumber:
+                            index + 1 + (currentPageStudent - 1) * itemsPerPage,
+                          studentName: student.studentName,
+                          regNo: student.regNo,
+                          rollNo: student.rollNo,
+                          year: student.year,
+                          department: student.department,
+                          section: student.section,
+                          instituteName: student.instituteName,
 
-          <div className="stopping-passengers-table-section">
-            <h3>
-              <FontAwesomeIcon icon={faUserTie} /> Staff
-            </h3>
-            <TableContainer
-              headers={staffColumns.map((col) => col.label)}
-              rows={filteredStaff.map((staff, index) => ({
-                id: staff.id,
-                data: {
-                  ...staff,
-                  serialNumber:
-                    index + 1 + (currentPageStaff - 1) * itemsPerPage,
-                  amulets: `${staff.amulets.remaining} / ${staff.amulets.refilled}`,
-                },
-              }))}
-            />
-            <Pagination
-              currentPage={currentPageStaff}
-              totalPages={Math.ceil(filteredStaff.length / itemsPerPage)}
-              onPageChange={setCurrentPageStaff}
-            />
+                          pendingFee: student.pendingFee,
+                          remainingAmulets: student.remainingAmulets,
+                          refilledAmulets: student.refilledAmulets,
+                          status: student.status,
+                        },
+                      }))
+                    : [renderNoDataRow(studentColumns.length)]
+                }
+              />
+              <Pagination
+                currentPage={currentPageStudent}
+                totalPages={Math.ceil(filteredStudents.length / itemsPerPage)}
+                onPageChange={setCurrentPageStudent}
+              />
+            </div>
+
+            <div className="stopping-passengers-table-section">
+              <h3>
+                <FontAwesomeIcon icon={faUserTie} /> Staff
+              </h3>
+              <TableContainer
+                headers={staffColumns.map((col) => col.label)}
+                rows={
+                  currentStaff.length > 0
+                    ? currentStaff.map((staff, index) => ({
+                        id: staff.id,
+                        data: {
+                          serialNumber:
+                            index + 1 + (currentPageStaff - 1) * itemsPerPage,
+                          staffName: staff.staffName,
+                          staffID: staff.staffID,
+                          department: staff.department,
+                          designation: staff.designation,
+                          instituteName: staff.instituteName,
+
+                          pendingFee: staff.pendingFee,
+                          remainingAmulets: staff.remainingAmulets,
+                          refilledAmulets: staff.refilledAmulets,
+                          status: staff.status,
+                        },
+                      }))
+                    : [renderNoDataRow(staffColumns.length)]
+                }
+              />
+              <Pagination
+                currentPage={currentPageStaff}
+                totalPages={Math.ceil(filteredStaff.length / itemsPerPage)}
+                onPageChange={setCurrentPageStaff}
+              />
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      )}
     </div>
   );
 };

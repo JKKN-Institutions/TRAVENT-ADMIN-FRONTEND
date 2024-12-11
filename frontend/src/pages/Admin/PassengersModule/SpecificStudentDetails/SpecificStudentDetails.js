@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import "../../AdminDashboard/SpecificPassengerDetails/SpecificPassengerDetails.css"; // Add styling for this component
 
 const SpecificStudentDetails = ({ user, onClose }) => {
   const [isClosing, setIsClosing] = useState(false);
+
+  useEffect(() => {
+    // Log user object and refilledAmulets to inspect its value
+    console.log("User Object:", user);
+    console.log("Refilled Amulets:", user ? user.refilledAmulets : "No data");
+  }, [user]); // This will run whenever the 'user' prop changes
 
   const handleClose = () => {
     setIsClosing(true);
@@ -43,8 +49,11 @@ const SpecificStudentDetails = ({ user, onClose }) => {
           { label: "Department", value: user.studentDetails.department },
           { label: "Section", value: user.studentDetails.section },
           { label: "Institute Name", value: user.studentDetails.instituteName },
-          { label: "Route No", value: user.locationDetails.routeNo },
-          { label: "Stop Name", value: user.locationDetails.stopName },
+          {
+            label: "Route No",
+            value: user.locationDetails.assignedRouteNumber,
+          },
+          { label: "Stop Name", value: user.stopName },
           { label: "Pending Fee", value: user.pendingFee },
           { label: "Remaining Amulets", value: user.remainingAmulets },
           { label: "Refilled Amulets", value: user.refilledAmulets },
@@ -74,11 +83,17 @@ const SpecificStudentDetails = ({ user, onClose }) => {
           { label: "Department", value: user.staffDetails.department },
           { label: "Designation", value: user.staffDetails.designation },
           { label: "Institute Name", value: user.staffDetails.instituteName },
-          { label: "Route No", value: user.locationDetails.routeNo },
-          { label: "Stop Name", value: user.locationDetails.stopName },
+          {
+            label: "Route No",
+            value: user.locationDetails.assignedRouteNumber,
+          },
+          { label: "Stop Name", value: user.stopName },
           { label: "Pending Fee", value: user.pendingFee },
           { label: "Remaining Amulets", value: user.remainingAmulets },
-          { label: "Refilled Amulets", value: user.refilledAmulets },
+          {
+            label: "Refilled Amulets",
+            value: user.refilledAmulets,
+          },
           { label: "Status", value: user.status },
           { label: "Account Status", value: user.accountStatus },
         ];
@@ -100,7 +115,9 @@ const SpecificStudentDetails = ({ user, onClose }) => {
             <div key={index} className="specific-user-details-row">
               <div className="specific-user-details-label">{detail.label}</div>
               <div className="specific-user-details-value">
-                {detail.value || "No data"}
+                {detail.value !== undefined && detail.value !== null
+                  ? detail.value
+                  : "No data"}
               </div>
             </div>
           ))}
