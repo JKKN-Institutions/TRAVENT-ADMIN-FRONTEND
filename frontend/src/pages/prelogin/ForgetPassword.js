@@ -35,13 +35,16 @@ const ForgetPassword = ({ handlePasswordReset }) => {
 
   const handleOtpSubmit = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/auth/send-otp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
+      const response = await fetch(
+        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/send-otp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
