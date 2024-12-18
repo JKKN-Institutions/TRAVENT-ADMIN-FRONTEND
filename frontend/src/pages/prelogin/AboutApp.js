@@ -150,7 +150,7 @@ const AboutApp = () => {
 
       // Send the Firebase token to backend for validation
       const { data } = await axios.post(
-        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/google-sign-in",
+        "http://localhost:3000/api/auth/google-sign-in",
         { tokenId: token }
       );
 
@@ -212,7 +212,7 @@ const AboutApp = () => {
 
       try {
         const { data } = await axios.post(
-          "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/login",
+          "http://localhost:3000/api/auth/login",
           { email, password }
         );
 
@@ -254,34 +254,6 @@ const AboutApp = () => {
     },
     [email, password, navigate]
   );
-
-  // const handleLogin = useCallback(
-  //   async (e) => {
-  //     e.preventDefault();
-  //     setIsAuthenticating(true);
-
-  //     try {
-  //       const { data } = await axios.post(
-  //         "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/login",
-  //         { email, password }
-  //       );
-
-  //       const { token, role, institutionDetails } = data;
-  //       const decodedToken = jwtDecode(token);
-  //       localStorage.setItem("authToken", token);
-
-  //       const route = roleRoutes[role];
-  //       if (route) {
-  //         navigate(route, { state: { institutionDetails } });
-  //       }
-  //     } catch (error) {
-  //       alert(error.response?.data?.message || "An error occurred");
-  //     } finally {
-  //       setIsAuthenticating(false);
-  //     }
-  //   },
-  //   [email, password, navigate, roleRoutes]
-  // );
 
   const nextPage = useCallback(() => {
     setCurrentPage((prev) => (prev < 3 ? prev + 1 : 4));

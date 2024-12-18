@@ -1,10 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import apiClient from "../../../../apiClient";
 import "./SpecificPassengerDetails.css";
 
 const SpecificPassengerDetails = ({ user, onClose }) => {
   const [isClosing, setIsClosing] = useState(false);
+  const [routeAvailability, setRouteAvailability] = useState([]);
+
+  useEffect(() => {
+    if (user) {
+      const fetchRouteAvailability = async () => {
+        console.log(
+          "Requesting route availability for stopId:",
+          user.locationDetails.stopId
+        );
+        try {
+          const response = await apiClient.get(
+            `/passengers/routes/availability/${user.locationDetails.stopId}`
+          );
+          setRouteAvailability(response.data.routes);
+        } catch (error) {
+          if (error.response && error.response.status === 404) {
+            console.error("No routes found for this stop.");
+          } else {
+            console.error("Error fetching route availability:", error);
+          }
+        }
+      };
+      fetchRouteAvailability();
+    }
+  }, [user]);
 
   const handleClose = () => {
     setIsClosing(true);
@@ -72,6 +98,31 @@ const SpecificPassengerDetails = ({ user, onClose }) => {
               <div className="specific-user-details-value">{detail.value}</div>
             </div>
           ))}
+          <div className="specific-user-details-routes">
+            <h4>Available Routes</h4>
+            {routeAvailability.length > 0 ? (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Route Number</th>
+                    <th>Total Capacity</th>
+                    <th>Current Boarding</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {routeAvailability.map((route, index) => (
+                    <tr key={index}>
+                      <td>{route.routeNumber}</td>
+                      <td>{route.totalCapacity}</td>
+                      <td>{route.currentBoardingCount}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No available routes for this stop.</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import "./ReviewForm.css";
 import ToastNotification, {
   showToast,
 } from "../../../components/Shared/ToastNotification/ToastNotification";
+import ConfirmationModal from "../../../components/Shared/ConfirmationModal/ConfirmationModal";
 
 const ReviewForm = ({
   data,
@@ -12,6 +13,8 @@ const ReviewForm = ({
 }) => {
   const { institutionData, institutes = [], adminDetails } = data;
   const [currentStep, setCurrentStep] = useState(0);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false); // State to show the confirmation modal
+  const [loading, setLoading] = useState(false);
 
   const totalSteps = 2 + institutes.length; // Institution, Institutes, Admin
 
@@ -27,8 +30,14 @@ const ReviewForm = ({
     }
   };
 
-  const handleFinalSubmit = async () => {
+  const handleFinalSubmit = () => {
+    // Show confirmation modal before submitting the form
+    setShowConfirmationModal(true);
+  };
+
+  const handleConfirmSubmit = async () => {
     try {
+      setLoading(true);
       console.log("Final Data to Submit:", data);
 
       // Await the onSubmit function to ensure toast is shown at the correct time
@@ -40,12 +49,14 @@ const ReviewForm = ({
     } catch (error) {
       console.error("Submission error:", error);
       showToast("error", "Submission failed. Please try again.");
+    } finally {
+      setLoading(false);
+      setShowConfirmationModal(false); // Close modal after submission
     }
   };
 
   const handleCancel = () => {
-    showToast("warn", "Submission canceled");
-    onBackToSection();
+    setShowConfirmationModal(false);
   };
 
   const progressBarWidth = `${((currentStep + 1) / totalSteps) * 100}%`;
@@ -173,42 +184,37 @@ const ReviewForm = ({
         )}
 
         <div className="review-buttons-container">
-          {currentStep > 0 && (
+          <button
+            onClick={handlePrevious}
+            className="review-button secondary"
+            disabled={currentStep === 0}
+          >
+            Previous
+          </button>
+          {currentStep === totalSteps - 1 ? (
             <button
-              type="button"
-              className="review-button secondary"
-              onClick={handlePrevious}
-            >
-              Previous
-            </button>
-          )}
-          {currentStep < totalSteps - 1 ? (
-            <button
-              type="button"
+              onClick={handleFinalSubmit}
               className="review-button primary"
-              onClick={handleNext}
+              disabled={loading}
             >
-              Next
+              {loading ? "Submitting..." : "Submit"}
             </button>
           ) : (
-            <>
-              <button
-                type="button"
-                className="review-button primary"
-                onClick={handleFinalSubmit}
-              >
-                Submit Data
-              </button>
-              <button
-                type="button"
-                className="review-button secondary"
-                onClick={handleCancel}
-              >
-                Cancel
-              </button>
-            </>
+            <button onClick={handleNext} className="review-button primary">
+              Next
+            </button>
           )}
         </div>
+        {showConfirmationModal && (
+          <ConfirmationModal
+            onConfirm={handleConfirmSubmit}
+            onCancel={handleCancel}
+            title="Confirm Submission"
+            message="Are you sure you want to proceed with submitting this data and assigning the trial subscription?"
+            confirmText="Yes"
+            cancelText="No"
+          />
+        )}
       </div>
     </div>
   );

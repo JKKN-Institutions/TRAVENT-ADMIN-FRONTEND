@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import "./AddAdminForm.css";
 import FormInput from "../../../components/Shared/FormInput/FormInput";
 import ActionButtons from "../../../components/Shared/ActionButtons/ActionButtons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const AddAdminForm = ({ onSave, onBack }) => {
   const [adminData, setAdminData] = useState({
@@ -13,6 +15,8 @@ const AddAdminForm = ({ onSave, onBack }) => {
   });
 
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false); // Password visibility toggle state
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Confirm password visibility toggle state
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -62,6 +66,16 @@ const AddAdminForm = ({ onSave, onBack }) => {
     }
   };
 
+  // Password toggle function for visibility
+  const togglePasswordVisibility = useCallback(() => {
+    setShowPassword((prev) => !prev);
+  }, []);
+
+  // Confirm password toggle function for visibility
+  const toggleConfirmPasswordVisibility = useCallback(() => {
+    setShowConfirmPassword((prev) => !prev);
+  }, []);
+
   return (
     <div className="add-admin-form-container">
       <div className="add-admin-form-header">
@@ -93,22 +107,44 @@ const AddAdminForm = ({ onSave, onBack }) => {
             onChange={handleInputChange}
             error={errors.contactNumber}
           />
-          <FormInput
-            name="password"
-            type="password"
-            placeholder="Create Password"
-            value={adminData.password}
-            onChange={handleInputChange}
-            error={errors.password}
-          />
-          <FormInput
-            name="confirmPassword"
-            type="password"
-            placeholder="Confirm Password"
-            value={adminData.confirmPassword}
-            onChange={handleInputChange}
-            error={errors.confirmPassword}
-          />
+          <div className="add-admin-form-password-container">
+            <FormInput
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Create Password"
+              value={adminData.password}
+              onChange={handleInputChange}
+              error={errors.password}
+            />
+            <button
+              type="button"
+              className="toggle-password"
+              onClick={togglePasswordVisibility}
+              aria-label="Toggle password visibility"
+            >
+              <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+            </button>
+          </div>
+          <div className="add-admin-form-password-container">
+            <FormInput
+              name="confirmPassword"
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm Password"
+              value={adminData.confirmPassword}
+              onChange={handleInputChange}
+              error={errors.confirmPassword}
+            />
+            <button
+              type="button"
+              className="toggle-password"
+              onClick={toggleConfirmPasswordVisibility}
+              aria-label="Toggle confirm password visibility"
+            >
+              <FontAwesomeIcon
+                icon={showConfirmPassword ? faEye : faEyeSlash}
+              />
+            </button>
+          </div>
         </div>
         <ActionButtons
           onCancel={onBack}

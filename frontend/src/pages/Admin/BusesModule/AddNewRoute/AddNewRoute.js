@@ -128,8 +128,6 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
       };
 
       if (route) {
-        payload.stateName = route.stateName;
-        payload.routeNumber = route.routeNumber;
         payload.updates = routeData;
       }
 

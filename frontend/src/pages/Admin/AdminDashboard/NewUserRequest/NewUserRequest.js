@@ -71,6 +71,14 @@ function NewUserRequest({ onBack }) {
     };
 
     fetchPendingUsers();
+
+    // Poll every 10 seconds to check for updates
+    const intervalId = setInterval(() => {
+      fetchPendingUsers();
+    }, 10000); // Poll every 10 seconds
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleRowClick = (userId) => {

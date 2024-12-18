@@ -9,6 +9,11 @@
   color: #ffffff;
 }
 
+.add-admin-form-password-container {
+  position: relative;
+  width: 100%;
+}
+
 .add-admin-form-header {
   display: flex;
   align-items: center;

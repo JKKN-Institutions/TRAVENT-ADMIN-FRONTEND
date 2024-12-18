@@ -154,7 +154,8 @@
   color: #fff;
 }
 
-.admin-section {
+.admin-section,
+.subscription-section {
   margin-top: 2rem;
 }
 

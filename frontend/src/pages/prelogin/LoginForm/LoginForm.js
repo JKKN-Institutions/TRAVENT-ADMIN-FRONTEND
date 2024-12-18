@@ -23,16 +23,17 @@ const LoginForm = ({
     setShowPassword((prev) => !prev);
   }, [setShowPassword]);
 
-  const resetPassword = async (email, newPassword) => {
+  const resetPassword = async (email, newPassword, otp) => {
     try {
+      console.log("Sending request with payload:", { email, newPassword, otp });
       const response = await fetch(
-        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/update-password",
+        "http://localhost:3000/api/auth/update-password",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email, newPassword }),
+          body: JSON.stringify({ email, newPassword, otp }), // Pass OTP here
         }
       );
 
@@ -52,8 +53,8 @@ const LoginForm = ({
     }
   };
 
-  const handlePasswordReset = (email, newPassword) => {
-    resetPassword(email, newPassword);
+  const handlePasswordReset = (email, newPassword, otp) => {
+    resetPassword(email, newPassword, otp); // Ensure OTP is included
   };
 
   if (showForgetPassword) {

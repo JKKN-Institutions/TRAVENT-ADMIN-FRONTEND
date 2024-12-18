@@ -7,7 +7,6 @@ import {
   faTrash,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
 import RouteDetails from "../RouteDetails/RouteDetails";
 import AddNewRoute from "../AddNewRoute/AddNewRoute";
 import Button from "../../../../components/Shared/Button/Button";

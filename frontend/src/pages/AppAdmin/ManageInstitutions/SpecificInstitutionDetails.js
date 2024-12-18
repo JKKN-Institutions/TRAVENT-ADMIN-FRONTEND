@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import Button from "../../../components/Shared/Button/Button";
-import ToastNotification, {
-  showToast,
-} from "../../../components/Shared/ToastNotification/ToastNotification";
 import "./SpecificInstitutionDetails.css";
 
 const DetailItem = ({ label, value }) => (
@@ -54,6 +51,7 @@ const SpecificInstitutionDetails = ({ institution, onClose }) => {
     emailDomain,
     institutes = [],
     adminDetails,
+    subscription,
   } = institution;
 
   return (
@@ -197,6 +195,23 @@ const SpecificInstitutionDetails = ({ institution, onClose }) => {
                 label="Admin Contact"
                 value={adminDetails?.contactNumber}
               />
+            </div>
+          </section>
+          <section className="subscription-section">
+            <SectionHeader
+              title="Subscription Details"
+              entityId={subscription?.id}
+              entityType="subscription"
+            />
+            <div className="details-grid">
+              <DetailItem
+                label="Subscription Plan Name"
+                value={subscription.plan_name}
+              />
+              <DetailItem label="Validity" value={subscription.validity} />
+              <DetailItem label="Category" value={subscription.category} />
+              <DetailItem label="User Range" value={subscription.user_range} />
+              <DetailItem label="Price" value={subscription.price} />
             </div>
           </section>
         </div>
