@@ -163,6 +163,10 @@ const AboutApp = () => {
         "institutionId",
         data.institutionDetails.institutionId
       );
+      localStorage.setItem(
+        "institutionName",
+        data.institutionDetails.institutionName
+      );
 
       await getDeviceToken();
 
@@ -233,6 +237,10 @@ const AboutApp = () => {
           localStorage.setItem(
             "institutionId",
             institutionDetails.institutionId
+          );
+          localStorage.setItem(
+            "institutionName",
+            institutionDetails.institutionName
           );
         }
 

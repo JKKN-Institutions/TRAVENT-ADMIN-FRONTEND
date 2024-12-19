@@ -7,19 +7,20 @@ import SubscriptionPaymentHistory from "../SubscriptionPaymentHistory/Subscripti
 import PaymentSummary from "../PaymentSummary/PaymentSummary";
 import Loading from "../../../../components/Shared/Loading/Loading";
 import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import apiClient from "../../../../apiClient";
 
 // Reusable Card Component for Subscription Plans
 const PlanCard = ({ plan, onSubscribe }) => (
   <div className="admin-plan-card">
     <div className="admin-plan-price-name">
-      <h3>{plan.name}</h3>
+      <h3>{plan.plan_name}</h3>
       <h4>₹{plan.price}</h4>
     </div>
     <p>
       Validity: <span>{plan.validity}</span>
     </p>
     <p>
-      User Range: <span>{plan.userRange}</span>
+      User Range: <span>{plan.user_range}</span>
     </p>
     <div className="admin-plan-price-subscribe">
       <button
@@ -53,6 +54,8 @@ const PaymentCard = ({ payment }) => (
 
 const AdminSubscriptionPlans = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPlan, setCurrentPlan] = useState(null);
+  const [allPlans, setAllPlans] = useState([]);
   const [showAllPlans, setShowAllPlans] = useState(false);
   const [showPaymentHistory, setShowPaymentHistory] = useState(false);
   const [showPaymentSummary, setShowPaymentSummary] = useState(false);
@@ -62,34 +65,6 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
     const timer = setTimeout(() => setIsLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
-
-  const currentPlan = {
-    name: "Medium Scale - Premium",
-    price: "2,00,000",
-    validity: "6 Months",
-    userRange: "2000-5000",
-  };
-
-  const allPlans = [
-    {
-      name: "Small Scale - Premium",
-      price: "10,000",
-      validity: "6 Months",
-      userRange: "1-2000",
-    },
-    {
-      name: "Medium Scale - Premium",
-      price: "2,00,000",
-      validity: "6 Months",
-      userRange: "2000-5000",
-    },
-    {
-      name: "Large Scale - Premium",
-      price: "5,00,000",
-      validity: "6 Months",
-      userRange: "5000-10000",
-    },
-  ];
 
   const paymentHistory = [
     {
@@ -112,19 +87,73 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
     },
   ];
 
+  const institutionName = localStorage.getItem("institutionName");
+
+  // Fetch Current Subscription Plan
+  useEffect(() => {
+    const institutionId = localStorage.getItem("institutionId");
+
+    if (!institutionId) {
+      // Handle case where institutionId is not available
+      console.error("Institution ID not found in localStorage");
+      return;
+    }
+
+    const fetchCurrentSubscription = async () => {
+      try {
+        const response = await apiClient.get(
+          `/adminSubscription/current-subscription/${institutionId}`
+        );
+        if (response.status === 200) {
+          setCurrentPlan(response.data.plan); // Update the current plan state
+        } else {
+          console.error("Failed to fetch current subscription.");
+        }
+      } catch (error) {
+        console.error("Error fetching current subscription:", error);
+      }
+    };
+
+    fetchCurrentSubscription();
+  }, []);
+
+  // Fetch All Subscription Plans (only 3 plans)
+  useEffect(() => {
+    const fetchAllSubscriptionPlans = async () => {
+      try {
+        const response = await apiClient.get("/adminSubscription/all");
+        if (response.status === 200) {
+          setAllPlans(response.data); // Update the all plans state
+        } else {
+          console.error("Failed to fetch subscription plans.");
+        }
+      } catch (error) {
+        console.error("Error fetching subscription plans:", error);
+      }
+    };
+
+    fetchAllSubscriptionPlans();
+  }, []);
+
   const handleSubscribe = (plan) => {
     const parsedPrice = parseFloat(plan.price.replace(/,/g, ""));
     setSelectedPlan({
       ...plan,
       price: parsedPrice,
       paymentDate: new Date().toLocaleString(),
-      institutionName: "JKKN Group of Institutions",
+      institutionName: institutionName,
     });
     setShowPaymentSummary(true);
   };
 
   if (showAllPlans) {
-    return <AllSubscriptionPlans onBack={() => setShowAllPlans(false)} />;
+    return (
+      <AllSubscriptionPlans
+        onBack={() => setShowAllPlans(false)}
+        allPlans={allPlans}
+        institutionName={institutionName}
+      />
+    );
   }
 
   if (showPaymentHistory) {
@@ -159,14 +188,16 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
               <div className="admin-plans-grid">
                 <div className="admin-plan-card current-plan">
                   <div className="admin-plan-current-price-name">
-                    <h3>{currentPlan.name}</h3>
-                    <h4>₹{currentPlan.price}</h4>
+                    <h3>{currentPlan?.plan_name || "Loading..."}</h3>
+                    <h4>₹{currentPlan?.price || "Loading..."}</h4>
                   </div>
                   <p>
-                    Validity: <span>{currentPlan.validity}</span>
+                    Validity:{" "}
+                    <span>{currentPlan?.validity || "Loading..."}</span>
                   </p>
                   <p>
-                    User Range: <span>{currentPlan.userRange}</span>
+                    User Range:{" "}
+                    <span>{currentPlan?.user_range || "Loading..."}</span>
                   </p>
                 </div>
               </div>
@@ -184,7 +215,7 @@ const AdminSubscriptionPlans = ({ toggleSidebar }) => {
                 </button>
               </div>
               <div className="admin-plans-grid">
-                {allPlans.map((plan, index) => (
+                {allPlans.slice(0, 3).map((plan, index) => (
                   <PlanCard
                     key={index}
                     plan={plan}

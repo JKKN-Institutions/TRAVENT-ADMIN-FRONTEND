@@ -22,9 +22,9 @@ const PaymentSummary = ({ onBack, planDetails, setShowPaymentHistory }) => {
           paymentDate: new Date().toLocaleDateString(),
           paymentMethod: "Razorpay",
           institutionName: planDetails.institutionName,
-          subscriptionPlan: planDetails.name,
+          subscriptionPlan: planDetails.plan_name,
           validity: planDetails.validity,
-          userRange: planDetails.userRange,
+          userRange: planDetails.user_range,
           amount: planDetails.price,
           tax: Math.round(planDetails.price * 0.18),
           feeBalance: 0,
@@ -39,9 +39,9 @@ const PaymentSummary = ({ onBack, planDetails, setShowPaymentHistory }) => {
     { label: "Payment To", value: "Travent" },
     { label: "Payment date", value: planDetails.paymentDate },
     { label: "Institution Name", value: planDetails.institutionName },
-    { label: "Subscription Plan", value: planDetails.name },
+    { label: "Subscription Plan", value: planDetails.plan_name },
     { label: "Validity", value: planDetails.validity },
-    { label: "User Range", value: planDetails.userRange },
+    { label: "User Range", value: planDetails.user_range },
     { label: "Amount", value: `₹ ${planDetails.price}` },
   ];
 

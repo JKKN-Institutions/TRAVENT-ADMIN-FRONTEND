@@ -101,24 +101,26 @@ const SpecificPassengerDetails = ({ user, onClose }) => {
           <div className="specific-user-details-routes">
             <h4>Available Routes</h4>
             {routeAvailability.length > 0 ? (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Route Number</th>
-                    <th>Total Capacity</th>
-                    <th>Current Boarding</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {routeAvailability.map((route, index) => (
-                    <tr key={index}>
-                      <td>{route.routeNumber}</td>
-                      <td>{route.totalCapacity}</td>
-                      <td>{route.currentBoardingCount}</td>
+              <>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Route Number</th>
+                      <th>Total Capacity</th>
+                      <th>Current Boarding</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {routeAvailability.map((route, index) => (
+                      <tr key={index}>
+                        <td>{route.routeNumber}</td>
+                        <td>{route.totalCapacity}</td>
+                        <td>{route.currentBoardingCount}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
             ) : (
               <p>No available routes for this stop.</p>
             )}

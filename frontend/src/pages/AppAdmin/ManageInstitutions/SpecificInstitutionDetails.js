@@ -204,14 +204,53 @@ const SpecificInstitutionDetails = ({ institution, onClose }) => {
               entityType="subscription"
             />
             <div className="details-grid">
+              {/* Plan Details */}
               <DetailItem
                 label="Subscription Plan Name"
-                value={subscription.plan_name}
+                value={subscription?.plan?.plan_name || "N/A"}
               />
-              <DetailItem label="Validity" value={subscription.validity} />
-              <DetailItem label="Category" value={subscription.category} />
-              <DetailItem label="User Range" value={subscription.user_range} />
-              <DetailItem label="Price" value={subscription.price} />
+              <DetailItem
+                label="Validity"
+                value={subscription?.plan?.validity || "N/A"}
+              />
+              <DetailItem
+                label="Category"
+                value={subscription?.plan?.category || "N/A"}
+              />
+              <DetailItem
+                label="User Range"
+                value={subscription?.plan?.user_range || "N/A"}
+              />
+              <DetailItem
+                label="Price"
+                value={subscription?.plan?.price || "N/A"}
+              />
+
+              {/* Subscription Dates and Status */}
+              <DetailItem
+                label="Subscription Start Date"
+                value={
+                  subscription?.details?.startDate
+                    ? new Date(
+                        subscription.details.startDate
+                      ).toLocaleDateString()
+                    : "N/A"
+                }
+              />
+              <DetailItem
+                label="Subscription End Date"
+                value={
+                  subscription?.details?.endDate
+                    ? new Date(
+                        subscription.details.endDate
+                      ).toLocaleDateString()
+                    : "N/A"
+                }
+              />
+              <DetailItem
+                label="Subscription Status"
+                value={subscription?.details?.status || "N/A"}
+              />
             </div>
           </section>
         </div>

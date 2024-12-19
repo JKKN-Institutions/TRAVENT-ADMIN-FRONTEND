@@ -23,7 +23,9 @@ const AdminHome = ({ toggleSidebar, resetState }) => {
 
   useEffect(() => {
     const institutionId = localStorage.getItem("institutionId");
+    const institutionName = localStorage.getItem("institutionName");
     console.log("Retrieved Institution ID:", institutionId); // Display in console
+    console.log("Retrieved Institution Name:", institutionName);
 
     const fetchDetails = async () => {
       try {
