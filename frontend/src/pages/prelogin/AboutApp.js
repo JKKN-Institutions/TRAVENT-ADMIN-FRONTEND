@@ -150,7 +150,7 @@ const AboutApp = () => {
 
       // Send the Firebase token to backend for validation
       const { data } = await axios.post(
-        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/google-sign-in",
+        "http://localhost:3000/api/auth/google-sign-in",
         { tokenId: token }
       );
 
@@ -216,7 +216,7 @@ const AboutApp = () => {
 
       try {
         const { data } = await axios.post(
-          "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/login",
+          "http://localhost:3000/api/auth/login",
           { email, password }
         );
 

@@ -41,130 +41,7 @@ const ViewInstitutions = ({ toggleSidebar }) => {
     setSearchQuery(query);
     // Handle search functionality here, filtering institutions based on query
   };
-
-  const [institutions, setInstitutions] = useState([
-    {
-      id: 1,
-      code: "1234",
-      name: "JKKN College of Arts & Science",
-      state: "Tamil Nadu",
-      departments: 10,
-      routes: 40,
-      buses: 40,
-      adminName: "Kathir S",
-      adminContact: "9876543210",
-      createdAt: "10-08-2024 10:00 AM",
-    },
-    {
-      id: 2,
-      code: "1235",
-      name: "JKKN Dental College & Hospital",
-      state: "Tamil Nadu",
-      departments: 12,
-      routes: 40,
-      buses: 40,
-      adminName: "Kathir S",
-      adminContact: "9876543210",
-      createdAt: "10-08-2024 10:00 AM",
-    },
-    {
-      id: 3,
-      code: "1235",
-      name: "JKKN Dental College & Hospital",
-      state: "Tamil Nadu",
-      departments: 12,
-      routes: 40,
-      buses: 40,
-      adminName: "Kathir S",
-      adminContact: "9876543210",
-      createdAt: "10-08-2024 10:00 AM",
-    },
-    {
-      id: 4,
-      code: "1235",
-      name: "JKKN Dental College & Hospital",
-      state: "Tamil Nadu",
-      departments: 12,
-      routes: 40,
-      buses: 40,
-      adminName: "Kathir S",
-      adminContact: "9876543210",
-      createdAt: "10-08-2024 10:00 AM",
-    },
-    {
-      id: 5,
-      code: "1235",
-      name: "JKKN Dental College & Hospital",
-      state: "Tamil Nadu",
-      departments: 12,
-      routes: 40,
-      buses: 40,
-      adminName: "Kathir S",
-      adminContact: "9876543210",
-      createdAt: "10-08-2024 10:00 AM",
-    },
-    {
-      id: 6,
-      code: "1235",
-      name: "JKKN Dental College & Hospital",
-      state: "Tamil Nadu",
-      departments: 12,
-      routes: 40,
-      buses: 40,
-      adminName: "Kathir S",
-      adminContact: "9876543210",
-      createdAt: "10-08-2024 10:00 AM",
-    },
-    {
-      id: 7,
-      code: "1235",
-      name: "JKKN Dental College & Hospital",
-      state: "Tamil Nadu",
-      departments: 12,
-      routes: 40,
-      buses: 40,
-      adminName: "Kathir S",
-      adminContact: "9876543210",
-      createdAt: "10-08-2024 10:00 AM",
-    },
-    {
-      id: 8,
-      code: "1235",
-      name: "JKKN Dental College & Hospital",
-      state: "Tamil Nadu",
-      departments: 12,
-      routes: 40,
-      buses: 40,
-      adminName: "Kathir S",
-      adminContact: "9876543210",
-      createdAt: "10-08-2024 10:00 AM",
-    },
-    {
-      id: 9,
-      code: "1235",
-      name: "JKKN Dental College & Hospital",
-      state: "Tamil Nadu",
-      departments: 12,
-      routes: 40,
-      buses: 40,
-      adminName: "Kathir S",
-      adminContact: "9876543210",
-      createdAt: "10-08-2024 10:00 AM",
-    },
-    {
-      id: 10,
-      code: "1235",
-      name: "JKKN Dental College & Hospital",
-      state: "Tamil Nadu",
-      departments: 12,
-      routes: 40,
-      buses: 40,
-      adminName: "Kathir S",
-      adminContact: "9876543210",
-      createdAt: "10-08-2024 10:00 AM",
-    },
-  ]);
-
+  const [institutions, setInstitutions] = useState([]);
   const [currentStep, setCurrentStep] = useState("list");
   const [currentYear, setCurrentYear] = useState(1);
   const [selectedInstitutions, setSelectedInstitutions] = useState([]);
@@ -188,7 +65,7 @@ const ViewInstitutions = ({ toggleSidebar }) => {
   const fetchInstitutions = async () => {
     try {
       const response = await fetch(
-        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutions/list"
+        "http://localhost:3000/api/institutions/list"
       );
       if (response.ok) {
         const data = await response.json();
@@ -213,7 +90,7 @@ const ViewInstitutions = ({ toggleSidebar }) => {
     try {
       console.log("Fetching details for institution ID:", institutionId);
       const response = await fetch(
-        `https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutions/${institutionId}`
+        `http://localhost:3000/api/institutions/${institutionId}`
       );
       if (response.ok) {
         const institutionDetails = await response.json();
@@ -246,7 +123,7 @@ const ViewInstitutions = ({ toggleSidebar }) => {
       try {
         for (const institutionId of selectedInstitutions) {
           const response = await fetch(
-            `https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutions/delete/${institutionId}`,
+            `http://localhost:3000/api/institutions/delete/${institutionId}`,
             {
               method: "DELETE",
             }
@@ -419,7 +296,7 @@ const ViewInstitutions = ({ toggleSidebar }) => {
 
     try {
       const response = await fetch(
-        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutions/add",
+        "http://localhost:3000/api/institutions/add",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
