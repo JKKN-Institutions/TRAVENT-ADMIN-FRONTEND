@@ -27,7 +27,7 @@ const LoginForm = ({
     try {
       console.log("Sending request with payload:", { email, newPassword, otp });
       const response = await fetch(
-        "http://localhost:3000/api/auth/update-password",
+        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/update-password",
         {
           method: "POST",
           headers: {
