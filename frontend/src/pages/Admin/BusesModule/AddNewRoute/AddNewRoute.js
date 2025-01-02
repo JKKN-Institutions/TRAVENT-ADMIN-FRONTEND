@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../../../../apiClient";
+import AsyncSelect from "react-select/async";
 import TopBar from "../../../../components/Shared/TopBar/TopBar";
 import FormInput from "../../../../components/Shared/FormInput/FormInput";
 import ActionButtons from "../../../../components/Shared/ActionButtons/ActionButtons";
@@ -24,20 +25,41 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
 
   useEffect(() => {
     if (route) {
-      const { stops, boardingCount, stoppingCount, _id, ...editableFields } =
-        route;
-      setRouteData(editableFields);
+      console.log("Driver License Number: ", route.mainDriver?.licenseNumber);
+      console.log("Driver Name: ", route.mainDriver?.name);
+
+      const {
+        stops,
+        boardingCount,
+        stoppingCount,
+        mainDriverLicense,
+        _id,
+        ...editableFields
+      } = route;
+
+      console.log("Route MainDriver Name: ", route.mainDriver?.name);
+      console.log(
+        "Route MainDriver License: ",
+        route.mainDriver?.licenseNumber
+      );
+      setRouteData({
+        ...editableFields,
+        mainDriver: route.mainDriver
+          ? {
+              name: route.mainDriver.name,
+              licenseNumber: route.mainDriver.licenseNumber,
+            }
+          : "",
+      });
     } else {
       // Reset form state for Add Mode
       setRouteData({
         routeNumber: "",
         routeName: "",
-
         sittingCapacity: "",
         standingCapacity: "",
         vehicleRegistrationNumber: "",
         mainDriver: "",
-
         collegeArrivalTime: "",
         departureFromCollege: "",
       });
@@ -79,9 +101,9 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
     if (!routeData.vehicleRegistrationNumber)
       formErrors.vehicleRegistrationNumber = "Vehicle Registration is required";
 
-    if (!routeData.mainDriver || !/^[A-Za-z\s]+$/.test(routeData.mainDriver))
-      formErrors.mainDriver =
-        "Main Driver is required and should only contain letters";
+    if (!routeData.mainDriver) {
+      formErrors.mainDriver = "Main Driver is required";
+    }
 
     const timeFields = ["collegeArrivalTime", "departureFromCollege"];
 
@@ -96,9 +118,38 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
     return formErrors;
   };
 
+  const loadDriverOptions = async (inputValue) => {
+    if (!inputValue) return [];
+
+    try {
+      console.log("Searching drivers with name:", inputValue);
+      const response = await apiClient.get(
+        "/institutionsExtended/search-available-drivers",
+        {
+          params: { institutionId, driverName: inputValue },
+        }
+      );
+      console.log("Drivers Response Data:", response.data);
+      return response.data.map((driver) => ({
+        label: driver.name,
+        value: driver.licenseNumber,
+      }));
+    } catch (error) {
+      console.error("Error fetching drivers:", error);
+      showToast("error", "Error fetching drivers.");
+      return [];
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Log the routeData to check the current state of mainDriver
+    console.log(routeData);
+
     const formErrors = validateForm();
+    console.log("Form Errors:", formErrors); // Debugging form errors
+
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
       showToast("error", "Please fix the errors in the form");
@@ -125,10 +176,19 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
       const payload = {
         institutionId,
         ...routeData,
+        mainDriver: routeData.mainDriver
+          ? routeData.mainDriver.licenseNumber
+          : null,
       };
 
-      if (route) {
-        payload.updates = routeData;
+      // Only update mainDriver with the licenseNumber (not the whole object)
+      if (routeData.mainDriver) {
+        payload.updates = {
+          ...routeData,
+          mainDriver: routeData.mainDriver
+            ? routeData.mainDriver.licenseNumber
+            : null,
+        };
       }
 
       const response = await apiClient.post(url, payload);
@@ -185,24 +245,141 @@ const AddNewRoute = ({ route, onBack, onSave, institutionId }) => {
           <div className="add-new-route-form-grid">
             {Object.keys(routeData).map((key) => (
               <div key={key} className="add-new-route-form-group">
-                <FormInput
-                  id={key}
-                  name={key}
-                  type={
-                    ["departureFromCollege", "collegeArrivalTime"].includes(key)
-                      ? "time"
-                      : key.includes("Capacity")
-                      ? "number"
-                      : "text"
-                  }
-                  value={routeData[key]}
-                  placeholder={key
-                    .charAt(0)
-                    .toUpperCase()
-                    .concat(key.slice(1).replace(/([A-Z])/g, " $1"))}
-                  error={errors[key]}
-                  onChange={handleChange}
-                />
+                {key === "mainDriver" ? (
+                  <div className="add-new-route-form-group">
+                    <label>Main Driver</label>
+                    <AsyncSelect
+                      cacheOptions
+                      loadOptions={loadDriverOptions}
+                      defaultOptions
+                      value={
+                        routeData.mainDriver
+                          ? {
+                              label: routeData.mainDriver.name,
+                              value: routeData.mainDriver.licenseNumber,
+                            }
+                          : null
+                      }
+                      onChange={(selectedOption) => {
+                        console.log("Selected Driver: ", selectedOption);
+                        setRouteData({
+                          ...routeData,
+                          mainDriver: selectedOption
+                            ? {
+                                name: selectedOption.label,
+                                licenseNumber: selectedOption.value,
+                              }
+                            : "",
+                        });
+                        console.log(
+                          "Route Data after selected driver: ",
+                          routeData
+                        );
+                      }}
+                      getOptionLabel={(e) => e.label}
+                      placeholder="Main Driver"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          backgroundColor: "#2e323b",
+                          color: "white",
+                          borderColor: "#2e323b",
+                          borderRadius: "10px",
+                          padding: "1px",
+                          borderBottom: "2px solid #666",
+                          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+                        }),
+                        option: (base) => ({
+                          ...base,
+                          backgroundColor: "#2e323b",
+                          color: "white",
+                          ":hover": {
+                            backgroundColor: "#3a4049",
+                          },
+                        }),
+                        singleValue: (base) => ({
+                          ...base,
+                          color: "white",
+                        }),
+                        placeholder: (base) => ({
+                          ...base,
+                          color: "#666",
+                        }),
+                        input: (base) => ({
+                          ...base,
+
+                          color: "white", // Ensures the typed text is white
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          backgroundColor: "#2e323b", // Set the dropdown background color
+                          borderBottom: "2px solid #666",
+                          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+                          borderRadius: "10px",
+                        }),
+                        menuList: (base) => ({
+                          ...base,
+                          backgroundColor: "#2e323b",
+                          borderBottom: "2px solid #666",
+
+                          borderRadius: "10px",
+                        }),
+                      }}
+                    />
+                  </div>
+                ) : key === "collegeArrivalTime" ? (
+                  <div className="add-new-route-form-group">
+                    <label>In Time</label>
+                    <FormInput
+                      id={key}
+                      name={key}
+                      type="time"
+                      value={routeData[key]}
+                      error={errors[key]}
+                      onChange={handleChange}
+                    />
+                  </div>
+                ) : key === "departureFromCollege" ? (
+                  <div className="add-new-route-form-group">
+                    <label>Out Time</label>
+                    <FormInput
+                      id={key}
+                      name={key}
+                      type="time"
+                      value={routeData[key]}
+                      error={errors[key]}
+                      onChange={handleChange}
+                    />
+                  </div>
+                ) : (
+                  <div className="add-new-route-form-group">
+                    <label>
+                      {key.charAt(0).toUpperCase() +
+                        key.slice(1).replace(/([A-Z])/g, " $1")}
+                    </label>
+                    <FormInput
+                      id={key}
+                      name={key}
+                      type={
+                        ["departureFromCollege", "collegeArrivalTime"].includes(
+                          key
+                        )
+                          ? "time"
+                          : "text"
+                      }
+                      value={routeData[key]}
+                      placeholder={
+                        key.charAt(0).toUpperCase() +
+                        key
+                          .slice(1)
+                          .replace(/([A-Z])/g, " $1")
+                          .trim()
+                      }
+                      error={errors[key]}
+                      onChange={handleChange}
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>

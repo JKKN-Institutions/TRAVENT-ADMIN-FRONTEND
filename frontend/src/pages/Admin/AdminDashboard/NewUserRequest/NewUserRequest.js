@@ -46,6 +46,7 @@ const DeclineOverlay = ({ onClose, onSubmit }) => {
 };
 
 function NewUserRequest({ onBack }) {
+  const [isPageVisible, setIsPageVisible] = useState(true);
   const [pendingUsers, setPendingUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [viewingUser, setViewingUser] = useState(null);
@@ -58,6 +59,26 @@ function NewUserRequest({ onBack }) {
   const itemsPerPage = 5;
 
   useEffect(() => {
+    // Function to check if the page is visible
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setIsPageVisible(false); // Page is not visible
+      } else {
+        setIsPageVisible(true); // Page is visible
+      }
+    };
+
+    // Listen for visibility change
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    let intervalId;
     const fetchPendingUsers = async () => {
       try {
         const response = await apiClient.get("/passengers/pending-passengers");
@@ -72,12 +93,13 @@ function NewUserRequest({ onBack }) {
 
     fetchPendingUsers();
 
-    // Poll every 10 seconds to check for updates
-    const intervalId = setInterval(() => {
-      fetchPendingUsers();
-    }, 10000); // Poll every 10 seconds
+    if (isPageVisible) {
+      intervalId = setInterval(() => {
+        fetchPendingUsers();
+      }, 10000); // Poll every 10 seconds
+    }
 
-    // Cleanup interval on component unmount
+    // Cleanup on unmount or when page is no longer visible
     return () => clearInterval(intervalId);
   }, []);
 

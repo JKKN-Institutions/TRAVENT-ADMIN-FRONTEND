@@ -18,6 +18,7 @@ import TopBar from "../../../../components/Shared/TopBar/TopBar";
 import ToastNotification, {
   showToast,
 } from "../../../../components/Shared/ToastNotification/ToastNotification";
+import apiClient from "../../../../apiClient";
 
 ChartJS.register(
   CategoryScale,
@@ -31,11 +32,38 @@ ChartJS.register(
 const FeedbackHome = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [showReceivedFeedback, setShowReceivedFeedback] = useState(false);
+  const [studentsFeedback, setStudentsFeedback] = useState();
+  const [staffFeedback, setStaffFeedback] = useState();
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
+
+  const institutionId = localStorage.getItem("institutionId");
+
+  useEffect(() => {
+    // Fetch the feedback data from the backend
+    const fetchData = async () => {
+      try {
+        const response = await apiClient.get(
+          `/adminRatings/ratings/${institutionId}`
+        );
+        const data = response.data; // Axios automatically parses JSON
+        if (data.success) {
+          setStudentsFeedback(data.students);
+          setStaffFeedback(data.staffs);
+        } else {
+          showToast("Error fetching data", "error");
+        }
+      } catch (error) {
+        console.error("Error fetching feedback data:", error);
+        showToast("Error fetching data", "error");
+      }
+      setIsLoading(false);
+    };
+    fetchData();
+  }, [institutionId]);
 
   const dataSets = {
     satisfactionData: [
@@ -140,7 +168,13 @@ const FeedbackHome = ({ toggleSidebar }) => {
   );
 
   if (showReceivedFeedback) {
-    return <ReceivedFeedback onBack={() => setShowReceivedFeedback(false)} />;
+    return (
+      <ReceivedFeedback
+        studentsFeedback={studentsFeedback}
+        staffFeedback={staffFeedback}
+        onBack={() => setShowReceivedFeedback(false)}
+      />
+    );
   }
 
   return (

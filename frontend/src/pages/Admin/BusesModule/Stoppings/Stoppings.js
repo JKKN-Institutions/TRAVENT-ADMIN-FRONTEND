@@ -184,7 +184,6 @@ const Stoppings = ({ route, onBack, institutionId }) => {
     "Longitude",
     "District",
     "City",
-    "State",
     "Board Time",
     "Drop Time",
     "Boarding Count Morning",
@@ -213,7 +212,7 @@ const Stoppings = ({ route, onBack, institutionId }) => {
             longitude: stop.longitude,
             district: stop.districtName,
             city: stop.cityName,
-            state: stop.stateName,
+
             boardTime: formatTimeTo12Hour(stop.boardTime), // Format boardTime
             dropTime: formatTimeTo12Hour(stop.dropTime), // Format dropTime
             boardingCountMorning: stop.boardingCountMorning,

@@ -7,6 +7,11 @@
   overflow: hidden;
 }
 
+.add-stop-form-grid label {
+  padding-left: 3px;
+  font-weight: bold;
+}
+
 .add-stop-main-content {
   /* flex: 1; */
   overflow-y: auto;

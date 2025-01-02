@@ -15,7 +15,6 @@ const AddNewStop = ({ route, onBack, institutionId, editingStop }) => {
     longitude: "",
     districtName: "",
     cityName: "",
-    stateName: "",
     boardTime: "",
     dropTime: "",
   });
@@ -36,72 +35,77 @@ const AddNewStop = ({ route, onBack, institutionId, editingStop }) => {
   const validateForm = () => {
     let formErrors = {};
 
-    // Validate Stop Name
-    if (!stopData.stopName || stopData.stopName.length < 3) {
-      formErrors.stopName =
-        "Stop Name is required and should be at least 3 characters.";
-    }
+    // Exclude the 'stopID' field from validation if it's in editing mode
+    const fieldsToValidate = Object.keys(stopData).filter(
+      (key) => key !== "stopID"
+    );
 
-    // Validate Latitude
-    if (
-      !stopData.latitude ||
-      isNaN(stopData.latitude) ||
-      stopData.latitude < -90 ||
-      stopData.latitude > 90
-    ) {
-      formErrors.latitude =
-        "Latitude is required and should be between -90 and 90.";
-    }
+    // Validate each field except 'stopID'
+    fieldsToValidate.forEach((key) => {
+      switch (key) {
+        case "stopName":
+          if (!stopData[key] || stopData[key].length < 3) {
+            formErrors[key] =
+              "Stop Name is required and should be at least 3 characters.";
+          }
+          break;
+        case "latitude":
+          if (
+            !stopData[key] ||
+            isNaN(stopData[key]) ||
+            stopData[key] < -90 ||
+            stopData[key] > 90
+          ) {
+            formErrors[key] =
+              "Latitude is required and should be between -90 and 90.";
+          }
+          break;
+        case "longitude":
+          if (
+            !stopData[key] ||
+            isNaN(stopData[key]) ||
+            stopData[key] < -180 ||
+            stopData[key] > 180
+          ) {
+            formErrors[key] =
+              "Longitude is required and should be between -180 and 180.";
+          }
+          break;
+        case "districtName":
+          if (!stopData[key] || !/^[A-Za-z\s]+$/.test(stopData[key])) {
+            formErrors[key] =
+              "District Name is required and should only contain letters and spaces.";
+          }
+          break;
+        case "cityName":
+          if (!stopData[key] || !/^[A-Za-z\s]+$/.test(stopData[key])) {
+            formErrors[key] =
+              "City Name is required and should only contain letters and spaces.";
+          }
+          break;
 
-    // Validate Longitude
-    if (
-      !stopData.longitude ||
-      isNaN(stopData.longitude) ||
-      stopData.longitude < -180 ||
-      stopData.longitude > 180
-    ) {
-      formErrors.longitude =
-        "Longitude is required and should be between -180 and 180.";
-    }
-
-    // Validate District Name
-    if (
-      !stopData.districtName ||
-      !/^[A-Za-z\s]+$/.test(stopData.districtName)
-    ) {
-      formErrors.districtName =
-        "District Name is required and should only contain letters and spaces.";
-    }
-
-    // Validate City Name
-    if (!stopData.cityName || !/^[A-Za-z\s]+$/.test(stopData.cityName)) {
-      formErrors.cityName =
-        "City Name is required and should only contain letters and spaces.";
-    }
-
-    // Validate State Name
-    if (!stopData.stateName || !/^[A-Za-z\s]+$/.test(stopData.stateName)) {
-      formErrors.stateName =
-        "State Name is required and should only contain letters and spaces.";
-    }
-
-    // Validate Board Time
-    if (
-      !stopData.boardTime ||
-      !/^([01]\d|2[0-3]):[0-5]\d$/.test(stopData.boardTime) // 24-hour format validation
-    ) {
-      formErrors.boardTime =
-        "Board Time is required and should be in HH:mm format.";
-    }
-
-    // Validate Drop Time
-    if (
-      !stopData.dropTime ||
-      !/^([01]\d|2[0-3]):[0-5]\d$/.test(stopData.dropTime) // 24-hour format validation
-    ) {
-      formErrors.dropTime =
-        "Drop Time is required and should be in HH:mm format.";
-    }
+        case "boardTime":
+          if (
+            !stopData[key] ||
+            !/^([01]\d|2[0-3]):[0-5]\d$/.test(stopData[key])
+          ) {
+            formErrors[key] =
+              "Board Time is required and should be in HH:mm format.";
+          }
+          break;
+        case "dropTime":
+          if (
+            !stopData[key] ||
+            !/^([01]\d|2[0-3]):[0-5]\d$/.test(stopData[key])
+          ) {
+            formErrors[key] =
+              "Drop Time is required and should be in HH:mm format.";
+          }
+          break;
+        default:
+          break;
+      }
+    });
 
     return formErrors;
   };
@@ -190,6 +194,10 @@ const AddNewStop = ({ route, onBack, institutionId, editingStop }) => {
               .filter((key) => key !== "_id") // Filter out the "_id" field
               .map((key) => (
                 <div key={key} className="add-stop-form-group">
+                  <label>
+                    {key.charAt(0).toUpperCase() +
+                      key.slice(1).replace(/([A-Z])/g, " $1")}
+                  </label>
                   <FormInput
                     id={key}
                     name={key}

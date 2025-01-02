@@ -12,33 +12,36 @@ import ViewAllDrivers from "../ViewAllDrivers/ViewAllDrivers";
 import Button from "../../../../components/Shared/Button/Button";
 import Loading from "../../../../components/Shared/Loading/Loading";
 import TopBar from "../../../../components/Shared/TopBar/TopBar";
-
-const driversData = {
-  main: [
-    { name: "Velan K", routeAssigned: "1" },
-    { name: "Kathir", routeAssigned: "2" },
-    { name: "Ragavan", routeAssigned: "3" },
-    { name: "Muthu", routeAssigned: "4" },
-    { name: "Marudhu", routeAssigned: "5" },
-    { name: "Karthik", routeAssigned: "6" },
-  ],
-  spare: [
-    { name: "Velan", routeAssigned: "9" },
-    { name: "Kathir", routeAssigned: "10" },
-    { name: "Velan", routeAssigned: "12" },
-    { name: "Kathir", routeAssigned: "13" },
-  ],
-};
+import apiClient from "../../../../apiClient";
 
 const DriversHome = ({ toggleSidebar }) => {
   const [showAddNewDriver, setShowAddNewDriver] = useState(false);
   const [viewAllCategory, setViewAllCategory] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [driversData, setDriversData] = useState({ main: [], spare: [] });
 
+  const institutionId = localStorage.getItem("institutionId");
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1500);
-    return () => clearTimeout(timer);
-  }, []);
+    // Fetch drivers when the component mounts
+
+    console.log("Institution Id in DriversHome:", institutionId);
+
+    fetchDrivers();
+  }, [institutionId]);
+
+  const fetchDrivers = async () => {
+    try {
+      const response = await apiClient.get(
+        `/admin/drivers/get-drivers/${institutionId}`
+      );
+      setDriversData(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching drivers:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleAddNewDriver = () => setShowAddNewDriver(true);
 
@@ -57,7 +60,7 @@ const DriversHome = ({ toggleSidebar }) => {
       <div className="drivers-home-card-content">
         <h3 className="drivers-home-card-name">{driver.name}</h3>
         <p className="drivers-home-card-info">
-          Route Assigned: {driver.routeAssigned}
+          Route Assigned: {driver.routeAssigned || "N/A"}
         </p>
       </div>
     </div>

@@ -229,6 +229,10 @@ const ViewRoutes = ({ onBack }) => {
                         <p className="show-routes-card-info">
                           Boardings: {route.boardingCount}
                         </p>
+                        <p className="show-routes-card-info">
+                          Driver: {route.mainDriver.name}{" "}
+                          {/* Display driver name */}
+                        </p>
                       </div>
                     </div>
                   ))

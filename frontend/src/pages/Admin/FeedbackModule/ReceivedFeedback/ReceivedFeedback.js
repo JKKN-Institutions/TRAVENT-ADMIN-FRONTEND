@@ -18,359 +18,15 @@ import ConfirmationModal from "../../../../components/Shared/ConfirmationModal/C
 import ToastNotification, {
   showToast,
 } from "../../../../components/Shared/ToastNotification/ToastNotification";
+import apiClient from "../../../../apiClient";
 
-// Student Feedback Data (14 entries)
-const studentsFeedbackData = [
-  {
-    sNo: 1,
-    studentName: "Aishu J",
-    regNo: "611220104123",
-    rollNo: "2k24AHS157",
-    year: "I",
-    department: "AHS",
-    section: "A",
-    instituteName: "JKKN College of Allied Health Sciences",
-    routeNo: "15",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 2,
-    studentName: "Arun S",
-    regNo: "611220104145",
-    rollNo: "2k22BP135",
-    year: "III",
-    department: "B.PHARM",
-    section: "A",
-    instituteName: "JKKN College of Pharmacy",
-    routeNo: "15",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 3,
-    studentName: "Balagi G",
-    regNo: "611220104134",
-    rollNo: "2k20PD159",
-    year: "V",
-    department: "PHARM D",
-    section: "B",
-    instituteName: "JKKN College of Pharmacy",
-    routeNo: "1",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 4,
-    studentName: "Gobi U",
-    regNo: "611220104185",
-    rollNo: "2k21CSE152",
-    year: "IV",
-    department: "CSE",
-    section: "B",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "5",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 5,
-    studentName: "Gopal O",
-    regNo: "611220104198",
-    rollNo: "2k24EEE165",
-    year: "I",
-    department: "EEE",
-    section: "C",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "7",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 6,
-    studentName: "Gowtham R",
-    regNo: "611220104165",
-    rollNo: "2k24AHS155",
-    year: "I",
-    department: "AHS",
-    section: "A",
-    instituteName: "JKKN College of Allied Health Sciences",
-    routeNo: "15",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 7,
-    studentName: "Jaya V",
-    regNo: "611220104176",
-    rollNo: "2k24ECE163",
-    year: "I",
-    department: "ECE",
-    section: "B",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "15",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 8,
-    studentName: "Karthik L",
-    regNo: "611220104187",
-    rollNo: "2k23IT151",
-    year: "II",
-    department: "IT",
-    section: "B",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "9",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 9,
-    studentName: "Keerthi S",
-    regNo: "611220104182",
-    rollNo: "2k21IT111",
-    year: "IV",
-    department: "IT",
-    section: "A",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "8",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 10,
-    studentName: "Kumar S",
-    regNo: "611220104194",
-    rollNo: "2k23CSE134",
-    year: "II",
-    department: "CSE",
-    section: "A",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "17",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 11,
-    studentName: "Prem K",
-    regNo: "611220104113",
-    rollNo: "2k22BP132",
-    year: "III",
-    department: "B.PHARM",
-    section: "A",
-    instituteName: "JKKN College of Pharmacy",
-    routeNo: "24",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 12,
-    studentName: "Sanjay J",
-    regNo: "611220104157",
-    rollNo: "2k23EEE162",
-    year: "II",
-    department: "EEE",
-    section: "C",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "17",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 13,
-    studentName: "Senthil S",
-    regNo: "611220104119",
-    rollNo: "2k24AHS124",
-    year: "I",
-    department: "AHS",
-    section: "A",
-    instituteName: "JKKN College of Allied Health Sciences",
-    routeNo: "8",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 14,
-    studentName: "Snekha H",
-    regNo: "611220104196",
-    rollNo: "2k20PD155",
-    year: "V",
-    department: "PHARM D",
-    section: "B",
-    instituteName: "JKKN College of Pharmacy",
-    routeNo: "15",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-];
-
-// Staff Feedback Data (14 entries)
-const staffsFeedbackData = [
-  {
-    sNo: 1,
-    staffName: "Aishu J",
-    staffId: "2k24AHS157",
-    department: "AHS",
-    designation: "Professor",
-    instituteName: "JKKN College of Allied Health Sciences",
-    routeNo: "15",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 2,
-    staffName: "Arun S",
-    staffId: "2k22BP135",
-    department: "B.PHARM",
-    designation: "Assistant Professor",
-    instituteName: "JKKN College of Pharmacy",
-    routeNo: "15",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 3,
-    staffName: "Balagi G",
-    staffId: "2k20PD159",
-    department: "PHARM D",
-    designation: "Professor",
-    instituteName: "JKKN College of Pharmacy",
-    routeNo: "1",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 4,
-    staffName: "Gobi U",
-    staffId: "2k21CSE152",
-    department: "CSE",
-    designation: "Associate Professor",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "5",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 5,
-    staffName: "Gopal O",
-    staffId: "2k24EEE165",
-    department: "EEE",
-    designation: "Associate Professor",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "7",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 6,
-    staffName: "Gowtham R",
-    staffId: "2k24AHS155",
-    department: "AHS",
-    designation: "Lab Technician",
-    instituteName: "JKKN College of Allied Health Sciences",
-    routeNo: "15",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 7,
-    staffName: "Jaya V",
-    staffId: "2k24ECE163",
-    department: "ECE",
-    designation: "Assistant Professor",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "15",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 8,
-    staffName: "Karthik L",
-    staffId: "2k23IT151",
-    department: "IT",
-    designation: "Assistant Professor",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "9",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 9,
-    staffName: "Keerthi S",
-    staffId: "2k21IT111",
-    department: "IT",
-    designation: "Lab Technician",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "8",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 10,
-    staffName: "Kumar S",
-    staffId: "2k23CSE134",
-    department: "CSE",
-    designation: "Associate Professor",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "17",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 11,
-    staffName: "Prem K",
-    staffId: "2k22BP132",
-    department: "B.PHARM",
-    designation: "Assistant Professor",
-    instituteName: "JKKN College of Pharmacy",
-    routeNo: "24",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 12,
-    staffName: "Sanjay J",
-    staffId: "2k23EEE162",
-    department: "EEE",
-    designation: "Assistant Professor",
-    instituteName: "JKKN College of Engineering & Technology",
-    routeNo: "17",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 13,
-    staffName: "Senthil S",
-    staffId: "2k24AHS124",
-    department: "AHS",
-    designation: "Professor",
-    instituteName: "JKKN College of Allied Health Sciences",
-    routeNo: "8",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-  {
-    sNo: 14,
-    staffName: "Snekha H",
-    staffId: "2k20PD155",
-    department: "PHARM D",
-    designation: "Lab Technician",
-    instituteName: "JKKN College of Pharmacy",
-    routeNo: "15",
-    feedbackDate: "15-07-2024",
-    feedbackTime: "10.00 AM",
-  },
-];
-
-const ReceivedFeedback = ({ onBack }) => {
+const ReceivedFeedback = ({ onBack, studentsFeedback, staffFeedback }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [currentPageStudent, setCurrentPageStudent] = useState(1);
   const [currentPageStaff, setCurrentPageStaff] = useState(1);
-  const [filteredStudents, setFilteredStudents] =
-    useState(studentsFeedbackData);
-  const [filteredStaffs, setFilteredStaffs] = useState(staffsFeedbackData);
+  const [filteredStudents, setFilteredStudents] = useState(studentsFeedback);
+  const [filteredStaffs, setFilteredStaffs] = useState(staffFeedback);
   const [selectedStudentFeedback, setSelectedStudentFeedback] = useState([]);
   const [selectedStaffFeedback, setSelectedStaffFeedback] = useState([]);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -397,8 +53,8 @@ const ReceivedFeedback = ({ onBack }) => {
         })
       );
 
-    setFilteredStudents(filterData(studentsFeedbackData));
-    setFilteredStaffs(filterData(staffsFeedbackData));
+    setFilteredStudents(filterData(filteredStudents));
+    setFilteredStaffs(filterData(filteredStaffs));
     setCurrentPageStudent(1);
     setCurrentPageStaff(1);
   };
@@ -495,7 +151,7 @@ const ReceivedFeedback = ({ onBack }) => {
                 <option value="">{filterKey.replace(/([A-Z])/g, " $1")}</option>
                 {Array.from(
                   new Set(
-                    [...studentsFeedbackData, ...staffsFeedbackData]
+                    [...filteredStudents, ...filteredStaffs]
                       .map((item) => item[filterKey])
                       .filter(Boolean)
                   )
@@ -541,8 +197,7 @@ const ReceivedFeedback = ({ onBack }) => {
               "Section",
               "Institute Name",
               "Route No",
-              "Feedback Date",
-              "Feedback Time",
+              "Feedback Count",
               "View",
             ]}
             rows={filteredStudents
@@ -575,8 +230,7 @@ const ReceivedFeedback = ({ onBack }) => {
                   section: student.section,
                   instituteName: student.instituteName,
                   routeNo: student.routeNo,
-                  feedbackDate: student.feedbackDate,
-                  feedbackTime: student.feedbackTime,
+                  feedbackCount: student.ratings?.length || 0,
                   view: (
                     <FontAwesomeIcon
                       icon={faEye}
@@ -632,8 +286,7 @@ const ReceivedFeedback = ({ onBack }) => {
               "Designation",
               "Institute Name",
               "Route No",
-              "Feedback Date",
-              "Feedback Time",
+              "Feedback Count",
               "View",
             ]}
             rows={filteredStaffs
@@ -664,8 +317,7 @@ const ReceivedFeedback = ({ onBack }) => {
                   designation: staff.designation,
                   instituteName: staff.instituteName,
                   routeNo: staff.routeNo,
-                  feedbackDate: staff.feedbackDate,
-                  feedbackTime: staff.feedbackTime,
+                  feedbackCount: staff.ratings?.length || 0,
                   view: (
                     <FontAwesomeIcon
                       icon={faEye}
@@ -694,6 +346,7 @@ const ReceivedFeedback = ({ onBack }) => {
         {viewingFeedback && (
           <SpecificFeedbackReceived
             feedback={viewingFeedback}
+            ratings={viewingFeedback.ratings}
             onClose={() => setViewingFeedback(null)}
           />
         )}

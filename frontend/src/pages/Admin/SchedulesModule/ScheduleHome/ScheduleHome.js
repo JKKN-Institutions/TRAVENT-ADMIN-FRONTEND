@@ -29,14 +29,15 @@ ChartJS.register(
 
 const ScheduleHome = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [autoPlanning, setAutoPlanning] = useState(true);
   const [schedulingClosingTime, setSchedulingClosingTime] = useState("19:30");
-  const [reminderNotification, setReminderNotification] = useState(true);
   const [notificationSendingTime, setNotificationSendingTime] =
     useState("19:40");
-  const [dontAllowTomorrow, setDontAllowTomorrow] = useState(false);
   const [showScheduledPassengers, setShowScheduledPassengers] = useState(false);
   const [showGeneratedPlan, setShowGeneratedPlan] = useState(false);
+
+  const [selectedWorkingDays, setSelectedWorkingDays] = useState([]);
+  const [showWorkingDaysCalendar, setShowWorkingDaysCalendar] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const totalPassengers = 8958;
 
@@ -132,6 +133,116 @@ const ScheduleHome = ({ toggleSidebar }) => {
     return <GeneratedPlan onBack={handleBackFromGeneratedPlan} />;
   }
 
+  const getDaysInMonth = (date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+
+    const days = [];
+    for (let i = 0; i < firstDayOfMonth; i++) {
+      days.push(null);
+    }
+
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push(new Date(year, month, i));
+    }
+
+    return days;
+  };
+
+  const isDateSelected = (date) => {
+    return selectedWorkingDays.some(
+      (selectedDay) =>
+        selectedDay &&
+        date &&
+        selectedDay.toDateString() === date.toDateString()
+    );
+  };
+
+  const handleDayClick = (date) => {
+    if (!date) return;
+
+    const newSelectedDays = isDateSelected(date)
+      ? selectedWorkingDays.filter(
+          (selectedDay) => selectedDay.toDateString() !== date.toDateString()
+        )
+      : [...selectedWorkingDays, date];
+
+    setSelectedWorkingDays(newSelectedDays);
+  };
+
+  const toggleWorkingDaysCalendar = () => {
+    setShowWorkingDaysCalendar(!showWorkingDaysCalendar);
+  };
+
+  const handlePreviousMonth = () => {
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)
+    );
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1)
+    );
+  };
+
+  const renderCalendar = () => {
+    const days = getDaysInMonth(currentMonth);
+    const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    return (
+      <div className="working-days-calendar">
+        <div className="calendar-navigation">
+          <button className="calendar-nav-btn" onClick={handlePreviousMonth}>
+            &lt;
+          </button>
+          <div className="calendar-month-year">
+            {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+          </div>
+          <button className="calendar-nav-btn" onClick={handleNextMonth}>
+            &gt;
+          </button>
+        </div>
+        <div className="calendar-header">
+          {weekDays.map((day) => (
+            <div key={day} className="calendar-weekday">
+              {day}
+            </div>
+          ))}
+        </div>
+        <div className="calendar-grid">
+          {days.map((date, index) => (
+            <div
+              key={index}
+              className={`calendar-day ${date ? "calendar-day-active" : ""} ${
+                isDateSelected(date) ? "calendar-day-selected" : ""
+              }`}
+              onClick={() => date && handleDayClick(date)}
+            >
+              {date ? date.getDate() : ""}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
       {isLoading ? (
@@ -208,87 +319,128 @@ const ScheduleHome = ({ toggleSidebar }) => {
               <h2>Settings</h2>
               <div className="schedules-settings-grid">
                 <div className="schedules-settings-column">
-                  <div className="schedules-setting-item">
-                    <label htmlFor="auto-planning">
-                      Enable Auto Planning and Scheduling
-                    </label>
-                    <Switch
-                      onChange={setAutoPlanning}
-                      checked={autoPlanning}
-                      onColor="#11a8fd"
-                      uncheckedIcon={false}
-                      checkedIcon={false}
-                    />
+                  <div className="settings-section">
+                    <h3 className="settings-section-title">
+                      Select Working Days
+                    </h3>
+                    <div className="schedules-setting-item">
+                      <label htmlFor="notification-time">
+                        Monthly Calendar
+                      </label>
+
+                      <button
+                        className="change-time-btn working-days-btn"
+                        onClick={toggleWorkingDaysCalendar}
+                      >
+                        Select Working Days
+                      </button>
+                    </div>
+                    {showWorkingDaysCalendar && (
+                      <div className="working-days-overlay">
+                        <div className="working-days-modal">
+                          <h4>Select Working Days</h4>
+                          {renderCalendar()}
+                          <div className="working-days-actions">
+                            <button
+                              className="change-time-btn"
+                              onClick={toggleWorkingDaysCalendar}
+                            >
+                              Done
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <p className="schedules-setting-description">
+                      Choose the working days from the calendar to manage
+                      scheduling accordingly.
+                    </p>
                   </div>
-                  <p className="schedules-setting-description">
-                    Generates the plan automatically on the specified time and
-                    updates everyone with their schedule
-                  </p>
-                  <div className="schedules-setting-item">
-                    <label htmlFor="closing-time">
-                      Scheduling Closing Time
-                    </label>
-                    <input
-                      type="time"
-                      id="closing-time"
-                      value={schedulingClosingTime}
-                      onChange={(e) => setSchedulingClosingTime(e.target.value)}
-                    />
-                  </div>
-                  <div className="change-time-btn-container">
-                    <button className="change-time-btn">
-                      Change Schedule Closing Time
-                    </button>
+                  <div className="settings-section">
+                    <h3 className="settings-section-title">
+                      Schedule Remainder Settings
+                    </h3>
+
+                    <div className="schedules-setting-item">
+                      <label htmlFor="notification-time">
+                        Notification Time
+                      </label>
+                      <input
+                        type="time"
+                        id="notification-time"
+                        value={notificationSendingTime}
+                        onChange={(e) =>
+                          setNotificationSendingTime(e.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="schedules-setting-item">
+                      <button className="change-time-btn">
+                        Set Schedule Remainder Timing
+                      </button>
+                    </div>
+                    <p className="schedules-setting-description">
+                      Set the time for schedule reminder notifications to be
+                      sent.
+                    </p>
                   </div>
                 </div>
+
                 <div className="schedules-settings-divider"></div>
+
                 <div className="schedules-settings-column">
-                  <div className="schedules-setting-item">
-                    <label htmlFor="reminder-notification">
-                      Reminder Notification
-                    </label>
-                    <Switch
-                      onChange={setReminderNotification}
-                      checked={reminderNotification}
-                      onColor="#11a8fd"
-                      uncheckedIcon={false}
-                      checkedIcon={false}
-                    />
+                  <div className="settings-section">
+                    <h3 className="settings-section-title">
+                      Scheduling Time Configuration
+                    </h3>
+                    <div className="schedules-setting-item">
+                      <label htmlFor="start-time">Start Time</label>
+                      <input type="time" id="start-time" defaultValue="09:00" />
+                    </div>
+                    <div className="schedules-setting-item">
+                      <label htmlFor="closing-time">Closing Time</label>
+                      <input
+                        type="time"
+                        id="closing-time"
+                        value={schedulingClosingTime}
+                        onChange={(e) =>
+                          setSchedulingClosingTime(e.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="schedules-setting-item">
+                      <button className="change-time-btn">
+                        Save Scheduling Time
+                      </button>
+                    </div>
+                    <p className="schedules-setting-description">
+                      Define the start and closing time for scheduling
+                      activities.
+                    </p>
                   </div>
-                  <div className="schedules-setting-item">
-                    <label htmlFor="notification-time">
-                      Notification Sending Time
-                    </label>
-                    <input
-                      type="time"
-                      id="notification-time"
-                      value={notificationSendingTime}
-                      onChange={(e) =>
-                        setNotificationSendingTime(e.target.value)
-                      }
-                    />
+
+                  <div className="settings-section">
+                    <h3 className="settings-section-title">
+                      Route Plan Generation
+                    </h3>
+                    <div className="schedules-setting-item">
+                      <label htmlFor="route-plan-time">Generation Time</label>
+                      <input
+                        type="time"
+                        id="route-plan-time"
+                        defaultValue="20:00"
+                      />
+                    </div>
+                    <div className="schedules-setting-item">
+                      <button className="change-time-btn">
+                        Set Route Plan Generation Time
+                      </button>
+                    </div>
+                    <p className="schedules-setting-description">
+                      Set the time when the route plan will be generated
+                      automatically.
+                    </p>
                   </div>
-                  <div className="change-time-btn-container">
-                    <button className="change-time-btn">
-                      Change Notification Sending Time
-                    </button>
-                  </div>
-                  <div className="schedules-setting-item">
-                    <label htmlFor="dont-allow-tomorrow">
-                      Don't Allow Scheduling On Tomorrow
-                    </label>
-                    <Switch
-                      onChange={setDontAllowTomorrow}
-                      checked={dontAllowTomorrow}
-                      onColor="#11a8fd"
-                      uncheckedIcon={false}
-                      checkedIcon={false}
-                    />
-                  </div>
-                  <p className="schedules-setting-description">
-                    Not allowing the users to schedule for tomorrow due to any
-                    reason like holiday, etc.
-                  </p>
                 </div>
               </div>
             </div>

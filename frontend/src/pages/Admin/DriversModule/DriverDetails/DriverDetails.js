@@ -15,12 +15,12 @@ const DriverDetails = ({ driver, onBack, onEdit, onToggleCategory }) => {
     {
       sNo: 1,
       routeNo: "15",
-      stopName: "Seelanayakkampatti Bypass",
+      routeName: "Seelanayakkampatti Bypass",
       duration: "12 months",
     },
-    { sNo: 2, routeNo: "1", stopName: "Erode", duration: "2 months" },
-    { sNo: 3, routeNo: "4", stopName: "Pallipalayam", duration: "6 months" },
-    { sNo: 4, routeNo: "12", stopName: "Sangariri", duration: "6 months" },
+    { sNo: 2, routeNo: "1", routeName: "Erode", duration: "2 months" },
+    { sNo: 3, routeNo: "4", routeName: "Pallipalayam", duration: "6 months" },
+    { sNo: 4, routeNo: "12", routeName: "Sangariri", duration: "6 months" },
   ];
 
   // Define category toggle label dynamically
@@ -77,9 +77,9 @@ const DriverDetails = ({ driver, onBack, onEdit, onToggleCategory }) => {
                     "Driver Category": driver.category,
                     "License Number": driver.licenseNumber,
                     "Aadhar Number": driver.aadharNumber,
-                    Experience: driver.experience,
-                    "Referral Employee": driver.referralEmployee,
-                    Attendance: driver.attendance,
+                    "Experience In Years": driver.experienceInYears,
+
+                    "Attendance In Days": driver.attendanceDays,
                   })}
                 </tbody>
               </table>
@@ -96,7 +96,7 @@ const DriverDetails = ({ driver, onBack, onEdit, onToggleCategory }) => {
                   <tr>
                     <th>S.No</th>
                     <th>Route No</th>
-                    <th>Stop Name</th>
+                    <th>Route Name</th>
                     <th>Duration</th>
                   </tr>
                 </thead>
@@ -105,7 +105,7 @@ const DriverDetails = ({ driver, onBack, onEdit, onToggleCategory }) => {
                     <tr key={route.sNo}>
                       <td>{route.sNo}</td>
                       <td>{route.routeNo}</td>
-                      <td>{route.stopName}</td>
+                      <td>{route.routeName}</td>
                       <td>{route.duration}</td>
                     </tr>
                   ))}

@@ -25,7 +25,9 @@ const FormInput = ({
           disabled={disabled} // Add disabled here
         >
           {/* Add a disabled placeholder option */}
-          <option value="">{placeholder}</option>
+          <option value="" disabled hidden>
+            {placeholder}
+          </option>
           {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}

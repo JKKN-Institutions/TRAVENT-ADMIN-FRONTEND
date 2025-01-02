@@ -18,6 +18,7 @@ import SearchBar from "../../../../components/Shared/SearchBar/SearchBar";
 import ToastNotification, {
   showToast,
 } from "../../../../components/Shared/ToastNotification/ToastNotification";
+import apiClient from "../../../../apiClient";
 
 const ViewAllDrivers = ({ category, drivers, onBack }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,6 +28,10 @@ const ViewAllDrivers = ({ category, drivers, onBack }) => {
   const [editingDriver, setEditingDriver] = useState(null);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showDriverDetails, setShowDriverDetails] = useState(false);
+
+  console.log("Drivers:", drivers);
+
+  const institutionId = localStorage.getItem("institutionId");
 
   useEffect(() => {
     const results = drivers.filter((driver) =>
@@ -39,6 +44,7 @@ const ViewAllDrivers = ({ category, drivers, onBack }) => {
     category === "main" ? "Main Drivers" : "Spare Drivers";
 
   const handleDriverClick = (driver) => {
+    console.log("Driver clicked:", driver);
     setSelectedDrivers((prevSelected) => {
       if (prevSelected.includes(driver)) {
         return prevSelected.filter((d) => d !== driver);
@@ -51,7 +57,7 @@ const ViewAllDrivers = ({ category, drivers, onBack }) => {
     const selectedCount = selectedDrivers.length;
     return {
       isSingleSelected: selectedCount === 1,
-      isMultipleSelected: selectedCount > 1,
+      isMultipleSelected: selectedCount > 0,
     };
   };
 
@@ -63,8 +69,13 @@ const ViewAllDrivers = ({ category, drivers, onBack }) => {
 
   const handleEditDriver = () => {
     if (selectedDrivers.length === 1) {
-      setEditingDriver(selectedDrivers[0]);
-      setIsEditing(true);
+      const driverToEdit = selectedDrivers[0];
+      if (driverToEdit) {
+        setEditingDriver(driverToEdit);
+        setIsEditing(true);
+      } else {
+        showToast("error", "Driver not found.");
+      }
     }
   };
 
@@ -72,23 +83,67 @@ const ViewAllDrivers = ({ category, drivers, onBack }) => {
     setShowDeleteConfirmation(true);
   };
 
-  const confirmDeleteDriver = () => {
-    const updatedDrivers = filteredDrivers.filter(
-      (driver) => !selectedDrivers.includes(driver)
+  const confirmDeleteDriver = async () => {
+    const driverLicenseNumbers = selectedDrivers.map(
+      (driver) => driver.licenseNumber
     );
-    setFilteredDrivers(updatedDrivers);
-    setSelectedDrivers([]);
-    setShowDeleteConfirmation(false);
-    showToast("success", "Driver(s) deleted successfully.");
+
+    if (driverLicenseNumbers.length === 0) {
+      showToast("error", "No drivers selected for deletion.");
+      return;
+    }
+
+    try {
+      const response = await apiClient.delete("/admin/drivers/deleteDrivers", {
+        data: { driverLicenseNumbers, institutionId }, // Send driver IDs in the body
+      });
+
+      if (response.status === 200) {
+        const updatedDrivers = filteredDrivers.filter(
+          (driver) => !driverLicenseNumbers.includes(driver.licenseNumber)
+        );
+        setFilteredDrivers(updatedDrivers);
+        setSelectedDrivers([]);
+        setShowDeleteConfirmation(false);
+        showToast("success", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting drivers:", error);
+      showToast("error", "Failed to delete driver(s). Please try again.");
+    }
   };
 
   const handleSaveDriver = (updatedDriver) => {
+    if (!updatedDriver) {
+      console.error("Updated driver is undefined or null");
+      showToast("error", "Failed to update driver.");
+      return; // Exit early if no valid driver data
+    }
+
+    // Update the filteredDrivers state with the updated driver data
+    const updatedDriversList = filteredDrivers.map((driver) =>
+      driver.licenseNumber === updatedDriver.licenseNumber
+        ? updatedDriver
+        : driver
+    );
+
+    setFilteredDrivers(updatedDriversList);
+
+    // Optionally, if you also want to refresh the selectedDrivers state:
+    const updatedSelectedDrivers = selectedDrivers.map((driver) =>
+      driver.licenseNumber === updatedDriver.licenseNumber
+        ? updatedDriver
+        : driver
+    );
+
+    setSelectedDrivers(updatedSelectedDrivers);
+
     setIsEditing(false);
     setEditingDriver(null);
     showToast("success", `Driver ${updatedDriver.name} updated successfully.`);
   };
 
-  if (isEditing) {
+  if (isEditing && editingDriver) {
     return (
       <AddNewDriver
         driver={editingDriver}
@@ -145,7 +200,10 @@ const ViewAllDrivers = ({ category, drivers, onBack }) => {
                 </>
               }
               onClick={handleDeleteDriver}
-              disabled={!handleActionButtonsState().isMultipleSelected}
+              disabled={
+                !handleActionButtonsState().isMultipleSelected &&
+                !handleActionButtonsState().isSingleSelected
+              }
             />
           </div>
         </div>
@@ -173,7 +231,7 @@ const ViewAllDrivers = ({ category, drivers, onBack }) => {
               <div className="view-all-drivers-card-content">
                 <h3 className="view-all-drivers-card-name">{driver.name}</h3>
                 <p className="view-all-drivers-card-info">
-                  Route Assigned: {driver.routeAssigned}
+                  Route Assigned: {driver.routeAssigned || "N/A"}
                 </p>
               </div>
             </div>
@@ -184,7 +242,7 @@ const ViewAllDrivers = ({ category, drivers, onBack }) => {
       {showDeleteConfirmation && (
         <ConfirmationModal
           title="Confirm Deletion"
-          message="Are you sure you want to delete this driver?"
+          message={`Are you sure you want to delete ${selectedDrivers.length} driver(s)?`}
           onCancel={() => setShowDeleteConfirmation(false)}
           onConfirm={confirmDeleteDriver}
         />

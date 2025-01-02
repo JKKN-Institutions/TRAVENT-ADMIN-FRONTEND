@@ -84,8 +84,32 @@
   margin-bottom: 2rem;
 }
 
-.rating-item {
+.rating-items {
   margin-bottom: 1.5rem;
+}
+
+.rating-item,
+.rating-date-time {
+  margin-bottom: 1rem;
+}
+
+.rating-date-time {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.rating-date-time-p {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Align the content to the right */
+  gap: 0.5rem; /* Optional: Add some space between the date and time */
+}
+
+.rating-date-time-p p {
+  margin: 0; /* Remove default margin */
+  font-size: 0.9rem;
+  color: #ccc; /* Optional: Set a lighter color for the date/time */
 }
 
 .rating-label {

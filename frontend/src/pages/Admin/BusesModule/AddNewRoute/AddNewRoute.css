@@ -64,6 +64,11 @@ input[type="time"]::after {
   margin-bottom: 1rem;
 }
 
+.add-new-route-form-grid label {
+  padding-left: 3px;
+  font-weight: bold;
+}
+
 .form-group {
   position: relative;
 }

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import apiClient from "../../../../apiClient"; // Import the custom apiClient
 import ToastNotification, {
   showToast,
@@ -17,8 +19,11 @@ const AddNewDriver = ({ driver, onBack, onSave }) => {
     aadharNumber: "",
     experienceInYears: "",
     category: "",
+    email: "", // New field
+    password: "", // New field
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
 
   // Extract institutionId from localStorage
@@ -26,8 +31,25 @@ const AddNewDriver = ({ driver, onBack, onSave }) => {
   console.log("Driver...", institutionId);
 
   useEffect(() => {
+    console.log("Driver received:", driver); // Log driver object
     if (driver) {
-      setDriverData({ ...driverData, ...driver });
+      // Exclude email and password when editing an existing driver
+      setDriverData((prevData) => ({
+        ...prevData,
+        name: driver.name || "",
+        mobileNo: driver.mobileNo || "",
+        address: driver.address || "",
+        licenseNumber: driver.licenseNumber || "",
+        aadharNumber: driver.aadharNumber || "",
+        experienceInYears: driver.experienceInYears || "",
+        category: driver.category || "",
+        // Don't set email and password when editing
+        email: driver.email || "",
+        password: "", // Clear password field during edit
+      }));
+    } else {
+      // Handle the case where driver is undefined
+      console.error("Driver is undefined");
     }
   }, [driver]);
 
@@ -44,7 +66,13 @@ const AddNewDriver = ({ driver, onBack, onSave }) => {
   const validateForm = () => {
     let formErrors = {};
     Object.keys(driverData).forEach((key) => {
-      if (!driverData[key]) {
+      // Skip email and password fields for validation when editing
+      if (
+        !driver &&
+        !driverData[key] &&
+        key !== "email" &&
+        key !== "password"
+      ) {
         formErrors[key] = `${
           key.charAt(0).toUpperCase() + key.slice(1)
         } is required`;
@@ -69,7 +97,7 @@ const AddNewDriver = ({ driver, onBack, onSave }) => {
         if (driver) {
           // Update existing driver using apiClient
           response = await apiClient.put(
-            `/admin/drivers/updateDriver/${driver._id}`,
+            `/admin/drivers/updateDriver/${driver.licenseNumber}`,
             dataToSend
           );
         } else {
@@ -82,19 +110,16 @@ const AddNewDriver = ({ driver, onBack, onSave }) => {
 
         console.log("Backend response:", response); // Log the response here
 
-        if (response.status === 201) {
+        if (response.status === 200 || response.status === 201) {
           showToast(
             "success",
             `Successfully ${driver ? "updated" : "added"} driver.`
           );
-
-          // Delay calling onSave to allow toast to appear
           setTimeout(() => {
-            onSave(); // This will be called after a short delay
-          }, 3000); // Delay in milliseconds (3 seconds in this case)
+            onSave(driver ? { ...driver, ...driverData } : dataToSend); // This will be called after a short delay
+          }, 3000);
         } else if (response.status === 400) {
-          // Handle specific backend errors for duplicate license number or Aadhar number
-          showToast("error", response.data.message); // Use message from backend
+          showToast("error", response.data.message);
         } else {
           throw new Error("Failed to save driver.");
         }
@@ -118,6 +143,8 @@ const AddNewDriver = ({ driver, onBack, onSave }) => {
     }
   };
 
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+
   return (
     <div className="add-new-driver-container">
       <ToastNotification />
@@ -129,41 +156,61 @@ const AddNewDriver = ({ driver, onBack, onSave }) => {
       <main className="add-new-driver-main-content">
         <form onSubmit={handleSubmit}>
           <div className="add-new-driver-form-grid">
-            {Object.keys(driverData).map((key) => (
-              <div key={key} className="add-new-driver-form-group">
-                <FormInput
-                  name={key}
-                  value={driverData[key]}
-                  onChange={(e) => handleChange(e)}
-                  placeholder={
-                    key === "category"
-                      ? "Select Category" // No placeholder for category
-                      : key.charAt(0).toUpperCase() +
-                        key
-                          .slice(1)
-                          .replace(/([A-Z])/g, " $1")
-                          .trim()
-                  }
-                  error={errors[key]}
-                  // Conditionally set type based on the field key
-                  type={
-                    key === "category"
-                      ? "select"
-                      : key === "experienceInYears"
-                      ? "number"
-                      : "text"
-                  }
-                  options={
-                    key === "category"
-                      ? [
-                          { value: "main", label: "Main Driver" },
-                          { value: "spare", label: "Spare Driver" },
-                        ]
-                      : null
-                  }
-                />
-              </div>
-            ))}
+            {Object.keys(driverData).map((key) => {
+              // Skip email and password fields when editing an existing driver
+              if (driver && (key === "email" || key === "password"))
+                return null;
+              return (
+                <div key={key} className="add-new-driver-form-group">
+                  <FormInput
+                    name={key}
+                    value={driverData[key] || ""}
+                    onChange={(e) => handleChange(e)}
+                    placeholder={
+                      key === "category"
+                        ? "Select Category" // No placeholder for category
+                        : key.charAt(0).toUpperCase() +
+                          key
+                            .slice(1)
+                            .replace(/([A-Z])/g, " $1")
+                            .trim()
+                    }
+                    error={errors[key]}
+                    // Conditionally set type based on the field key
+                    type={
+                      key === "category"
+                        ? "select"
+                        : key === "experienceInYears"
+                        ? "number"
+                        : key === "password"
+                        ? showPassword
+                          ? "text"
+                          : "password"
+                        : "text"
+                    }
+                    options={
+                      key === "category"
+                        ? [
+                            { value: "main", label: "Main Driver" },
+                            { value: "spare", label: "Spare Driver" },
+                          ]
+                        : null
+                    }
+                  />
+                  {key === "password" && (
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={togglePasswordVisibility}
+                    >
+                      <FontAwesomeIcon
+                        icon={showPassword ? faEye : faEyeSlash}
+                      />
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           <ActionButtons

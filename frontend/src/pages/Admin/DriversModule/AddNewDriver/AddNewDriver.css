@@ -7,6 +7,10 @@
   overflow: hidden;
 }
 
+.category-input::placeholder {
+  color: #666;
+}
+
 .add-new-driver-main-content {
   /* flex: 1; */
   overflow-y: auto;
@@ -42,6 +46,29 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+}
+
+/* Style for password input */
+.password-toggle {
+  position: absolute;
+  top: 45%;
+  right: 10px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.add-new-driver-form-group {
+  position: relative;
+}
+
+.add-new-driver-form-group input[type="password"],
+.add-new-driver-form-group input[type="text"],
+.add-new-driver-form-group select {
+  padding-right: 40px; /* Add space for the icon */
 }
 
 /* Tablet Responsiveness */

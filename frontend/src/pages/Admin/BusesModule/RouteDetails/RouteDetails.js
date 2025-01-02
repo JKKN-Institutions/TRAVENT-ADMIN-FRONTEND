@@ -127,7 +127,7 @@ const RouteDetails = ({ route, onBack, institutionId }) => {
                   ["Sitting Capacity", route.sittingCapacity],
                   ["Standing Capacity", route.standingCapacity],
                   ["Vehicle Registration No", route.vehicleRegistrationNumber],
-                  ["Main Driver", route.mainDriver],
+                  ["Main Driver", route.mainDriver.name],
 
                   [
                     "College Arrival Time",
