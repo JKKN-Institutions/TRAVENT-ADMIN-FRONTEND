@@ -17,6 +17,10 @@ import ScheduledPassengers from "../ScheduledPassengers/ScheduledPassengers";
 import GeneratedPlan from "../GeneratedPlan/GeneratedPlan";
 import Loading from "../../../../components/Shared/Loading/Loading";
 import TopBar from "../../../../components/Shared/TopBar/TopBar";
+import apiClient from "../../../../apiClient";
+import ToastNotification, {
+  showToast,
+} from "../../../../components/Shared/ToastNotification/ToastNotification";
 
 ChartJS.register(
   CategoryScale,
@@ -29,9 +33,10 @@ ChartJS.register(
 
 const ScheduleHome = ({ toggleSidebar }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [schedulingClosingTime, setSchedulingClosingTime] = useState("19:30");
-  const [notificationSendingTime, setNotificationSendingTime] =
-    useState("19:40");
+  const [scheduleOpeningTime, setScheduleOpeningTime] = useState("");
+  const [scheduleClosingTime, setScheduleClosingTime] = useState("");
+  const [notificationSendingTime, setNotificationSendingTime] = useState("");
+  const [routePlanGenerationTime, setRoutePlanGenerationTime] = useState("");
   const [showScheduledPassengers, setShowScheduledPassengers] = useState(false);
   const [showGeneratedPlan, setShowGeneratedPlan] = useState(false);
 
@@ -40,6 +45,8 @@ const ScheduleHome = ({ toggleSidebar }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const totalPassengers = 8958;
+
+  const institutionId = localStorage.getItem("institutionId");
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 1500);
@@ -205,7 +212,6 @@ const ScheduleHome = ({ toggleSidebar }) => {
       "November",
       "December",
     ];
-
     return (
       <div className="working-days-calendar">
         <div className="calendar-navigation">
@@ -243,8 +249,49 @@ const ScheduleHome = ({ toggleSidebar }) => {
     );
   };
 
+  // Function to handle saving schedule settings
+  const handleSaveScheduleSettings = async () => {
+    // Validation check
+    if (
+      !scheduleOpeningTime ||
+      !scheduleClosingTime ||
+      !notificationSendingTime ||
+      !routePlanGenerationTime ||
+      selectedWorkingDays.length === 0
+    ) {
+      alert("Please fill all the required fields!");
+      return;
+    }
+
+    const payload = {
+      institutionId: institutionId,
+      scheduleOpeningTime,
+      scheduleClosingTime,
+      notificationSendingTime,
+      selectedWorkingDays,
+      routePlanGenerationTime,
+    };
+
+    try {
+      const response = await apiClient.post(
+        "/adminSchedules/add-schedule-settings",
+        payload
+      );
+      console.log(response.data.message); // Handle success message
+      // Show toast for success
+      showToast("success", response.data.message);
+    } catch (error) {
+      console.error("Error saving schedule settings:", error);
+      showToast(
+        "error",
+        "Error saving schedule settings. Please try again later."
+      );
+    }
+  };
+
   return (
     <>
+      <ToastNotification />
       {isLoading ? (
         <Loading message="Loading Schedules..." />
       ) : (
@@ -374,11 +421,7 @@ const ScheduleHome = ({ toggleSidebar }) => {
                         }
                       />
                     </div>
-                    <div className="schedules-setting-item">
-                      <button className="change-time-btn">
-                        Set Schedule Remainder Timing
-                      </button>
-                    </div>
+
                     <p className="schedules-setting-description">
                       Set the time for schedule reminder notifications to be
                       sent.
@@ -395,24 +438,23 @@ const ScheduleHome = ({ toggleSidebar }) => {
                     </h3>
                     <div className="schedules-setting-item">
                       <label htmlFor="start-time">Start Time</label>
-                      <input type="time" id="start-time" defaultValue="09:00" />
+                      <input
+                        type="time"
+                        id="start-time"
+                        value={scheduleOpeningTime}
+                        onChange={(e) => setScheduleOpeningTime(e.target.value)}
+                      />
                     </div>
                     <div className="schedules-setting-item">
                       <label htmlFor="closing-time">Closing Time</label>
                       <input
                         type="time"
                         id="closing-time"
-                        value={schedulingClosingTime}
-                        onChange={(e) =>
-                          setSchedulingClosingTime(e.target.value)
-                        }
+                        value={scheduleClosingTime}
+                        onChange={(e) => setScheduleClosingTime(e.target.value)}
                       />
                     </div>
-                    <div className="schedules-setting-item">
-                      <button className="change-time-btn">
-                        Save Scheduling Time
-                      </button>
-                    </div>
+
                     <p className="schedules-setting-description">
                       Define the start and closing time for scheduling
                       activities.
@@ -428,18 +470,25 @@ const ScheduleHome = ({ toggleSidebar }) => {
                       <input
                         type="time"
                         id="route-plan-time"
-                        defaultValue="20:00"
+                        value={routePlanGenerationTime}
+                        onChange={(e) =>
+                          setRoutePlanGenerationTime(e.target.value)
+                        }
                       />
                     </div>
-                    <div className="schedules-setting-item">
-                      <button className="change-time-btn">
-                        Set Route Plan Generation Time
-                      </button>
-                    </div>
+
                     <p className="schedules-setting-description">
                       Set the time when the route plan will be generated
                       automatically.
                     </p>
+                  </div>
+                  <div className="schedules-setting-item">
+                    <button
+                      className="change-time-btn"
+                      onClick={handleSaveScheduleSettings}
+                    >
+                      Submit
+                    </button>
                   </div>
                 </div>
               </div>

@@ -209,6 +209,10 @@
   align-items: center;
 }
 
+.schedules-setting-item .change-time-btn {
+  align-self: flex-end;
+}
+
 .schedules-setting-item label {
   font-size: 1rem;
   color: #ffffff;

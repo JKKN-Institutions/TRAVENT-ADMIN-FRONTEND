@@ -20,33 +20,6 @@ const ManageInstitutions = ({ toggleSidebar }) => {
   const [currentYearIndex, setCurrentYearIndex] = useState(0);
   const [sections, setSections] = useState([]);
   const [adminDetails, setAdminDetails] = useState({});
-  const [institutions, setInstitutions] = useState([
-    {
-      id: 1,
-      code: "1234",
-      name: "JKKN College of Arts & Science",
-      state: "Tamil Nadu",
-      departments: 10,
-      routes: 40,
-      buses: 40,
-      adminName: "Kathir S",
-      adminContact: "9876543210",
-      createdAt: "10-08-2024 10:00 AM",
-    },
-    {
-      id: 2,
-      code: "1235",
-      name: "JKKN Dental College & Hospital",
-      state: "Tamil Nadu",
-      departments: 12,
-      routes: 40,
-      buses: 40,
-      adminName: "Kathir S",
-      adminContact: "9876543210",
-      createdAt: "10-08-2024 10:00 AM",
-    },
-    // Additional institutions can be added here...
-  ]);
 
   const handleSaveInstitution = (data) => {
     setInstitutionData(data);
@@ -143,8 +116,7 @@ const ManageInstitutions = ({ toggleSidebar }) => {
 
     try {
       const response = await fetch(
-        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/
-api/institutions/add",
+        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutions/add",
         {
           method: "POST",
           headers: {
@@ -173,7 +145,7 @@ api/institutions/add",
     }
   };
 
-  const handleEditClick = (institutionId) => {
+  /*const handleEditClick = (institutionId) => {
     const institution = institutions.find((inst) => inst.id === institutionId);
     if (institution) {
       // Set the form data based on the selected institution
@@ -184,7 +156,7 @@ api/institutions/add",
       // Additional steps to populate other data fields can be added here
       setCurrentStep("addInstitute"); // Or any other step as required
     }
-  };
+  };*/
 
   const renderCurrentInstituteDetails = () => {
     if (institutes.length > 0) {

@@ -19,6 +19,7 @@ import ToastNotification, {
 import apiClient from "../../../../apiClient";
 
 const ViewRoutes = ({ onBack }) => {
+  const [isPageVisible, setIsPageVisible] = useState(true);
   const [showRouteDetails, setShowRouteDetails] = useState(false);
   const [routeDetails, setRouteDetails] = useState(null);
   const [filteredRoutes, setFilteredRoutes] = useState([]);
@@ -31,6 +32,25 @@ const ViewRoutes = ({ onBack }) => {
   const institutionId = localStorage.getItem("institutionId");
 
   const toastRef = useRef(false);
+
+  useEffect(() => {
+    // Function to check if the page is visible
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setIsPageVisible(false); // Page is not visible
+      } else {
+        setIsPageVisible(true); // Page is visible
+      }
+    };
+
+    // Listen for visibility change
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
 
   const fetchRoutes = async () => {
     if (!institutionId) {
@@ -59,6 +79,16 @@ const ViewRoutes = ({ onBack }) => {
 
   useEffect(() => {
     fetchRoutes();
+
+    let intervalId;
+    if (isPageVisible) {
+      intervalId = setInterval(() => {
+        fetchRoutes();
+      }, 10000); // Poll every 10 seconds
+    }
+
+    // Cleanup on unmount or when page is no longer visible
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {

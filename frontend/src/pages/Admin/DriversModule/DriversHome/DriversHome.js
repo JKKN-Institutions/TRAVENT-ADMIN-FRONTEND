@@ -15,18 +15,46 @@ import TopBar from "../../../../components/Shared/TopBar/TopBar";
 import apiClient from "../../../../apiClient";
 
 const DriversHome = ({ toggleSidebar }) => {
+  const [isPageVisible, setIsPageVisible] = useState(true);
   const [showAddNewDriver, setShowAddNewDriver] = useState(false);
   const [viewAllCategory, setViewAllCategory] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [driversData, setDriversData] = useState({ main: [], spare: [] });
 
   const institutionId = localStorage.getItem("institutionId");
+
+  useEffect(() => {
+    // Function to check if the page is visible
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setIsPageVisible(false); // Page is not visible
+      } else {
+        setIsPageVisible(true); // Page is visible
+      }
+    };
+
+    // Listen for visibility change
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
   useEffect(() => {
     // Fetch drivers when the component mounts
-
-    console.log("Institution Id in DriversHome:", institutionId);
-
     fetchDrivers();
+
+    let intervalId;
+    if (isPageVisible) {
+      intervalId = setInterval(() => {
+        fetchDrivers();
+      }, 10000); // Poll every 10 seconds
+    }
+
+    // Cleanup on unmount or when page is no longer visible
+    return () => clearInterval(intervalId);
   }, [institutionId]);
 
   const fetchDrivers = async () => {
@@ -98,7 +126,7 @@ const DriversHome = ({ toggleSidebar }) => {
       </div>
       <div className="drivers-home-grid">
         {driversData[category]
-          .slice(0, 5)
+          .slice(0, 6)
           .map((driver, index) => renderDriverCard(driver, index))}
       </div>
     </div>
