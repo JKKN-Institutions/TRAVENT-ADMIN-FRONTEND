@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import Switch from "react-switch";
 import { Pie, Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -52,6 +51,44 @@ const ScheduleHome = ({ toggleSidebar }) => {
     const timer = setTimeout(() => setIsLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
+
+  // Fetch saved settings when component mounts
+  useEffect(() => {
+    const fetchScheduleSettings = async () => {
+      try {
+        const response = await apiClient.get(
+          `/adminSchedules/get-schedule-settings/${institutionId}`
+        );
+        const data = response.data;
+
+        // If settings exist, update state
+        if (data) {
+          setScheduleOpeningTime(data.scheduleOpeningTime);
+          setScheduleClosingTime(data.scheduleClosingTime);
+          setNotificationSendingTime(data.notificationSendingTime);
+          setRoutePlanGenerationTime(data.routePlanGenerationTime);
+          // Convert selectedWorkingDays from strings to Date objects if necessary
+          if (data.selectedWorkingDays) {
+            const formattedSelectedDays = data.selectedWorkingDays.map(
+              (day) => {
+                const [dayOfMonth, month, year] = day.split("-");
+                return new Date(`${year}-${month}-${dayOfMonth}`); // Correct format: yyyy-mm-dd
+              }
+            );
+            setSelectedWorkingDays(formattedSelectedDays);
+            console.log("Formatted selected days:", formattedSelectedDays);
+            console.log("Selected working days:", data.selectedWorkingDays);
+          }
+        }
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching schedule settings:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchScheduleSettings();
+  }, [institutionId]);
 
   // Pie chart data and options
   const usageCategoriesData = {
@@ -133,7 +170,12 @@ const ScheduleHome = ({ toggleSidebar }) => {
   const handleBackFromGeneratedPlan = () => setShowGeneratedPlan(false);
 
   if (showScheduledPassengers) {
-    return <ScheduledPassengers onBack={handleBackFromScheduledPassengers} />;
+    return (
+      <ScheduledPassengers
+        onBack={handleBackFromScheduledPassengers}
+        institutionId={institutionId}
+      />
+    );
   }
 
   if (showGeneratedPlan) {
@@ -159,17 +201,14 @@ const ScheduleHome = ({ toggleSidebar }) => {
   };
 
   const isDateSelected = (date) => {
-    return selectedWorkingDays.some(
-      (selectedDay) =>
-        selectedDay &&
-        date &&
-        selectedDay.toDateString() === date.toDateString()
-    );
+    if (!date) return false; // Ensure the date is valid
+    return selectedWorkingDays.some((selectedDay) => {
+      return selectedDay && selectedDay.toDateString() === date.toDateString();
+    });
   };
 
   const handleDayClick = (date) => {
-    if (!date) return;
-
+    if (!date || isNaN(date)) return; // Avoid invalid dates
     const newSelectedDays = isDateSelected(date)
       ? selectedWorkingDays.filter(
           (selectedDay) => selectedDay.toDateString() !== date.toDateString()
