@@ -30,6 +30,7 @@ const ScheduledPassengers = ({ onBack, institutionId }) => {
     designation: "",
   });
   const [loading, setLoading] = useState(true);
+  const [scheduleDate, setScheduleDate] = useState("");
 
   const itemsPerPage = 5;
 
@@ -39,10 +40,10 @@ const ScheduledPassengers = ({ onBack, institutionId }) => {
       const response = await apiClient.get(
         `/adminSchedules/get-schedule-for-date/${institutionId}`
       );
-      const { students, staff } = response.data;
-
-      setFilteredData({ students, staff });
-      console.log("Fetched schedule data", { students, staff });
+      console.log("Response", response.data);
+      const { schedules, nextDate } = response.data;
+      setFilteredData({ students: schedules.students, staff: schedules.staff });
+      setScheduleDate(nextDate); // Set the date
     } catch (error) {
       console.error("Failed to fetch schedule data", error);
     } finally {
@@ -54,18 +55,13 @@ const ScheduledPassengers = ({ onBack, institutionId }) => {
   useEffect(() => {
     const socket = io("http://localhost:3000");
 
-    // Log when socket is connected
-    socket.on("connect", () => {
-      console.log("Socket connected:", socket.id);
-    });
-
     fetchData();
 
-    // Listen for schedule updates via Socket.IO
-    socket.on("scheduleUpdate", (updatedData) => {
-      console.log("Received schedule update:", updatedData); // Log when update is received
-      const { students, staff } = updatedData;
-      setFilteredData({ students, staff });
+    socket.on("scheduleUpdate", (data) => {
+      const { schedules, nextDate } = data;
+      setFilteredData({ students: schedules.students, staff: schedules.staff });
+      setScheduleDate(nextDate); // Update the date
+      console.log("Schedule update received:", data);
     });
 
     // Cleanup socket connection on component unmount
@@ -161,6 +157,11 @@ const ScheduledPassengers = ({ onBack, institutionId }) => {
                 onSearch={setSearchTerm}
               />
               <div className="scheduled-passengers-action-button-container">
+                <p>
+                  <span className="bold-text">Schedule Date:</span>{" "}
+                  <span>{scheduleDate}</span>
+                </p>
+
                 <Button
                   label={
                     <>

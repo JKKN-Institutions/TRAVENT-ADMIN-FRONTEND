@@ -65,7 +65,7 @@ const ViewInstitutions = ({ toggleSidebar }) => {
   const fetchInstitutions = async () => {
     try {
       const response = await fetch(
-        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutions/list"
+        "http://localhost:3000/api/institutions/list"
       );
       if (response.ok) {
         const data = await response.json();
@@ -90,7 +90,7 @@ const ViewInstitutions = ({ toggleSidebar }) => {
     try {
       console.log("Fetching details for institution ID:", institutionId);
       const response = await fetch(
-        `https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutions/${institutionId}`
+        `http://localhost:3000/api/institutions/${institutionId}`
       );
       if (response.ok) {
         const institutionDetails = await response.json();
@@ -123,7 +123,7 @@ const ViewInstitutions = ({ toggleSidebar }) => {
       try {
         for (const institutionId of selectedInstitutions) {
           const response = await fetch(
-            `https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutions/delete/${institutionId}`,
+            `http://localhost:3000/api/institutions/delete/${institutionId}`,
             {
               method: "DELETE",
             }
@@ -296,7 +296,7 @@ const ViewInstitutions = ({ toggleSidebar }) => {
 
     try {
       const response = await fetch(
-        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/institutions/add",
+        "http://localhost:3000/api/institutions/add",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

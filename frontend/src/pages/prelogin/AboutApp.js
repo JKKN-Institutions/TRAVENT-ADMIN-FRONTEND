@@ -12,6 +12,7 @@ import ToastNotification, {
   showToast,
 } from "../../components/Shared/ToastNotification/ToastNotification";
 import "./AboutApp.css";
+import apiClient from "../../apiClient";
 
 const firebaseApp = initializeApp(firebaseConfig); // Initialize Firebase
 const auth = getAuth(firebaseApp);
@@ -149,10 +150,9 @@ const AboutApp = () => {
       console.log("Firebase token:", token);
 
       // Send the Firebase token to backend for validation
-      const { data } = await axios.post(
-        "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/google-sign-in",
-        { tokenId: token }
-      );
+      const { data } = await apiClient.post("/auth/google-sign-in", {
+        tokenId: token,
+      });
 
       console.log("Response data:", data);
 
@@ -215,10 +215,10 @@ const AboutApp = () => {
       }
 
       try {
-        const { data } = await axios.post(
-          "https://travent-admin-server-suryaprabajicates-projects.vercel.app/api/auth/login",
-          { email, password }
-        );
+        const { data } = await apiClient.post("/auth/login", {
+          email,
+          password,
+        });
 
         const {
           accessToken,
@@ -230,7 +230,9 @@ const AboutApp = () => {
 
         // Store the access token and refresh token in local storage
         localStorage.setItem("accessToken", accessToken);
+        console.log("Access Token:", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
+        console.log("Refresh Token:", refreshToken);
 
         // Store institutionId only for admin role
         if (role === "admin" && institutionDetails?.institutionId) {

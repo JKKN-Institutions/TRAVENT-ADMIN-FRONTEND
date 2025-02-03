@@ -26,8 +26,13 @@
 .scheduled-passengers-action-button-container {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.bold-text {
+  font-weight: bold;
 }
 
 .scheduled-passengers-filter-button {

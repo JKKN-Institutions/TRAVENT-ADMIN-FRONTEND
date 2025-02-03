@@ -132,7 +132,24 @@ const UnifiedSidebar = React.memo(
         {showLogoutConfirmation && (
           <Logout
             onCancel={() => setShowLogoutConfirmation(false)}
-            onConfirm={() => setShowLogoutConfirmation(false)}
+            onConfirm={() => {
+              // Remove specific fields from local storage
+              console.log("Logging out... Clearing local storage:");
+              const keysToRemove = [
+                "accessToken",
+                "refreshToken",
+                "institutionId",
+                "institutionName",
+              ];
+
+              keysToRemove.forEach((key) => {
+                console.log(`Removing ${key}: ${localStorage.getItem(key)}`);
+                localStorage.removeItem(key);
+              });
+
+              console.log("Local storage cleared. Redirecting to login page.");
+              setShowLogoutConfirmation(false);
+            }}
           />
         )}
       </>
